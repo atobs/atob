@@ -5,8 +5,12 @@ var Board = require_app("models/board");
 
 var Post = sequelize.instance.define('Post', {
   title: sequelize.STRING,
-  text: sequelize.TEXT
+  text: sequelize.TEXT,
+  thread_id: sequelize.INTEGER
 });
+
+Post.hasOne(Post, { as: 'Thread', foreignKey: 'thread_id', through: null });
+Post.hasMany(Post, { as: 'Children', foreignKey: 'parent_id', through: null });
 Board.hasMany(Post);
 
 module.exports = Post;

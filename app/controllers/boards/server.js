@@ -25,21 +25,26 @@ module.exports = {
     var board_id = ctx.req.params.id;
 
     var render_posts = api.page.async(function(flush) {
-      Post.findAll({ where: { board_id: board_id }})
-        .success(function(results) {
-          if (!results || !results.length) {
-            return flush();
-          }
+      Post.findAll({ 
+          where: { board_id: board_id, thread_id: null }, 
+          include: [
+            {model: Post, as: "Children" },
+            {model: Post, as: "Thread" }
+          ]
+      }).success(function(results) {
+        if (!results || !results.length) {
+          return flush();
+        }
 
-          var div = $("<div></div>");
-          _.each(results, function(result) {
-            delete result.dataValues.id;
-            var postCmp = $C("post", result.dataValues );
-            div.prepend(postCmp.$el);
-            postCmp.marshall();
-          });
-          flush(div);
+        var div = $("<div></div>");
+        _.each(results, function(result) {
+          delete result.dataValues.id;
+          var postCmp = $C("post", result.dataValues );
+          div.prepend(postCmp.$el);
+          postCmp.marshall();
         });
+        flush(div);
+      });
     });
 
     var template_str = api.template.render("controllers/boards/show.html.erb", {
