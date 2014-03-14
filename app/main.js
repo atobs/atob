@@ -8,6 +8,7 @@ module.exports = {
     sequelize.instance.sync({ force: true }).success(function() {
       console.log("Synced SQL DB to models"); 
       var Board = require_app("models/board");
+      var Post = require_app("models/post");
 
       Board.create({
         name: "a",
@@ -17,8 +18,13 @@ module.exports = {
       });
       Board.create({
         name: "c",
+      }).success(function(c) {
+        Post.create({
+          title: "a test",
+          text: "does anyone read this, anyways",
+          board_id: c.name
+        });
       });
-
     });
   },
   setup_request: function(req) {

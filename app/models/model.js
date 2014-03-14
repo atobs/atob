@@ -5,6 +5,7 @@ var sequelize = new Sequelize('database', 'username', 'password', {
   storage: 'db.sqlite',
   define: {
     sync: { force: true },
+    underscored: true
   }
 });
 

@@ -15,7 +15,11 @@ module.exports = {
   },
 
   index: function(ctx, api) {
-    var template_str = api.template.render("controllers/boards/boards.html.erb", { board: ctx.req.params.id});
+    var board_id = ctx.req.params.id;
+    var template_str = api.template.render("controllers/boards/boards.html.erb", { board: board_id});
+    Post.findAll({ where: { board_id: board_id }}).success(function(results) {
+      console.log("POSTS ARE", results); 
+    });
     api.page.render({ content: template_str});
   },
 
