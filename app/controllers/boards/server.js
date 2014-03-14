@@ -47,11 +47,40 @@ module.exports = {
       render_posts: render_posts
     });
 
+    api.bridge.controller("boards", "set_board", board_id);
+
     api.page.render({ 
-      content: template_str
+      content: template_str,
+      socket: true,
+      component: true
     });
 
   },
 
-  socket: function() {}
+  socket: function(s) {
+    var _board;
+    s.on("join", function(board) {
+      s.spark.join(board);
+      _board = board;
+      s.emit("joined", board);
+    });
+
+    s.on("new_post", function(post) {
+      var title = value_of(post, "title");
+      var text = value_of(post, "text");
+      var tripcode = value_of(post, "tripcode", "");
+      var data = {
+        title: title,
+        text: text,
+        tripcode: tripcode,
+        board_id: _board,
+      };
+
+      Post.create(data)
+        .success(function() {
+          s.broadcast.to(_board).emit("new_post", data);
+          s.emit("new_post", data);
+        });
+    });
+  }
 };
