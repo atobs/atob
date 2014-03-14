@@ -1,18 +1,14 @@
 <% set_default("title", "a new borad approaches") %>
-<% set_default("boards", ["a", "new", "board"]) %>
+<% set_default("boards", []) %>
 
 <div class="container" style="margin: auto; margin-top: 10px">
   <div class="col-md-12">
-    <h1>welcome to atob, where everything is catalogued, from a to b</h1> 
+    <h1>a to b</h1> 
   </div>
 
   <div class="col-md-12">
     <h2>boards</h2>
-    <% _.each(boards, function(board) { %>
-      <div>
-        <a href="<%= url_for("boards.index", { id: board }) %>"><%= board %></a>
-      </div>
-    <% }) %>
+    <%= render_boards() %>
   </div>
 </div>
 

@@ -4,7 +4,8 @@ var controller = require_core("server/controller");
 // Helpers for serialized form elements
 var value_of = controller.value_of,
     array_of = controller.array_of;
-    
+
+var Post = require_app("models/post");
 
 module.exports = {
   // If the controller has assets in its subdirs, set is_package to true

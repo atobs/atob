@@ -1,8 +1,25 @@
 "use strict";
 
+var sequelize = require_app("models/model");
+
+
 module.exports = {
   setup_app: function() {
-    console.log("Main setup stuff, something, something");
+    sequelize.instance.sync({ force: true }).success(function() {
+      console.log("Synced SQL DB to models"); 
+      var Board = require_app("models/board");
+
+      Board.create({
+        name: "a",
+      });
+      Board.create({
+        name: "b",
+      });
+      Board.create({
+        name: "c",
+      });
+
+    });
   },
   setup_request: function(req) {
     console.log("Handling request", req.path, req.query, req.params);

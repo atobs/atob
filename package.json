@@ -1,14 +1,14 @@
 {
   "name": "atob.sf",
-    "description": "another superfluous app",
-    "version": "0.0.1",
-    "private": true,
-    "dependencies": {
-      "superfluous" : "x"
-    },
-    "scripts" : {
-      "test" : "bash scripts/run_tests.sh",
-      "start" : "node app.js"
-    }
+  "description": "another superfluous app",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "superfluous": "x",
+    "sequelize": "^1.7.0"
+  },
+  "scripts": {
+    "test": "bash scripts/run_tests.sh",
+    "start": "node app.js"
+  }
 }
-
