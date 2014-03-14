@@ -1,12 +1,23 @@
 <% set_default("title", "Title") %>
 <% set_default("text", "post text") %>
+<% set_default("replies", []) %>
 
 <div class="post"> 
-  <div class="title">
-    <%= title %>
+  <div class="title clearfix">
+    <h4 class="lfloat"><%= title %>
+      <span class="reply">
+        <a href="#">[reply]</a>
+      </span>
+    </h4>
   </div>
 
   <div class="text">
     <%= text %>
+  </div>
+
+  <div class="replies">
+    <% _.each(replies, function(r) { %>
+
+    <% }); %>
   </div>
 </div>

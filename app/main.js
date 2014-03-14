@@ -24,6 +24,16 @@ module.exports = {
           text: "does anyone read this, anyways",
           board_id: c.name
         });
+        Post.create({
+          title: "yeah, of course",
+          text: "was walking from home the other day and saw...",
+          board_id: c.name
+        });
+        Post.create({
+          title: "yeah, of course not",
+          text: "was not walking from home the other day and saw...",
+          board_id: c.name
+        });
       });
     });
   },
