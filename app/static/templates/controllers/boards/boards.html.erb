@@ -1,0 +1,15 @@
+<% set_default("title", "a new borad approaches") %>
+<% set_default("boards", ["a", "new", "board"]) %>
+
+<div class="container" style="margin: auto; margin-top: 10px">
+  <div class="col-md-12">
+    <h1><%= title %>: <%= board %></h1>
+  </div>
+
+  <a href="<%= url_for("home.index") %>">home</a>
+
+  <div class="col-md-12 row-fluid">
+    <div class="col-md-4">
+    </div>
+  </div>
+</div>
