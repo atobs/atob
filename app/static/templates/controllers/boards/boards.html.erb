@@ -1,5 +1,5 @@
 <% set_default("title", "a to b") %>
-<% set_default("boards", ["a", "new", "board"]) %>
+<% set_default("posts", [] ) %>
 
 <div class="container" style="margin: auto; margin-top: 10px">
   <div class="col-md-12">
@@ -9,6 +9,7 @@
 
   <div class="col-md-12 row-fluid">
     <div class="col-md-4">
+      <%= render_posts() %>
     </div>
   </div>
 </div>

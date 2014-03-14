@@ -1,0 +1,9 @@
+{
+  "main" : "post",
+  "style": "post.css",
+  "styles": [],
+
+  "template": "post.html.erb",
+  "helpers": [],
+  "no_redefine" : false
+}

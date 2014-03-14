@@ -1,0 +1,26 @@
+// mobile devices & portrait
+// 200 - 767px
+@media @device {
+  .post {
+
+  }
+}
+
+// netbooks, mobile devices in landscape
+// laptops, desktops
+// 768 - 1900px
+@media @computer {
+  .post {
+    padding: 5px;
+    border: 1px solid gray;
+  }
+
+}
+
+// huge screens
+// 1900px
+@media @large_screen {
+  .post {
+
+  }
+}

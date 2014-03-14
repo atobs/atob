@@ -5,7 +5,8 @@
   "private": true,
   "dependencies": {
     "superfluous": "x",
-    "sequelize": "^1.7.0"
+    "sequelize": "^1.7.0",
+    "cheerio": "^0.13.1"
   },
   "scripts": {
     "test": "bash scripts/run_tests.sh",
