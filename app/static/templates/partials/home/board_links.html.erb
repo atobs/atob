@@ -1,0 +1,5 @@
+<% _.each(boards, function(board) { %>
+  <div>
+    <a href="<%= url_for("boards.index", { id: board }) %>"><%= board %></a>
+  </div>
+<% }) %>
