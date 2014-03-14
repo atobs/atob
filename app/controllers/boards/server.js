@@ -27,7 +27,11 @@ module.exports = {
     var render_posts = api.page.async(function(flush) {
       Post.findAll({ where: { board_id: board_id }})
         .success(function(results) {
-          var div = $("<div />");
+          if (!results || !results.length) {
+            return flush();
+          }
+
+          var div = $("<div><h2>said words</h2></div>");
           _.each(results, function(result) {
             delete result.dataValues.id;
             var postCmp = $C("post", result.dataValues );
