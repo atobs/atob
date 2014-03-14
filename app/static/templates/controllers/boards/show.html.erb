@@ -1,0 +1,37 @@
+<% set_default("title", "a to b to ") %>
+<% set_default("posts", [] ) %>
+
+<div class="container" style="margin: auto; margin-top: 10px">
+  <div class="col-md-12">
+    <h1><%= title %> <%= board %></h1>
+    <hr />
+  </div>
+
+  <div class="col-md-12">
+    <h2>speak your mind</h2>
+    <form class="form-inline">
+      <div class="form-group col-md-6">
+        <label for="title">Title</label>
+        <input id="title" class="form-control" type="text"> </input>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="tripcode">Code</label>
+        <input id="tripcode" class="form-control" type="text"> </input>
+      </div>
+      <div class="col-md-12">
+        <label for="text">Text</label>
+        <textarea id="text" class="form-control col-md-4"> </textarea>
+      </div>
+
+      <div class="col-md-12">
+        <button type="submit" class="mtl btn btn-default">let it be written</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="col-md-12 mtl">
+    <h2>Posts</h2>
+
+    <%= render_posts() %>
+  </div>
+</div>

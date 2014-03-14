@@ -12,10 +12,16 @@ module.exports = {
   // If the controller has assets in its subdirs, set is_package to true
   is_package: false,
   routes: {
-    "/:id" : "index",
+    "/:id" : "show",
   },
 
   index: function(ctx, api) {
+    api.page.render({
+      content: "Nothing to see here"
+    });
+  },
+
+  show: function(ctx, api) {
     var board_id = ctx.req.params.id;
 
     var render_posts = api.page.async(function(flush) {
@@ -32,7 +38,7 @@ module.exports = {
         });
     });
 
-    var template_str = api.template.render("controllers/boards/boards.html.erb", {
+    var template_str = api.template.render("controllers/boards/show.html.erb", {
       board: board_id,
       render_posts: render_posts
     });
