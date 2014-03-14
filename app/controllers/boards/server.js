@@ -31,11 +31,11 @@ module.exports = {
             return flush();
           }
 
-          var div = $("<div><h2>said words</h2></div>");
+          var div = $("<div></div>");
           _.each(results, function(result) {
             delete result.dataValues.id;
             var postCmp = $C("post", result.dataValues );
-            div.append(postCmp.$el);
+            div.prepend(postCmp.$el);
             postCmp.marshall();
           });
           flush(div);

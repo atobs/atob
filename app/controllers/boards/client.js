@@ -1,5 +1,7 @@
 "use strict";
 
+require("core/client/component");
+
 module.exports = {
   events: {
     "submit form" : "add_post" 
@@ -27,7 +29,7 @@ module.exports = {
       console.log("New post created!");
       $C("post", data, function(cmp) {
         console.log("New post created", cmp); 
-        $(".posts h2").after(cmp.$el);
+        $(".posts").prepend(cmp.$el);
       });
 
 
