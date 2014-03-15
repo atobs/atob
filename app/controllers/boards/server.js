@@ -95,8 +95,16 @@ module.exports = {
     });
 
     s.on("new_reply", function(post) {
+      var text = post.text.split("|");
+      var title = "";
+      if (text.length > 1) {
+        title = text.shift();
+        text = text.join("|");
+      }
+
       Post.create({
-          text: post.text,
+          text: text,
+          title: title,
           parent_id: post.post_id,
           thread_id: post.post_id,
           tripcode: post.tripcode

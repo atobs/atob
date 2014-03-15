@@ -65,13 +65,15 @@ module.exports = {
   },
   add_reply: function(data) {
     console.log("Adding reply...", data);
-    var replyEl =$("<div />");
+    var replyEl =$("<div class='ptl pbl'/>");
     var tripEl = $("<div class='tripcode' />").data("tripcode", data.tripcode);
+    tripEl.css("marginRight", "8px");
     gen_tripcode(tripEl);
 
     replyEl.append(tripEl);
     replyEl.append($("<b />").html(data.title));
     replyEl.append($("<small />").html(data.text));
+    replyEl.fadeIn();
 
     this.$el.find(".replies").append(replyEl);
   }
