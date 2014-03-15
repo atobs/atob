@@ -1,31 +1,47 @@
 <% set_default("title", "Title") %>
 <% set_default("text", "post text") %>
-<% set_default("created_at", Date.now()) %>
+<% set_default("created_at", new Date()) %>
 <% set_default("replies", []) %>
 
 <div class="post"> 
   <div class="title clearfix">
-    <h4 class="lfloat"><%= title %>
-      <span class="reply">
-        <a href="#">[reply]</a> 
-        <% if (replies.length) { %>
-          (<%= replies.length %> replies)
-        <% } %>
-      </span>
+    <h4><b><%= title %></b>
+    <small>
+      <% if (replies.length) { %>
+        (<%= replies.length %> replies)
+      <% } %>
+    </small>
     </h4>
+
+    <div class="created" style="margin-top: -10px">
+      <small><%= created_at %></small>
+
+    </div>
+
   </div>
 
-  <div class="text">
-    Posted at: <%= created_at %>
-  </div>
-
-  <div class="text">
+  <div class="text col-md-12">
     <%= text %>
   </div>
 
-  <div class="replies">
+  <div class="replies clearfix mtl">
     <% _.each(replies, function(r) { %>
+      <div class="pal">
+        <span class="clearfix">
+          <input style="padding: 0px; width: 0px; height: 10px"
+            type="password" disabled="true" class="tripcode form-control" 
+            value="<%= r.tripcode || 'anon' %>"
+          </input>
+        </span>
+        <b><%= r.title %></b>
+        <small><%= r.text %></small>
+      </div>
 
     <% }); %>
   </div>
+
+  <div class="clearfix">
+    <a class="add_reply" href="#">[reply]</a> 
+  </div>
+
 </div>

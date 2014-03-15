@@ -28,7 +28,7 @@ module.exports = {
 
     var posts = [];
     var board_codes = _.keys(board_ids);
-    var density = 0.50;
+    var density = 0.90;
     for (var i = 0; i < 100; i++) {
       board_id = board_codes[_.random(0, board_codes.length)];
 
