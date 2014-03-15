@@ -2,30 +2,6 @@
 
 require("core/client/component");
 
-function get_colors_for_hash(tripcode) {
-  var hashed = md5(tripcode);
-  var colors = hashed.match(/([\dABCDEF]{6})/ig);
-
-  console.log("HASHED IS", hashed);
-
-  var hexes = [];
-  for (var i = 0; i < 4; i++) {
-    var color = parseInt(colors[i], 16);
-    var red = (color >> 16) & 255;
-    var green = (color >> 8) & 255;
-    var blue = color & 255;
-    var hex = $.map([red, green, blue], function(c, i) {
-      return ((c >> 4) * 0x10).toString(16);
-    }).join('');
-
-    hexes.push(hex);
-  }
-
-  return hexes;
-}
-
-window.get_colors_for_hash = get_colors_for_hash;
-
 module.exports = {
   events: {
     "submit form" : "add_post" 
