@@ -1,41 +1,16 @@
 "use strict";
 
 var sequelize = require_app("models/model");
+var fakedata = require_app("fakedata");
 
 
 module.exports = {
   setup_app: function() {
     sequelize.instance.sync({ force: true }).success(function() {
       console.log("Synced SQL DB to models"); 
-      var Board = require_app("models/board");
-      var Post = require_app("models/post");
-
-      Board.create({
-        name: "a",
-      });
-      Board.create({
-        name: "b",
-      });
-      Board.create({
-        name: "c",
-      }).success(function(c) {
-        Post.create({
-          title: "a test",
-          text: "does anyone read this, anyways",
-          board_id: c.name
-        });
-        Post.create({
-          title: "yeah, of course",
-          text: "was walking from home the other day and saw...",
-          board_id: c.name
-        });
-        Post.create({
-          title: "yeah, of course not",
-          text: "was not walking from home the other day and saw...",
-          board_id: c.name
-        });
-      });
+      fakedata.generate();
     });
+
   },
   setup_request: function(req) {
     console.log("Handling request", req.path, req.query, req.params);
