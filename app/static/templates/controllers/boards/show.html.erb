@@ -3,15 +3,16 @@
 
 <div class="container" style="margin: auto; margin-top: 10px">
   <div class="col-md-12">
-    <h1><%= title %> <%= board %></h1>
-    <hr />
+    <h1 class="col-md-4"><%= title %> <%= board %></h1>
+    <div class="form-group col-md-4" style="margin-top: 20px">
+      <input name="handle" class="form-control" type="text" placeholder="handle"></input>
+    </div>
+    <div class="form-group col-md-4" style="margin-top: 20px">
+      <input name="tripcode" class="tripcode form-control" type="password" placeholder="tripcode"> </input>
+    </div>
   </div>
 
   <div class="col-md-12">
-    <h2>who are yuo?</h2>
-    <div class="form-group col-md-7">
-      <input name="tripcode" class="tripcode form-control" type="password"> </input>
-    </div>
   </div>
 
   <div class="col-md-12">

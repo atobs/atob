@@ -7,13 +7,13 @@
 <div class="post"> 
   <div class="title clearfix">
     <h4><b><%= title %></b>
-    <br />
-    <small class="rfloat">
-      <% if (replies.length) { %>
-        (<%= replies.length %>)
-      <% } %>
-    </small>
     </h4>
+
+    <div 
+        class="tripcode" 
+        style="margin-top: -10px; height: 5px; overflow-y: hidden; margin-bottom: 10px" 
+        data-tripcode="<%= tripcode %>">
+    </div>
 
     <div class="created" style="margin-top: -10px">
       <small><%= created_at %></small>
@@ -21,16 +21,16 @@
 
   </div>
 
-  <div class="tripcode" data-tripcode="<%= tripcode %>"></div>
-
   <div class="text col-md-12">
     <%= text %>
   </div>
 
   <div class="replies clearfix mtl">
     <% _.each(replies, function(r) { %>
-      <div class="pal">
-        <div class="tripcode" data-tripcode="<%= r.tripcode || "anon" %>"></div>
+      <div class="ptl pbl">
+        <div 
+          style="width: 80px; display: inline-block; height: 10px; overflow-y: hidden" 
+          class="tripcode" data-tripcode="<%= r.tripcode %>"></div>
         <b><%= r.title %></b>
         <small><%= r.text %></small>
       </div>

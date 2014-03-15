@@ -34,13 +34,12 @@ module.exports = {
     this.$el.find("div.tripcode").each(function() {
       // Now that we have our tripcodes, do other things...
       var colors = get_colors_for_hash($(this).data("tripcode"));
-      var div = $("<div />");
-      var $el = $(this);
+      var div = $(this);
       _.each(colors, function(color) {
         var colorDiv = $("<div />").css({
           backgroundColor: "#" + color,
           display: "inline-block",
-          height: "3px",
+          height: "20px",
           width: "25%"
         });
         div.append(colorDiv);
@@ -48,8 +47,6 @@ module.exports = {
         $(this).css({
           position: "relative"
         });
-
-        $el.append(div);
       });
     });
   }
