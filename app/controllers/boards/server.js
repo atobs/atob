@@ -39,8 +39,8 @@ module.exports = {
 
         var div = $("<div></div>");
         _.each(results, function(result) {
-          delete result.dataValues.id;
           var post_data = result.dataValues;
+          post_data.post_id = post_data.id;
           delete post_data.id;
           post_data.replies = _.map(result.children, function(c) { return c.dataValues; } );
           var postCmp = $C("post", result.dataValues );
@@ -86,7 +86,8 @@ module.exports = {
       };
 
       Post.create(data)
-        .success(function() {
+        .success(function(p) {
+          data.post_id = p.id;
           s.broadcast.to(_board).emit("new_post", data);
           s.emit("new_post", data);
         });

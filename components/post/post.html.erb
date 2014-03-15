@@ -1,10 +1,11 @@
 <% set_default("title", "Title") %>
 <% set_default("text", "post text") %>
+<% set_default("post_id", 0) %>
 <% set_default("created_at", new Date()) %>
 <% set_default("replies", []) %>
 <% set_default("tripcode", "anon") %>
 
-<div class="post"> 
+<div class="post" data-post-id="<%= post_id %>"> 
   <div class="title clearfix">
     <h4><b><%= title %></b>
     </h4>
@@ -38,8 +39,10 @@
     <% }); %>
   </div>
 
-  <div class="clearfix">
-    <input type="text" class="form-control" placeholder="reply"> </input>
-  </div>
+  <form class="reply">
+    <div class="clearfix">
+      <input type="text" class="form-control" placeholder="reply"> </input>
+    </div>
+  </form>
 
 </div>
