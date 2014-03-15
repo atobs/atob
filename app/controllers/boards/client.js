@@ -13,14 +13,14 @@ module.exports = {
 
     console.log(e.target);
     var data = $(e.target).serializeArray();
+    var tripcode = $("input.tripcode").val();
+    data.push({ name: "tripcode", value: tripcode });
     console.log("NEW POST", data);
     SF.socket().emit("new_post", data);
       
   },
   init: function() {
-    this.$page.find("input.tripcode").chromaHash({bars: 4, salt: "booo" });
-    this.$page.find("input.tripcode").blur();
-
+    this.$page.find("input.tripcode").chromaHash({bars: 4});
   },
   set_board: function(b) {
     console.log("Seeing whats up for board", "/" + b);

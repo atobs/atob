@@ -21,7 +21,7 @@
 
   </div>
 
-  <span class="tripcode" data-tripcode="<%= tripcode %>"></span>
+  <div class="tripcode" data-tripcode="<%= tripcode %>"></div>
 
   <div class="text col-md-12">
     <%= text %>
@@ -30,7 +30,7 @@
   <div class="replies clearfix mtl">
     <% _.each(replies, function(r) { %>
       <div class="pal">
-        <span class="tripcode" data-tripcode="<%= r.tripcode || "anon" %>"></span>
+        <div class="tripcode" data-tripcode="<%= r.tripcode || "anon" %>"></div>
         <b><%= r.title %></b>
         <small><%= r.text %></small>
       </div>

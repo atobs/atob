@@ -6,7 +6,9 @@ var Board = require_app("models/board");
 var Post = sequelize.instance.define('Post', {
   title: sequelize.STRING,
   text: sequelize.TEXT,
-  thread_id: sequelize.INTEGER
+  thread_id: sequelize.INTEGER,
+  tripcode: sequelize.STRING,
+  author: sequelize.STRING
 });
 
 Post.hasOne(Post, { as: 'Thread', foreignKey: 'thread_id', through: null });

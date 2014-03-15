@@ -1,8 +1,12 @@
+// http://stackoverflow.com/a/10075654/442652
+function padDigits(number, digits) {
+  return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
+}
+
+
 function get_colors_for_hash(tripcode) {
   var hashed = md5(tripcode);
   var colors = hashed.match(/([\dABCDEF]{6})/ig);
-
-  console.log("HASHED IS", hashed);
 
   var hexes = [];
   for (var i = 0; i < 4; i++) {
@@ -11,7 +15,7 @@ function get_colors_for_hash(tripcode) {
     var green = (color >> 8) & 255;
     var blue = color & 255;
     var hex = $.map([red, green, blue], function(c, i) {
-      return ((c >> 4) * 0x10).toString(16);
+      return padDigits(((c >> 4) * 0x10).toString(16), 2);
     }).join('');
 
     hexes.push(hex);
@@ -27,13 +31,26 @@ module.exports = {
   },
   initialize: function() { },
   client: function(options) {
-    var client_options = options.client_options;
+    this.$el.find("div.tripcode").each(function() {
+      // Now that we have our tripcodes, do other things...
+      var colors = get_colors_for_hash($(this).data("tripcode"));
+      var div = $("<div />");
+      var $el = $(this);
+      _.each(colors, function(color) {
+        var colorDiv = $("<div />").css({
+          backgroundColor: "#" + color,
+          display: "inline-block",
+          height: "3px",
+          width: "25%"
+        });
+        div.append(colorDiv);
 
-    if (options.replies && options.replies.length) {
-      console.log("Has replies", options.replies);
-    }
-    this.$el.find("span.tripcode").each(function() {
-      console.log("Initializing tripcode", $(this).data("tripcode"));
+        $(this).css({
+          position: "relative"
+        });
+
+        $el.append(div);
+      });
     });
   }
 };
