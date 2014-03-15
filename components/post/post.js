@@ -59,6 +59,8 @@ module.exports = {
     var POSTS = window._POSTS || {};
     window._POSTS = POSTS;
     POSTS[options.post_id] = this; 
+
+    console.log("FINDING TRIPCODES", this);
     this.$el.find("div.tripcode").each(function() {
       gen_tripcode(this);
     });

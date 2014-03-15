@@ -10,7 +10,7 @@ module.exports = {
     var boards = [];
     var board_ids = {};
     var board_id;
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 5; i++) {
       board_id = parseInt(Math.random() * 26, 10); 
       var board_code = String.fromCharCode(97 + board_id);
 
@@ -45,6 +45,7 @@ module.exports = {
             title: faker.Lorem.sentence(),
             text: faker.Lorem.sentences(),
             board_id: board_id,
+            author: faker.Name.firstName()
           };
 
           post_data.thread_id = p.thread_id;

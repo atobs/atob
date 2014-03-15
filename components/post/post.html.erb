@@ -3,7 +3,8 @@
 <% set_default("post_id", 0) %>
 <% set_default("created_at", new Date()) %>
 <% set_default("replies", []) %>
-<% set_default("tripcode", "anon") %>
+<% set_default("tripcode", "") %>
+<% set_default("author", "anon") %>
 
 <hr />
 
@@ -12,9 +13,8 @@
     <h4><b><%- title %></b>
     </h4>
 
-    <div class="mbl"
-      <div class="tripcode" data-tripcode="<%= tripcode %>">
-      </div>
+    <div class="mbl">
+      <div class="tripcode" title="<%- author || "anon" %>" data-tripcode="<%= tripcode %>"> </div>
 
       <div class="created" style="margin-top: -10px; display: inline-block">
         <small><%= created_at %></small>
@@ -23,9 +23,11 @@
 
   </div>
 
-  <div class="text col-md-12">
-    <%- text %>
-  </div>
+  <% if (text) { %>
+    <div class="text col-md-12">
+      <%- text %>
+    </div>
+  <% } %>
 
   <div class="replies clearfix mtl">
     <% _.each(replies, function(r) { %>

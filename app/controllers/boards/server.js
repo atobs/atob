@@ -30,6 +30,7 @@ module.exports = {
 
   show: function(ctx, api) {
     var board_id = ctx.req.params.id;
+    this.set_title("atob/" + board_id);
 
     var render_posts = api.page.async(function(flush) {
       Post.findAll({ 
