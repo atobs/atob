@@ -27,6 +27,7 @@ module.exports = {
     var render_posts = api.page.async(function(flush) {
       Post.findAll({ 
           where: { board_id: board_id, thread_id: null }, 
+          order: "created_at ASC",
           include: [
             {model: Post, as: "Children" },
             {model: Post, as: "Thread" }
@@ -39,6 +40,9 @@ module.exports = {
         var div = $("<div></div>");
         _.each(results, function(result) {
           delete result.dataValues.id;
+          var post_data = result.dataValues;
+          delete post_data.id;
+          post_data.replies = _.map(result.children, function(c) { return c.dataValues; } );
           var postCmp = $C("post", result.dataValues );
           div.prepend(postCmp.$el);
           postCmp.marshall();

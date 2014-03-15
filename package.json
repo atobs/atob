@@ -6,7 +6,8 @@
   "dependencies": {
     "superfluous": "x",
     "sequelize": "^1.7.0",
-    "cheerio": "^0.13.1"
+    "cheerio": "^0.13.1",
+    "Faker": "^0.7.0"
   },
   "scripts": {
     "test": "bash scripts/run_tests.sh",

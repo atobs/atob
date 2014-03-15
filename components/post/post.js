@@ -5,7 +5,9 @@ module.exports = {
     content: "default content"
   },
   initialize: function(options) {
-    console.log("Loaded", this, options);
+    if (options.replies && options.replies.length) {
+      console.log("Has replies", options.replies);
+    }
   },
   client: function(options) {
     var client_options = options.client_options;

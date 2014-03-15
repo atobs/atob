@@ -1,14 +1,22 @@
 <% set_default("title", "Title") %>
 <% set_default("text", "post text") %>
+<% set_default("created_at", Date.now()) %>
 <% set_default("replies", []) %>
 
 <div class="post"> 
   <div class="title clearfix">
     <h4 class="lfloat"><%= title %>
       <span class="reply">
-        <a href="#">[reply]</a>
+        <a href="#">[reply]</a> 
+        <% if (replies.length) { %>
+          (<%= replies.length %> replies)
+        <% } %>
       </span>
     </h4>
+  </div>
+
+  <div class="text">
+    Posted at: <%= created_at %>
   </div>
 
   <div class="text">
@@ -20,6 +28,4 @@
 
     <% }); %>
   </div>
-
-  <hr />
 </div>

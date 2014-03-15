@@ -9,7 +9,9 @@ module.exports = {
 
   index: function(ctx, api) {
     var render_boards = api.page.async(function(flush) {
-      Board.all()
+      Board.findAll({
+          order: "name ASC"
+        })
         .success(function(results) {
           var boards = _.map(results, function(r) { 
             return r.getDataValue('name'); 

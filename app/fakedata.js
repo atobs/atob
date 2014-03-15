@@ -28,15 +28,41 @@ module.exports = {
 
     var posts = [];
     var board_codes = _.keys(board_ids);
+    var density = 0.50;
     for (var i = 0; i < 100; i++) {
       board_id = board_codes[_.random(0, board_codes.length)];
-      var post = Post.create({
-        title: faker.Lorem.sentence(),
-        text: faker.Lorem.sentences(),
-        board_id: board_id
-      });
 
-      posts.push(post);
+      var parent_index = null;
+      if (Math.random() < density) {
+        parent_index = _.random(0, posts.length);
+      }
+
+      var parent = posts[parent_index];
+      if (parent && parent_index != null) {
+        parent.success(function(p) {
+          var post_data = {
+            title: faker.Lorem.sentence(),
+            text: faker.Lorem.sentences(),
+            board_id: board_id,
+          };
+
+          post_data.thread_id = p.thread_id;
+          post_data.parent_id = p.id;
+          post_data.board_id = p.board_id;
+          var post = Post.create(post_data);
+          posts.push(post);
+        });
+      } else {
+        var post_data = {
+          title: faker.Lorem.sentence(),
+          text: faker.Lorem.sentences(),
+          board_id: board_id,
+        };
+
+        var post = Post.create(post_data);
+        posts.push(post);
+      }
+
     }
   }
 };
