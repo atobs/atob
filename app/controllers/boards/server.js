@@ -8,6 +8,13 @@ var value_of = controller.value_of,
 var Post = require_app("models/post");
 var $ = require("cheerio");
 
+var crypto = require("crypto");
+var gen_md5 = function(h) {
+  var hash = crypto.Hash("md5");
+  hash.update(h);
+  return hash.digest("hex");
+};
+
 module.exports = {
   // If the controller has assets in its subdirs, set is_package to true
   is_package: false,
@@ -79,11 +86,13 @@ module.exports = {
       var title = post.title;
       var text = post.text;
       var tripcode = post.tripcode || "";
+      var author = post.author || "anon";
       var data = {
         title: title,
         text: text,
-        tripcode: tripcode,
+        tripcode: gen_md5(author + ":" + tripcode),
         board_id: _board,
+        author: author
       };
 
       Post.create(data)
@@ -95,6 +104,7 @@ module.exports = {
     });
 
     s.on("new_reply", function(post) {
+      var author = post.author || "anon";
       var text = post.text.split("|");
       var title = "";
       if (text.length > 1) {
@@ -107,7 +117,8 @@ module.exports = {
           title: title,
           parent_id: post.post_id,
           thread_id: post.post_id,
-          tripcode: post.tripcode
+          tripcode: gen_md5(author + ":" + post.tripcode),
+          author: author
         }).success(function(p) {
           p.dataValues.post_id = p.dataValues.id;
           delete p.dataValues.id;

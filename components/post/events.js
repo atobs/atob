@@ -21,7 +21,7 @@ module.exports = {
 
     SF.socket().emit("new_reply", {
       post_id: postId,
-      handle: SF.controller().get_handle(),
+      author: SF.controller().get_handle(),
       tripcode: SF.controller().get_tripcode(),
       text: reply
     });

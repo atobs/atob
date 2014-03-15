@@ -71,8 +71,8 @@ module.exports = {
     gen_tripcode(tripEl);
 
     replyEl.append(tripEl);
-    replyEl.append($("<b />").html(data.title));
-    replyEl.append($("<small />").html(data.text));
+    replyEl.append($("<b />").text(data.title));
+    replyEl.append($("<small />").text(data.text));
     replyEl.fadeIn();
 
     this.$el.find(".replies").append(replyEl);

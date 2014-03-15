@@ -7,7 +7,7 @@
 
 <div class="post" data-post-id="<%= post_id %>"> 
   <div class="title clearfix">
-    <h4><b><%= title %></b>
+    <h4><b><%- title %></b>
     </h4>
 
     <div class="tripcode" data-tripcode="<%= tripcode %>">
@@ -20,15 +20,15 @@
   </div>
 
   <div class="text col-md-12">
-    <%= text %>
+    <%- text %>
   </div>
 
   <div class="replies clearfix mtl">
     <% _.each(replies, function(r) { %>
       <div class="ptl pbl">
         <div class="tripcode" data-tripcode="<%= r.tripcode %>"></div>
-        <b><%= r.title %></b>
-        <small><%= r.text %></small>
+        <b><%- r.title %></b>
+        <small><%- r.text %></small>
       </div>
 
     <% }); %>
