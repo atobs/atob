@@ -5,16 +5,20 @@
 <% set_default("replies", []) %>
 <% set_default("tripcode", "anon") %>
 
+<hr />
+
 <div class="post" data-post-id="<%= post_id %>"> 
   <div class="title clearfix">
     <h4><b><%- title %></b>
     </h4>
 
-    <div class="tripcode" data-tripcode="<%= tripcode %>">
-    </div>
+    <div class="mbl"
+      <div class="tripcode" data-tripcode="<%= tripcode %>">
+      </div>
 
-    <div class="created" style="margin-top: -10px">
-      <small><%= created_at %></small>
+      <div class="created" style="margin-top: -10px; display: inline-block">
+        <small><%= created_at %></small>
+      </div>
     </div>
 
   </div>

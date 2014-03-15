@@ -31,9 +31,14 @@
 
 .tripcode {
   display: inline-block;
-  height: 5px;
+  height: 10px;
   overflow-y: hidden;
-  width: 100%;
+  width: 80px;
+  margin-bottom: 0px;
+  margin-right: 8px;
+}
+
+.replies {
   margin-bottom: 10px;
 }
 
@@ -43,5 +48,5 @@
   height: 10px;
   overflow-y: hidden;
   margin-bottom: 0px;
-  margin-right: 5px;
+  margin-right: 8px;
 }
