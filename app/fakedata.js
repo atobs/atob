@@ -1,4 +1,5 @@
 var faker = require("Faker");
+var crypto = require("crypto");
 
 module.exports = {
   generate: function() { 
@@ -49,6 +50,10 @@ module.exports = {
           post_data.thread_id = p.thread_id;
           post_data.parent_id = p.id;
           post_data.board_id = p.board_id;
+
+          var hash = crypto.Hash("md5");
+          hash.update("" + faker.Lorem.words());
+          post_data.tripcode = hash.digest('hex');
           var post = Post.create(post_data);
           posts.push(post);
         });

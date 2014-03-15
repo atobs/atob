@@ -13,7 +13,7 @@ module.exports = {
 
     console.log(e.target);
     var data = $(e.target).serializeArray();
-    var tripcode = $("input.tripcode").val();
+    var tripcode = md5($("input.tripcode").val());
     data.push({ name: "tripcode", value: tripcode });
     console.log("NEW POST", data);
     SF.socket().emit("new_post", data);
