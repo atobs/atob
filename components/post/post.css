@@ -28,3 +28,19 @@
   padding: 10px;
   background-color: #eaeaea;
 }
+
+.tripcode {
+  display: inline-block;
+  height: 5px;
+  overflow-y: hidden;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.replies .tripcode {
+  width: 80px;
+  display: inline-block;
+  height: 10px;
+  overflow-y: hidden;
+  margin-bottom: 0px;
+}

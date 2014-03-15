@@ -7,17 +7,21 @@ module.exports = {
     "submit form.new_post" : "add_post" 
   },
   add_post: function(e) {
-    console.log("Adding a new post");
-
     e.preventDefault();
 
-    console.log(e.target);
-    var data = $(e.target).serializeArray();
-    var tripcode = md5($("input.tripcode").val());
-    data.push({ name: "tripcode", value: tripcode });
-    console.log("NEW POST", data);
-    SF.socket().emit("new_post", data);
-      
+    var serialized = $(e.target).serializeArray();
+    var datas = {};
+    _.each(serialized, function(obj) {
+      datas[obj.name] = obj.value;
+    });
+
+    var tripcode = this.get_tripcode();
+    var handle = this.get_handle();
+
+    datas.tripcode = tripcode;
+    datas.author = handle;
+
+    SF.socket().emit("new_post", datas);
   },
   init: function() {
     this.$page.find("input.tripcode").chromaHash({bars: 4});
@@ -27,18 +31,23 @@ module.exports = {
     this.board = b;
     this.trigger("set_board");
   },
+  get_tripcode: function() {
+    return md5($("input.tripcode").val());
+  },
+  get_handle: function() {
+    return $("input.handle").val();
+  },
   socket: function(s) {
     s.on("new_post", function(data) {
-      console.log("New post created!");
       $C("post", data, function(cmp) {
-        console.log("New post created", cmp); 
         $(".posts").prepend(cmp.$el);
       });
-
-
     });
 
-    s.on("new_reply", function() {
+    s.on("new_reply", function(data) {
+      var post = window._POSTS[data.parent_id];
+      post.add_reply(data);
+      // Need to route it to the right post, somehow
 
     });
 

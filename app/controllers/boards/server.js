@@ -43,7 +43,8 @@ module.exports = {
           post_data.post_id = post_data.id;
           delete post_data.id;
           post_data.replies = _.map(result.children, function(c) { return c.dataValues; } );
-          var postCmp = $C("post", result.dataValues );
+          post_data.client_options = _.clone(post_data);
+          var postCmp = $C("post", post_data);
           div.prepend(postCmp.$el);
           postCmp.marshall();
         });
@@ -75,9 +76,9 @@ module.exports = {
     });
 
     s.on("new_post", function(post) {
-      var title = value_of(post, "title");
-      var text = value_of(post, "text");
-      var tripcode = value_of(post, "tripcode", "");
+      var title = post.title;
+      var text = post.text;
+      var tripcode = post.tripcode || "";
       var data = {
         title: title,
         text: text,
@@ -90,6 +91,20 @@ module.exports = {
           data.post_id = p.id;
           s.broadcast.to(_board).emit("new_post", data);
           s.emit("new_post", data);
+        });
+    });
+
+    s.on("new_reply", function(post) {
+      Post.create({
+          text: post.text,
+          parent_id: post.post_id,
+          thread_id: post.post_id,
+          tripcode: post.tripcode
+        }).success(function(p) {
+          p.dataValues.post_id = p.dataValues.id;
+          delete p.dataValues.id;
+          s.broadcast.to(_board).emit("new_reply", p.dataValues);
+          s.emit("new_reply", p.dataValues);
         });
     });
   }

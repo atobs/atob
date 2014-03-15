@@ -10,10 +10,7 @@
     <h4><b><%= title %></b>
     </h4>
 
-    <div 
-        class="tripcode" 
-        style="margin-top: -10px; height: 5px; overflow-y: hidden; margin-bottom: 10px" 
-        data-tripcode="<%= tripcode %>">
+    <div class="tripcode" data-tripcode="<%= tripcode %>">
     </div>
 
     <div class="created" style="margin-top: -10px">
@@ -29,9 +26,7 @@
   <div class="replies clearfix mtl">
     <% _.each(replies, function(r) { %>
       <div class="ptl pbl">
-        <div 
-          style="width: 80px; display: inline-block; height: 10px; overflow-y: hidden" 
-          class="tripcode" data-tripcode="<%= r.tripcode %>"></div>
+        <div class="tripcode" data-tripcode="<%= r.tripcode %>"></div>
         <b><%= r.title %></b>
         <small><%= r.text %></small>
       </div>

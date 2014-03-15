@@ -19,9 +19,12 @@ module.exports = {
     var postId = this.$el.find(".post").data("post-id");
     console.log(this, reply, postId);
 
-//    SF.socket().trigger("new_reply", {
-//
-//    });
+    SF.socket().emit("new_reply", {
+      post_id: postId,
+      handle: SF.controller().get_handle(),
+      tripcode: SF.controller().get_tripcode(),
+      text: reply
+    });
   },
 
   handle_template_click: function() {
