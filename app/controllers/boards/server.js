@@ -87,6 +87,7 @@ module.exports = {
 
     var template_str = api.template.render("controllers/boards/show.html.erb", {
       board: board_id,
+      tripcode: gen_md5("" + Math.random()),
       render_posts: render_posts,
       render_boards: render_boards
     });

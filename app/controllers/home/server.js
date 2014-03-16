@@ -26,9 +26,8 @@ module.exports = {
           flush(template_str);
 
         });
-
-
     });
+
     var template_str = api.template.render("controllers/home.html.erb", {
       render_boards: render_boards,
     });

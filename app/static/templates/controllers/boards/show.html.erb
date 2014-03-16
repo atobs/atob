@@ -1,25 +1,24 @@
 <% set_default("title", "a to b to ") %>
 <% set_default("posts", [] ) %>
+<% set_default("tripcode", "") %>
 
-<div class="container" style="margin: auto; margin-top: 10px">
+<div class="container mbl mtl clearfix">
   <div class="col-md-12">
-    <div class="col-md-12">
+    <div class="">
+      <div class="lfloat mrl"><strong><a href="/">a to b</a></strong></div>
       <%= render_boards() %>
-      <hr />
     </div>
 
-    <h1 class="col-md-4"><%= title %> <%= board %></h1>
-    <div class="form-group col-md-4" style="margin-top: 20px">
-      <input value="" name="handle" class="form-control handle" type="text" placeholder="handle" />
-    </div>
-    <div class="form-group col-md-4" style="margin-top: 20px">
-      <input name="tripcode" class="tripcode form-control" type="password" placeholder="tripcode"> </input>
-    </div>
+    <h1>a to b to /<%= board %></h1>
+
     <hr />
   </div>
 
   <div class="col-md-12">
-    <form class="form-inline new_post">
+    <h2 class="col-md-12">
+      <a class="rfloat" href="#" data-toggle="collapse" data-target=".new_post">new post</a>
+    </h2>
+    <form class="form-inline new_post collapse">
       <div class="col-md-12">
         <label for="title">Title</label>
         <input name="title" class="form-control" type="text"> </input>
@@ -37,5 +36,11 @@
 
   <div class="col-md-12 mtl posts">
     <%= render_posts() %>
+  </div>
+
+  <div class="col-md-12">
+    <h2>identity</h2>
+    <input name="handle" class="form-control handle" type="text" placeholder="handle" value="anon" />
+    <input name="tripcode" class="tripcode form-control" type="text" placeholder="tripcode" value="<%= tripcode %>" />
   </div>
 </div>
