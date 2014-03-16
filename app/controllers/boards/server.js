@@ -6,6 +6,7 @@ var value_of = controller.value_of,
     array_of = controller.array_of;
 
 var Post = require_app("models/post");
+var Board = require_app("models/board");
 var $ = require("cheerio");
 
 var crypto = require("crypto");
@@ -33,6 +34,25 @@ module.exports = {
     this.set_title("atob/" + board_id);
     this.set_fullscreen(true);
 
+    var render_boards = api.page.async(function(flush) {
+      Board.findAll({
+          order: "name ASC"
+        })
+        .success(function(results) {
+          var boards = _.map(results, function(r) { 
+            return r.getDataValue('name'); 
+          });
+
+          var template_str = api.template.partial("home/board_links.html.erb", {
+            boards: boards 
+          });
+
+          flush(template_str);
+
+        });
+
+
+    });
     var render_posts = api.page.async(function(flush) {
       Post.findAll({
           where: { board_id: board_id, thread_id: null },
@@ -67,7 +87,8 @@ module.exports = {
 
     var template_str = api.template.render("controllers/boards/show.html.erb", {
       board: board_id,
-      render_posts: render_posts
+      render_posts: render_posts,
+      render_boards: render_boards
     });
 
     api.bridge.controller("boards", "set_board", board_id);
