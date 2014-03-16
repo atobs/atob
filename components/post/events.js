@@ -16,6 +16,10 @@ module.exports = {
     var reply = replyInput.val();
     replyInput.val("");
 
+    if (reply.trim() === "") {
+      return;
+    }
+
     var postId = this.$el.find(".post").data("post-id");
     console.log(this, reply, postId);
 

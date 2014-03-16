@@ -50,17 +50,12 @@ module.exports = {
   defaults: {
     content: "default content"
   },
-  initialize: function(data) { 
-    if (data.replies && data.replies.length) {
-      data.replies = _.sortBy(data.replies, function(d) { return -d.created_at; });
-    }
-  },
+  initialize: function(data) { },
   client: function(options) {
     var POSTS = window._POSTS || {};
     window._POSTS = POSTS;
     POSTS[options.post_id] = this; 
 
-    console.log("FINDING TRIPCODES", this);
     this.$el.find("div.tripcode").each(function() {
       gen_tripcode(this);
     });
@@ -73,10 +68,13 @@ module.exports = {
     gen_tripcode(tripEl);
 
     replyEl.append(tripEl);
+    replyEl.append($("<a href='#' class='mrm' style='margin-right: 5px' >").html("#" + data.post_id));
     replyEl.append($("<b />").text(data.title));
     replyEl.append($("<small />").text(data.text));
     replyEl.fadeIn();
 
-    this.$el.find(".replies").append(replyEl);
+    var repliesEl = this.$el.find(".replies");
+    repliesEl.append(replyEl).scrollTop(repliesEl[0].scrollHeight);
+
   }
 };

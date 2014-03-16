@@ -21,6 +21,10 @@ module.exports = {
     datas.tripcode = tripcode;
     datas.author = handle;
 
+    if (datas.title.trim() === "" && datas.text.trim() === "") {
+      return;
+    }
+
     SF.socket().emit("new_post", datas);
   },
   init: function() {

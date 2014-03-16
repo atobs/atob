@@ -40,6 +40,8 @@
 
 .replies {
   margin-bottom: 10px;
+  max-height: 200px !important;
+  overflow-y: scroll;
 }
 
 .replies .tripcode {

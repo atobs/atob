@@ -33,8 +33,8 @@ module.exports = {
     this.set_title("atob/" + board_id);
 
     var render_posts = api.page.async(function(flush) {
-      Post.findAll({ 
-          where: { board_id: board_id, thread_id: null }, 
+      Post.findAll({
+          where: { board_id: board_id, thread_id: null },
           order: "created_at ASC",
           include: [
             {model: Post, as: "Children" },
@@ -51,6 +51,10 @@ module.exports = {
           post_data.post_id = post_data.id;
           delete post_data.id;
           post_data.replies = _.map(result.children, function(c) { return c.dataValues; } );
+          post_data.replies = _.sortBy(post_data.replies, function(d) {
+            return new Date(d.created_at);
+          });
+
           post_data.client_options = _.clone(post_data);
           var postCmp = $C("post", post_data);
           div.prepend(postCmp.$el);
@@ -67,7 +71,7 @@ module.exports = {
 
     api.bridge.controller("boards", "set_board", board_id);
 
-    api.page.render({ 
+    api.page.render({
       content: template_str,
       socket: true,
       component: true

@@ -19,20 +19,25 @@
       <div class="created" style="margin-top: -10px; display: inline-block">
         <small><%= created_at %></small>
       </div>
+
+      <div class="post_id" style="margin-top: -10px; display: inline-block">
+        <a href="#"><small>#<%= post_id %></small></a>
+      </div>
     </div>
 
   </div>
 
-  <% if (text) { %>
+  <% if (text.trim()) { %>
     <div class="text col-md-12">
       <%- text %>
     </div>
   <% } %>
 
-  <div class="replies clearfix mtl">
+  <div class="replies clearfix mtl col-md-12">
     <% _.each(replies, function(r) { %>
       <div class="ptl pbl">
-        <div class="tripcode" data-tripcode="<%= r.tripcode %>"></div>
+        <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
+        <a href="#"><div class="no" style="display: inline-block">#<%= r.id %> </div></a>
         <b><%- r.title %></b>
         <small><%- r.text %></small>
       </div>
