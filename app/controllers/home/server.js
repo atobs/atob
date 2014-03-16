@@ -8,6 +8,8 @@ module.exports = {
   },
 
   index: function(ctx, api) {
+    this.set_fullscreen(true);
+    this.set_title("atob");
     var render_boards = api.page.async(function(flush) {
       Board.findAll({
           order: "name ASC"

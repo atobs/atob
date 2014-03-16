@@ -63,7 +63,10 @@ module.exports = {
   add_reply: function(data) {
     console.log("Adding reply...", data);
     var replyEl =$("<div class='ptl pbl'/>");
-    var tripEl = $("<div class='tripcode' />").data("tripcode", data.tripcode);
+    var tripEl = $("<div class='tripcode' />")
+      .data("tripcode", data.tripcode)
+      .attr("title", data.author);
+
     tripEl.css("marginRight", "8px");
     gen_tripcode(tripEl);
 
