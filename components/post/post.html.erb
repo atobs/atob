@@ -10,8 +10,9 @@
 
 <div class="post" data-post-id="<%= post_id %>"> 
   <div class="title clearfix">
-    <h4><b><%- title %></b>
-    </h4>
+    <a href="#" data-toggle="collapse" data-target="#post<%= post_id %>">
+      <h4><b><%- title %></b> </h4>
+    </a>
 
     <div class="mbl">
       <div class="tripcode" title="<%- author || "anon" %>" data-tripcode="<%= tripcode %>"> </div>
@@ -33,22 +34,25 @@
     </div>
   <% } %>
 
-  <div class="replies clearfix mtl col-md-12">
-    <% _.each(replies, function(r) { %>
-      <div class="ptl pbl">
-        <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
-        <a href="#"><div class="no" style="display: inline-block">#<%= r.id %> </div></a>
-        <b><%- r.title %></b>
-        <small><%- r.text %></small>
-      </div>
+  <div id="post<%= post_id %>" class="collapse">
 
-    <% }); %>
-  </div>
+    <div class="replies clearfix mtl col-md-12">
+      <% _.each(replies, function(r) { %>
+        <div class="ptl pbl">
+          <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
+          <a href="#"><div class="no" style="display: inline-block">#<%= r.id %> </div></a>
+          <b><%- r.title %></b>
+          <small><%- r.text %></small>
+        </div>
 
-  <form class="reply">
-    <div class="clearfix">
-      <input type="text" class="form-control" placeholder="reply"> </input>
+      <% }); %>
     </div>
-  </form>
 
+    <form class="reply">
+      <div class="clearfix">
+        <input type="text" class="form-control" placeholder="reply"> </input>
+      </div>
+    </form>
+
+  </div>
 </div>

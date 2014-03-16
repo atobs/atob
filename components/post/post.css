@@ -1,32 +1,14 @@
-// mobile devices & portrait
-// 200 - 767px
-@media @device {
-  .post {
-
-  }
-}
-
-// netbooks, mobile devices in landscape
-// laptops, desktops
-// 768 - 1900px
-@media @computer {
-  .post {
-    padding: 5px;
-  }
-
-}
-
-// huge screens
-// 1900px
-@media @large_screen {
-  .post {
-
-  }
-}
-
 .text {
   padding: 10px;
   background-color: #eaeaea;
+}
+
+a {
+  color: #666;
+}
+
+a:hover {
+  color: #888;
 }
 
 .tripcode {
