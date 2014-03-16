@@ -56,6 +56,7 @@ module.exports = {
     window._POSTS = POSTS;
     POSTS[options.post_id] = this; 
 
+    this.$el.find(".post").fadeIn();
     this.$el.find("div.tripcode").each(function() {
       gen_tripcode(this);
     });

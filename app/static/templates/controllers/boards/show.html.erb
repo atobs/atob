@@ -9,15 +9,13 @@
       <%= render_boards() %>
     </div>
 
-    <h1>a to b to /<%= board %></h1>
+    <h1>a to b to /<%= board %>
+      <a class="rfloat" href="#" data-toggle="collapse" data-target=".new_post">new topic</a>
+    </h1>
 
-    <hr />
   </div>
 
   <div class="col-md-12">
-    <h2 class="col-md-12">
-      <a class="rfloat" href="#" data-toggle="collapse" data-target=".new_post">new post</a>
-    </h2>
     <form class="form-inline new_post collapse">
       <div class="col-md-12">
         <label for="title">Title</label>
@@ -39,8 +37,10 @@
   </div>
 
   <div class="col-md-12">
+    <hr />
     <h2>identity</h2>
     <input name="handle" class="form-control handle" type="text" placeholder="handle" value="anon" />
-    <input name="tripcode" class="tripcode form-control" type="text" placeholder="tripcode" value="<%= tripcode %>" />
+    <div class="mtl"> </div>
+    <input name="tripcode" class="tripcode form-control" type="text" placeholder="tripcode" value="" />
   </div>
 </div>
