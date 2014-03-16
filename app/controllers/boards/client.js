@@ -25,6 +25,8 @@ module.exports = {
       return;
     }
 
+    $(e.target).find("input").val(""); 
+
     SF.socket().emit("new_post", datas);
   },
   init: function() {
