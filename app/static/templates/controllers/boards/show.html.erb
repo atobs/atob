@@ -9,9 +9,11 @@
       <%= render_boards() %>
     </div>
 
+    <div>
     <h1>/<%= board %>
-      <a class="rfloat" href="#" data-toggle="collapse" data-target=".new_post">new topic</a>
+      <a class="rfloat mrl" href="#" data-toggle="collapse" data-target=".new_post">new topic</a>
     </h1>
+    </div>
 
   </div>
 
@@ -37,6 +39,9 @@
   </div>
 
   <div class="col-md-12">
+    <a class="rfloat mrl" href="#" data-toggle="collapse" data-target=".settings">settings</a>
+  </div>
+  <div class="col-md-12 collapse settings clearfix">
     <hr />
     <h2>identity</h2>
     <input name="handle" class="form-control handle" type="text" placeholder="handle" value="anon" />

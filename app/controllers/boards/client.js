@@ -69,7 +69,6 @@ module.exports = {
     if (handle) {
       handleEl.val(handle);
     }
-    tripcodeEl.blur();
 
     this.save_tripcode();
   },
