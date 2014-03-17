@@ -6,16 +6,25 @@ module.exports = {
   events: {
     "submit form.new_post" : "add_post",
     "change input.tripcode" : "save_tripcode",
-    "change input.handle" : "save_handle"
+    "change input.handle" : "save_handle",
+    "change input.newtrip" : "save_newtrip"
+  },
+  save_newtrip: function() {
+    var newtripEl = this.$page.find("input.newtrip");
+    var newtrip = !!newtripEl.prop('checked');
+    console.log("NEW TRIP", newtrip);
+    $.cookie("newtrip", newtrip);
   },
   save_tripcode: function() {
     var tripcodeEl = this.$page.find("input.tripcode");
     var tripcode = tripcodeEl.val();
+    this.save_newtrip();
     $.cookie("tripcode", tripcode);
   },
   save_handle: function() {
     var handleEl = this.$page.find("input.handle");
     var handle = handleEl.val();
+    this.save_newtrip();
     $.cookie("handle", handle);
   },
   add_post: function(e) {
@@ -44,10 +53,17 @@ module.exports = {
   init: function() {
     var tripcodeEl = this.$page.find("input.tripcode");
     var handleEl = this.$page.find("input.handle");
+    var newtripEl = this.$page.find("input.newtrip");
+    var newtrip = $.cookie("newtrip") === "true";
     tripcodeEl.chromaHash({bars: 4});
     var tripcode = $.cookie("tripcode");
     var handle = $.cookie("handle");
-    if (tripcode) {
+
+    if (newtrip) {
+      newtripEl.prop('checked', true);
+    }
+
+    if (tripcode && !newtrip) {
       tripcodeEl.val(tripcode);
     }
     if (handle) {
