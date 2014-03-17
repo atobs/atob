@@ -62,7 +62,6 @@ module.exports = {
     });
   },
   add_reply: function(data) {
-    console.log("Adding reply...", data);
     var replyEl =$("<div class='ptl pbl'/>");
     var tripEl = $("<div class='tripcode' />")
       .data("tripcode", data.tripcode)
@@ -79,6 +78,9 @@ module.exports = {
 
     var repliesEl = this.$el.find(".replies");
     repliesEl.append(replyEl).scrollTop(repliesEl[0].scrollHeight);
+
+    var replies = parseInt(this.$el.find(".reply_count").html() || "0", 10);
+    this.$el.find(".reply_count").text(replies + 1);
 
   }
 };
