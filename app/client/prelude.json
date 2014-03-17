@@ -8,6 +8,7 @@
     "app/static/vendor/jquery.chroma-hash.js",
     "app/static/vendor/md5.js",
     "app/static/vendor/jquery-deparam.js",
+    "app/static/vendor/jquery.cookie.js",
     "app/static/vendor/fastclick.js",
     "app/static/vendor/strtotime.js",
     "app/static/vendor/hex-rgb.src.js"

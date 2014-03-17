@@ -4,7 +4,19 @@ require("core/client/component");
 
 module.exports = {
   events: {
-    "submit form.new_post" : "add_post" 
+    "submit form.new_post" : "add_post",
+    "change input.tripcode" : "save_tripcode",
+    "change input.handle" : "save_handle"
+  },
+  save_tripcode: function() {
+    var tripcodeEl = this.$page.find("input.tripcode");
+    var tripcode = tripcodeEl.val();
+    $.cookie("tripcode", tripcode);
+  },
+  save_handle: function() {
+    var handleEl = this.$page.find("input.handle");
+    var handle = handleEl.val();
+    $.cookie("handle", handle);
   },
   add_post: function(e) {
     e.preventDefault();
@@ -30,7 +42,17 @@ module.exports = {
     SF.socket().emit("new_post", datas);
   },
   init: function() {
-    this.$page.find("input.tripcode").chromaHash({bars: 4});
+    var tripcodeEl = this.$page.find("input.tripcode");
+    var handleEl = this.$page.find("input.handle");
+    tripcodeEl.chromaHash({bars: 4});
+    var tripcode = $.cookie("tripcode");
+    var handle = $.cookie("handle");
+    if (tripcode) {
+      tripcodeEl.val(tripcode);
+    }
+    if (handle) {
+      handleEl.val(handle);
+    }
   },
   set_board: function(b) {
     console.log("Seeing whats up for board", "/" + b);
