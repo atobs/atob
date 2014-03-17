@@ -53,6 +53,9 @@ module.exports = {
     if (handle) {
       handleEl.val(handle);
     }
+    tripcodeEl.blur();
+
+    this.save_tripcode();
   },
   set_board: function(b) {
     console.log("Seeing whats up for board", "/" + b);
