@@ -16,6 +16,8 @@ var gen_md5 = function(h) {
   return hash.digest("hex");
 };
 
+var REPLY_MAX = 200;
+
 module.exports = {
   // If the controller has assets in its subdirs, set is_package to true
   is_package: false,
@@ -56,7 +58,7 @@ module.exports = {
     var render_posts = api.page.async(function(flush) {
       Post.findAll({
           where: { board_id: board_id, thread_id: null },
-          order: "created_at ASC",
+          order: "updated_at ASC",
           include: [
             {model: Post, as: "Children" },
             {model: Post, as: "Thread" }
@@ -120,7 +122,8 @@ module.exports = {
         text: text,
         tripcode: gen_md5(author + ":" + tripcode),
         board_id: _board,
-        author: author
+        author: author,
+        replies: 0
       };
 
       Post.create(data)
@@ -139,6 +142,17 @@ module.exports = {
         title = text.shift();
         text = text.join("|");
       }
+
+      Post.find({ where: { id: post.post_id }})
+        .success(function(parent) {
+          // Do things to the parent, now...
+          
+          if (parent.replies < REPLY_MAX) {
+            parent.replies += 1;
+            parent.save();
+          }
+
+        });
 
       Post.create({
           text: text,
