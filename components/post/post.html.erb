@@ -20,7 +20,7 @@
       <div class="tripcode" title="<%- author || "anon" %>" data-tripcode="<%= tripcode %>"> </div>
 
       <div class="created" style="margin-top: -10px; display: inline-block">
-        <small><%= created_at %></small>
+        <small>posted <span class="timeago" title="<%= created_at.toISOString() %>"></small>
       </div>
 
       <div class="post_id" style="margin-top: -10px; display: inline-block">
