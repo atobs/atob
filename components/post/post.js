@@ -72,7 +72,10 @@ module.exports = {
     gen_tripcode(tripEl);
 
     replyEl.append(tripEl);
-    replyEl.append($("<a href='#' class='mrm' style='margin-right: 5px' >").html("#" + data.post_id));
+    var infoEl = $("<a href='#' class='mrm' style='margin-right: 5px' >");
+    infoEl.html("#" + data.post_id);
+    infoEl.attr("title", (new Date(data.created_at)).toLocaleString());
+    replyEl.append(infoEl);
     replyEl.append($("<b />").text(data.title));
     replyEl.append($("<small />").text(data.text));
     replyEl.fadeIn();

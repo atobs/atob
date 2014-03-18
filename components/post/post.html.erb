@@ -20,7 +20,7 @@
       <div class="tripcode" title="<%- author || "anon" %>" data-tripcode="<%= tripcode %>"> </div>
 
       <div class="post_id" style="margin-top: -10px; display: inline-block">
-        <a href="#"><small>#<%= post_id %></small></a>
+        <a href="#" title="<%= created_at %>"><small>#<%= post_id %></small></a>
       </div>
 
       <div class="created" style="margin-top: -10px; display: inline-block">
@@ -45,7 +45,7 @@
       <% _.each(replies, function(r) { %>
         <div class="ptl pbl">
           <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
-          <a href="#"><div class="no" style="display: inline-block">#<%= r.id %> </div></a>
+          <a href="#" title="<%= new Date(r.created_at).toLocaleString() %>"><small>#<%= r.id %></small></a>
           <b><%- r.title %></b>
           <small><%- r.text %></small>
         </div>
