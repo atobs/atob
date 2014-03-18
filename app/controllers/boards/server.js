@@ -141,7 +141,7 @@ module.exports = {
 
     s.on("new_reply", function(post) {
       var author = post.author || "anon";
-      var text = post.text.split("|");
+      var text = post.text.split("||");
       var title = "";
       if (text.length > 1) {
         title = text.shift();
