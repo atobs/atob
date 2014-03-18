@@ -57,6 +57,19 @@ module.exports = {
     window._POSTS = POSTS;
     POSTS[options.post_id] = this; 
 
+    // need to find the icons in the text and fix them
+    var textEl = this.$el.find(".text");
+
+    textEl.each(function() {
+      var escaped = $(this).text();
+      if (escaped) {
+        var icon_str = "<i class='glyphicon glyphicon-$1' />";
+        var replaced = escaped.replace(/:(\w+):/g, icon_str);
+        $(this).html(replaced);
+      }
+    });
+
+
     this.$el.find(".post").fadeIn();
     this.$el.find("div.tripcode").each(function() {
       gen_tripcode(this);
@@ -77,7 +90,17 @@ module.exports = {
     infoEl.attr("title", (new Date(data.created_at)).toLocaleString());
     replyEl.append(infoEl);
     replyEl.append($("<b />").text(data.title));
-    replyEl.append($("<small />").text(data.text));
+
+    // need to find the icons in the text and fix them
+    var smallEl = $("<small />").text(data.text);
+    var escaped = smallEl.html();
+
+    var icon_str = "<i class='glyphicon glyphicon-$1' />";
+
+    var replaced = escaped.replace(/:(\w+):/g, icon_str);
+    smallEl.html(replaced);
+
+    replyEl.append(smallEl);
     replyEl.fadeIn();
 
     var repliesEl = this.$el.find(".replies");

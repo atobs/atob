@@ -34,7 +34,7 @@
   </div>
 
   <% if (text.trim()) { %>
-    <div class="text col-md-12">
+    <div class="op text col-md-12">
       <%- text %>
     </div>
   <% } %>
@@ -47,7 +47,7 @@
           <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
           <a href="#" title="<%= new Date(r.created_at).toLocaleString() %>"><small>#<%= r.id %></small></a>
           <b><%- r.title %></b>
-          <small><%- r.text %></small>
+          <small class="text"><%- r.text %></small>
         </div>
 
       <% }); %>
