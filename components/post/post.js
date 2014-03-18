@@ -44,6 +44,15 @@ function gen_tripcode(el) {
   });
 }
 
+function add_icons($el) {
+  var escaped = $el.text();
+  if (escaped) {
+    var icon_str = "<i class='icon icon-$1' title=':$1:' />";
+    var replaced = escaped.replace(/:([\w-]+):/g, icon_str);
+    $el.html(replaced);
+  }
+}
+
 module.exports = {
   tagName: "div",
   className: "",
@@ -61,12 +70,7 @@ module.exports = {
     var textEl = this.$el.find(".text");
 
     textEl.each(function() {
-      var escaped = $(this).text();
-      if (escaped) {
-        var icon_str = "<i class='glyphicon glyphicon-$1' />";
-        var replaced = escaped.replace(/:(\w+):/g, icon_str);
-        $(this).html(replaced);
-      }
+      add_icons($(this));
     });
 
 
@@ -93,12 +97,7 @@ module.exports = {
 
     // need to find the icons in the text and fix them
     var smallEl = $("<small />").text(data.text);
-    var escaped = smallEl.html();
-
-    var icon_str = "<i class='glyphicon glyphicon-$1' />";
-
-    var replaced = escaped.replace(/:(\w+):/g, icon_str);
-    smallEl.html(replaced);
+    add_icons(smallEl);
 
     replyEl.append(smallEl);
     replyEl.fadeIn();
