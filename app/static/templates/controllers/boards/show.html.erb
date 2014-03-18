@@ -14,6 +14,23 @@
       <a class="rfloat mrl" href="#" data-toggle="collapse" data-target=".new_post">new topic</a>
     </h1>
     </div>
+    <div class="col-md-12">
+      <a class="rfloat mrl" href="#" data-toggle="collapse" data-target=".settings">settings</a>
+    </div>
+
+  </div>
+
+  <div class="col-md-12 collapse settings clearfix">
+    <hr />
+    <h2>identity</h2>
+    <input name="handle" class="form-control handle" type="text" placeholder="handle" value="anon" />
+    <div class="mtl"> </div>
+    <input name="tripcode" class="tripcode form-control" type="password" placeholder="tripcode" value=" <%= tripcode %>" />
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="newtrip" class="newtrip"> generate new tripcode every page
+      </label>
+    </div>
 
   </div>
 
@@ -38,20 +55,4 @@
     <%= render_posts() %>
   </div>
 
-  <div class="col-md-12">
-    <a class="rfloat mrl" href="#" data-toggle="collapse" data-target=".settings">settings</a>
-  </div>
-  <div class="col-md-12 collapse settings clearfix">
-    <hr />
-    <h2>identity</h2>
-    <input name="handle" class="form-control handle" type="text" placeholder="handle" value="anon" />
-    <div class="mtl"> </div>
-    <input name="tripcode" class="tripcode form-control" type="password" placeholder="tripcode" value=" <%= tripcode %>" />
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" name="newtrip" class="newtrip"> generate new tripcode every page
-      </label>
-    </div>
-
-  </div>
 </div>

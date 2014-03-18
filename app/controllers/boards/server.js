@@ -59,6 +59,7 @@ module.exports = {
       Post.findAll({
           where: { board_id: board_id, thread_id: null },
           order: "updated_at ASC",
+          limit: 20,
           include: [
             {model: Post, as: "Children" },
             {model: Post, as: "Thread" }
