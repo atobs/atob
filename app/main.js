@@ -12,9 +12,6 @@ var DEFAULT_BOARDS = [
   },
   { 
     code: "b"
-  },
-  { 
-    code: "c"
   }
 ];
 module.exports = {
