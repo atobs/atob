@@ -12,7 +12,6 @@ module.exports = {
   save_newtrip: function() {
     var newtripEl = this.$page.find("input.newtrip");
     var newtrip = !!newtripEl.prop('checked');
-    console.log("NEW TRIP", newtrip);
     $.cookie("newtrip", newtrip);
   },
   save_tripcode: function() {
@@ -88,6 +87,14 @@ module.exports = {
       $C("post", data, function(cmp) {
         $(".posts").prepend(cmp.$el);
       });
+    });
+
+    s.on("doings", function(data) {
+      var post = window._POSTS[data.post_id];
+      if (post) {
+        post.update_counts(data.counts);
+      }
+
     });
 
     s.on("new_reply", function(data) {

@@ -18,6 +18,11 @@ var gen_md5 = function(h) {
 
 var REPLY_MAX = 200;
 
+var GOING_ONS = {
+  active: {},
+  idle: {}
+};
+
 module.exports = {
   // If the controller has assets in its subdirs, set is_package to true
   is_package: false,
@@ -30,7 +35,6 @@ module.exports = {
       content: "Nothing to see here"
     });
   },
-
   show: function(ctx, api) {
     var board_id = ctx.req.params.id;
     this.set_title("atob/" + board_id);
@@ -168,6 +172,40 @@ module.exports = {
           s.broadcast.to(_board).emit("new_reply", p.dataValues);
           s.emit("new_reply", p.dataValues);
         });
+    });
+
+    var idleTimer;
+    var sid = s.spark.headers.sid;
+    function update_post_status(post_id) {
+      var doings = {
+        post_id: post_id,
+        counts: _.map(GOING_ONS[post_id], function(v, k) { return v; })
+      };
+      s.broadcast.to(_board).emit("doings", doings);
+      s.emit("doings", doings);
+    }
+
+    // TODO: make a better schema for how this works
+    s.on("isdoing", function(doing) {
+      if (s.isdoing) {
+        delete GOING_ONS[s.isdoing.post_id][sid];
+        update_post_status(s.isdoing.post_id);
+      }
+
+      s.isdoing = doing;
+      if (!GOING_ONS[doing.post_id]) {
+        GOING_ONS[doing.post_id] = {};
+      }
+
+      GOING_ONS[doing.post_id][sid] = doing.what;
+
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(function() {
+        delete GOING_ONS[doing.post_id][sid];
+        update_post_status(doing.post_id);
+      }, 5000);
+
+      update_post_status(doing.post_id);
     });
   }
 };

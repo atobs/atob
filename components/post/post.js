@@ -50,7 +50,8 @@ module.exports = {
   defaults: {
     content: "default content"
   },
-  initialize: function(data) { },
+  get_post_id: function() { return this.$el.find(".post").data("post-id"); },
+  initialize: function() { },
   client: function(options) {
     var POSTS = window._POSTS || {};
     window._POSTS = POSTS;
@@ -82,5 +83,12 @@ module.exports = {
     var replies = parseInt(this.$el.find(".reply_count").html() || "0", 10);
     this.$el.find(".reply_count").text(replies + 1);
 
-  }
+  },
+  update_counts: function(counts) {
+    counts.sort();
+    var str = _.map(counts, function(c) { return c[0]; });
+    this.$el.find(".counts").text(str.join(""));
+    // Update who is typing, who is idle and who is gone.
+  },
+
 };

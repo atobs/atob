@@ -7,7 +7,22 @@ module.exports = {
   // that is generally not relevant to the server.
   events: {
     "click" :  "handle_template_click",
-    "submit form": "handle_reply"
+    "submit form": "handle_reply",
+    "keydown .reply input" : "handle_typing",
+    "blur .reply input" : "handle_unfocus",
+    "focus .reply input" : "handle_focus"
+  },
+
+  // Alright. so we rely on users updating their socket status.  any one socket
+  // can either be: 1. doing nothing, 2. typing a reply, 3. watching a post
+  handle_typing: _.throttle(function() {
+    SF.socket().emit("isdoing", { what: "typing", post_id: this.get_post_id()});
+  }, 500),
+  handle_unfocus: function() {
+    SF.socket().emit("isdoing", { what: "unfocused", post_id: this.get_post_id()});
+  },
+  handle_focus: function() {
+    SF.socket().emit("isdoing", { what: "focused", post_id: this.get_post_id()});
   },
 
   handle_reply: function(e) {
@@ -20,8 +35,7 @@ module.exports = {
       return;
     }
 
-    var postId = this.$el.find(".post").data("post-id");
-    console.log(this, reply, postId);
+    var postId = this.get_post_id();
 
     SF.socket().emit("new_reply", {
       post_id: postId,
@@ -32,6 +46,7 @@ module.exports = {
   },
 
   handle_template_click: function() {
-    console.log(this.id, "clicked");
+    this.handle_focus();
   }
+
 };
