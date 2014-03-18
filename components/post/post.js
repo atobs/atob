@@ -47,8 +47,10 @@ function gen_tripcode(el) {
 function add_icons($el) {
   var escaped = $el.text();
   if (escaped) {
-    var icon_str = "<i class='icon icon-$1' title=':$1:' />";
-    var replaced = escaped.replace(/:([\w-]+):/g, icon_str);
+    var icon_str = "<i class='icon icon-NAME' title=':NAME:' />";
+    var replaced = escaped.replace(/:([\w-]+):/g, function(x, icon) {
+      return icon_str.replace(/NAME/g, icon.toLowerCase());
+    });
     $el.html(replaced);
   }
 }
