@@ -17,6 +17,8 @@ var gen_md5 = function(h) {
 };
 
 var REPLY_MAX = 200;
+var POST_TIMEOUT = 20 * 1000;
+var REPLY_TIMEOUT = 3 * 1000;
 
 var GOING_ONS = {
   active: {},
@@ -117,7 +119,16 @@ module.exports = {
       s.emit("joined", board);
     });
 
+    var last_post = 0;
+    var last_reply = 0;
+
     s.on("new_post", function(post) {
+      if (Date.now() - last_post < POST_TIMEOUT) {
+        return;
+      }
+
+      last_post = Date.now();
+
       var title = post.title;
       var text = post.text;
       var tripcode = post.tripcode || "";
@@ -140,6 +151,12 @@ module.exports = {
     });
 
     s.on("new_reply", function(post) {
+      if (Date.now() - last_post < REPLY_TIMEOUT) {
+        return;
+      }
+
+      last_reply  = Date.now();
+
       var author = post.author || "anon";
       var text = post.text.split("||");
       var title = "";
