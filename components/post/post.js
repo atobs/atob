@@ -35,7 +35,7 @@ module.exports = {
 
     var repliesEl = self.$el.find(".replies");
     self.$el.find(".collapse").on("shown.bs.collapse", function() {
-      repliesEl.animate({scrollTop: repliesEl[0].scrollHeight});
+      self.bumped();
     });
 
     self.$el.find(".timeago").timeago();
@@ -43,6 +43,10 @@ module.exports = {
     self.$el.find("div.tripcode").each(function() {
       gen_tripcode(this);
     });
+  },
+  bumped: function() {
+    var repliesEl = this.$el.find(".replies");
+    repliesEl.animate({ scrollTop: repliesEl[0].scrollHeight});
   },
   add_reply: function(data) {
     var replyEl =$("<div class='ptl pbl'/>");
@@ -68,7 +72,8 @@ module.exports = {
     replyEl.fadeIn();
 
     var repliesEl = this.$el.find(".replies");
-    repliesEl.append(replyEl).scrollTop(repliesEl[0].scrollHeight);
+    repliesEl.append(replyEl);
+    this.bumped();
 
     var replies = parseInt(this.$el.find(".reply_count").html() || "0", 10);
     this.$el.find(".reply_count").text(replies + 1);

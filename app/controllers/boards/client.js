@@ -127,7 +127,9 @@ module.exports = {
         var parent = post.$el.parent();
         post.$el.stop(true, true).fadeOut(function() {
           parent.prepend(post.$el);
-          post.$el.fadeIn();
+          post.$el.fadeIn(function() {
+            post.bumped(); 
+          });
         });
 
       }
