@@ -29,8 +29,15 @@
   -webkit-transition: height 0.01s;
   transition: height 0.01s;
   min-height: 50px !important;
+  clear: both;
+
   form {
     display: none;
+  }
+
+  .replies {
+    min-height: 50px !important;
+    overflow-y: hidden;
   }
 
   .replies.many {
