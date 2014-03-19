@@ -71,7 +71,7 @@ module.exports = {
     var render_posts = api.page.async(function(flush) {
       Post.findAll({
           where: { board_id: board_id, thread_id: null },
-          order: "updated_at ASC",
+          order: "bumped_at ASC",
           limit: 20,
           include: [
             {model: Post, as: "Children" },
@@ -148,7 +148,8 @@ module.exports = {
         author: author,
         replies: 0,
         downs: 0,
-        ups: 0
+        ups: 0,
+        bumped_at: Date.now()
       };
 
       Post.create(data)
@@ -187,8 +188,18 @@ module.exports = {
         .success(function(parent) {
           if (!down && parent.replies < REPLY_MAX) {
             parent.replies += 1;
-            parent.save();
+            parent.bumped_at = Date.now();
           }
+
+          if (down) {
+            parent.downs += 1;
+          }
+
+          if (up) {
+            parent.ups += 1;
+          }
+
+          parent.save();
 
         });
 

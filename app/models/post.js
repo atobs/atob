@@ -11,7 +11,8 @@ var Post = sequelize.instance.define('Post', {
   author: sequelize.STRING,
   replies: sequelize.INTEGER,
   downs: sequelize.INTEGER,
-  ups: sequelize.INTEGER
+  ups: sequelize.INTEGER,
+  bumped_at: sequelize.DATE
 });
 
 Post.hasOne(Post, { as: 'Thread', foreignKey: 'thread_id', through: null });
