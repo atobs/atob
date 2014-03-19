@@ -190,16 +190,6 @@ module.exports = {
             parent.save();
           }
 
-          if (down) {
-            parent.downs += 1;
-            parent.save();
-          }
-
-          if (up) {
-            parent.ups += 1;
-            parent.save();
-          }
-
         });
 
       Post.create({
