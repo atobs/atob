@@ -81,6 +81,7 @@ module.exports = {
       repliesEl.animate({scrollTop: repliesEl[0].scrollHeight});
     });
 
+    this.$el.find(".timeago").timeago();
     this.$el.find(".post").fadeIn();
     this.$el.find("div.tripcode").each(function() {
       gen_tripcode(this);

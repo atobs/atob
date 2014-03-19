@@ -70,8 +70,6 @@ module.exports = {
     }
 
     this.save_tripcode();
-    $(".timeago").timeago();
-
   },
   set_board: function(b) {
     console.log("Seeing whats up for board", "/" + b);
