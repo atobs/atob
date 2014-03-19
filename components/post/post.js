@@ -21,6 +21,7 @@ module.exports = {
   initialize: function() { },
   client: function(options) {
     var POSTS = window._POSTS || {};
+    var self = this;
     window._POSTS = POSTS;
     POSTS[options.post_id] = this; 
 
@@ -32,15 +33,15 @@ module.exports = {
     });
 
 
-    var repliesEl = this.$el.find(".replies");
-    this.$el.find(".collapse").on("shown.bs.collapse", function() {
+    var repliesEl = self.$el.find(".replies");
+    self.$el.find(".collapse").on("shown.bs.collapse", function() {
       repliesEl.animate({scrollTop: repliesEl[0].scrollHeight});
     });
 
-    this.$el.find(".timeago").timeago();
-    this.$el.find(".post").fadeIn();
-    this.$el.find("div.tripcode").each(function() {
-      SF.controller().gen_tripcode(this);
+    self.$el.find(".timeago").timeago();
+    self.$el.find(".post").fadeIn();
+    self.$el.find("div.tripcode").each(function() {
+      gen_tripcode(this);
     });
   },
   add_reply: function(data) {

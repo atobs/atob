@@ -13,6 +13,7 @@ module.exports = {
     "keyup input.handle" : "update_trip_colors",
     "change input.newtrip" : "save_newtrip"
   },
+  gen_tripcode: tripcode_gen,
   update_trip_colors: _.throttle(function() {
     if (SF.controller().gen_tripcode) {
       var tripcodeHash = this.$el.find(".identity_tripcode");
@@ -40,7 +41,6 @@ module.exports = {
     this.update_trip_colors();
     $.cookie("handle", handle);
   },
-  gen_tripcode: tripcode_gen,
   add_post: function(e) {
     e.preventDefault();
 
@@ -84,6 +84,8 @@ module.exports = {
     }
 
     this.save_tripcode();
+    this.update_trip_colors();
+    SF.trigger("board_ready");
   },
   set_board: function(b) {
     console.log("Seeing whats up for board", "/" + b);
