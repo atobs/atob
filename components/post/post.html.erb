@@ -8,7 +8,7 @@
 
 <hr />
 
-<div class="post" data-post-id="<%= post_id %>" style="display: none"> 
+<div class="post" data-post-id="<%= post_id %>" style="display: none">
   <div class="title clearfix">
     <a href="#" data-toggle="collapse" data-target="#post<%= post_id %>">
       <h4><b><%- title %></b> </h4>
@@ -22,10 +22,27 @@
       </div>
 
       <div class="created" style="margin-top: -10px; display: inline-block">
-        <small>posted <span class="timeago" title="<%= created_at.toISOString() %>"></small>
+        <small>posted 
+          <span class="timeago" title="<%= created_at.toISOString() %>"> </span>
+          <span class="last_reply">
+            - last reply was
+            <% if (replies.length) { %>
+              <% var last_reply_date = new Date(replies[replies.length - 1].created_at) %>
+              <% var offset = last_reply_date.getTimezoneOffset() %>
+              <% var adjusted_date = new Date((last_reply_date.getTime()) - (offset * 60 * 1000)); %>
+                <span
+                  class="timeago"
+                  title="<%= adjusted_date.toISOString() %>" />
+            <% } else { %>
+                <span
+                  class="timeago"
+                  title="">never. be first! </span>
+            <% } %>
+          </span>
+        </small>
       </div>
 
-      <div class="counts" style="margin-top: -10px; display: inline-block; font-weight: bold"> 
+      <div class="counts" style="margin-top: -10px; display: inline-block; font-weight: bold">
       </div>
     </div>
 
@@ -37,9 +54,11 @@
     </div>
   <% } %>
 
-  <a href="#" class="mtl see_replies" data-toggle="collapse" data-target="#post<%= post_id %>">
-      [ <span class="reply_count"><%= replies.length %></span> replies, click to see all ]
-     
+  <a href="#" class="col-md-12 mtl see_replies" data-toggle="collapse" data-target="#post<%= post_id %>">
+      [
+      <span class="reply_count"><%= replies.length %></span> replies, click to see all.
+      ]
+
   </a>
 
   <div id="post<%= post_id %>" class="collapse">
@@ -66,21 +85,4 @@
     </form>
   </div>
 
-  <div class="last_reply">
-    <% if (replies.length) { %>
-      <% var last_reply_date = new Date(replies[replies.length - 1].created_at) %>
-      <% var offset = last_reply_date.getTimezoneOffset() %>
-      <% var adjusted_date = new Date((last_reply_date.getTime()) - (offset * 60 * 1000)); %>
-      last reply was 
-        <span 
-          class="timeago" 
-          title="<%= adjusted_date.toISOString() %>" />
-    <% } else { %>
-
-      last reply was 
-        <span 
-          class="timeago" 
-          title="">never. be first! </span>
-    <% } %>
-  </div>
 </div>
