@@ -37,9 +37,14 @@
     </div>
   <% } %>
 
+  <a href="#" class="mtl see_replies" data-toggle="collapse" data-target="#post<%= post_id %>">
+      [ <span class="reply_count"><%= replies.length %></span> replies, click to see all ]
+     
+  </a>
+
   <div id="post<%= post_id %>" class="collapse">
 
-    <div class="replies clearfix mtl col-md-12">
+    <div class="replies clearfix mtl col-md-12 <%= replies.length > 5 ? "many" : "" %>">
       <% _.each(replies, function(r) { %>
         <div class="ptl pbl">
           <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
@@ -51,34 +56,31 @@
       <% }); %>
     </div>
 
+  </div>
+
+  <div class="col-md-12">
     <form class="reply">
       <div class="clearfix mbl">
         <input type="text" class="form-control" placeholder="reply"> </input>
       </div>
     </form>
-
   </div>
 
-  <a href="#" class="mtl see_replies" data-toggle="collapse" data-target="#post<%= post_id %>">
-      [ <span class="reply_count"><%= replies.length %></span> replies
-     
-        <span class="last_reply">
-        <% if (replies.length) { %>
-          <% var last_reply_date = new Date(replies[replies.length - 1].created_at) %>
-          <% var offset = last_reply_date.getTimezoneOffset() %>
-          <% var adjusted_date = new Date((last_reply_date.getTime()) - (offset * 60 * 1000)); %>
-          - last was 
-            <span 
-              class="timeago" 
-              title="<%= adjusted_date.toISOString() %>" />
-        <% } else { %>
+  <div class="last_reply">
+    <% if (replies.length) { %>
+      <% var last_reply_date = new Date(replies[replies.length - 1].created_at) %>
+      <% var offset = last_reply_date.getTimezoneOffset() %>
+      <% var adjusted_date = new Date((last_reply_date.getTime()) - (offset * 60 * 1000)); %>
+      last reply was 
+        <span 
+          class="timeago" 
+          title="<%= adjusted_date.toISOString() %>" />
+    <% } else { %>
 
-          - last was 
-            <span 
-              class="timeago" 
-              title="">never. be first! </span>
-        <% } %>
-        </span>
-      ]
-  </a>
+      last reply was 
+        <span 
+          class="timeago" 
+          title="">never. be first! </span>
+    <% } %>
+  </div>
 </div>

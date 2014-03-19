@@ -3,6 +3,23 @@
   background-color: #eaeaea;
 }
 
+.collapse {
+  height: 100px !important;
+  overflow: hidden;
+  clear: both;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.collapse .replies.many {
+  margin-top: -100px;
+  overflow-y: hidden;
+}
+
+.collapsing {
+  min-height: 100px
+}
+
 a {
   color: #666;
 }
@@ -21,6 +38,7 @@ a:hover {
 }
 
 .replies {
+  margin-top: 10px;
   margin-bottom: 10px;
   max-height: 200px !important;
   overflow-y: scroll;

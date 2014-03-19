@@ -39,7 +39,9 @@ module.exports = {
     });
 
     self.$el.find(".timeago").timeago();
-    self.$el.find(".post").fadeIn();
+    self.$el.find(".post").fadeIn(function() {
+      self.bumped(); 
+    });
     self.$el.find("div.tripcode").each(function() {
       gen_tripcode(this);
     });
