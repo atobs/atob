@@ -45,7 +45,7 @@ module.exports = {
       return;
     }
 
-    $(e.target).find("input").val("");
+    $(e.target).find("input, textarea").val("");
 
     SF.socket().emit("new_post", datas);
   },
