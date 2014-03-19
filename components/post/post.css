@@ -4,6 +4,8 @@
 }
 
 .collapse {
+  transition: height 0.01s;
+  -webkit-transition: height 0.01s;
   min-height: 50px !important;
   overflow: hidden;
   clear: both;
@@ -24,10 +26,13 @@
 }
 
 .collapsing {
+  -webkit-transition: height 0.01s;
+  transition: height 0.01s;
   min-height: 50px !important;
   form {
     display: none;
   }
+
   .replies.many {
     margin-top: -150px;
     overflow-y: hidden;

@@ -40,9 +40,6 @@ module.exports = {
 
 
     var repliesEl = self.$el.find(".replies");
-    self.$el.find(".collapse").on("shown.bs.collapse", function() {
-      self.bumped();
-    });
 
     self.$el.find(".timeago").timeago();
     self.$el.find(".post").fadeIn(function() {
