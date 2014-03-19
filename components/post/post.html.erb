@@ -54,16 +54,9 @@
     </div>
   <% } %>
 
-  <a href="#" class="col-md-12 mtl see_replies" data-toggle="collapse" data-target="#post<%= post_id %>">
-      [
-      <span class="reply_count"><%= replies.length %></span> replies, click to see all.
-      ]
+  <div id="post<%= post_id %>" class="collapse cpost">
 
-  </a>
-
-  <div id="post<%= post_id %>" class="collapse">
-
-    <div class="replies clearfix mtl col-md-12 <%= replies.length > 5 ? "many" : "" %>">
+    <div class="replies clearfix mtl col-md-12 <%= replies.length > 4 ? "many" : "" %>">
       <% _.each(replies, function(r) { %>
         <div class="ptl pbl">
           <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
@@ -77,12 +70,21 @@
 
   </div>
 
-  <div class="col-md-12">
+  <a href="#" class="mtl see_replies" data-toggle="collapse" data-target="#post<%= post_id %>">
+      [
+      <span class="reply_count"><%= replies.length %></span> replies, click to expand
+      ]
+
+  </a>
+
+  <div class="mtl clearfix">
     <form class="reply">
       <div class="clearfix mbl">
         <input type="text" class="form-control" placeholder="reply"> </input>
       </div>
     </form>
   </div>
+
+
 
 </div>

@@ -19,6 +19,12 @@ module.exports = {
   },
   get_post_id: function() { return this.$el.find(".post").data("post-id"); },
   initialize: function() { },
+  collapse: function() {
+    this.$el.find(".cpost").collapse("hide");
+  },
+  expand: function() {
+    this.$el.find(".collapse").collapse("show");
+  },
   client: function(options) {
     var POSTS = window._POSTS || {};
     var self = this;

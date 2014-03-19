@@ -4,21 +4,32 @@
 }
 
 .collapse {
-  height: 100px !important;
+  min-height: 50px !important;
   overflow: hidden;
   clear: both;
   display: block;
+
+  form {
+    display: none;
+  }
+
+  .replies {
+    min-height: 50px;
+  }
 }
 
 .collapse .replies.many {
-  margin-top: -100px;
+  margin-top: -150px;
   overflow-y: hidden;
 }
 
 .collapsing {
-  min-height: 100px;
+  min-height: 50px !important;
+  form {
+    display: none;
+  }
   .replies.many {
-    margin-top: -100px;
+    margin-top: -150px;
     overflow-y: hidden;
   }
 }
@@ -42,6 +53,7 @@ a:hover {
 
 .replies {
   margin-top: 10px;
+  min-height: 100px;
   max-height: 200px !important;
   overflow-y: scroll;
 }

@@ -19,9 +19,11 @@ module.exports = {
     SF.socket().emit("isdoing", { what: "typing", post_id: this.get_post_id()});
   }, 500),
   handle_unfocus: function() {
+    this.collapse();
     SF.socket().emit("isdoing", { what: "unfocused", post_id: this.get_post_id()});
   },
   handle_focus: function() {
+    this.expand();
     SF.socket().emit("isdoing", { what: "focused", post_id: this.get_post_id()});
   },
 
