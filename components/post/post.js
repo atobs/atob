@@ -75,6 +75,10 @@ module.exports = {
     repliesEl.append(replyEl);
     this.bumped();
 
+    var timeagoEl = this.$el.find(".last_reply .timeago");
+    timeagoEl.attr("title", Date.now());
+    timeagoEl.html($.timeago(Date.now()));
+
     var replies = parseInt(this.$el.find(".reply_count").html() || "0", 10);
     this.$el.find(".reply_count").text(replies + 1);
 
