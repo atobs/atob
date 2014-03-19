@@ -5,7 +5,6 @@
   "vendor" : [
     "app/static/vendor/bootstrap.min.js",
     "app/static/vendor/jquery.deserialize.js",
-    "app/static/vendor/jquery.chroma-hash.js",
     "app/static/vendor/md5.js",
     "app/static/vendor/jquery-deparam.js",
     "app/static/vendor/jquery.cookie.js",
