@@ -14,7 +14,7 @@
       <h4><b><%- title %></b> </h4>
     </a>
 
-    <div class="mbl">
+    <div class="mbm">
       <div class="tripcode" title="<%- author || "anon" %>" data-tripcode="<%= tripcode %>"> </div>
 
       <div class="post_id" style="margin-top: -10px; display: inline-block">
@@ -48,13 +48,11 @@
 
   </div>
 
-  <% if (text.trim()) { %>
-    <div class="op text col-md-12 mbl">
-      <%- text %>
-    </div>
-  <% } %>
+  <div class="op text col-md-12 mbl" style=>
+    <%- text %>
+  </div>
 
-  <div id="post<%= post_id %>" class="collapse cpost">
+  <div id="post<%= post_id %>" class="collapse cpost mbl">
 
     <div class="replies clearfix mtl col-md-12 <%= replies.length > 4 ? "many" : "" %>">
       <% _.each(replies, function(r) { %>
