@@ -42,6 +42,8 @@ module.exports = {
     this.set_title("atob/" + board_id);
     this.set_fullscreen(true);
 
+    api.template.add_stylesheet("board.css");
+
     var render_boards = api.page.async(function(flush) {
       Board.findAll({
           order: "name ASC"

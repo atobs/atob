@@ -4,7 +4,10 @@ var Board = require_app("models/board");
 
 module.exports = {
   routes: {
-    "" : "index"
+    "" : "index",
+    "rules" : "rules",
+    "faq" : "faq",
+    "icons" : "icons"
   },
 
   index: function(ctx, api) {
@@ -33,6 +36,24 @@ module.exports = {
     });
 
     api.page.render({ content: template_str});
+  },
+  rules: function(ctx, api) {
+    var template_str = api.template.partial("home/rules.html.erb", {} );
+
+    api.page.render({ content: template_str});
+
+  },
+  icons: function(ctx, api) {
+    var template_str = api.template.partial("home/icons.html.erb", { });
+
+    api.page.render({ content: template_str});
+
+  },
+  faq: function(ctx, api) {
+    var template_str = api.template.partial("home/faq.html.erb", { });
+
+    api.page.render({ content: template_str});
+
   },
 
   socket: function() {}
