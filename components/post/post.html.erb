@@ -24,26 +24,26 @@
       <div class="created" style="margin-top: -10px; display: inline-block">
         <small>posted 
           <span class="timeago" title="<%= created_at.toISOString() %>"> </span>
-          <span class="last_reply">
-            - last reply was
-            <% if (replies.length) { %>
-              <% var last_reply_date = new Date(replies[replies.length - 1].created_at) %>
-              <% var offset = last_reply_date.getTimezoneOffset() %>
-              <% var adjusted_date = new Date((last_reply_date.getTime()) - (offset * 60 * 1000)); %>
-                <span
-                  class="timeago"
-                  title="<%= adjusted_date.toISOString() %>" />
-            <% } else { %>
-                <span
-                  class="timeago"
-                  title="">never. be first! </span>
-            <% } %>
-          </span>
         </small>
       </div>
 
-      <div class="counts" style="margin-top: -10px; display: inline-block; font-weight: bold">
-      </div>
+      <small class="last_reply">
+        - last reply was
+        <% if (replies.length) { %>
+          <% var last_reply_date = new Date(replies[replies.length - 1].created_at) %>
+          <% var offset = last_reply_date.getTimezoneOffset() %>
+          <% var adjusted_date = new Date((last_reply_date.getTime()) - (offset * 60 * 1000)); %>
+            <span
+              class="timeago"
+              title="<%= adjusted_date.toISOString() %>" />
+        <% } else { %>
+            <span
+              class="timeago"
+              title="">never. be first! </span>
+        <% } %>
+      </small>
+
+      <div class="counts" style="margin-top: -10px; display: inline-block; font-weight: bold"> </div>
     </div>
 
   </div>
