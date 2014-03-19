@@ -25,6 +25,11 @@ var GOING_ONS = {
   idle: {}
 };
 
+var DOWNCONS = [
+  ":thumbs-down:",
+  ":law:"
+];
+
 module.exports = {
   // If the controller has assets in its subdirs, set is_package to true
   is_package: false,
@@ -141,7 +146,9 @@ module.exports = {
         tripcode: gen_md5(author + ":" + tripcode),
         board_id: _board,
         author: author,
-        replies: 0
+        replies: 0,
+        downs: 0,
+        ups: 0
       };
 
       Post.create(data)
@@ -167,12 +174,29 @@ module.exports = {
         text = text.join("|");
       }
 
+      // Do things to the parent, now...
+      var down = false, up = false;
+    
+      _.each(DOWNCONS, function(downcon) {
+        if (text.toString().match(downcon)) {
+          down = true;
+        }
+      });
+
       Post.find({ where: { id: post.post_id }})
         .success(function(parent) {
-          // Do things to the parent, now...
-          
-          if (parent.replies < REPLY_MAX) {
+          if (!down && parent.replies < REPLY_MAX) {
             parent.replies += 1;
+            parent.save();
+          }
+
+          if (down) {
+            parent.downs += 1;
+            parent.save();
+          }
+
+          if (up) {
+            parent.ups += 1;
             parent.save();
           }
 

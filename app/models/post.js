@@ -9,7 +9,9 @@ var Post = sequelize.instance.define('Post', {
   thread_id: sequelize.INTEGER,
   tripcode: sequelize.STRING,
   author: sequelize.STRING,
-  replies: sequelize.INTEGER
+  replies: sequelize.INTEGER,
+  downs: sequelize.INTEGER,
+  ups: sequelize.INTEGER
 });
 
 Post.hasOne(Post, { as: 'Thread', foreignKey: 'thread_id', through: null });
