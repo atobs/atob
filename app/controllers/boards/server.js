@@ -173,7 +173,7 @@ module.exports = {
       Post.findAll({
           where: { board_id: board_id, thread_id: null },
           order: "bumped_at ASC",
-          limit: 20,
+          limit: 10,
           include: [
             {model: Post, as: "Children" },
             {model: Post, as: "Thread" }
