@@ -23,7 +23,9 @@ module.exports = {
 
     s.on("new_reply", function(data) {
       var post = window._POSTS[data.parent_id];
-      post.add_reply(data);
+      if (post) {
+        post.add_reply(data);
+      }
     });
 
     s.on("joined", function(c) {

@@ -9,6 +9,9 @@ var Post = require_app("models/post");
 var Board = require_app("models/board");
 var $ = require("cheerio");
 
+var load_controller = require_core("server/controller").load;
+var posts_controller = load_controller("posts");
+
 var escape_html = require("escape-html");
 
 var crypto = require("crypto");
@@ -115,8 +118,14 @@ function handle_new_reply(s, board, post, last_reply) {
     }).success(function(p) {
       p.dataValues.post_id = p.dataValues.id;
       delete p.dataValues.id;
-      s.broadcast.to(board).emit("new_reply", p.dataValues);
-      s.emit("new_reply", p.dataValues);
+
+      var boards_socket = module.exports.get_socket();
+      boards_socket.broadcast.to(board).emit("new_reply", p.dataValues);
+
+      // updating the posts controller, too, because its possible to 
+      // watch only one post
+      var post_socket = posts_controller.get_socket();
+      post_socket.broadcast.to(board).emit("new_reply", p.dataValues);
     });
 
   return Date.now();

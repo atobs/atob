@@ -54,7 +54,14 @@ module.exports = {
     repliesEl.animate({ scrollTop: repliesEl[0].scrollHeight});
   },
   add_reply: function(data) {
+   
+    var replyId = "reply" + data.post_id;
+    if ($("#" + replyId).length) {
+      return;
+    }
+
     var replyEl =$("<div class='ptl pbl'/>");
+    replyEl.attr("id", replyId);
     var tripEl = $("<div class='tripcode' />")
       .data("tripcode", data.tripcode)
       .attr("title", data.author);
