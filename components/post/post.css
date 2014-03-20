@@ -3,6 +3,15 @@
   background-color: #eaeaea;
 }
 
+.post {
+  padding: 10px;
+  border: 2px solid #ddd;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  clear: both;
+  background-color: #fff;
+}
+
 .restore {
   cursor: pointer;
   -webkit-touch-callout: none;

@@ -1,3 +1,11 @@
 .posts {
   margin-bottom: 400px;
 }
+
+body {
+  background-color: #f6f6f6;
+}
+
+a {
+  color: #428bca;
+}
