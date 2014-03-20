@@ -100,3 +100,7 @@ body {
 a {
   color: #428bca;
 }
+
+.container {
+  padding: 0px;
+}

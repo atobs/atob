@@ -25,6 +25,7 @@ module.exports = {
   },
 
   get: function(ctx, api) {
+    this.set_fullscreen(true);
 
     var render_boards = api.page.async(function(flush) {
       Board.findAll({
