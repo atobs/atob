@@ -46,6 +46,26 @@ module.exports = {
 
     });
     var render_post = api.page.async(function(flush) {
+      function render_posting(result) {
+        var post_data = result.dataValues;
+        post_data = result.dataValues;
+        post_data.post_id = post_data.id;
+        delete post_data.id;
+
+        post_data.replies = _.map(result.children, function(c) { return c.dataValues; } );
+        post_data.replies = _.sortBy(post_data.replies, function(d) {
+          return new Date(d.created_at);
+        });
+
+        post_data.client_options = _.clone(post_data);
+        var postCmp = $C("post", post_data);
+        api.bridge.controller("posts", "set_board", post_data.board_id);
+        flush(postCmp.toString());
+
+
+
+      }
+
       Post.find({
           where: { id: ctx.req.params.id},
           include: [
@@ -53,18 +73,26 @@ module.exports = {
             {model: Post, as: "Thread" }
           ]})
         .success(function(result) {
-          var post_data = result.dataValues;
-          post_data.post_id = post_data.id;
-          delete post_data.id;
-          post_data.replies = _.map(result.children, function(c) { return c.dataValues; } );
-          post_data.replies = _.sortBy(post_data.replies, function(d) {
-            return new Date(d.created_at);
-          });
+          if (!result) { return flush("Couldn't find post. "); }
 
-          post_data.client_options = _.clone(post_data);
-          var postCmp = $C("post", post_data);
-          api.bridge.controller("posts", "set_board", post_data.board_id);
-          flush(postCmp.toString());
+          var post_data = result.dataValues;
+
+          // If it's a child post, get its thread
+          if (post_data.parent_id) {
+            Post.find({
+              where: { id: post_data.thread_id },
+              include: [
+                {model: Post, as: "Children" },
+                {model: Post, as: "Thread" }
+              ]
+            }).success(function(parent) {
+              render_posting(parent);
+
+            });
+
+          } else {
+            render_posting(result);
+          }
         });
 
     });
