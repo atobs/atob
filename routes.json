@@ -1,4 +1,5 @@
 {
   "/": "home",
-  "/b/" : "boards"
+  "/b/" : "boards",
+  "/p/" : "posts"
 }
