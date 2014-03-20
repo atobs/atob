@@ -50,6 +50,8 @@ module.exports = {
         var post_data = result.dataValues;
         post_data = result.dataValues;
         post_data.post_id = post_data.id;
+        post_data.maximized = true;
+        post_data.collapsed = false;
         delete post_data.id;
 
         post_data.replies = _.map(result.children, function(c) { return c.dataValues; } );

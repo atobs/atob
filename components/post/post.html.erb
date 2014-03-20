@@ -1,12 +1,14 @@
 <% set_default("title", "Title") %>
 <% set_default("text", "post text") %>
+<% set_default("collapsed", true) %>
+<% set_default("maximized", false) %>
 <% set_default("post_id", 0) %>
 <% set_default("created_at", new Date()) %>
 <% set_default("replies", []) %>
 <% set_default("tripcode", "") %>
 <% set_default("author", "anon") %>
 
-<div class="post" data-post-id="<%= post_id %>" style="display: none">
+<div class="post <%= maximized ? "maximize" : "" %>" data-post-id="<%= post_id %>" style="display: none">
   <div class="title clearfix">
     <a href="/p/<%= post_id %>" >
       <h4><b><%- title %></b> </h4>
@@ -51,7 +53,7 @@
     <%- text %>
   </div>
 
-  <div id="post<%= post_id %>" class="collapse cpost">
+  <div id="post<%= post_id %>" class="<%= collapsed ? "collapse" : "" %> cpost">
 
     <div class="replies clearfix mtl col-md-12 <%= replies.length > 4 ? "many" : "" %>">
       <% _.each(replies, function(r) { %>
