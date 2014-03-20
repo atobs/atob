@@ -1,3 +1,25 @@
-a to b
+<% set_default("tripcode", "") %>
 
-<%= render_post() %>
+<div class="container mbl mtl clearfix">
+  <div class="col-md-12 clearfix">
+    <div class="">
+      <div class="lfloat mrl"><strong><a href="/">a to b</a></strong></div>
+      <%= render_boards() %>
+    </div>
+
+    <div class="col-md-12 clearfix">
+      <a class="rfloat mrl" href="#" data-toggle="collapse" data-target=".settings">settings</a>
+    </div>
+
+    <div class="col-md-12"> </div>
+
+    <div style="width: 100%" class="lfloat clearfix mtl identity_tripcode"> </div>
+
+  </div>
+
+
+  <%= render_partial("shared/settings.html.erb", { tripcode: tripcode }) %>
+
+  <%= render_post() %>
+
+</div>

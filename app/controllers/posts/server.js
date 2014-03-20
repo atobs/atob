@@ -8,6 +8,16 @@ var value_of = controller.value_of,
 
 var boards_controller = require_app("controllers/boards/server");
 var Post = require_app("models/post");
+var Board = require_app("models/board");
+
+var crypto = require("crypto");
+var gen_md5 = function(h) {
+  var hash = crypto.Hash("md5");
+  hash.update(h + "");
+  return hash.digest("hex");
+};
+
+
 module.exports = {
   // If the controller has assets in its subdirs, set is_package to true
   is_package: false,
@@ -17,6 +27,25 @@ module.exports = {
 
   get: function(ctx, api) {
 
+    var render_boards = api.page.async(function(flush) {
+      Board.findAll({
+          order: "name ASC"
+        })
+        .success(function(results) {
+          var boards = _.map(results, function(r) { 
+            return r.getDataValue('name'); 
+          });
+
+          var template_str = api.template.partial("home/board_links.html.erb", {
+            boards: boards 
+          });
+
+          flush(template_str);
+
+        });
+
+
+    });
     var render_post = api.page.async(function(flush) {
       Post.find({
           where: { id: ctx.req.params.id},
@@ -41,7 +70,8 @@ module.exports = {
 
     });
 
-    var template_str = api.template.render("controllers/posts/show.html.erb", { render_post: render_post });
+    var template_str = api.template.render("controllers/posts/show.html.erb", 
+      { render_post: render_post, render_boards: render_boards, tripcode: gen_md5(Math.random()) });
     api.page.render({ content: template_str, socket: true });
   },
 
