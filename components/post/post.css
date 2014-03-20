@@ -5,6 +5,8 @@
 
 .post {
   padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
   border: 2px solid #ddd;
   margin-top: 20px;
   margin-bottom: 20px;

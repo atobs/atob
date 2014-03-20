@@ -92,3 +92,11 @@
     display: none !important
   }
 }
+
+body {
+  background-color: #fafafa;
+}
+
+a {
+  color: #428bca;
+}
