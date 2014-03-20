@@ -32,6 +32,96 @@ var DOWNCONS = [
   ":law:"
 ];
 
+function handle_new_post(s, board, post, last_post) {
+  if (Date.now() - last_post < POST_TIMEOUT) {
+    return last_post;
+  }
+
+  var title = post.title;
+  var text = post.text;
+  var tripcode = post.tripcode || "";
+  var author = post.author || "anon";
+  var data = {
+    title: title,
+    text: text,
+    tripcode: gen_md5(author + ":" + tripcode),
+    board_id: board,
+    author: author,
+    replies: 0,
+    downs: 0,
+    ups: 0,
+    bumped_at: Date.now()
+  };
+
+  Post.create(data)
+    .success(function(p) {
+      data.post_id = p.id;
+      s.broadcast.to(board).emit("new_post", data);
+      s.emit("new_post", data);
+    });
+
+  return Date.now();
+}
+
+function handle_new_reply(s, board, post, last_reply) {
+  if (Date.now() - last_reply < REPLY_TIMEOUT) {
+    return last_reply;
+  }
+
+
+  var author = post.author || "anon";
+  var text = post.text.split("||");
+  var title = "";
+  if (text.length > 1) {
+    title = text.shift();
+    text = text.join("|");
+  }
+
+  // Do things to the parent, now...
+  var down = false, up = false;
+
+  _.each(DOWNCONS, function(downcon) {
+    if (text.toString().match(downcon)) {
+      down = true;
+    }
+  });
+
+  Post.find({ where: { id: post.post_id }})
+    .success(function(parent) {
+      if (!down && parent.replies < REPLY_MAX) {
+        parent.replies += 1;
+        parent.bumped_at = Date.now();
+      }
+
+      if (down) {
+        parent.downs += 1;
+      }
+
+      if (up) {
+        parent.ups += 1;
+      }
+
+      parent.save();
+
+    });
+
+  Post.create({
+      text: escape_html(text),
+      title: escape_html(title),
+      parent_id: post.post_id,
+      thread_id: post.post_id,
+      tripcode: gen_md5(author + ":" + post.tripcode),
+      author: author
+    }).success(function(p) {
+      p.dataValues.post_id = p.dataValues.id;
+      delete p.dataValues.id;
+      s.broadcast.to(board).emit("new_reply", p.dataValues);
+      s.emit("new_reply", p.dataValues);
+    });
+
+  return Date.now();
+}
+
 module.exports = {
   // If the controller has assets in its subdirs, set is_package to true
   is_package: false,
@@ -132,92 +222,11 @@ module.exports = {
     var last_reply = 0;
 
     s.on("new_post", function(post) {
-      if (Date.now() - last_post < POST_TIMEOUT) {
-        return;
-      }
-
-      last_post = Date.now();
-
-      var title = post.title;
-      var text = post.text;
-      var tripcode = post.tripcode || "";
-      var author = post.author || "anon";
-      var data = {
-        title: title,
-        text: text,
-        tripcode: gen_md5(author + ":" + tripcode),
-        board_id: _board,
-        author: author,
-        replies: 0,
-        downs: 0,
-        ups: 0,
-        bumped_at: Date.now()
-      };
-
-      Post.create(data)
-        .success(function(p) {
-          data.post_id = p.id;
-          s.broadcast.to(_board).emit("new_post", data);
-          s.emit("new_post", data);
-        });
+      last_post = handle_new_post(s, _board, post);
     });
 
     s.on("new_reply", function(post) {
-      if (Date.now() - last_post < REPLY_TIMEOUT) {
-        return;
-      }
-
-      last_reply  = Date.now();
-
-      var author = post.author || "anon";
-      var text = post.text.split("||");
-      var title = "";
-      if (text.length > 1) {
-        title = text.shift();
-        text = text.join("|");
-      }
-
-      // Do things to the parent, now...
-      var down = false, up = false;
-    
-      _.each(DOWNCONS, function(downcon) {
-        if (text.toString().match(downcon)) {
-          down = true;
-        }
-      });
-
-      Post.find({ where: { id: post.post_id }})
-        .success(function(parent) {
-          if (!down && parent.replies < REPLY_MAX) {
-            parent.replies += 1;
-            parent.bumped_at = Date.now();
-          }
-
-          if (down) {
-            parent.downs += 1;
-          }
-
-          if (up) {
-            parent.ups += 1;
-          }
-
-          parent.save();
-
-        });
-
-      Post.create({
-          text: escape_html(text),
-          title: escape_html(title),
-          parent_id: post.post_id,
-          thread_id: post.post_id,
-          tripcode: gen_md5(author + ":" + post.tripcode),
-          author: author
-        }).success(function(p) {
-          p.dataValues.post_id = p.dataValues.id;
-          delete p.dataValues.id;
-          s.broadcast.to(_board).emit("new_reply", p.dataValues);
-          s.emit("new_reply", p.dataValues);
-        });
+      last_reply = handle_new_reply(s, _board, post);
     });
 
     var idleTimer;
@@ -225,7 +234,7 @@ module.exports = {
     function update_post_status(post_id) {
       var doings = {
         post_id: post_id,
-        counts: _.map(GOING_ONS[post_id], function(v, k) { return v; })
+        counts: _.map(GOING_ONS[post_id], function(v) { return v; })
       };
       s.broadcast.to(_board).emit("doings", doings);
       s.emit("doings", doings);
@@ -253,5 +262,8 @@ module.exports = {
 
       update_post_status(doing.post_id);
     });
-  }
+  },
+
+  handle_new_reply: handle_new_reply,
+  handle_new_post: handle_new_post
 };
