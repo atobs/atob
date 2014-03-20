@@ -9,6 +9,8 @@ var Post = require_app("models/post");
 var Board = require_app("models/board");
 var $ = require("cheerio");
 
+var escape_html = require("escape-html");
+
 var crypto = require("crypto");
 var gen_md5 = function(h) {
   var hash = crypto.Hash("md5");
@@ -204,8 +206,8 @@ module.exports = {
         });
 
       Post.create({
-          text: text,
-          title: title,
+          text: escape_html(text),
+          title: escape_html(title),
           parent_id: post.post_id,
           thread_id: post.post_id,
           tripcode: gen_md5(author + ":" + post.tripcode),

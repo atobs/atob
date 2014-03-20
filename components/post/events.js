@@ -8,9 +8,18 @@ module.exports = {
   events: {
     "click" :  "handle_template_click",
     "submit form": "handle_reply",
-    "keydown .reply input" : "handle_typing",
-    "blur .reply input" : "handle_unfocus",
-    "focus .reply input" : "handle_focus"
+    "keyup .reply textarea" : "handle_maybe_submit",
+    "keydown .reply textarea" : "handle_typing",
+    "blur .reply textarea" : "handle_unfocus",
+    "focus .reply textarea" : "handle_focus"
+  },
+
+  handle_maybe_submit: function(e) {
+    if (e.keyCode === 13 && !e.shiftKey) {
+      this.handle_reply(e);
+      return true;
+    }
+
   },
 
   // Alright. so we rely on users updating their socket status.  any one socket
@@ -28,7 +37,7 @@ module.exports = {
 
   handle_reply: function(e) {
     e.preventDefault();
-    var replyInput = this.$el.find(".reply input");
+    var replyInput = this.$el.find(".reply textarea");
     var reply = replyInput.val();
     replyInput.val("");
 

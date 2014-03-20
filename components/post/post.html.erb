@@ -68,17 +68,19 @@
 
   </div>
 
-  <a href="#" class="mtl see_replies" data-toggle="collapse" data-target="#post<%= post_id %>">
-      [
-      <span class="reply_count"><%= replies.length %></span> replies
-      ]
+  <div class="clearfix">
+    <a href="#" class="mtl see_replies" data-toggle="collapse" data-target="#post<%= post_id %>">
+        [
+        <span class="reply_count"><%= replies.length %></span> replies
+        ]
 
-  </a>
+    </a>
+  </div>
 
   <div class="mtl clearfix">
     <form class="reply">
       <div class="clearfix mbl">
-        <input type="text" class="form-control" placeholder="reply"> </input>
+        <textarea type="text" class="form-control" placeholder="reply"> </textarea>
       </div>
     </form>
   </div>
