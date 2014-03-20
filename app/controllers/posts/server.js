@@ -34,14 +34,23 @@ module.exports = {
 
           post_data.client_options = _.clone(post_data);
           var postCmp = $C("post", post_data);
+          api.bridge.controller("posts", "set_board", post_data.board_id);
           flush(postCmp.toString());
         });
 
     });
 
     var template_str = api.template.render("controllers/posts/show.html.erb", { render_post: render_post });
-    api.page.render({ content: template_str});
+    api.page.render({ content: template_str, socket: true });
   },
 
-  socket: function() {}
+  socket: function(s) {
+    var _board;
+    s.on("join", function(board) {
+      s.spark.join(board);
+      _board = board;
+      s.emit("joined", board);
+    });
+
+  }
 };
