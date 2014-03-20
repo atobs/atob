@@ -53,7 +53,7 @@
     <%- text %>
   </div>
 
-  <div id="post<%= post_id %>" class="collapse cpost mbl">
+  <div id="post<%= post_id %>" class="collapse cpost">
 
     <div class="replies clearfix mtl col-md-12 <%= replies.length > 4 ? "many" : "" %>">
       <% _.each(replies, function(r) { %>
@@ -83,7 +83,7 @@
 
   <div class="mtl clearfix">
     <form class="reply">
-      <div class="clearfix mbl">
+      <div class="mtl clearfix mbl">
         <textarea type="text" class="form-control" placeholder="reply"> </textarea>
       </div>
     </form>

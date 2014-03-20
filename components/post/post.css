@@ -6,7 +6,7 @@
 .collapse {
   transition: height 0.01s;
   -webkit-transition: height 0.01s;
-  min-height: 50px !important;
+  min-height: 60px !important;
   overflow: hidden;
   clear: both;
   display: block;
@@ -28,7 +28,7 @@
 .collapsing {
   -webkit-transition: height 0.01s;
   transition: height 0.01s;
-  min-height: 50px !important;
+  min-height: 60px !important;
   clear: both;
 
   form {
@@ -65,7 +65,7 @@ a:hover {
 
 .replies {
   margin-top: 10px;
-  min-height: 100px;
+  min-height: 50px;
   max-height: 200px !important;
   overflow-y: scroll;
 }
