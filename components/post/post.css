@@ -78,3 +78,23 @@ a:hover {
   margin-bottom: 0px;
   margin-right: 8px;
 }
+
+
+// Most important
+.maximize {
+  .collapsing {
+    height: 100% !important;
+  }
+  .collapse {
+    height: 100% !important;
+  }
+
+  .replies {
+    max-height: 100% !important;
+
+    &.many {
+      margin-top: 10px !important;
+    }
+  }
+}
+

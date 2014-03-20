@@ -22,11 +22,12 @@
       </div>
 
       <div class="created" style="margin-top: -10px; display: inline-block">
-        <small>posted 
+        <small>posted
           <span class="timeago" title="<%= created_at.toISOString() %>"> </span>
         </small>
       </div>
 
+      <i title="maximize" class="mll rfloat restore icon-restore"></i>
       <small class="last_reply rfloat">
         last reply was
         <% if (replies.length) { %>
@@ -69,12 +70,15 @@
   </div>
 
   <div class="clearfix">
-    <a href="#" class="mtl see_replies" data-toggle="collapse" data-target="#post<%= post_id %>">
+    <i title="maximize" class="rfloat restore icon-restore mtl mll"></i>
+
+    <a href="#" class="mtl see_replies rfloat" data-toggle="collapse" data-target="#post<%= post_id %>">
         [
         <span class="reply_count"><%= replies.length %></span> replies
         ]
 
     </a>
+
   </div>
 
   <div class="mtl clearfix">

@@ -6,12 +6,18 @@ module.exports = {
   // the main component file, since it has code
   // that is generally not relevant to the server.
   events: {
-    "click" :  "handle_template_click",
+    "click .restore" :  "handle_restore",
     "submit form": "handle_reply",
     "keyup .reply textarea" : "handle_maybe_submit",
     "keydown .reply textarea" : "handle_typing",
     "blur .reply textarea" : "handle_unfocus",
     "focus .reply textarea" : "handle_focus"
+  },
+
+  handle_restore: function(e) {
+    this.$el.find(".post").toggleClass("maximize");
+    this.bumped();
+    e.preventDefault();
   },
 
   handle_maybe_submit: function(e) {
