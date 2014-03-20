@@ -55,7 +55,7 @@
 
   <div id="post<%= post_id %>" class="<%= collapsed ? "collapse" : "" %> cpost">
 
-    <div class="replies clearfix mtl col-md-12 <%= replies.length > 4 ? "many" : "" %>">
+    <div class="replies clearfix mtl col-md-12 <%= replies.length > 6 ? "many" : "" %>">
       <% _.each(replies, function(r) { %>
         <div class="ptl pbl">
           <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
