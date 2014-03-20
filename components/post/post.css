@@ -3,6 +3,20 @@
   background-color: #eaeaea;
 }
 
+.restore {
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.restore:hover {
+  text-decoration: underline;
+}
+
 .collapse {
   transition: height 0.01s;
   -webkit-transition: height 0.01s;
