@@ -6,6 +6,7 @@ module.exports = {
 
   },
   init: function() {
+    this.init_tripcodes();
 
   },
   set_board: function(board) {

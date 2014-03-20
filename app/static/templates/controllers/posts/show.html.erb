@@ -7,19 +7,19 @@
       <%= render_boards() %>
     </div>
 
-    <div class="col-md-12 clearfix">
-      <a class="rfloat mrl" href="#" data-toggle="collapse" data-target=".settings">settings</a>
-    </div>
-
-    <div class="col-md-12"> </div>
+    <a class="rfloat" href="#" data-toggle="collapse" data-target=".settings">settings</a>
 
     <div style="width: 100%" class="lfloat clearfix mtl identity_tripcode"> </div>
 
+
+    <%= render_partial("shared/settings.html.erb", { tripcode: tripcode }) %>
   </div>
 
+  <div class="col-md-12">
 
-  <%= render_partial("shared/settings.html.erb", { tripcode: tripcode }) %>
 
-  <%= render_post() %>
+
+    <%= render_post() %>
+  </div>
 
 </div>

@@ -37,26 +37,7 @@ module.exports = {
     SF.socket().emit("new_post", datas);
   },
   init: function() {
-    var tripcodeEl = this.$page.find("input.tripcode");
-    var handleEl = this.$page.find("input.handle");
-    var newtripEl = this.$page.find("input.newtrip");
-    var newtrip = $.cookie("newtrip") === "true";
-    var tripcode = $.cookie("tripcode");
-    var handle = $.cookie("handle");
-
-    if (newtrip) {
-      newtripEl.prop('checked', true);
-    }
-
-    if (tripcode && !newtrip) {
-      tripcodeEl.val(tripcode);
-    }
-    if (handle) {
-      handleEl.val(handle);
-    }
-
-    this.save_tripcode();
-    this.update_trip_colors();
+    this.init_tripcodes();
     SF.trigger("board_ready");
   },
   set_board: function(b) {

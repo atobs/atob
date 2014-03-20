@@ -36,5 +36,27 @@ module.exports = {
   },
   get_handle: function() {
     return $("input.handle").val();
+  },
+  init_tripcodes: function() {
+    var tripcodeEl = this.$page.find("input.tripcode");
+    var handleEl = this.$page.find("input.handle");
+    var newtripEl = this.$page.find("input.newtrip");
+    var newtrip = $.cookie("newtrip") === "true";
+    var tripcode = $.cookie("tripcode");
+    var handle = $.cookie("handle");
+
+    if (newtrip) {
+      newtripEl.prop('checked', true);
+    }
+
+    if (tripcode && !newtrip) {
+      tripcodeEl.val(tripcode);
+    }
+    if (handle) {
+      handleEl.val(handle);
+    }
+
+    this.save_tripcode();
+    this.update_trip_colors();
   }
 };
