@@ -3,11 +3,14 @@
 var settings = require("app/client/settings");
 module.exports = {
   events: {
-
+    "change input.tripcode" : "save_tripcode",
+    "change input.handle" : "save_handle",
+    "keyup input.tripcode" : "update_trip_colors",
+    "keyup input.handle" : "update_trip_colors",
+    "change input.newtrip" : "save_newtrip"
   },
   init: function() {
     this.init_tripcodes();
-
   },
   set_board: function(board) {
     this.board = board;

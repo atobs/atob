@@ -17,7 +17,7 @@ var escape_html = require("escape-html");
 var crypto = require("crypto");
 var gen_md5 = function(h) {
   var hash = crypto.Hash("md5");
-  hash.update(h);
+  hash.update("" + h);
   return hash.digest("hex");
 };
 
@@ -204,7 +204,7 @@ module.exports = {
 
     var template_str = api.template.render("controllers/boards/show.html.erb", {
       board: board_id,
-      tripcode: gen_md5("" + Math.random()),
+      tripcode: gen_md5(Math.random()),
       render_posts: render_posts,
       render_boards: render_boards
     });

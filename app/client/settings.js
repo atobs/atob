@@ -1,4 +1,9 @@
 var tripcode_gen = require("app/client/tripcode");
+
+var cookie_opts = {
+  path: '/'
+};
+
 module.exports = {
   gen_tripcode: tripcode_gen,
   update_trip_colors: _.throttle(function() {
@@ -12,21 +17,21 @@ module.exports = {
   save_newtrip: function() {
     var newtripEl = this.$page.find("input.newtrip");
     var newtrip = !!newtripEl.prop('checked');
-    $.cookie("newtrip", newtrip);
+    $.cookie("newtrip", newtrip, cookie_opts);
   },
   save_tripcode: function() {
     var tripcodeEl = this.$page.find("input.tripcode");
     var tripcode = tripcodeEl.val();
     this.save_newtrip();
     this.update_trip_colors();
-    $.cookie("tripcode", tripcode);
+    $.cookie("tripcode", tripcode, cookie_opts);
   },
   save_handle: function() {
     var handleEl = this.$page.find("input.handle");
     var handle = handleEl.val();
     this.save_newtrip();
     this.update_trip_colors();
-    $.cookie("handle", handle);
+    $.cookie("handle", handle, cookie_opts);
   },
   get_tripcode: function() {
     return md5($("input.tripcode").val());
@@ -44,6 +49,10 @@ module.exports = {
     var newtrip = $.cookie("newtrip") === "true";
     var tripcode = $.cookie("tripcode");
     var handle = $.cookie("handle");
+
+    $.removeCookie("newtrip");
+    $.removeCookie("tripcode");
+    $.removeCookie("handle");
 
     if (newtrip) {
       newtripEl.prop('checked', true);
