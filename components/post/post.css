@@ -123,3 +123,20 @@ a:hover {
   }
 }
 
+@-webkit-keyframes pulse_animation {
+  0% { -webkit-transform: scale(1); }
+  5% { -webkit-transform: scale(1.01); }
+  10% { -webkit-transform: scale(1); }
+  15% { -webkit-transform: scale(1.01); }
+  20% { -webkit-transform: scale(1); }
+  100% { -webkit-transform: scale(1); }
+}
+
+.pulse {
+  -webkit-animation-name: 'pulse_animation';
+  -webkit-animation-duration: 6000ms;
+  -webkit-transform-origin:70% 70%;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+}
+

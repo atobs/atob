@@ -13,11 +13,17 @@ module.exports = {
     "blur .reply textarea" : "handle_unfocus",
     "focus .reply textarea" : "handle_focus",
     "mouseenter .replylink" : "handle_mouseenter_replylink",
+    "mouseenter .post" : "handle_removepulse",
+    "mouseleave .post" : "handle_removepulse",
+    "mousemove .post" : "handle_removepulse",
     "mouseleave .replylink" : "handle_mouseleave_replylink"
   },
 
+  handle_removepulse: _.throttle(function() {
+    this.$el.find(".post").removeClass("pulse");
+  }, 200),
+
   handle_mouseenter_replylink: function(e) {
-    var linkEl = e.target;
     var clone_id = $(e.target).data("parent-id");
     var responseEl = $("#reply" + clone_id);
 

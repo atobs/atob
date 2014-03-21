@@ -67,7 +67,8 @@ module.exports = {
     repliesEl.animate({ scrollTop: repliesEl[0].scrollHeight});
   },
   add_reply: function(data) {
-   
+    this.$el.find(".post").addClass("pulse");
+
     var replyId = "reply" + data.post_id;
     if ($("#" + replyId).length) {
       return;
