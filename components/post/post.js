@@ -11,6 +11,18 @@ function add_icons($el) {
   }
 }
 
+function add_replies($el) {
+  var escaped = $el.text();
+  if (escaped) {
+    var reply_str = "<a href='#' class='replylink' data-parent-id='NAME' >&gt;&gt;NAME</a>";
+    var replaced = escaped.replace(/>>#?([\d]+)/g, function(x, post_id) {
+      return reply_str.replace(/NAME/g, post_id.toLowerCase());
+    });
+    $el.html(replaced);
+  }
+
+}
+
 module.exports = {
   tagName: "div",
   className: "",
@@ -36,6 +48,7 @@ module.exports = {
 
     textEl.each(function() {
       add_icons($(this));
+      add_replies($(this));
     });
 
 
@@ -79,6 +92,7 @@ module.exports = {
     // need to find the icons in the text and fix them
     var smallEl = $("<small />").text(data.text);
     add_icons(smallEl);
+    add_replies(smallEl);
 
     replyEl.append(smallEl);
     replyEl.fadeIn();
@@ -93,7 +107,6 @@ module.exports = {
 
     var replies = parseInt(this.$el.find(".reply_count").html() || "0", 10);
     this.$el.find(".reply_count").text(replies + 1);
-
   },
   update_counts: function(counts) {
     counts.sort();

@@ -11,7 +11,22 @@ module.exports = {
     "keyup .reply textarea" : "handle_maybe_submit",
     "keydown .reply textarea" : "handle_typing",
     "blur .reply textarea" : "handle_unfocus",
-    "focus .reply textarea" : "handle_focus"
+    "focus .reply textarea" : "handle_focus",
+    "mouseenter .replylink" : "handle_mouseenter_replylink",
+    "mouseleave .replylink" : "handle_mouseleave_replylink"
+  },
+
+  handle_mouseenter_replylink: function(e) {
+    var linkEl = e.target;
+    var clone_id = $(e.target).data("parent-id");
+    var responseEl = $("#reply" + clone_id);
+
+    $(e.target).popover({ html: true, content: responseEl.html(), placement: "top" });
+    $(e.target).popover("show");
+  },
+
+  handle_mouseleave_replylink: function(e) {
+    $(e.target).popover("hide");
   },
 
   handle_restore: function(e) {
