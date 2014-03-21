@@ -3,10 +3,12 @@ var sequelize = require_app("models/model");
 var Post = require_app("models/post");
 var Ban = sequelize.instance.define('Ban', {
   ip: sequelize.STRING,
-  browser: sequelize.STRING,
   from: sequelize.STRING,
+  post_id: sequelize.INTEGER,
+  reason_id: sequelize.INTEGER,
   tripcode: sequelize.STRING,
-  duration: sequelize.INTEGER
+  hours: sequelize.INTEGER,
+  board: sequelize.STRING
 });
 
 Ban.hasOne(Post);

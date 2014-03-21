@@ -5,12 +5,14 @@ module.exports = {
       id: DataTypes.INTEGER,
       ip: DataTypes.STRING,
       from: DataTypes.STRING,
+      browser: DataTypes.STRING,
       tripcode: DataTypes.STRING,
       reason_id: DataTypes.INTEGER,
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
       post_id: DataTypes.INTEGER,
-      duration: DataTypes.INTEGER
+      hours: DataTypes.INTEGER,
+      board: DataTypes.STRING
     });
     done()
   },
