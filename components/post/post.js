@@ -12,10 +12,10 @@ function add_icons($el) {
 }
 
 function add_replies($el) {
-  var escaped = $el.text();
+  var escaped = $el.html();
   if (escaped) {
     var reply_str = "<a href='#' class='replylink' data-parent-id='NAME' >&gt;&gt;NAME</a>";
-    var replaced = escaped.replace(/>>#?([\d]+)/g, function(x, post_id) {
+    var replaced = escaped.replace(/&gt;&gt;#?([\d]+)/g, function(x, post_id) {
       return reply_str.replace(/NAME/g, post_id.toLowerCase());
     });
     $el.html(replaced);
