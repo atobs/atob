@@ -62,22 +62,9 @@ module.exports = {
 
     s.on("new_reply", function(data) {
       var post = window._POSTS[data.parent_id];
-      post.add_reply(data);
-
-      var focusedPost = $(document.activeElement).parents(".post");
-      if (post.$el.find(".post")[0] !== focusedPost[0]) {
-        // Need to route it to the right post, somehow
-
-        var parent = post.$el.parent();
-        post.$el.stop(true, true).fadeOut(function() {
-          parent.prepend(post.$el);
-          post.$el.fadeIn(function() {
-            post.bumped(); 
-          });
-        });
-
+      if (post) {
+        post.add_reply(data);
       }
-
     });
 
     s.on("joined", function(c) {
