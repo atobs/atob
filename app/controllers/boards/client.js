@@ -47,6 +47,7 @@ module.exports = {
   },
   socket: function(s) {
     s.on("new_post", function(data) {
+      console.log("NEW POST", data);
       $C("post", data, function(cmp) {
         $(".posts").prepend(cmp.$el);
       });

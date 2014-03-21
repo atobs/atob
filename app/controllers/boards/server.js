@@ -1,143 +1,18 @@
 "use strict";
 
-var controller = require_core("server/controller");
-// Helpers for serialized form elements
-var value_of = controller.value_of,
-    array_of = controller.array_of;
-
 var Post = require_app("models/post");
 var Board = require_app("models/board");
-var IP = require_app("models/ip");
 
 var $ = require("cheerio");
 
-var load_controller = require_core("server/controller").load;
-var posts_controller = load_controller("posts");
-
-var escape_html = require("escape-html");
-
-var crypto = require("crypto");
-var gen_md5 = function(h) {
-  var hash = crypto.Hash("md5");
-  hash.update("" + h);
-  return hash.digest("hex");
-};
-
-var REPLY_MAX = 200;
-var POST_TIMEOUT = 20 * 1000;
-var REPLY_TIMEOUT = 3 * 1000;
+var gen_md5 = require_app("server/md5");
+var posting = require_app("server/posting");
+var mod = require_app("server/mod");
 
 var GOING_ONS = {
   active: {},
   idle: {}
 };
-
-var DOWNCONS = [
-  ":thumbs-down:",
-  ":law:"
-];
-
-function handle_new_post(s, board, post, last_post) {
-  if (Date.now() - last_post < POST_TIMEOUT) {
-    return last_post;
-  }
-
-  var title = post.title;
-  var text = post.text;
-  var tripcode = post.tripcode || "";
-  var author = post.author || "anon";
-  var data = {
-    title: title,
-    text: text,
-    tripcode: gen_md5(author + ":" + tripcode),
-    board_id: board,
-    author: author,
-    replies: 0,
-    downs: 0,
-    ups: 0,
-    bumped_at: Date.now()
-  };
-
-  Post.create(data)
-    .success(function(p) {
-      IP.create({
-        post_id: p.id,
-        ip: s.spark.address.ip,
-        browser: s.spark.headers['user-agent']
-      });
-
-      data.post_id = p.id;
-      s.broadcast.to(board).emit("new_post", data);
-      s.emit("new_post", data);
-    });
-
-
-  return Date.now();
-}
-
-function handle_new_reply(s, board, post, last_reply) {
-  if (Date.now() - last_reply < REPLY_TIMEOUT) {
-    return last_reply;
-  }
-
-  var author = post.author || "anon";
-  var text = post.text.split("||");
-  var title = "";
-  if (text.length > 1) {
-    title = text.shift();
-    text = text.join("|");
-  }
-
-  // Do things to the parent, now...
-  var down = false, up = false;
-
-  _.each(DOWNCONS, function(downcon) {
-    if (text.toString().match(downcon)) {
-      down = true;
-    }
-  });
-
-  Post.find({ where: { id: post.post_id }})
-    .success(function(parent) {
-      if (!down && parent.replies < REPLY_MAX) {
-        parent.replies += 1;
-        parent.bumped_at = Date.now();
-      }
-
-      if (down) {
-        parent.downs += 1;
-      }
-
-      if (up) {
-        parent.ups += 1;
-      }
-
-      parent.save();
-
-    });
-
-  Post.create({
-      text: escape_html(text),
-      title: escape_html(title),
-      parent_id: post.post_id,
-      thread_id: post.post_id,
-      tripcode: gen_md5(author + ":" + post.tripcode),
-      author: author
-    }).success(function(p) {
-      p.dataValues.post_id = p.dataValues.id;
-      delete p.dataValues.id;
-
-      var boards_socket = module.exports.get_socket();
-      boards_socket.broadcast.to(board).emit("new_reply", p.dataValues);
-
-      // updating the posts controller, too, because its possible to
-      // watch only one post
-      var post_socket = posts_controller.get_socket();
-      post_socket.broadcast.to(board).emit("new_reply", p.dataValues);
-    });
-
-  return Date.now();
-}
 
 module.exports = {
   // If the controller has assets in its subdirs, set is_package to true
@@ -181,15 +56,11 @@ module.exports = {
       Post.findAll({
           where: { board_id: board_id, thread_id: null },
           order: "bumped_at DESC",
-          limit: 30
+          limit: 10
       }).success(function(results) {
         if (!results || !results.length) {
           return flush();
         }
-
-        results = _.sortBy(results, function(r) { return -new Date(r.bumped_at); });
-        results = results.slice(0, 10);
-        results.reverse();
 
         var div = $("<div></div>");
         _.each(results, function(result) {
@@ -244,11 +115,16 @@ module.exports = {
     var last_reply = 0;
 
     s.on("new_post", function(post) {
-      last_post = handle_new_post(s, _board, post);
+      // Special case mod postings
+      if (_board === "mod") {
+        mod.handle_new_post(s, post);  
+      } else {
+        last_post = posting.handle_new_post(s, _board, post);
+      }
     });
 
     s.on("new_reply", function(post) {
-      last_reply = handle_new_reply(s, _board, post);
+      last_reply = posting.handle_new_reply(s, _board, post);
     });
 
     var idleTimer;
@@ -286,6 +162,6 @@ module.exports = {
     });
   },
 
-  handle_new_reply: handle_new_reply,
-  handle_new_post: handle_new_post
+  handle_new_reply: posting.handle_new_reply,
+  handle_new_post: posting.handle_new_post
 };
