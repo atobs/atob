@@ -47,7 +47,7 @@ module.exports = {
     setInterval(function() {
       var currentTime = (new Date()).getTime();
       if (currentTime > (lastTime + 15000)) {  // ignore small delays
-        window.location.reload();
+        window.bootloader.refresh();
       }
       lastTime = currentTime;
     }, 2000);
