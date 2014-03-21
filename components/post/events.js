@@ -12,11 +12,18 @@ module.exports = {
     "keydown .reply textarea" : "handle_typing",
     "blur .reply textarea" : "handle_unfocus",
     "focus .reply textarea" : "handle_focus",
+    "click .addreply" : "handle_addreply",
     "mouseenter .replylink" : "handle_mouseenter_replylink",
     "mouseenter .post" : "handle_removepulse",
     "mouseleave .post" : "handle_removepulse",
     "mousemove .post" : "handle_removepulse",
     "mouseleave .replylink" : "handle_mouseleave_replylink"
+  },
+
+  handle_addreply: function(e) {
+    var textarea = this.$el.find(".reply textarea");
+    textarea.focus();
+    textarea.val(textarea.val() + " >>" + $(e.target).parents("a").attr("data-parent-id") + " ");
   },
 
   handle_removepulse: _.throttle(function() {

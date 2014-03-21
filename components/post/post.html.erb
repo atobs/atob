@@ -10,7 +10,7 @@
 
 <div class="post <%= maximized ? "maximize" : "" %>" data-post-id="<%= post_id %>" style="display: none">
   <div class="title clearfix">
-    <a href="/p/<%= post_id %>" >
+    <a href="/p/<%= post_id %>" data-parent-id="<%= post_id %>">
       <h4><b><%- title %></b> </h4>
     </a>
 
@@ -18,7 +18,11 @@
       <div class="tripcode" title="<%- author || "anon" %>" data-tripcode="<%= tripcode %>"> </div>
 
       <div class="post_id" style="margin-top: -10px; display: inline-block">
-        <a target="_blank" href="#" title="<%= created_at %>"><small>#<%= post_id %></small></a>
+        <a 
+          href="#" class="addreply" 
+          title="<%= created_at %>" 
+          data-parent-id="<%= post_id %>"><small>#<%= post_id %></small>
+        </a>
       </div>
 
       <div class="created" style="margin-top: -10px; display: inline-block">
@@ -59,8 +63,12 @@
       <% _.each(replies, function(r) { %>
         <div class="ptl pbl" id="reply<%= r.id %>">
           <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
-          <a target="_blank" href="#" title="<%= new Date(r.created_at).toLocaleString() %>">
-            <small>#<%= r.id %></small></a>
+          <a href="#" class="addreply"
+            data-parent-id="<%= r.id %>" 
+            title="<%= new Date(r.created_at).toLocaleString() %>">
+
+            <small>#<%= r.id %></small>
+          </a>
           <b><%- r.title %></b>
           <small class="text"><%- r.text %></small>
         </div>
