@@ -79,7 +79,8 @@ module.exports = {
               flush_post(postCmp.toString());
             });
           });
-          div.prepend(async_work());
+
+          div.append(async_work());
         });
 
         flush(div);

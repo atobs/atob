@@ -42,9 +42,6 @@ module.exports = {
       var tokens = post.title.split(" ");
 
       var op = tokens.shift();
-      var post_id = tokens.shift();
-
-      console.log("OP", op, "POST ID", post_id);
 
       var args = tokens;
 
