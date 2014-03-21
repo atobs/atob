@@ -176,7 +176,6 @@ module.exports = {
           limit: 10,
           include: [
             {model: Post, as: "Children" },
-            {model: Post, as: "Thread" }
           ]
       }).success(function(results) {
         if (!results || !results.length) {
