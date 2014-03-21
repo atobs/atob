@@ -7,6 +7,7 @@ var REPLY_TIMEOUT = 3 * 1000;
 var load_controller = require_core("server/controller").load;
 var gen_md5 = require_app("server/md5");
 
+var Ban = require_app("models/ban");
 var Post = require_app("models/post");
 var IP = require_app("models/ip");
 
@@ -77,6 +78,15 @@ function handle_new_reply(s, board, post, last_reply) {
     if (text.toString().match(downcon)) {
       down = true;
     }
+  });
+
+  Ban.find({
+    where: {
+      ip: s.address.ip
+    }
+  }).success(function(ban) {
+    console.log("IS USER BANNED?", ban);
+    // User has no bans 
   });
 
   Post.find({ where: { id: post.post_id }})

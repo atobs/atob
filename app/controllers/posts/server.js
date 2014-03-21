@@ -73,7 +73,6 @@ module.exports = {
           where: { id: ctx.req.params.id},
           include: [
             {model: Post, as: "Children" },
-            {model: Post, as: "Thread" }
           ]})
         .success(function(result) {
           if (!result) { return flush("Couldn't find post. "); }
@@ -86,7 +85,6 @@ module.exports = {
               where: { id: post_data.thread_id },
               include: [
                 {model: Post, as: "Children" },
-                {model: Post, as: "Thread" }
               ]
             }).success(function(parent) {
               render_posting(parent);

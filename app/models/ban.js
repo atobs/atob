@@ -11,7 +11,7 @@ var Ban = sequelize.instance.define('Ban', {
   board: sequelize.STRING
 });
 
-Ban.hasOne(Post);
-Ban.hasOne(Post, { as: 'Reason', foreignKey: 'reason_id'});
+Ban.belongsTo(Post);
+Ban.belongsTo(Post, { as: 'Reason', foreignKey: 'reason_id'});
 
 module.exports = Ban;
