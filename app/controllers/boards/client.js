@@ -39,6 +39,20 @@ module.exports = {
   init: function() {
     this.init_tripcodes();
     SF.trigger("board_ready");
+
+    var lastTime = (new Date()).getTime();
+
+    // http://stackoverflow.com/questions/4079115/can-any-desktop-browsers-detect-when-the-computer-resumes-from-sleep
+    // if the page becomes inactive for long enough, reload it on the next focus
+    setInterval(function() {
+      var currentTime = (new Date()).getTime();
+      console.log(currentTime, lastTime);
+      if (currentTime > (lastTime + 15000)) {  // ignore small delays
+        window.location.reload();
+      }
+      lastTime = currentTime;
+    }, 2000);
+
   },
   set_board: function(b) {
     console.log("Seeing whats up for board", "/" + b);

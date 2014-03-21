@@ -41,21 +41,58 @@ function handle_new_post(s, board, post, last_post) {
     bumped_at: Date.now()
   };
 
-  Post.create(data)
-    .success(function(p) {
-      IP.create({
-        post_id: p.id,
-        ip: s.spark.address.ip,
-        browser: s.spark.headers['user-agent']
-      });
+  is_user_banned(s, board, function(banned) {
+    if (banned) {
+      board = "ban";
+      data.board_id = "ban";
+    }
 
-      data.post_id = p.id;
-      s.broadcast.to(board).emit("new_post", data);
-      s.emit("new_post", data);
-    });
+    Post.create(data)
+      .success(function(p) {
+        IP.create({
+          post_id: p.id,
+          ip: s.spark.address.ip,
+          browser: s.spark.headers['user-agent']
+        });
+
+        data.post_id = p.id;
+        s.broadcast.to(board).emit("new_post", data);
+        s.emit("new_post", data);
+      });
+  });
 
 
   return Date.now();
+}
+
+function is_user_banned(s, board, done) {
+  Ban.findAll({
+    where: {
+      ip: s.spark.address.ip,
+      board: board
+    }
+  }).success(function(bans) {
+    var banned = false;
+
+    if (bans) {
+      _.each(bans, function(b) {
+        var hours = parseInt(b.hours, 10);
+        if (!hours) {
+          // Permabanned...
+          banned = true;
+          return;
+        }
+
+        var created_at = +new Date(b.created_at);
+        var banned_until = created_at + (60 * 60 * hours * 1000);
+        if (Date.now() - banned_until < 0) {
+          banned = true;
+        }
+      });
+    }
+
+    done(banned);
+  });
 }
 
 function handle_new_reply(s, board, post, last_reply) {
@@ -80,56 +117,60 @@ function handle_new_reply(s, board, post, last_reply) {
     }
   });
 
-  Ban.find({
-    where: {
-      ip: s.address.ip
+
+  is_user_banned(s, board, function(banned) {
+    if (banned) {
+      board = "ban";
+      title = "reply to " + post.post_id + ":" + title;
     }
-  }).success(function(ban) {
-    console.log("IS USER BANNED?", ban);
-    // User has no bans 
+
+    Post.find({ where: { id: post.post_id }})
+      .success(function(parent) {
+
+        if (!banned) {
+          if (!down && parent.replies < REPLY_MAX) {
+            parent.replies += 1;
+            parent.bumped_at = Date.now();
+          }
+
+          if (down) {
+            parent.downs += 1;
+          }
+
+          if (up) {
+            parent.ups += 1;
+          }
+
+          parent.save();
+        }
+
+      });
+
+    Post.create({
+        text: escape_html(text),
+        title: escape_html(title),
+        // null out thread and parent id on posts from banned user
+        parent_id: banned ? null : post.post_id,
+        thread_id: banned ? null : post.post_id,
+        tripcode: gen_md5(author + ":" + post.tripcode),
+        author: author,
+        board_id: board
+      }).success(function(p) {
+        p.dataValues.post_id = p.dataValues.id;
+        delete p.dataValues.id;
+
+        var boards_controller = load_controller("boards");
+        var boards_socket = boards_controller.get_socket();
+        boards_socket.broadcast.to(board).emit("new_reply", p.dataValues);
+
+        // updating the posts controller, too, because its possible to
+        // watch only one post
+        var posts_controller = load_controller("posts");
+        var post_socket = posts_controller.get_socket();
+        post_socket.broadcast.to(board).emit("new_reply", p.dataValues);
+      });
+
   });
-
-  Post.find({ where: { id: post.post_id }})
-    .success(function(parent) {
-      if (!down && parent.replies < REPLY_MAX) {
-        parent.replies += 1;
-        parent.bumped_at = Date.now();
-      }
-
-      if (down) {
-        parent.downs += 1;
-      }
-
-      if (up) {
-        parent.ups += 1;
-      }
-
-      parent.save();
-
-    });
-
-  Post.create({
-      text: escape_html(text),
-      title: escape_html(title),
-      parent_id: post.post_id,
-      thread_id: post.post_id,
-      tripcode: gen_md5(author + ":" + post.tripcode),
-      author: author
-    }).success(function(p) {
-      p.dataValues.post_id = p.dataValues.id;
-      delete p.dataValues.id;
-
-      var boards_controller = load_controller("boards");
-      var boards_socket = boards_controller.get_socket();
-      boards_socket.broadcast.to(board).emit("new_reply", p.dataValues);
-
-      // updating the posts controller, too, because its possible to
-      // watch only one post
-      var posts_controller = load_controller("posts");
-      var post_socket = posts_controller.get_socket();
-      post_socket.broadcast.to(board).emit("new_reply", p.dataValues);
-    });
-
   return Date.now();
 }
 
