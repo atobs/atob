@@ -7,6 +7,8 @@ var value_of = controller.value_of,
 
 var Post = require_app("models/post");
 var Board = require_app("models/board");
+var IP = require_app("models/ip");
+
 var $ = require("cheerio");
 
 var load_controller = require_core("server/controller").load;
@@ -58,10 +60,17 @@ function handle_new_post(s, board, post, last_post) {
 
   Post.create(data)
     .success(function(p) {
+      IP.create({
+        post_id: p.id,
+        ip: s.spark.address.ip,
+        browser: s.spark.headers['user-agent']
+      });
+
       data.post_id = p.id;
       s.broadcast.to(board).emit("new_post", data);
       s.emit("new_post", data);
     });
+
 
   return Date.now();
 }
@@ -70,7 +79,6 @@ function handle_new_reply(s, board, post, last_reply) {
   if (Date.now() - last_reply < REPLY_TIMEOUT) {
     return last_reply;
   }
-
 
   var author = post.author || "anon";
   var text = post.text.split("||");
@@ -122,7 +130,7 @@ function handle_new_reply(s, board, post, last_reply) {
       var boards_socket = module.exports.get_socket();
       boards_socket.broadcast.to(board).emit("new_reply", p.dataValues);
 
-      // updating the posts controller, too, because its possible to 
+      // updating the posts controller, too, because its possible to
       // watch only one post
       var post_socket = posts_controller.get_socket();
       post_socket.broadcast.to(board).emit("new_reply", p.dataValues);
@@ -155,12 +163,12 @@ module.exports = {
           order: "name ASC"
         })
         .success(function(results) {
-          var boards = _.map(results, function(r) { 
-            return r.getDataValue('name'); 
+          var boards = _.map(results, function(r) {
+            return r.getDataValue('name');
           });
 
           var template_str = api.template.partial("home/board_links.html.erb", {
-            boards: boards 
+            boards: boards
           });
 
           flush(template_str);
@@ -172,31 +180,37 @@ module.exports = {
     var render_posts = api.page.async(function(flush) {
       Post.findAll({
           where: { board_id: board_id, thread_id: null },
-          order: "bumped_at ASC",
-          limit: 10,
-          include: [
-            {model: Post, as: "Children" },
-          ]
+          order: "bumped_at DESC",
+          limit: 30
       }).success(function(results) {
         if (!results || !results.length) {
           return flush();
         }
 
+        results = _.sortBy(results, function(r) { return -new Date(r.bumped_at); });
+        results = results.slice(0, 10);
+        results.reverse();
+
         var div = $("<div></div>");
         _.each(results, function(result) {
-          var post_data = result.dataValues;
-          post_data.post_id = post_data.id;
-          delete post_data.id;
-          post_data.replies = _.map(result.children, function(c) { return c.dataValues; } );
-          post_data.replies = _.sortBy(post_data.replies, function(d) {
-            return new Date(d.created_at);
-          });
+          var async_work = api.page.async(function(flush_post) {
+            result.getChildren().success(function(children) {
+              var post_data = result.dataValues;
+              post_data.post_id = post_data.id;
+              delete post_data.id;
+              post_data.replies = _.map(children, function(c) { return c.dataValues; } );
+              post_data.replies = _.sortBy(post_data.replies, function(d) {
+                return d.id;
+              });
 
-          post_data.client_options = _.clone(post_data);
-          var postCmp = $C("post", post_data);
-          div.prepend(postCmp.$el);
-          postCmp.marshall();
+              post_data.client_options = _.clone(post_data);
+              var postCmp = $C("post", post_data);
+              flush_post(postCmp.toString());
+            });
+          });
+          div.prepend(async_work());
         });
+
         flush(div);
       });
     });
