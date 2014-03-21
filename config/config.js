@@ -12,6 +12,7 @@ module.exports = {
   https_port: process.env.HTTPS_PORT || 3443,
   max_http_sockets: 1000,
   max_https_sockets: 1000,
+  refresh_on_restart: true,
   require_https: true,
   use_cls: false
 };
