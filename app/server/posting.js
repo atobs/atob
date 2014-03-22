@@ -34,7 +34,7 @@ function handle_new_post(s, board, post, last_post) {
     title: escape_html(title),
     tripcode: gen_md5(author + ":" + tripcode),
     board_id: board,
-    author: author,
+    author: escape_html(author),
     replies: 0,
     downs: 0,
     ups: 0,
@@ -153,7 +153,7 @@ function handle_new_reply(s, board, post, last_reply) {
         parent_id: banned ? null : post.post_id,
         thread_id: banned ? null : post.post_id,
         tripcode: gen_md5(author + ":" + post.tripcode),
-        author: author,
+        author: escape_html(author),
         board_id: board
       }).success(function(p) {
         p.dataValues.post_id = p.dataValues.id;
