@@ -88,7 +88,10 @@ module.exports = {
     infoEl.html("#" + data.post_id);
     infoEl.attr("title", (new Date(data.created_at)).toLocaleString());
     replyEl.append(infoEl);
-    replyEl.append($("<b />").text(data.title));
+    var titleEl = $("<b />").text(data.title);
+    add_icons(titleEl);
+    add_replies(titleEl);
+    replyEl.append(titleEl);
 
     // need to find the icons in the text and fix them
     var smallEl = $("<small />").text(data.text);
