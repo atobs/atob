@@ -30,8 +30,8 @@ function handle_new_post(s, board, post, last_post) {
   var tripcode = post.tripcode || "";
   var author = post.author || "anon";
   var data = {
-    title: title,
-    text: text,
+    text: escape_html(text),
+    title: escape_html(title),
     tripcode: gen_md5(author + ":" + tripcode),
     board_id: board,
     author: author,
