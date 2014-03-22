@@ -7,7 +7,9 @@ module.exports = {
     "change input.handle" : "save_handle",
     "keyup input.tripcode" : "update_trip_colors",
     "keyup input.handle" : "update_trip_colors",
-    "change input.newtrip" : "save_newtrip"
+    "change input.newtrip" : "save_newtrip",
+    "click .identity_tripcode" : "regen_tripcode",
+    "click .regen_tripcode" : "regen_tripcode"
   },
   init: function() {
     this.init_tripcodes();

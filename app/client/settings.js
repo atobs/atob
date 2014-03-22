@@ -42,6 +42,14 @@ module.exports = {
   get_handle: function() {
     return $("input.handle").val();
   },
+  regen_tripcode: function() {
+    console.log("REGENERING TRIPCODE");
+    var tripcodeEl = this.$page.find("input.tripcode");
+    var tripcode = md5(Math.random() + "");
+    tripcodeEl.val(tripcode);
+    this.save_tripcode();
+    this.update_trip_colors();
+  },
   init_tripcodes: function() {
     var tripcodeEl = this.$page.find("input.tripcode");
     var handleEl = this.$page.find("input.handle");

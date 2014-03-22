@@ -1,13 +1,18 @@
-  <div class="col-md-12 collapse settings clearfix">
+  <div class="col-sm-12 col-md-12 collapse settings clearfix">
     <hr />
     <h2>identity</h2>
     <input name="handle" class="form-control handle" type="text" placeholder="handle" value="anon" />
     <div class="mtl"> </div>
     <input name="tripcode" class="tripcode form-control" type="password" placeholder="tripcode" value=" <%= tripcode %>" />
-    <div class="checkbox">
+
+    <div class="checkbox lfloat mtl ptl">
       <label>
         <input type="checkbox" name="newtrip" class="newtrip"> generate new tripcode every page
       </label>
+    </div>
+
+    <div class="btn btn-primary regen_tripcode rfloat mtl">
+      randomize me
     </div>
 
   </div>

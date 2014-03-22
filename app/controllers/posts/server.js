@@ -26,6 +26,7 @@ module.exports = {
 
   get: function(ctx, api) {
     this.set_fullscreen(true);
+    api.template.add_stylesheet("post");
 
     var render_boards = api.page.async(function(flush) {
       Board.findAll({
