@@ -55,7 +55,7 @@
     <%- text %>
   </div>
 
-  <div id="post<%= post_id %>" class="<%= collapsed ? "collapse" : "" %> cpost">
+  <div id="post<%= post_id %>" class="cpost">
 
     <div class="replies clearfix mtl col-md-12 <%= replies.length > 6 ? "many" : "" %>">
       <% _.each(replies, function(r) { %>
@@ -79,12 +79,12 @@
   <div class="clearfix">
     <a title="maximize" class="mtl mll rfloat restore">[expand]</a>
 
-    <a href="#" class="mtl see_replies lfloat" data-toggle="collapse" data-target="#post<%= post_id %>">
+    <span href="#" class="mtl see_replies lfloat">
         [
         <span class="reply_count"><%= replies.length %></span> replies
         ]
 
-    </a>
+    </span>
 
   </div>
 
