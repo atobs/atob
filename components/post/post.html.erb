@@ -18,9 +18,9 @@
       <div class="tripcode" title="<%- author || "anon" %>" data-tripcode="<%= tripcode %>"> </div>
 
       <div class="post_id" style="margin-top: -10px; display: inline-block">
-        <a 
-          href="#" class="addreply" 
-          title="<%= created_at %>" 
+        <a
+          href="#" class="addreply"
+          title="<%= created_at %>"
           data-parent-id="<%= post_id %>"><small>#<%= post_id %></small>
         </a>
       </div>
@@ -64,7 +64,7 @@
         <div class="ptl pbl" id="reply<%= r.id %>">
           <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
           <a href="#" class="addreply"
-            data-parent-id="<%= r.id %>" 
+            data-parent-id="<%= r.id %>"
             title="<%= new Date(r.created_at).toLocaleString() %>">
 
             <small>#<%= r.id %></small>
@@ -79,7 +79,9 @@
   </div>
 
   <div class="clearfix <%= replies.length > 6 ? "many" : "" %>">
-    <a title="maximize" class="mtl mll rfloat restore">[expand]</a>
+    <a title="maximize" class="mtl mll rfloat restore link">
+      <%= maximized ? "[collapse]" : "[expand]" %>
+    </a>
 
     <span href="#" class="mtl see_replies lfloat">
         <span class="reply_count"><%= replies.length %></span> replies

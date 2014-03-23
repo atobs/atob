@@ -44,6 +44,13 @@ module.exports = {
 
   handle_restore: function(e) {
     this.$el.find(".post").toggleClass("maximize");
+    var maximized = this.$el.find(".post").hasClass("maximize");
+    if (maximized) {
+      this.$el.find(".restore.link").html("[collapse]");
+    } else {
+      this.$el.find(".restore.link").html("[expand]");
+    }
+
     this.bumped();
     e.preventDefault();
   },
