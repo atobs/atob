@@ -63,6 +63,11 @@ module.exports = {
   },
   socket: function(s) {
     s.on("new_post", function(data) {
+      var post = window._POSTS[data.post_id];
+      if (post) {
+        return;
+      }
+
       $C("post", data, function(cmp) {
         $(".posts").prepend(cmp.$el);
       });
