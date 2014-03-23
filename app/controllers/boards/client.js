@@ -62,11 +62,12 @@ module.exports = {
     this.trigger("set_board");
   },
   socket: function(s) {
+    var added = {};
     s.on("new_post", function(data) {
-      var post = window._POSTS[data.post_id];
-      if (post) {
+      if (added[data.post_id]) {
         return;
       }
+      added[data.post_id] = true;
 
       $C("post", data, function(cmp) {
         $(".posts").prepend(cmp.$el);
