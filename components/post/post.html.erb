@@ -14,16 +14,18 @@
       <h4><b class="text"><%- title %></b> </h4>
     </a>
 
-    <div class="mbm">
-      <div class="tripcode" title="<%- author || "anon" %>" data-tripcode="<%= tripcode %>"> </div>
 
-      <div class="post_id" style="margin-top: -10px; display: inline-block">
+    <div class="mbm">
+      <div class="tripcode lfloat mtm" title="<%- author || "anon" %>" data-tripcode="<%= tripcode %>"> </div>
+
+      <div class="post_id lfloat mrl">
         <a
           href="#" class="addreply"
           title="<%= created_at %>"
           data-parent-id="<%= post_id %>"><small>#<%= post_id %></small>
         </a>
       </div>
+
 
       <div class="created" style="margin-top: -10px; display: inline-block">
         <small>posted

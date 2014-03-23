@@ -48,7 +48,7 @@ module.exports = {
       return;
     }
 
-    var replyEl =$("<div class='ptl pbl reply'/>");
+    var replyEl =$("<div class='pam reply'/>");
     replyEl.attr("id", replyId);
     var tripEl = $("<div class='tripcode' />")
       .data("tripcode", data.tripcode)
@@ -59,10 +59,10 @@ module.exports = {
 
     replyEl.append(tripEl);
 
-    var infoEl = $("<a href='#' class='mrm' style='margin-right: 5px' >");
+    var infoEl = $("<a href='#' class='rfloat' style='' >");
     infoEl.html("#" + data.post_id);
     infoEl.attr("title", (new Date(data.created_at)).toLocaleString());
-    replyEl.append(infoEl);
+    replyEl.append($("<small />").append(infoEl));
     var titleEl = $("<b />").text(data.title);
     this.helpers['app/client/text'].format_text(titleEl);
     replyEl.append(titleEl);
