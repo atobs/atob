@@ -59,9 +59,9 @@
 
   <div id="post<%= post_id %>" class="cpost">
 
-    <div class="replies clearfix mtl col-md-12 <%= replies.length > 6 ? "many" : "" %>">
+    <div class="replies clearfix mtm mbm col-md-12 <%= replies.length > 6 ? "many" : "" %>">
       <% _.each(replies, function(r) { %>
-        <div class="ptl pbl" id="reply<%= r.id %>">
+        <div class="pam reply" id="reply<%= r.id %>">
           <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
           <a href="#" class="addreply"
             data-parent-id="<%= r.id %>"

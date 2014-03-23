@@ -48,7 +48,7 @@ module.exports = {
       return;
     }
 
-    var replyEl =$("<div class='ptl pbl'/>");
+    var replyEl =$("<div class='ptl pbl reply'/>");
     replyEl.attr("id", replyId);
     var tripEl = $("<div class='tripcode' />")
       .data("tripcode", data.tripcode)

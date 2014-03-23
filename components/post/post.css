@@ -153,3 +153,7 @@
 .addreply {
   float: right;
 }
+
+.reply:hover {
+  background-color: #eaeaea;
+}
