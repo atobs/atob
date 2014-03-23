@@ -23,7 +23,7 @@ module.exports = {
   handle_addreply: function(e) {
     var textarea = this.$el.find(".reply textarea");
     textarea.focus();
-    textarea.val(textarea.val() + " >>" + $(e.target).parents("a").attr("data-parent-id") + " ");
+    textarea.val(textarea.val() + " >>" + $(e.target).closest("a").attr("data-parent-id") + " ");
   },
 
   handle_removepulse: _.throttle(function() {
