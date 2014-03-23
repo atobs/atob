@@ -1,4 +1,6 @@
 
+var format_text = require("app/client/text");
+
 function add_icons($el) {
   var escaped = $el.text();
   if (escaped) {
@@ -16,13 +18,13 @@ module.exports = {
   },
   show_recent_threads: function() {
     $(".threads.recent.hidden .text").each(function() {
-      add_icons($(this));
+      format_text.add_icons($(this));
     });
     $(".threads.recent.hidden").removeClass("hidden").hide().fadeIn();
   },
   show_recent_posts: function() {
     $(".posts.recent.hidden .text").each(function() {
-      add_icons($(this));
+      format_text.add_icons($(this));
     });
     $(".posts.recent.hidden").removeClass("hidden").hide().fadeIn();
   }

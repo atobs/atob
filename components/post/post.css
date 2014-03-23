@@ -3,6 +3,11 @@
   background-color: #eaeaea;
 }
 
+.placeholder {
+  width: 90px;
+  display: inline-block;
+}
+
 .post {
   padding: 10px;
   padding-left: 20px;

@@ -4,6 +4,6 @@
   "styles": [],
 
   "template": "post.html.erb",
-  "helpers": [ "app/client/tripcode" ],
+  "helpers": [ "app/client/tripcode", "app/client/text" ],
   "no_redefine" : false
 }

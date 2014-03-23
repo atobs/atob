@@ -45,4 +45,6 @@ function gen_tripcode(el) {
 }
 
 window.gen_tripcode = gen_tripcode;
-module.exports = gen_tripcode;
+module.exports = {
+  gen_tripcode: gen_tripcode
+};

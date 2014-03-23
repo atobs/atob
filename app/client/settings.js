@@ -1,4 +1,4 @@
-var tripcode_gen = require("app/client/tripcode");
+var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 
 var cookie_opts = {
   path: '/'
@@ -7,12 +7,10 @@ var cookie_opts = {
 module.exports = {
   gen_tripcode: tripcode_gen,
   update_trip_colors: _.throttle(function() {
-    if (SF.controller().gen_tripcode) {
-      var tripcodeHash = this.$el.find(".identity_tripcode");
-      tripcodeHash.empty();
-      tripcodeHash.data("tripcode", this.get_trip_identity());
-      SF.controller().gen_tripcode(tripcodeHash);
-    }
+    var tripcodeHash = this.$el.find(".identity_tripcode");
+    tripcodeHash.empty();
+    tripcodeHash.data("tripcode", this.get_trip_identity());
+    tripcode_gen(tripcodeHash);
   }, 100),
   save_newtrip: function() {
     var newtripEl = this.$page.find("input.newtrip");

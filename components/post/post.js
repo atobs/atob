@@ -1,28 +1,5 @@
 "use strict";
 
-function add_icons($el) {
-  var escaped = $el.text();
-  if (escaped) {
-    var icon_str = "<i class='icon icon-NAME' title=':NAME:' />";
-    var replaced = escaped.replace(/:([\w-]+):/g, function(x, icon) {
-      return icon_str.replace(/NAME/g, icon.toLowerCase());
-    });
-    $el.html(replaced);
-  }
-}
-
-function add_replies($el) {
-  var escaped = $el.html();
-  if (escaped) {
-    var reply_str = "<a href='#' class='replylink' data-parent-id='NAME' >&gt;&gt;NAME</a>";
-    var replaced = escaped.replace(/&gt;&gt;#?([\d]+)/g, function(x, post_id) {
-      return reply_str.replace(/NAME/g, post_id.toLowerCase());
-    });
-    $el.html(replaced);
-  }
-
-}
-
 module.exports = {
   tagName: "div",
   className: "",
@@ -47,19 +24,16 @@ module.exports = {
     var textEl = this.$el.find(".text");
 
     textEl.each(function() {
-      add_icons($(this));
-      add_replies($(this));
+      self.helpers['app/client/text'].format_text($(this));
     });
 
-
-    var repliesEl = self.$el.find(".replies");
 
     self.$el.find(".timeago").timeago();
     self.$el.find(".post").fadeIn(function() {
       self.bumped(); 
     });
     self.$el.find("div.tripcode").each(function() {
-      gen_tripcode(this);
+      self.helpers['app/client/tripcode'].gen_tripcode(this);
     });
   },
   bumped: function() {
@@ -81,7 +55,7 @@ module.exports = {
       .attr("title", data.author);
 
     tripEl.css("marginRight", "8px");
-    gen_tripcode(tripEl);
+    this.helpers['app/client/tripcode'].gen_tripcode(tripEl);
 
     replyEl.append(tripEl);
 
@@ -90,14 +64,13 @@ module.exports = {
     infoEl.attr("title", (new Date(data.created_at)).toLocaleString());
     replyEl.append(infoEl);
     var titleEl = $("<b />").text(data.title);
-    add_icons(titleEl);
-    add_replies(titleEl);
+    this.helpers['app/client/text'].format_text(titleEl);
     replyEl.append(titleEl);
 
     // need to find the icons in the text and fix them
     var smallEl = $("<small />").text(data.text);
-    add_icons(smallEl);
-    add_replies(smallEl);
+    this.helpers['app/client/text'].format_text(smallEl);
+    console.log(this.helpers);
 
     replyEl.append(smallEl);
     replyEl.fadeIn();
