@@ -10,6 +10,16 @@
   <div class="col-md-4">
     <h2>boards</h2>
     <%= render_boards() %>
+
+    <div class="recent hidden">
+      <h3>recent posts</h3>
+      <%= render_recent_posts() %>
+    </div>
+
+    <div class="recent hidden">
+      <h3>recent threads</h3>
+      <%= render_recent_threads() %>
+    </div>
   </div>
 
   <div class="col-md-6">
@@ -17,10 +27,9 @@
 
     <div>
       <p>
-        <b>a to b</b> is a real time
-        <a href="http://en.wikipedia.org/wiki/Textboard">textboard</a>. 
-        
-        join a board and speak whatevers on your mind. 
+        <b>a to b</b> is a real time <b>textboard</b>. a textboard is like a
+        forum, but there's no registration and post authors are anonymous.
+        sound interesting? join a board and speak whatevers on your mind. 
         
         reading between the letters is encouraged. 
 

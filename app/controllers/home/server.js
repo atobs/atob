@@ -3,6 +3,8 @@
 var Board = require_app("models/board");
 
 var $ = require("cheerio");
+var Post = require_app("models/post");
+
 var ICONS = [
   "aaabattery", "abacus", "accountfilter", "acsource", "addfriend", "address",
   "addshape", "addtocart", "addtolist", "adjust", "adobe", "ads-bilboard",
@@ -400,6 +402,42 @@ module.exports = {
   index: function(ctx, api) {
     this.set_fullscreen(true);
     this.set_title("atob");
+    var render_recent_posts = api.page.async(function(flush) {
+      Post.findAll({
+        where: {
+          board_id: ["a", "b"],
+          parent_id: {
+            ne: null
+          }
+        },
+        order: "id DESC",
+        limit: 3
+      }).success(function(posts) {
+        var template_str = api.template.partial("home/recent_posts.html.erb", {
+          posts: posts,
+        });
+        api.bridge.controller("home", "show_recent");
+        flush(template_str);
+      });
+    });
+
+    var render_recent_threads = api.page.async(function(flush) {
+      Post.findAll({
+        where: {
+          board_id: ["a", "b"],
+          thread_id: null
+        },
+        order: "id DESC",
+        limit: 3
+      }).success(function(posts) {
+        var template_str = api.template.partial("home/recent_posts.html.erb", {
+          posts: posts
+        });
+        api.bridge.controller("home", "show_recent");
+        flush(template_str);
+      });
+    });
+
     var render_boards = api.page.async(function(flush) {
       Board.findAll({
           order: "name ASC"
@@ -420,6 +458,8 @@ module.exports = {
 
     var template_str = api.template.render("controllers/home.html.erb", {
       render_boards: render_boards,
+      render_recent_posts: render_recent_posts,
+      render_recent_threads: render_recent_threads
     });
 
     api.page.render({ content: template_str});
