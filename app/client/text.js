@@ -2,7 +2,7 @@
 function add_newlines($el) {
   var escaped = $el.text();
   if (escaped) {
-    var replaced = escaped.replace(/\n\s*\n*/g, 
+    var replaced = escaped.replace(/\n\s*\n+/g, 
       "<br class='mtl mbl' /> <span class='placeholder' >&nbsp;</span>");
     $el.html(replaced);
   }
