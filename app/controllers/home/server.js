@@ -416,7 +416,7 @@ module.exports = {
         var template_str = api.template.partial("home/recent_posts.html.erb", {
           posts: posts,
         });
-        api.bridge.controller("home", "show_recent");
+        api.bridge.controller("home", "show_recent_posts");
         flush(template_str);
       });
     });
@@ -433,7 +433,8 @@ module.exports = {
         var template_str = api.template.partial("home/recent_posts.html.erb", {
           posts: posts
         });
-        api.bridge.controller("home", "show_recent");
+
+        api.bridge.controller("home", "show_recent_threads");
         flush(template_str);
       });
     });

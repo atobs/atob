@@ -1,0 +1,15 @@
+<% set_default("posts", []) %>
+
+<div>
+  <% _.each(posts, function(post) { %>
+    <div>
+      /<%- post.board_id || "?" %> 
+      <a href="/p/<%= post.id %>">
+        <small>
+          <b class="text"><%- post.title %></b>
+          <span class="text"><%- post.text %></span>
+        </small>
+      </a>
+    </div>
+  <% }) %>
+</div>
