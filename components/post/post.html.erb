@@ -31,7 +31,9 @@
         </small>
       </div>
 
-      <small><a title="maximize" class="mll rfloat restore icon-restore"></a></small>
+      <small class="<%= replies.length > 6 ? "many" : "" %>">
+        <a title="maximize" class="mll rfloat restore icon-restore"></a>
+      </small>
       <small class="last_reply rfloat">
         last reply was
         <% if (replies.length) { %>
@@ -76,7 +78,7 @@
 
   </div>
 
-  <div class="clearfix">
+  <div class="clearfix <%= replies.length > 6 ? "many" : "" %>">
     <a title="maximize" class="mtl mll rfloat restore">[expand]</a>
 
     <span href="#" class="mtl see_replies lfloat">

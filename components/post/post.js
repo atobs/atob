@@ -84,6 +84,7 @@ module.exports = {
     gen_tripcode(tripEl);
 
     replyEl.append(tripEl);
+
     var infoEl = $("<a href='#' class='mrm' style='margin-right: 5px' >");
     infoEl.html("#" + data.post_id);
     infoEl.attr("title", (new Date(data.created_at)).toLocaleString());
@@ -111,6 +112,9 @@ module.exports = {
 
     var replies = parseInt(this.$el.find(".reply_count").html() || "0", 10);
     this.$el.find(".reply_count").text(replies + 1);
+    if (repliesEl.children().length > 6) {
+      this.$el.find(".restore").show();
+    }
   },
   update_counts: function(counts) {
     counts.sort();
