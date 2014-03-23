@@ -75,14 +75,6 @@
   }
 }
 
-a {
-  color: #666;
-}
-
-a:hover {
-  color: #888;
-}
-
 .tripcode {
   display: inline-block;
   height: 10px;
