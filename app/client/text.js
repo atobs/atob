@@ -1,6 +1,6 @@
 // Takes HTML
 function add_newlines($el) {
-  var escaped = $el.text();
+  var escaped = $el.html();
   if (escaped) {
     escaped = escaped.replace(/^\s*(.*)\s*$/, "$1");
     var replaced = escaped.replace(/\n\s*\n+/g, 
