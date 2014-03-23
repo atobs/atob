@@ -116,11 +116,12 @@ module.exports = {
     var last_reply = 0;
 
     s.on("new_post", function(post) {
+      var board = post.board || _board;
       // Special case mod postings
-      if (_board === "mod") {
+      if (board === "mod") {
         mod.handle_new_post(s, post);  
       } else {
-        last_post = posting.handle_new_post(s, _board, post);
+        last_post = posting.handle_new_post(s, board, post);
       }
     });
 

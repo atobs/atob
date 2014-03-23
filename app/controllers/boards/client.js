@@ -29,6 +29,7 @@ module.exports = {
 
     datas.tripcode = tripcode;
     datas.author = handle;
+    datas.board = this.board;
 
     if (datas.title.trim() === "" && datas.text.trim() === "") {
       return;
