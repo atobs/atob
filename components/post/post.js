@@ -88,6 +88,18 @@ module.exports = {
     if (repliesEl.children().length > 6) {
       this.$el.find(".restore").show();
     }
+
+    if (data.up) {
+      var ups = parseInt(this.$el.find(".ups_count").html() || "0", 10);
+      this.$el.find(".ups_count").text(ups + 1);
+      this.$el.find(".ups").removeClass("hidden");
+    }
+
+    if (data.down) {
+      var downs = parseInt(this.$el.find(".downs_count").html() || "0", 10);
+      this.$el.find(".downs_count").text(downs + 1);
+      this.$el.find(".downs").removeClass("hidden");
+    }
   },
   update_counts: function(counts) {
     counts.sort();

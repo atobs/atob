@@ -16,7 +16,7 @@ var DOWNCONS = [
   ":law:"
 ];
 
-var UPCONS = [ ];
+var UPCONS = [ ":thumbs-up:" ];
 
 
 var escape_html = require("escape-html");
@@ -117,6 +117,12 @@ function handle_new_reply(s, board, post, last_reply) {
     }
   });
 
+  _.each(UPCONS, function(upcon) {
+    if (text.toString().match(upcon)) {
+      up = true;
+    }
+  });
+
 
   is_user_banned(s, board, function(banned) {
     if (banned) {
@@ -157,6 +163,8 @@ function handle_new_reply(s, board, post, last_reply) {
         board_id: board
       }).success(function(p) {
         p.dataValues.post_id = p.dataValues.id;
+        p.dataValues.up = up;
+        p.dataValues.down = down;
         delete p.dataValues.id;
 
         var boards_controller = load_controller("boards");

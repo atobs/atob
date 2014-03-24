@@ -85,10 +85,22 @@
       <%= maximized ? "[collapse]" : "[expand]" %>
     </a>
 
-    <span href="#" class="mtl see_replies lfloat">
-        <span class="reply_count"><%= replies.length %></span> replies
+    <div href="#" class="mtl see_replies lfloat">
+        <span class="icon-chat mtl"> </span>
+        <span class="reply_count count"><%= replies.length || 0 %></span> 
 
-    </span>
+    </div>
+
+    <div href="#" class="mtl ups lfloat <%= ups ? "" : "hidden" %>" style="margin-left: 20px">
+        <span class="icon-minigrin mtl"></span>
+        <span class="ups_count count"><%= ups %> </span>
+    </div>
+
+    <div href="#" class="mtl downs lfloat <%= downs ? "" : "hidden" %>" style="margin-left: 20px">
+        <span class="icon-miniangry mtl"></span>
+        <span class="downs_count count"><%= downs %> </span>
+    </div>
+
 
   </div>
 
