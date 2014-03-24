@@ -31,13 +31,24 @@ function add_replies($el) {
     });
     $el.html(replaced);
   }
+}
 
+function shorten_text($el) {
+  var escaped = $el.html();
+  if (escaped.length > 300) {
+    $el.addClass("hideContent");
+    $el.addClass("truncable");
+
+    var show_link = $("<a class='show_more' href='#'>full comment</a>");
+    $el.after(show_link);
+  }
 }
 
 function format_text($el) {
   add_icons($el);
   add_replies($el);
   add_newlines($el);
+  shorten_text($el);
 }
 
 module.exports = {

@@ -1,6 +1,7 @@
 .op.text {
   padding: 10px;
   background-color: #eaeaea;
+  display: block;
 }
 
 .placeholder {
@@ -21,6 +22,10 @@
 
 .text {
   word-wrap: break-word;
+}
+
+.truncable {
+  display: inline-block;
 }
 
 .restore {
@@ -156,4 +161,9 @@
 
 .reply:hover {
   background-color: #eaeaea;
+}
+
+.hideContent {
+  max-height: 6em;
+  overflow: hidden;
 }
