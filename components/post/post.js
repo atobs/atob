@@ -71,9 +71,10 @@ module.exports = {
 
     // need to find the icons in the text and fix them
     var smallEl = $("<small />").text(data.text);
+    replyEl.append(smallEl);
+
     this.helpers['app/client/text'].format_text(smallEl);
 
-    replyEl.append(smallEl);
     replyEl.fadeIn();
 
     var repliesEl = this.$el.find(".replies");

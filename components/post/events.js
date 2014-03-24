@@ -22,7 +22,7 @@ module.exports = {
   },
 
   handle_see_more: function(e) {
-    $(e.target).siblings(".truncable").toggleClass("hideContent");
+    $(e.target).closest("a").siblings(".truncable").toggleClass("hideContent");
   },
 
   handle_addreply: function(e) {
