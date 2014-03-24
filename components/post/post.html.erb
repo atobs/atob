@@ -65,10 +65,9 @@
     <div class="replies clearfix mtm mbm col-md-12 <%= replies.length > 6 ? "many" : "" %>">
       <% _.each(replies, function(r) { %>
         <% highlighted = highlight_id == r.id %>
-        <% console.log("highlighted", highlighted, highlight_id, r.id); %>
         <div class="pam reply <%= highlighted ? "highlight" : "" %>" id="reply<%= r.id %>">
           <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
-          <a href="#" class="addreply"
+          <a href="/p/<%=r.id%>" class="addreply"
             data-parent-id="<%= r.id %>"
             title="<%= new Date(r.created_at).toLocaleString() %>">
 

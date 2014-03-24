@@ -26,6 +26,7 @@ module.exports = {
   },
 
   handle_addreply: function(e) {
+    e.preventDefault();
     var textarea = this.$el.find(".reply textarea");
     textarea.focus();
     textarea.val(textarea.val() + " >>" + $(e.target).closest("a").attr("data-parent-id") + " ");

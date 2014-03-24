@@ -59,7 +59,8 @@ module.exports = {
 
     replyEl.append(tripEl);
 
-    var infoEl = $("<a href='#' class='rfloat addreply' >");
+    var infoEl = $("<a class='rfloat addreply' >");
+    infoEl.attr("href", "/p/" + data.post_id);
     infoEl.html("#" + data.post_id);
     infoEl.attr("data-parent-id", data.post_id);
     infoEl.attr("title", (new Date(data.created_at)).toLocaleString());
