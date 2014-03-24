@@ -6,8 +6,8 @@
       /<%- post.board_id || "?" %> 
       <a href="/p/<%= post.id %>">
         <small>
-          <b class="text"><%- post.title %></b>
-          <span class="text"><%- post.text %></span>
+          <b class="text"><%- post.title.substr(0, 140) %></b>
+          <span class="text"><%- post.text.substr(0, 140) %></span>
         </small>
       </a>
     </div>
