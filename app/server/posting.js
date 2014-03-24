@@ -14,13 +14,15 @@ var IP = require_app("models/ip");
 var DOWNCONS = [
   ":thumbs-down:",
   ":law:",
-  ":deathstar:"
+  ":deathstar:",
+  ":sage:"
 ];
 
 var UPCONS = [ 
   ":thumbs-up:", 
   ":batman:", 
-  ":ironman:" 
+  ":ironman:",
+  ":age:"
 ];
 
 
