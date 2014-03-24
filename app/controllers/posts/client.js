@@ -18,6 +18,9 @@ module.exports = {
     this.board = board;
     this.trigger("set_board");
   },
+  focus_post: function(id) {
+    $("#reply" + id)[0].scrollIntoView();
+  },
   socket: function(s) {
     s.on("doings", function(data) {
       var post = window._POSTS[data.post_id];

@@ -4,6 +4,10 @@
   display: block;
 }
 
+.highlight {
+  background-color: #fafadd;
+}
+
 .placeholder {
   width: 90px;
   display: inline-block;

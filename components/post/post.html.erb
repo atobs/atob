@@ -7,6 +7,7 @@
 <% set_default("replies", []) %>
 <% set_default("tripcode", "") %>
 <% set_default("author", "anon") %>
+<% set_default("highlight_id", null) %>
 
 <div class="post <%= maximized ? "maximize" : "" %>" data-post-id="<%= post_id %>" style="display: none">
   <div class="title clearfix">
@@ -63,7 +64,9 @@
 
     <div class="replies clearfix mtm mbm col-md-12 <%= replies.length > 6 ? "many" : "" %>">
       <% _.each(replies, function(r) { %>
-        <div class="pam reply" id="reply<%= r.id %>">
+        <% highlighted = highlight_id == r.id %>
+        <% console.log("highlighted", highlighted, highlight_id, r.id); %>
+        <div class="pam reply <%= highlighted ? "highlight" : "" %>" id="reply<%= r.id %>">
           <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
           <a href="#" class="addreply"
             data-parent-id="<%= r.id %>"

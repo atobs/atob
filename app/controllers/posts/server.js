@@ -26,6 +26,7 @@ module.exports = {
 
   get: function(ctx, api) {
     this.set_fullscreen(true);
+    this.set_title("atob");
     api.template.add_stylesheet("post");
 
     var render_boards = api.page.async(function(flush) {
@@ -48,10 +49,11 @@ module.exports = {
 
     });
     var render_post = api.page.async(function(flush) {
-      function render_posting(result) {
+      function render_posting(result, highlight_id) {
         var post_data = result.dataValues;
         post_data = result.dataValues;
         post_data.post_id = post_data.id;
+        post_data.highlight_id = highlight_id;
         post_data.maximized = true;
         post_data.collapsed = false;
         delete post_data.id;
@@ -65,9 +67,6 @@ module.exports = {
         var postCmp = $C("post", post_data);
         api.bridge.controller("posts", "set_board", post_data.board_id);
         flush(postCmp.toString());
-
-
-
       }
 
       Post.find({
@@ -88,8 +87,8 @@ module.exports = {
                 {model: Post, as: "Children" },
               ]
             }).success(function(parent) {
-              render_posting(parent);
-
+              api.bridge.controller("posts", "focus_post", post_data.id);
+              render_posting(parent, post_data.id);
             });
 
           } else {
