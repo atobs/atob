@@ -1,0 +1,26 @@
+.modal {
+  .modal-body {
+    width: 100%;
+  }
+
+  .span2 { width: 100%; }
+
+  .form-horizontal .controls {
+    float: left;
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+    display: block; }
+
+
+  .form-horizontal input,
+  .form-horizontal textarea {
+    width: 90%;
+  }
+  .form-horizontal .control-label {
+    padding-top: 5px;
+    margin-left: 0px;
+    text-align: left;
+    font-weight: bold;
+    width: 100%; }
+}

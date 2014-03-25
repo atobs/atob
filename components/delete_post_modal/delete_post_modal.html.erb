@@ -1,0 +1,41 @@
+<% set_default("author", ""); %>
+<% set_default("tripcode", ""); %>
+
+<div class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>report and/or delete post?</h3>
+      </div>
+      <div class="modal-body">
+        <p class="small pbl">
+          Use your author / tripcode to delete this post. 
+          <br />
+          If you aren't the author of this post, the post will be reported.
+        </p>
+
+        <div class="form-horizontal">
+          <div class="control-group">
+            <label class="control-label">Author</label>
+            <div class="controls">
+              <input type="text" class="mtm span2" name="author" value="<%= author %>"/>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label">Tripcode</label>
+            <div class="controls">
+              <input type="text" class="mtm span2" name="tripcode" value="<%= tripcode %>"/>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer mtl">
+        <a href="#" class="btn btn-primary delete mll">delete</a>
+        <a href="#" data-dismiss="modal" class="btn btn-info">nvm</a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,7 @@
+{
+  "main" : "delete_post_modal",
+  "helpers": [],
+  "style": "delete_post_modal.css",
+  "styles": [],
+  "template": "delete_post_modal.html.erb"
+}
