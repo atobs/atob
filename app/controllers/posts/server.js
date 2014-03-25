@@ -87,8 +87,12 @@ module.exports = {
                 {model: Post, as: "Children" },
               ]
             }).success(function(parent) {
-              api.bridge.controller("posts", "focus_post", post_data.id);
-              render_posting(parent, post_data.id);
+              if (!parent) {
+                render_posting(result);
+              } else {
+                api.bridge.controller("posts", "focus_post", post_data.id);
+                render_posting(parent, post_data.id);
+              }
             });
 
           } else {
