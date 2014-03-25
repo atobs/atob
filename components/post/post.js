@@ -69,9 +69,13 @@ module.exports = {
     this.helpers['app/client/text'].format_text(titleEl);
     replyEl.append(titleEl);
 
+    var deleteEl = $("<a class='deletereply icon-remove' href='#' />");
+    deleteEl.attr("data-parent-id", data.post_id);
+
     // need to find the icons in the text and fix them
     var smallEl = $("<small />").text(data.text);
     replyEl.append(smallEl);
+    replyEl.append(deleteEl);
 
     this.helpers['app/client/text'].format_text(smallEl);
 

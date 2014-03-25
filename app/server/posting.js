@@ -18,9 +18,9 @@ var DOWNCONS = [
   ":sage:"
 ];
 
-var UPCONS = [ 
-  ":thumbs-up:", 
-  ":batman:", 
+var UPCONS = [
+  ":thumbs-up:",
+  ":batman:",
   ":ironman:",
   ":age:"
 ];
@@ -189,9 +189,58 @@ function handle_new_reply(s, board, post, last_reply) {
   return Date.now();
 }
 
+function handle_delete_post(socket, board, post) {
+  console.log("DELETING POST", post);
+  Post.find({
+    where: {
+      id: post.id
+    }
+  }).success(function(result) {
+    var delete_code = gen_md5(post.author + ':' + post.tripcode);
+    if (result) {
+      var reply_data = _.clone(result.dataValues);
+      reply_data.id = "delete" + post.id;
+      reply_data.post_id = "delete" + post.id;
+      reply_data.tripcode = delete_code;
+      reply_data.parent_id = result.parent_id;
+      reply_data.thread_id = result.thread_id || result.id;
+      reply_data.text = "";
+      reply_data.title = "post reported ";
+
+      if (result.tripcode === delete_code) {
+        reply_data.title = "post deleted ";
+
+        Post.create({
+          board_id: "log",
+          tripcode: delete_code,
+          title: "delete " + post.id,
+          author: post.author
+        });
+
+        result.destroy();
+      } else {
+        reply_data.id = "report" + post.id;
+        reply_data.post_id = "report" + post.id;
+
+        Post.create({
+          board_id: "log",
+          tripcode: delete_code,
+          title: "report " + post.id,
+          author: post.author
+        });
+
+
+      }
+
+      socket.emit("new_reply", reply_data);
+    }
+  });
+}
+
 
 module.exports = {
   handle_new_reply: handle_new_reply,
-  handle_new_post: handle_new_post
+  handle_new_post: handle_new_post,
+  handle_delete_post: handle_delete_post
 };
 

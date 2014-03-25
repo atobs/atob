@@ -121,6 +121,11 @@ module.exports = {
       boards_controller.handle_new_post(s, _board, post);
     });
 
+    s.on("delete_post", function(post) {
+      var boards_controller = require_app("controllers/boards/server");
+      boards_controller.handle_delete_post(s, _board, post);
+    });
+
 
   }
 };

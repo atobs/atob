@@ -67,6 +67,11 @@
         <% highlighted = highlight_id == r.id %>
         <div class="pam reply <%= highlighted ? "highlight" : "" %>" id="reply<%= r.id %>">
           <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
+          <a href="#" class="deletereply"
+            data-parent-id="<%= r.id %>"
+            title="delete / report post">
+            <i class='icon-remove'> </i>
+          </a>
           <a href="/p/<%=r.id%>" class="addreply"
             data-parent-id="<%= r.id %>"
             title="<%= new Date(r.created_at).toLocaleString() %>">

@@ -115,6 +115,12 @@ module.exports = {
     var last_post = 0;
     var last_reply = 0;
 
+    s.on("delete_post", function(post) {
+      var board = post.board || _board;
+      // Special case mod postings
+      posting.handle_delete_post(s, board, post);
+    });
+
     s.on("new_post", function(post) {
       var board = post.board || _board;
       // Special case mod postings
@@ -165,5 +171,6 @@ module.exports = {
   },
 
   handle_new_reply: posting.handle_new_reply,
-  handle_new_post: posting.handle_new_post
+  handle_new_post: posting.handle_new_post,
+  handle_delete_post: posting.handle_delete_post
 };

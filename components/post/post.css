@@ -163,6 +163,17 @@
   float: right;
 }
 
+.deletereply {
+  float: left;
+  margin-left: -20px;
+  opacity: 0.1;
+  font-size: 80%;
+}
+
+.deletereply:hover {
+  opacity: 0.8;
+}
+
 .reply:hover {
   background-color: #eaeaea;
 }

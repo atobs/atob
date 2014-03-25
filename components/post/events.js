@@ -13,6 +13,7 @@ module.exports = {
     "blur .reply textarea" : "handle_unfocus",
     "focus .reply textarea" : "handle_focus",
     "click .addreply" : "handle_addreply",
+    "click .deletereply" : "handle_deletereply",
     "click .show_more" : "handle_see_more",
     "mouseenter .replylink" : "handle_mouseenter_replylink",
     "mouseenter .post" : "handle_removepulse",
@@ -25,6 +26,14 @@ module.exports = {
     $(e.target).closest("a").siblings(".truncable").toggleClass("hideContent");
   },
 
+  handle_deletereply: function(e) {
+    e.preventDefault();
+    // Need to present the modal dialog and all that jazz for deleting this reply.
+    var reply = $(e.target).closest("a").data("parent-id");
+    var tripcode = SF.controller().get_tripcode();
+    var author = SF.controller().get_handle();
+    $C("delete_post_modal", { tripcode: tripcode, reply_id: reply, author: author});
+  },
   handle_addreply: function(e) {
     e.preventDefault();
     var textarea = this.$el.find(".reply textarea");
