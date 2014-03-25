@@ -4,6 +4,13 @@
   display: block;
 }
 
+.op.deletereply {
+  float: right;
+  margin-top: -30px;
+  margin-right: 0px;
+  opacity: 0.8px;
+}
+
 .highlight {
   background-color: #fafadd;
 }
@@ -171,7 +178,7 @@
 }
 
 .deletereply:hover {
-  opacity: 0.8;
+  opacity: 1;
 }
 
 .reply:hover {
