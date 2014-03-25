@@ -214,7 +214,8 @@ function handle_delete_post(socket, board, post) {
           board_id: "log",
           tripcode: delete_code,
           title: "delete " + post.id,
-          author: post.author
+          author: post.author,
+          bumped_at: Date.now()
         });
 
         result.destroy();
@@ -226,7 +227,8 @@ function handle_delete_post(socket, board, post) {
           board_id: "log",
           tripcode: delete_code,
           title: "report " + post.id,
-          author: post.author
+          author: post.author,
+          bumped_at: Date.now()
         });
 
 
