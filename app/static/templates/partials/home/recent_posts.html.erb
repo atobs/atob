@@ -7,9 +7,6 @@
       <a href="/p/<%= post.id %>">
         <small>
           <b class="text"><%- post.title.substr(0, 140) %></b>
-          <% if (post.title) { %>
-            <br />
-          <% } %>
           <span class="text"><%- post.text.substr(0, 140) %></span>
         </small>
       </a>
