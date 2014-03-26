@@ -2,6 +2,10 @@
   padding: 10px;
   background-color: #eaeaea;
   display: block;
+
+  .placeholder {
+    width: 0px;
+  }
 }
 
 .op.deletereply {
@@ -16,7 +20,7 @@
 }
 
 .placeholder {
-  width: 90px;
+  width: 0px;
   display: inline-block;
 }
 
@@ -37,6 +41,12 @@
 
 .truncable {
   display: inline-block;
+}
+
+.reply .truncable {
+  text-indent: 90px;
+  padding-right: 40px;
+  margin-top: -20px;
 }
 
 .restore {
