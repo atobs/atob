@@ -48,8 +48,9 @@ module.exports = {
   handle_mouseenter_replylink: function(e) {
     var clone_id = $(e.target).data("parent-id");
     var responseEl = $("#reply" + clone_id);
+    var container = this.$el;
 
-    $(e.target).popover({ html: true, content: responseEl.html(), placement: "top" });
+    $(e.target).popover({ html: true, content: responseEl.html(), placement: "top", container: container });
     $(e.target).popover("show");
   },
 
