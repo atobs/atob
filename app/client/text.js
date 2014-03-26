@@ -35,7 +35,7 @@ function add_replies($el) {
 
 function shorten_text($el) {
   var escaped = $el.html();
-  if (escaped.length > 500) {
+  if (escaped.length > 800) {
     $el.addClass("hideContent");
     $el.addClass("truncable");
 
