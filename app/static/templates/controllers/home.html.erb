@@ -7,22 +7,6 @@
     <hr />
   </div>
 
-  <div class="col-md-4">
-    <h2>boards</h2>
-    <%= render_boards() %>
-
-    <div class="recent hidden threads">
-      <h3>recent threads</h3>
-      <%= render_recent_threads() %>
-    </div>
-
-    <div class="recent hidden posts">
-      <h3>recent replies</h3>
-      <%= render_recent_posts() %>
-    </div>
-
-  </div>
-
   <div class="col-md-6">
     <h2>a practical guide</h2>
 
@@ -43,10 +27,27 @@
     </div>
 
     <div>
-      <h2><a href="/b/a">get started!</a></h2>
+      <h3><a href="/b/a">get started!</a></h3>
     </div>
 
   </div>
+
+  <div class="col-md-4">
+    <h2>boards</h2>
+    <%= render_boards() %>
+
+    <div class="recent hidden threads">
+      <h3>recent threads</h3>
+      <%= render_recent_threads() %>
+    </div>
+
+    <div class="recent hidden posts">
+      <h3>recent replies</h3>
+      <%= render_recent_posts() %>
+    </div>
+
+  </div>
+
 
 </div>
 

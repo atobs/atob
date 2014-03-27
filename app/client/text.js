@@ -1,3 +1,5 @@
+require("app/static/vendor/Autolinker");
+
 // Takes HTML
 function add_newlines($el) {
   var escaped = $el.html();
@@ -10,8 +12,13 @@ function add_newlines($el) {
 }
 
 // Takes escaped text
-function add_icons($el) {
+function add_icons($el, replace_urls) {
   var escaped = $el.text();
+
+  if (replace_urls) {
+    escaped = window.Autolinker.link(escaped);
+  }
+
   if (escaped) {
     var icon_str = "<i class='icon icon-NAME' title=':NAME:' />";
     var replaced = escaped.replace(/:([\w-]+):/g, function(x, icon) {
@@ -45,7 +52,7 @@ function shorten_text($el) {
 }
 
 function format_text($el) {
-  add_icons($el);
+  add_icons($el, true /* replace URLS */);
   add_replies($el);
   add_newlines($el);
   shorten_text($el);
