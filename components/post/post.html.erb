@@ -23,7 +23,7 @@
 
 
     <div class="mbm">
-      <div class="tripcode lfloat mtm" title="<%- author || "anon" %>" data-tripcode="<%= tripcode %>"> </div>
+      <div class="tripcode lfloat mtm" title="<%- "anon" %>" data-tripcode="<%= tripcode %>"> </div>
 
       <div class="post_id lfloat mrl">
         <a
@@ -71,7 +71,7 @@
       <% _.each(replies, function(r) { %>
         <% highlighted = highlight_id == r.id %>
         <div class="pam reply <%= highlighted ? "highlight" : "" %>" id="reply<%= r.id %>">
-          <div class="tripcode" title="<%- r.author %>" data-tripcode="<%= r.tripcode %>"></div>
+          <div class="tripcode" title="<%- 'anon' %>" data-tripcode="<%= r.tripcode %>"></div>
           <a href="#" class="deletereply"
             data-parent-id="<%= r.id %>"
             title="delete / report post">
