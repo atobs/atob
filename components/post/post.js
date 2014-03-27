@@ -109,9 +109,19 @@ module.exports = {
   },
   update_counts: function(counts) {
     counts.sort();
-    var str = _.map(counts, function(c) { return c[0]; });
-    this.$el.find(".counts").text(str.join(""));
+
+    var lookup = {
+      t: "icon-keyboardalt",
+      f: "icon-glassesalt",
+      u: "icon-glassesalt"
+    };
+
+    var str = _.map(counts, function(c) { 
+      return "<i class='" + lookup[c[0]] + "' />"; 
+    });
+
     // Update who is typing, who is idle and who is gone.
+    this.$el.find(".counts").html(str.join(" "));
   },
 
 };

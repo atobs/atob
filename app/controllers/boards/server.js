@@ -9,11 +9,57 @@ var gen_md5 = require_app("server/md5");
 var posting = require_app("server/posting");
 var mod = require_app("server/mod");
 
+var load_controller = require_core("server/controller").load;
+
 var GOING_ONS = {
   active: {},
   idle: {}
 };
 
+function subscribe_to_updates(s) {
+  var idleTimer;
+  var sid = s.spark.headers.sid;
+  function update_post_status(post_id) {
+    var doings = {
+      post_id: post_id,
+      counts: _.map(GOING_ONS[post_id], function(v) { return v; })
+    };
+
+    var boards_controller = load_controller("boards");
+    var board_socket = boards_controller.get_socket();
+    board_socket.broadcast.to(s.board).emit("doings", doings);
+    s.emit("doings", doings);
+
+    var posts_controller = load_controller("posts");
+    var post_socket = posts_controller.get_socket();
+    post_socket.broadcast.to(s.board).emit("doings", doings);
+
+  }
+
+  // TODO: make a better schema for how this works
+  s.on("isdoing", function(doing) {
+    if (s.isdoing) {
+      delete GOING_ONS[s.isdoing.post_id][sid];
+      update_post_status(s.isdoing.post_id);
+    }
+
+    s.isdoing = doing;
+    if (!GOING_ONS[doing.post_id]) {
+      GOING_ONS[doing.post_id] = {};
+    }
+
+    GOING_ONS[doing.post_id][sid] = doing.what;
+
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(function() {
+      delete GOING_ONS[doing.post_id][sid];
+      update_post_status(doing.post_id);
+    }, 30000);
+
+    update_post_status(doing.post_id);
+  });
+
+}
 module.exports = {
   // If the controller has assets in its subdirs, set is_package to true
   is_package: false,
@@ -107,6 +153,7 @@ module.exports = {
   socket: function(s) {
     var _board;
     s.on("join", function(board) {
+      s.board = board;
       s.spark.join(board);
       _board = board;
       s.emit("joined", board);
@@ -135,42 +182,12 @@ module.exports = {
       last_reply = posting.handle_new_reply(s, _board, post);
     });
 
-    var idleTimer;
-    var sid = s.spark.headers.sid;
-    function update_post_status(post_id) {
-      var doings = {
-        post_id: post_id,
-        counts: _.map(GOING_ONS[post_id], function(v) { return v; })
-      };
-      s.broadcast.to(_board).emit("doings", doings);
-      s.emit("doings", doings);
-    }
 
-    // TODO: make a better schema for how this works
-    s.on("isdoing", function(doing) {
-      if (s.isdoing) {
-        delete GOING_ONS[s.isdoing.post_id][sid];
-        update_post_status(s.isdoing.post_id);
-      }
+    subscribe_to_updates(s);
 
-      s.isdoing = doing;
-      if (!GOING_ONS[doing.post_id]) {
-        GOING_ONS[doing.post_id] = {};
-      }
-
-      GOING_ONS[doing.post_id][sid] = doing.what;
-
-      clearTimeout(idleTimer);
-      idleTimer = setTimeout(function() {
-        delete GOING_ONS[doing.post_id][sid];
-        update_post_status(doing.post_id);
-      }, 5000);
-
-      update_post_status(doing.post_id);
-    });
   },
 
   handle_new_reply: posting.handle_new_reply,
   handle_new_post: posting.handle_new_post,
-  handle_delete_post: posting.handle_delete_post
+  subscribe_to_updates: subscribe_to_updates
 };

@@ -111,6 +111,7 @@ module.exports = {
     var _board;
     s.on("join", function(board) {
       s.spark.join(board);
+      s.board = board;
       _board = board;
       s.emit("joined", board);
     });
@@ -129,6 +130,10 @@ module.exports = {
       var boards_controller = require_app("controllers/boards/server");
       boards_controller.handle_delete_post(s, _board, post);
     });
+
+    var load_controller = require_core("server/controller").load;
+    var boards_controller = load_controller("boards");
+    boards_controller.subscribe_to_updates(s);
 
 
   }
