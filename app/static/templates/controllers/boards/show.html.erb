@@ -3,12 +3,9 @@
 <% set_default("tripcode", "") %>
 
 <div class="container mbl mtl clearfix">
-  <div class="col-md-12 clearfix">
-    <div class="clearfix">
-      <div class="lfloat mrl"><strong><a href="/">a to b</a></strong></div>
-      <%= render_boards() %>
-    </div>
 
+  <div class="col-md-12 clearfix">
+    <%= render_partial("shared/logo_and_links.html.erb", { render_boards: render_boards }) %>
     <div class="clearfix">
       <h1>/<%= board %>
         <a class="rfloat" href="#" data-toggle="collapse" data-target=".new_post">new thread</a>

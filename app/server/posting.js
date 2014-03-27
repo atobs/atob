@@ -81,6 +81,8 @@ function is_user_banned(s, board, done) {
   }).success(function(bans) {
     var banned = false;
 
+    console.log("BANS", bans);
+
     if (bans) {
       _.each(bans, function(b) {
         var hours = parseInt(b.hours, 10);
@@ -139,7 +141,7 @@ function handle_new_reply(s, board, post, last_reply) {
 
     Post.find({ where: { id: post.post_id }})
       .success(function(parent) {
-
+      
         if (!banned) {
           if (!down && parent.replies < REPLY_MAX) {
             parent.replies += 1;
@@ -173,6 +175,13 @@ function handle_new_reply(s, board, post, last_reply) {
         p.dataValues.up = up;
         p.dataValues.down = down;
         delete p.dataValues.id;
+
+        IP.create({
+          post_id: p.dataValues.post_id,
+          ip: s.spark.address.ip,
+          browser: s.spark.headers['user-agent']
+        });
+
 
         var boards_controller = load_controller("boards");
         var boards_socket = boards_controller.get_socket();

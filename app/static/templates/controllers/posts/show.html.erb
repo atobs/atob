@@ -2,10 +2,7 @@
 
 <div class="container mbl mtl clearfix">
   <div class="col-md-12 clearfix">
-    <div class="">
-      <div class="lfloat mrl"><strong><a href="/">a to b</a></strong></div>
-      <%= render_boards() %>
-    </div>
+    <%= render_partial("shared/logo_and_links.html.erb", { render_boards: render_boards }) %>
 
     <a class="rfloat" href="#" data-toggle="collapse" data-target=".settings">settings</a>
 
