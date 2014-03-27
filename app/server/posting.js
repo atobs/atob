@@ -81,8 +81,6 @@ function is_user_banned(s, board, done) {
   }).success(function(bans) {
     var banned = false;
 
-    console.log("BANS", bans);
-
     if (bans) {
       _.each(bans, function(b) {
         var hours = parseInt(b.hours, 10);
@@ -138,6 +136,7 @@ function handle_new_reply(s, board, post, last_reply) {
       board = "ban";
       title = "reply to " + post.post_id + ":" + title;
     }
+
 
     Post.find({ where: { id: post.post_id }})
       .success(function(parent) {

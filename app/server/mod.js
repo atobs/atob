@@ -17,15 +17,19 @@ var OPS = {
       .success(function(ip) {
         console.log("BANNING USER FOR POST", ip);
 
-        post.text = "[user was banned for this post]";
-        post.title = "[user was banned for this post]";
+        post.title = "[banned from " + post.board_id + "] " + post.title;
+        var old_board_id = post.board_id;
+
+        post.board_id = "ban";
+        post.parent_id = null;
+        post.thread_id = null;
         
         post.save();
         Ban.create({
           ip: ip.ip,
           browser: ip.browser,
           hours: hours,
-          board: post.board_id
+          board: old_board_id
         });
       });
 
