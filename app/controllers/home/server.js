@@ -463,7 +463,7 @@ module.exports = {
       render_recent_threads: render_recent_threads
     });
 
-    api.page.render({ content: template_str});
+    api.page.render({ content: template_str, socket: true});
   },
   rules: function(ctx, api) {
     var template_str = api.template.partial("home/rules.html.erb", {} );
