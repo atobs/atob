@@ -1,6 +1,19 @@
 <% set_default("tripcode", null) %>
 
 <style>
+  .identity_tripcode {
+    cursor: pointer;
+  }
+
+  .logo .identity_tripcode {
+    max-height: 5px;
+    height: 4px;
+    width: 40px;
+    position: relative;
+    top: -8px;
+    left: 0px;
+    overflow: hidden;
+  }
   .navbar {
     padding-top: 10px;
     background-color: #fafafa;
@@ -14,21 +27,23 @@
   <div class="clearfix container">
 
     <div class="mtl col-md-12">
-      <div class="lfloat mrl logo">
-      
-        <strong><a href="/">
-          <img src="/images/atobn.png" 
-            style="width: 50px; height: 50px; margin-left: -5px; margin-top: -15px; border-style: none" 
-            class="lfloat" />
+      <div class="clearfix">
+        <div class="lfloat mrl logo">
+        
+          <strong><a href="/">
+            <img src="/images/atobn.png" 
+              style="width: 50px; height: 50px; margin-left: -5px; margin-top: -15px; border-style: none" 
+              class="lfloat" />
 
-        </a></strong>
+          </a></strong>
 
-        <div class="identity_tripcode"></div>
-      
+          <div class="identity_tripcode"></div>
+        
+        </div>
+        <a class="rfloat" href="#" data-toggle="collapse" data-target=".settings">settings</a>
+
+        <%= render_boards() %>
       </div>
-      <a class="rfloat" href="#" data-toggle="collapse" data-target=".settings">settings</a>
-
-      <%= render_boards() %>
 
 
       <div class="clearfix identity_tripcode" style="height: 20px; width: 100%" ></div>
