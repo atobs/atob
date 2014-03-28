@@ -2,3 +2,13 @@
 .identity_tripcode {
   cursor: pointer;
 }
+
+.logo .identity_tripcode {
+  max-height: 5px;
+  height: 4px;
+  width: 40px;
+  position: relative;
+  top: -8px;
+  left: -2px;
+  overflow: hidden;
+}
