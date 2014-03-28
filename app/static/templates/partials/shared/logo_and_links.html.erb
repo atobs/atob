@@ -1,7 +1,19 @@
-<div class="clearfix">
-  <div class="clearfix">
+<% set_default("tripcode", null) %>
 
-    <div class="mtl">
+<style>
+  .navbar {
+    padding-top: 10px;
+    background-color: #fafafa;
+    border: 0px;
+  }
+  body { padding-top: 70px; }
+
+</style>
+
+<div class="clearfix navbar navbar-fixed-top navbar-default" role="navigation">
+  <div class="clearfix container">
+
+    <div class="mtl col-md-12">
       <div class="lfloat mrl logo">
       
         <strong><a href="/">
@@ -9,16 +21,23 @@
             style="width: 50px; height: 50px; margin-left: -5px; margin-top: -15px;" 
             class="lfloat" />
 
-          <div class="identity_tripcode" 
-            style='' />
         </a></strong>
+
+        <div class="identity_tripcode"></div>
       
       </div>
+      <a class="rfloat" href="#" data-toggle="collapse" data-target=".settings">settings</a>
+
       <%= render_boards() %>
+
+
+      <div class="identity_tripcode" style="height: 20px" ></div>
+
+      <%= render_partial("shared/settings.html.erb", { tripcode: tripcode }) %>
+
     </div>
+
   </div>
 
-  <hr />
 
 </div>
-
