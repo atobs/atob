@@ -9,6 +9,7 @@
     "app/static/vendor/jquery-deparam.js",
     "app/static/vendor/jquery.cookie.js",
     "app/static/vendor/jquery.timeago.js",
+    "app/static/vendor/notify.js",
     "app/static/vendor/fastclick.js",
     "app/static/vendor/strtotime.js",
     "app/static/vendor/hex-rgb.src.js"

@@ -1,6 +1,7 @@
 "use strict";
 
 var settings = require("app/client/settings");
+var notif = require("app/client/notif");
 module.exports = {
   events: {
     "change input.tripcode" : "save_tripcode",
@@ -41,6 +42,9 @@ module.exports = {
       console.log("Joined the board", c);
     });
 
+    s.on("notif", function(msg, type, options) {
+      notif.handle_notif(msg, type, options);
+    });
     var self = this;
     self.do_when(self.board, "set_board", function() {
       s.emit("join", self.board);

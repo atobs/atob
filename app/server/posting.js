@@ -3,6 +3,14 @@
 var REPLY_MAX = 200;
 var POST_TIMEOUT = 20 * 1000;
 var REPLY_TIMEOUT = 3 * 1000;
+var REPLY_TIMEOUTS = {
+  a: 10 * 1000
+
+};
+
+var POST_TIMEOUTS = {
+  a: 30 * 1000
+};
 
 var load_controller = require_core("server/controller").load;
 var gen_md5 = require_app("server/md5");
@@ -27,10 +35,21 @@ var UPCONS = [
 
 
 var escape_html = require("escape-html");
-function handle_new_post(s, board, post, last_post) {
-  if (Date.now() - last_post < POST_TIMEOUT) {
-    return last_post;
+function handle_new_post(s, board, post) {
+  var last_post = s.last_post || 0;
+  var post_timeout = POST_TIMEOUTS[board] || POST_TIMEOUT;
+  var post_time = Date.now() - last_post ;
+  if (post_time < post_timeout) {
+    var delta = parseInt((post_timeout - post_time) / 1000, 10);
+    // Need to message the client that they are submitting too fast...
+    var msg = "There's a " + parseInt(post_timeout/1000, 10) +
+      " second post timeout, please wait " + delta +
+      " more second(s) before posting";
+    s.emit("notif", msg, "warn");
+    return;
   }
+
+  s.last_post = Date.now();
 
   var title = post.title;
   var text = post.text;
@@ -102,10 +121,21 @@ function is_user_banned(s, board, done) {
   });
 }
 
-function handle_new_reply(s, board, post, last_reply) {
-  if (Date.now() - last_reply < REPLY_TIMEOUT) {
-    return last_reply;
+function handle_new_reply(s, board, post) {
+  var last_reply = s.last_reply || 0;
+  var reply_timeout = REPLY_TIMEOUTS[board] || REPLY_TIMEOUT;
+  var reply_time = Date.now() - last_reply ;
+  if (reply_time < reply_timeout) {
+    var delta = parseInt((reply_timeout - reply_time) / 1000, 10);
+    // Need to message the client that they are submitting too fast...
+    var msg = "There's a " + parseInt(reply_timeout/1000, 10) +
+      " second reply timeout, please wait " + delta +
+      " more second(s) before commenting";
+    s.emit("notif", msg, "warn");
+    return;
   }
+
+  s.last_reply = Date.now();
 
   var author = post.author || "anon";
   var text = post.text.split("||");
@@ -140,7 +170,7 @@ function handle_new_reply(s, board, post, last_reply) {
 
     Post.find({ where: { id: post.post_id }})
       .success(function(parent) {
-      
+
         if (!banned) {
           if (!down && parent.replies < REPLY_MAX) {
             parent.replies += 1;
@@ -206,17 +236,10 @@ function handle_delete_post(socket, board, post) {
   }).success(function(result) {
     var delete_code = gen_md5(post.author + ':' + post.tripcode);
     if (result) {
-      var reply_data = _.clone(result.dataValues);
-      reply_data.id = "delete" + post.id;
-      reply_data.post_id = "delete" + post.id;
-      reply_data.tripcode = delete_code;
-      reply_data.parent_id = result.parent_id;
-      reply_data.thread_id = result.thread_id || result.id;
-      reply_data.text = "";
-      reply_data.title = "post reported ";
 
+      var action_name = "Reported post #";
       if (result.tripcode === delete_code) {
-        reply_data.title = "post deleted ";
+        action_name = "Deleted post #";
 
         Post.create({
           board_id: "log",
@@ -228,9 +251,6 @@ function handle_delete_post(socket, board, post) {
 
         result.destroy();
       } else {
-        reply_data.id = "report" + post.id;
-        reply_data.post_id = "report" + post.id;
-
         Post.create({
           board_id: "log",
           tripcode: delete_code,
@@ -242,7 +262,8 @@ function handle_delete_post(socket, board, post) {
 
       }
 
-      socket.emit("new_reply", reply_data);
+      socket.emit("notif", action_name + post.id, "success");
+
     }
   });
 }

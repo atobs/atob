@@ -159,9 +159,6 @@ module.exports = {
       s.emit("joined", board);
     });
 
-    var last_post = 0;
-    var last_reply = 0;
-
     s.on("delete_post", function(post) {
       var board = post.board || _board;
       // Special case mod postings
@@ -174,12 +171,12 @@ module.exports = {
       if (board === "mod") {
         mod.handle_new_post(s, post);  
       } else {
-        last_post = posting.handle_new_post(s, board, post);
+        posting.handle_new_post(s, board, post);
       }
     });
 
     s.on("new_reply", function(post) {
-      last_reply = posting.handle_new_reply(s, _board, post);
+      posting.handle_new_reply(s, _board, post);
     });
 
 

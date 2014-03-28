@@ -2,6 +2,7 @@
 
 require("core/client/component");
 var settings = require("app/client/settings");
+var notif = require("app/client/notif");
 
 
 module.exports = {
@@ -91,6 +92,10 @@ module.exports = {
 
     s.on("joined", function(c) {
       console.log("Joined the board", c);
+    });
+
+    s.on("notif", function(msg, type, options) {
+      notif.handle_notif(msg, type, options);
     });
 
     var self = this;

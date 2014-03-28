@@ -6,6 +6,7 @@ var value_of = controller.value_of,
     array_of = controller.array_of;
     
 
+var posting = require_app("server/posting");
 var Post = require_app("models/post");
 var Board = require_app("models/board");
 
@@ -117,18 +118,15 @@ module.exports = {
     });
 
     s.on("new_reply", function(post) {
-      var boards_controller = require_app("controllers/boards/server");
-      boards_controller.handle_new_reply(s, _board, post);
+      posting.handle_new_reply(s, _board, post);
     });
 
     s.on("new_post", function(post) {
-      var boards_controller = require_app("controllers/boards/server");
-      boards_controller.handle_new_post(s, _board, post);
+      posting.handle_new_post(s, _board, post);
     });
 
     s.on("delete_post", function(post) {
-      var boards_controller = require_app("controllers/boards/server");
-      boards_controller.handle_delete_post(s, _board, post);
+      posting.handle_delete_post(s, _board, post);
     });
 
     var load_controller = require_core("server/controller").load;
