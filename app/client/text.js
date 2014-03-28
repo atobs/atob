@@ -15,15 +15,16 @@ function add_newlines($el) {
 function add_icons($el, replace_urls) {
   var escaped = $el.text();
 
-  if (replace_urls) {
-    escaped = window.Autolinker.link(escaped);
-  }
-
   if (escaped) {
     var icon_str = "<i class='icon icon-NAME' title=':NAME:' />";
     var replaced = escaped.replace(/:([\w-]+):/g, function(x, icon) {
       return icon_str.replace(/NAME/g, icon.toLowerCase());
     });
+
+    if (replace_urls) {
+      replaced = window.Autolinker.link(replaced);
+    }
+
     $el.html(replaced);
   }
 }
