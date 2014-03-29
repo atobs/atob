@@ -466,6 +466,7 @@ module.exports = {
     api.page.render({ content: template_str, socket: true});
   },
   rules: function(ctx, api) {
+    this.set_fullscreen(true);
     var template_str = api.template.partial("home/rules.html.erb", {} );
 
     api.page.render({ content: template_str});
