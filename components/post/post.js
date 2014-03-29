@@ -38,18 +38,19 @@ module.exports = {
 
   init_tripcodes: function() {
     var self = this;
-    var index = 0;
     var tripcodes = self.$el.find("div.tripcode");
+    var index = tripcodes.length;
     var start = Date.now();
 
     function generate_tripcodes() {
-      while (index < tripcodes.length) {
+      while (index > 0) {
+        index -= 1;
+
         var trip_el = tripcodes[index];
         self.helpers['app/client/tripcode'].gen_tripcode(trip_el);
-        index += 1;
 
         if (Date.now() - start > 20) {
-          setTimeout(generate_tripcodes, 20);
+          setTimeout(generate_tripcodes);
           break;
         }
       }
