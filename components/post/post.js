@@ -29,7 +29,7 @@ module.exports = {
 
 
     self.$el.find(".timeago").timeago();
-    self.$el.find(".post").fadeIn(function() {
+    self.$el.find(".post").show(function() {
       self.bumped(); 
     });
 
