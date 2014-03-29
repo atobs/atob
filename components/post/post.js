@@ -32,9 +32,31 @@ module.exports = {
     self.$el.find(".post").fadeIn(function() {
       self.bumped(); 
     });
-    self.$el.find("div.tripcode").each(function() {
-      self.helpers['app/client/tripcode'].gen_tripcode(this);
-    });
+
+    self.init_tripcodes();
+
+  },
+
+  init_tripcodes: function() {
+    var self = this;
+    var index = 0;
+    var tripcodes = self.$el.find("div.tripcode");
+    var start = Date.now();
+
+    function generate_tripcodes() {
+      while (index < tripcodes.length) {
+        var trip_el = tripcodes[index];
+        self.helpers['app/client/tripcode'].gen_tripcode(trip_el);
+        index += 1;
+
+        if (Date.now() - start > 50) {
+          setTimeout(generate_tripcodes, 20);
+          break;
+        }
+      }
+    }
+
+    generate_tripcodes();
   },
   bumped: function() {
     var repliesEl = this.$el.find(".replies");
