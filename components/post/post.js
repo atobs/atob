@@ -151,4 +151,19 @@ module.exports = {
     this.$el.find(".counts").html(str.join(" "));
   },
 
+  shake: function(duration) {
+    duration = duration || 400;
+    var textarea = this.$el.find("textarea");
+
+    textarea.animate({
+      opacity: 0.4
+    });
+
+    setTimeout(function() {
+      textarea.animate({
+        opacity: 1
+      });
+    }, duration);
+  }
+
 };

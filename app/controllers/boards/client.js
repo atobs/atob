@@ -83,6 +83,13 @@ module.exports = {
 
     });
 
+    s.on("shake_post", function(post_id, duration) {
+      var post = window._POSTS[post_id];
+      if (post) {
+        post.shake(duration);
+      }
+    });
+
     s.on("new_reply", function(data) {
       var post = window._POSTS[data.parent_id];
       if (post) {

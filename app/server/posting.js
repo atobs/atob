@@ -136,6 +136,7 @@ function handle_new_reply(s, board, post, cb) {
       " second reply timeout, please wait " + delta +
       " more second(s) before commenting";
     s.emit("notif", msg, "warn");
+    s.emit("shake_post", post.post_id, reply_timeout - reply_time);
     return;
   }
 

@@ -42,9 +42,17 @@ module.exports = {
       console.log("Joined the board", c);
     });
 
+    s.on("shake_post", function(post_id, duration) {
+      var post = window._POSTS[post_id];
+      if (post) {
+        post.shake(duration);
+      }
+    });
+
     s.on("notif", function(msg, type, options) {
       notif.handle_notif(msg, type, options);
     });
+
     var self = this;
     self.do_when(self.board, "set_board", function() {
       s.emit("join", self.board);
