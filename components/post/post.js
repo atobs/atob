@@ -29,9 +29,8 @@ module.exports = {
 
 
     self.$el.find(".timeago").timeago();
-    self.$el.find(".post").show(function() {
-      self.bumped(); 
-    });
+    self.$el.find(".post").show();
+    self.bumped(); 
 
     self.init_tripcodes();
 
@@ -49,7 +48,7 @@ module.exports = {
         self.helpers['app/client/tripcode'].gen_tripcode(trip_el);
         index += 1;
 
-        if (Date.now() - start > 50) {
+        if (Date.now() - start > 20) {
           setTimeout(generate_tripcodes, 20);
           break;
         }
