@@ -18,7 +18,7 @@ module.exports = {
     var POSTS = window._POSTS || {};
     var self = this;
     window._POSTS = POSTS;
-    POSTS[options.post_id] = this; 
+    POSTS[options.post_id] = this;
 
     // need to find the icons in the text and fix them
     var textEl = this.$el.find(".text");
@@ -29,10 +29,12 @@ module.exports = {
 
 
     self.$el.find(".timeago").timeago();
-    self.$el.find(".post").show();
-    self.bumped(); 
 
     self.init_tripcodes();
+
+    self.$el.find(".post").show();
+    self.bumped();
+
 
   },
 
@@ -42,15 +44,18 @@ module.exports = {
     var index = tripcodes.length;
     var start = Date.now();
 
+    self.helpers['app/client/tripcode'].gen_tripcode(tripcodes[0]);
+
+
     function generate_tripcodes() {
-      while (index > 0) {
+      while (index > 1) {
         index -= 1;
 
         var trip_el = tripcodes[index];
         self.helpers['app/client/tripcode'].gen_tripcode(trip_el);
 
-        if (Date.now() - start > 20) {
-          setTimeout(generate_tripcodes);
+        if (Date.now() - start > 50) {
+          setTimeout(generate_tripcodes, Math.random() * 20);
           break;
         }
       }
@@ -138,8 +143,8 @@ module.exports = {
       u: "icon-glassesalt"
     };
 
-    var str = _.map(counts, function(c) { 
-      return "<i class='" + lookup[c[0]] + "' />"; 
+    var str = _.map(counts, function(c) {
+      return "<i class='" + lookup[c[0]] + "' />";
     });
 
     // Update who is typing, who is idle and who is gone.
