@@ -165,18 +165,18 @@ module.exports = {
       posting.handle_delete_post(s, board, post);
     });
 
-    s.on("new_post", function(post) {
+    s.on("new_post", function(post, cb) {
       var board = post.board || _board;
       // Special case mod postings
       if (board === "mod") {
         mod.handle_new_post(s, post);  
       } else {
-        posting.handle_new_post(s, board, post);
+        posting.handle_new_post(s, board, post, cb);
       }
     });
 
-    s.on("new_reply", function(post) {
-      posting.handle_new_reply(s, _board, post);
+    s.on("new_reply", function(post, cb) {
+      posting.handle_new_reply(s, _board, post, cb);
     });
 
 

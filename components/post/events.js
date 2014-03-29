@@ -8,7 +8,7 @@ module.exports = {
   events: {
     "click .restore" :  "handle_restore",
     "submit form": "handle_reply",
-    "keyup .reply textarea" : "handle_maybe_submit",
+    "keydown .post .reply textarea" : "handle_maybe_submit",
     "keydown .reply textarea" : "handle_typing",
     "blur .reply textarea" : "handle_unfocus",
     "focus .reply textarea" : "handle_focus",
@@ -96,7 +96,6 @@ module.exports = {
     e.preventDefault();
     var replyInput = this.$el.find(".reply textarea");
     var reply = replyInput.val();
-    replyInput.val("");
 
     if (reply.trim() === "") {
       return;
@@ -104,11 +103,15 @@ module.exports = {
 
     var postId = this.get_post_id();
 
+
     SF.socket().emit("new_reply", {
       post_id: postId,
       author: SF.controller().get_handle(),
       tripcode: SF.controller().get_tripcode(),
       text: reply
+    }, function() {
+      // Success or not... 
+      replyInput.val("");
     });
   },
 

@@ -117,12 +117,12 @@ module.exports = {
       s.emit("joined", board);
     });
 
-    s.on("new_reply", function(post) {
-      posting.handle_new_reply(s, _board, post);
+    s.on("new_reply", function(post, cb) {
+      posting.handle_new_reply(s, _board, post, cb);
     });
 
-    s.on("new_post", function(post) {
-      posting.handle_new_post(s, _board, post);
+    s.on("new_post", function(post, cb) {
+      posting.handle_new_post(s, _board, post, cb);
     });
 
     s.on("delete_post", function(post) {

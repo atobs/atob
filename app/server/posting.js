@@ -35,7 +35,7 @@ var UPCONS = [
 
 
 var escape_html = require("escape-html");
-function handle_new_post(s, board, post) {
+function handle_new_post(s, board, post, cb) {
   var last_post = s.last_post || 0;
   var post_timeout = POST_TIMEOUTS[board] || POST_TIMEOUT;
   var post_time = Date.now() - last_post ;
@@ -84,6 +84,10 @@ function handle_new_post(s, board, post) {
         data.post_id = p.id;
         s.broadcast.to(board).emit("new_post", data);
         s.emit("new_post", data);
+        
+        if (cb) {
+          cb();
+        }
       });
   });
 
@@ -121,7 +125,7 @@ function is_user_banned(s, board, done) {
   });
 }
 
-function handle_new_reply(s, board, post) {
+function handle_new_reply(s, board, post, cb) {
   var last_reply = s.last_reply || 0;
   var reply_timeout = REPLY_TIMEOUTS[board] || REPLY_TIMEOUT;
   var reply_time = Date.now() - last_reply ;
@@ -221,6 +225,10 @@ function handle_new_reply(s, board, post) {
         var posts_controller = load_controller("posts");
         var post_socket = posts_controller.get_socket();
         post_socket.broadcast.to(board).emit("new_reply", p.dataValues);
+
+        if (cb) {
+          cb();
+        }
       });
 
   });
