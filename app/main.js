@@ -33,8 +33,9 @@ module.exports = {
     });
 
   },
-  setup_request: function(req) {
+  setup_request: function(req, res) {
     console.log("Handling request", req.path, req.query, req.params);
+    res.charset = "utf-8";
   },
   setup_plugins: function(app) {
     app.add_plugin_dir("app/plugins/slog");
