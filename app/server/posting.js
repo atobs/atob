@@ -17,6 +17,7 @@ var gen_md5 = require_app("server/md5");
 
 var Ban = require_app("models/ban");
 var Post = require_app("models/post");
+var User = require_app("models/user");
 var IP = require_app("models/ip");
 
 var DOWNCONS = [
@@ -244,11 +245,12 @@ function handle_delete_post(socket, board, post) {
     }
   }).success(function(result) {
     var delete_code = gen_md5(post.author + ':' + post.tripcode);
+    var admin_code = gen_md5(post.author + ':' + gen_md5(post.tripcode));
     if (result) {
 
       var action_name = "Reported post #";
       if (result.tripcode === delete_code) {
-        action_name = "Deleted post #";
+        action_name = "OP Deleted post #";
 
         Post.create({
           board_id: "log",
@@ -259,21 +261,43 @@ function handle_delete_post(socket, board, post) {
         });
 
         result.destroy();
-      } else {
-        Post.create({
-          board_id: "log",
-          tripcode: delete_code,
-          title: "report " + post.id,
-          author: post.author,
-          bumped_at: Date.now()
-        });
 
+        socket.emit("notif", action_name + post.id, "success");
+      } else {
+        User.find({
+          where: {
+            tripname: post.author || "BOO", 
+            tripcode: gen_md5(post.tripcode || "URNS")
+          }
+        }).success(function(user) {
+          if (user) {
+            socket.emit("notif", "Mod Deleted #" + post.id, "success");
+            result.destroy();
+
+            Post.create({
+              board_id: "mod",
+              tripcode: delete_code,
+              title: "delete " + post.id,
+              author: post.author,
+              bumped_at: Date.now()
+            });
+
+          } else {
+            socket.emit("notif", action_name + post.id, "success");
+            Post.create({
+              board_id: "log",
+              tripcode: delete_code,
+              title: "report " + post.id,
+              author: post.author,
+              bumped_at: Date.now()
+            });
+          }
+        });
 
       }
 
-      socket.emit("notif", action_name + post.id, "success");
+    } 
 
-    }
   });
 }
 

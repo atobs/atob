@@ -91,8 +91,10 @@ module.exports = {
           var board;
           if (success && user) {
             board = config.mod_board || 'mod';
+            socket.emit("notif", op + " success. all hail JAMES", "success");
           } else {
             board = config.fail_board || 'cop';
+            socket.emit("notif", op + " failure. the JAMES knows all", "warn");
           }
 
           post.board_id = board;
