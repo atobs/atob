@@ -88,7 +88,7 @@ module.exports = {
 
     var infoEl = $("<a class='rfloat addreply' >");
     infoEl.attr("href", "/p/" + data.post_id);
-    infoEl.html("#" + data.post_id);
+    infoEl.html(data.post_id);
     infoEl.attr("data-parent-id", data.post_id);
     infoEl.attr("title", (new Date(data.created_at)).toLocaleString());
     replyEl.append($("<small />").append(infoEl));

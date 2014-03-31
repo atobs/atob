@@ -396,7 +396,8 @@ module.exports = {
     "" : "index",
     "rules" : "rules",
     "faq" : "faq",
-    "icons" : "icons"
+    "icons" : "icons",
+    "robots.txt" : "robots"
   },
 
   index: function(ctx, api) {
@@ -511,6 +512,9 @@ module.exports = {
 
     api.page.render({ content: template_str});
 
+  },
+  robots: function(ctx) {
+    ctx.res.end("User-agent: *\nDisallow: /");
   },
 
   socket: function() {}

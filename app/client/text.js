@@ -37,6 +37,12 @@ function add_replies($el) {
     var replaced = escaped.replace(/&gt;&gt;#?([\d]+)/g, function(x, post_id) {
       return reply_str.replace(/NAME/g, post_id.toLowerCase());
     });
+
+    reply_str = "<a href='/p/ID' class='postlink'>#ID</a>";
+    replaced = replaced.replace(/#([\d]+)/g, function(x, post_id) {
+      return reply_str.replace(/ID/g, post_id.toLowerCase());
+    });
+
     $el.html(replaced);
   }
 }
