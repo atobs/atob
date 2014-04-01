@@ -44,7 +44,7 @@ function refresh_feed(board, cb) {
     Post.findAll({
         order: "bumped_at DESC",
         where: where,
-        limit: 100
+        limit: 20
     }).success(function(results) {
       var feed = new RSS({
         title: "atob/" + board
