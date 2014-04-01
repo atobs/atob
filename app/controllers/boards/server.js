@@ -141,6 +141,8 @@ module.exports = {
     });
 
     api.bridge.controller("boards", "set_board", board_id);
+    var rss_str = api.template.partial("rss.html.erb", { board: board_id });
+    this.add_to_head(rss_str);
 
     api.page.render({
       content: template_str,

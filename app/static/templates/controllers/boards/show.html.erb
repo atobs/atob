@@ -6,6 +6,7 @@
 
   <div class="col-md-12 clearfix">
     <%= render_partial("shared/logo_and_links.html.erb", { render_boards: render_boards, tripcode: tripcode }) %>
+
     <div class="clearfix">
       <h1>/<%= board %>
         <a class="rfloat" href="#" data-toggle="collapse" data-target=".new_post">new thread</a>
@@ -37,6 +38,9 @@
 
   <div class="col-md-12 mtl posts">
     <%= render_posts() %>
-  </div>
 
+    <div class="rfloat">
+      <a href="/r/<%= board %>" class="icon-rss"> </a>
+    </div>
+  </div>
 </div>
