@@ -7,6 +7,8 @@ module.exports = {
   // that is generally not relevant to the server.
   events: {
     "click .restore" :  "handle_restore",
+    "click .glyphs" :  "handle_click_glyphs",
+    "click .addglyph" :  "handle_addglyph",
     "submit form": "handle_reply",
     "keydown .post .reply textarea" : "handle_maybe_submit",
     "keydown .reply textarea" : "handle_typing",
@@ -56,6 +58,60 @@ module.exports = {
 
   handle_mouseleave_replylink: function(e) {
     $(e.target).popover("hide");
+  },
+
+  handle_addglyph: function(e) {
+    var glyph = $(e.target).data("glyph");
+    var textarea = this.$el.find(".reply textarea");
+    textarea.focus();
+    textarea.val(textarea.val() + " :" + glyph + ": ");
+
+    $('.popover.in').each(function () {
+      $(this).popover("destroy");
+    });
+  },
+  handle_click_glyphs: function(e) {
+    var container = this.$el;
+    var glyphs = [ 
+      "emojigrin",
+      "emojidead",
+      "blankstare",
+      "laugh",
+      "thumbs-up",
+      "thumbs-down",
+      "batman",
+      "ironman",
+      "catface",
+      "ghost",
+      "poop",
+      "law"
+      ];
+
+    var outerEl = $("<div />");
+    var responseEl = $("<div class='clearfix' />");
+    outerEl.append(responseEl);
+    _.each(glyphs, function(glyph) {
+      var glyphContainer = $("<div class='ptl col-md-3 col-xs-3' />");
+      var glyphEl = $("<div class='addglyph' />");
+      glyphEl.data("glyph", glyph);
+      glyphEl.addClass("icon-" + glyph);
+      glyphContainer.append(glyphEl);
+      responseEl.append(glyphContainer);
+    });
+
+    $(e.target).popover({ 
+      html: true, 
+      content: outerEl, 
+      placement: "top", 
+      container: container });
+
+
+    $(e.target).popover("show");
+    _.defer(function() {
+      $("body").one("click", function() {
+        $(e.target).popover("destroy");
+      });
+    }, 50);
   },
 
   handle_restore: function(e) {
