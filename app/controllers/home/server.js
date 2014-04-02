@@ -412,7 +412,7 @@ module.exports = {
           }
         },
         order: "id DESC",
-        limit: 3
+        limit: 5
       }).success(function(posts) {
         var template_str = api.template.partial("home/recent_posts.html.erb", {
           posts: posts,
