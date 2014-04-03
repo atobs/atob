@@ -14,7 +14,9 @@ module.exports = {
     "keyup input.handle" : "update_trip_colors",
     "change input.newtrip" : "save_newtrip",
     "click .identity_tripcode" : "regen_tripcode",
-    "click .regen_tripcode" : "regen_tripcode"
+    "click .regen_tripcode" : "regen_tripcode",
+    "click .tripcode_button" : "restore_old_code",
+    "click .tripcode_history" : "tripcode_history"
   },
   add_post: function(e) {
     e.preventDefault();
@@ -26,9 +28,10 @@ module.exports = {
     });
 
     var tripcode = this.get_tripcode();
+    var triphash = this.get_triphash();
     var handle = this.get_handle();
 
-    datas.tripcode = tripcode;
+    datas.tripcode = triphash;
     datas.author = handle;
     datas.board = this.board;
 
@@ -39,6 +42,7 @@ module.exports = {
     $(e.target).find("input, textarea").val("");
 
     SF.socket().emit("new_post", datas);
+    this.remember_tripcode(handle, tripcode);
   },
   init: function() {
     this.init_tripcodes();

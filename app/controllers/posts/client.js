@@ -10,7 +10,9 @@ module.exports = {
     "keyup input.handle" : "update_trip_colors",
     "change input.newtrip" : "save_newtrip",
     "click .identity_tripcode" : "regen_tripcode",
-    "click .regen_tripcode" : "regen_tripcode"
+    "click .regen_tripcode" : "regen_tripcode",
+    "click .tripcode_button" : "restore_old_code",
+    "click .tripcode_history" : "tripcode_history"
   },
   init: function() {
     this.init_tripcodes();

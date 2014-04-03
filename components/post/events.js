@@ -37,7 +37,7 @@ module.exports = {
     e.preventDefault();
     // Need to present the modal dialog and all that jazz for deleting this reply.
     var reply = $(e.target).closest("a").data("parent-id");
-    var tripcode = SF.controller().get_tripcode();
+    var tripcode = SF.controller().get_triphash();
     var author = SF.controller().get_handle();
     $C("delete_post_modal", { tripcode: tripcode, reply_id: reply, author: author});
   },
@@ -165,14 +165,18 @@ module.exports = {
     var postId = this.get_post_id();
 
 
+    var author = SF.controller().get_handle();
+    var tripcode = SF.controller().get_tripcode();
+    var triphash = SF.controller().get_triphash();
     SF.socket().emit("new_reply", {
       post_id: postId,
-      author: SF.controller().get_handle(),
-      tripcode: SF.controller().get_tripcode(),
+      author: author,
+      tripcode: triphash,
       text: reply
     }, function() {
       // Success or not... 
       replyInput.val("");
+      SF.controller().remember_tripcode(author, tripcode);
     });
   },
 
