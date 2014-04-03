@@ -16,12 +16,17 @@ module.exports = {
     "focus .reply textarea" : "handle_focus",
     "click .addreply" : "handle_addreply",
     "click .deletereply" : "handle_deletereply",
+    "click .truncable" : "handle_click_truncable",
     "click .show_more" : "handle_see_more",
     "mouseenter .replylink" : "handle_mouseenter_replylink",
     "mouseenter .post" : "handle_removepulse",
     "mouseleave .post" : "handle_removepulse",
     "mousemove .post" : "handle_removepulse",
     "mouseleave .replylink" : "handle_mouseleave_replylink"
+  },
+  
+  handle_click_truncable: function(e) {
+    $(e.target).closest(".truncable").toggleClass("hideContent");
   },
 
   handle_see_more: function(e) {

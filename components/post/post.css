@@ -41,6 +41,7 @@
 
 .truncable {
   display: inline-block;
+  cursor: pointer;
 }
 
 .reply .truncable {

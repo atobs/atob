@@ -53,7 +53,7 @@ function shorten_text($el) {
     $el.addClass("hideContent");
     $el.addClass("truncable");
 
-    var show_link = $("<a class='show_more' href='#'><small>full comment</small></a>");
+    var show_link = $("<a class='show_more' href='#'><small>click to see full comment</small></a>");
     $el.after(show_link);
   }
 }
