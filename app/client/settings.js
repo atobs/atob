@@ -1,7 +1,8 @@
 var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 
 var cookie_opts = {
-  path: '/'
+  path: '/',
+  expires: 365
 };
 
 var TRIPCODES = [];
