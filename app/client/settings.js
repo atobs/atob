@@ -91,7 +91,7 @@ module.exports = {
     var buttonEl = $("#benjamin_button .buttons");
     buttonEl.empty();
     _.each(TRIPCODES, function(code) {
-      var tripcodeEl = $("<div class='col-md-3 col-xs-3 tripcode_button'/>");
+      var tripcodeEl = $("<div class='col-md-3 tripcode_button'/>");
       tripcodeEl.css("cursor", "pointer");
       var triphash = window.md5(code.tripname + ":" + window.md5(code.tripcode));
       LOOKUP[triphash] = code;
