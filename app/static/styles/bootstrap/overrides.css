@@ -4,3 +4,8 @@ body {
     padding-left: 15px;
   }
 }
+
+body.modal-open {
+  overflow-y: auto;
+  overflow-x: auto;
+}
