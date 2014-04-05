@@ -167,15 +167,17 @@ function handle_new_reply(s, board, post, cb) {
   });
 
 
-  is_user_banned(s, board, function(banned) {
-    if (banned) {
-      board = "ban";
-      title = "reply to " + post.post_id + ":" + title;
-    }
+  Post.find({ where: { id: post.post_id }})
+    .success(function(parent) {
+      board = parent.board_id;
+
+      is_user_banned(s, board, function(banned) {
+        if (banned) {
+          board = "ban";
+          title = "reply to " + post.post_id + ":" + title;
+        }
 
 
-    Post.find({ where: { id: post.post_id }})
-      .success(function(parent) {
 
         if (!banned) {
           if (!down && parent.replies < REPLY_MAX) {
@@ -194,43 +196,44 @@ function handle_new_reply(s, board, post, cb) {
           parent.save();
         }
 
-      });
 
-    Post.create({
-        text: escape_html(text),
-        title: escape_html(title),
-        // null out thread and parent id on posts from banned user
-        parent_id: banned ? null : post.post_id,
-        thread_id: banned ? null : post.post_id,
-        tripcode: gen_md5(author + ":" + post.tripcode),
-        author: escape_html(author),
-        board_id: board
-      }).success(function(p) {
-        p.dataValues.post_id = p.dataValues.id;
-        p.dataValues.up = up;
-        p.dataValues.down = down;
-        delete p.dataValues.id;
+      Post.create({
+          text: escape_html(text),
+          title: escape_html(title),
+          // null out thread and parent id on posts from banned user
+          parent_id: banned ? null : post.post_id,
+          thread_id: banned ? null : post.post_id,
+          tripcode: gen_md5(author + ":" + post.tripcode),
+          author: escape_html(author),
+          board_id: board
+        }).success(function(p) {
+          p.dataValues.post_id = p.dataValues.id;
+          p.dataValues.up = up;
+          p.dataValues.down = down;
+          delete p.dataValues.id;
 
-        IP.create({
-          post_id: p.dataValues.post_id,
-          ip: s.spark.address.ip,
-          browser: s.spark.headers['user-agent']
+          IP.create({
+            post_id: p.dataValues.post_id,
+            ip: s.spark.address.ip,
+            browser: s.spark.headers['user-agent']
+          });
+
+
+          var boards_controller = load_controller("boards");
+          var boards_socket = boards_controller.get_socket();
+          boards_socket.broadcast.to(board).emit("new_reply", p.dataValues);
+
+          // updating the posts controller, too, because its possible to
+          // watch only one post
+          var posts_controller = load_controller("posts");
+          var post_socket = posts_controller.get_socket();
+          post_socket.broadcast.to(board).emit("new_reply", p.dataValues);
+
+          if (cb) {
+            cb();
+          }
         });
 
-
-        var boards_controller = load_controller("boards");
-        var boards_socket = boards_controller.get_socket();
-        boards_socket.broadcast.to(board).emit("new_reply", p.dataValues);
-
-        // updating the posts controller, too, because its possible to
-        // watch only one post
-        var posts_controller = load_controller("posts");
-        var post_socket = posts_controller.get_socket();
-        post_socket.broadcast.to(board).emit("new_reply", p.dataValues);
-
-        if (cb) {
-          cb();
-        }
       });
 
   });
