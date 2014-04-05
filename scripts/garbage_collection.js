@@ -8,11 +8,12 @@ var MAX_POSTS = 30;
 var ONE_WEEK = (1000 * 60 * 60 * 24 * 7);
 
 function collect_garbage() {
-  var one_week_ago = +new Date() - ONE_WEEK;
+  var one_week_ago = new Date(+new Date() - ONE_WEEK);
   IP.destroy({
-    created_at: one_week_ago
+    created_at: {
+      lt: one_week_ago.toISOString()
+    }
   });
-
 
   Post.findAll({
     where: {
