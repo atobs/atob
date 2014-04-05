@@ -54,7 +54,7 @@ module.exports = {
     // if the page becomes inactive for long enough, reload it on the next focus
     setInterval(function() {
       var currentTime = (new Date()).getTime();
-      if (currentTime > (lastTime + 15000)) {  // ignore small delays
+      if (currentTime > (lastTime + 65000)) {  // ignore small delays
         window.bootloader.refresh();
       }
       lastTime = currentTime;
