@@ -16,6 +16,9 @@ var GOING_ONS = {
   idle: {}
 };
 
+var LAST_UPDATE = {};
+var SCHEDULED = {};
+
 function subscribe_to_updates(s) {
   var idleTimer;
   var sid = s.spark.headers.sid;
@@ -24,6 +27,18 @@ function subscribe_to_updates(s) {
       post_id: post_id,
       counts: _.map(GOING_ONS[post_id], function(v) { return v; })
     };
+    var last_update = LAST_UPDATE[post_id];
+    if (last_update && Date.now() - last_update < 1000) {
+      // need to make sure this does happen eventually...
+      clearTimeout(SCHEDULED[post_id]);
+      SCHEDULED[post_id] = setTimeout(function() {
+        delete SCHEDULED[post_id];
+        update_post_status(post_id); 
+      }, 500);
+      return;
+    }
+
+    LAST_UPDATE[post_id] = Date.now();
 
     var boards_controller = load_controller("boards");
     var board_socket = boards_controller.get_socket();
@@ -33,14 +48,13 @@ function subscribe_to_updates(s) {
     var posts_controller = load_controller("posts");
     var post_socket = posts_controller.get_socket();
     post_socket.broadcast.to(s.board).emit("doings", doings);
-
   }
 
   // TODO: make a better schema for how this works
   s.on("isdoing", function(doing) {
+    var olddoing = s.isdoing;
     if (s.isdoing) {
       delete GOING_ONS[s.isdoing.post_id][sid];
-      update_post_status(s.isdoing.post_id);
     }
 
     s.isdoing = doing;
@@ -57,6 +71,9 @@ function subscribe_to_updates(s) {
     }, 30000);
 
     update_post_status(doing.post_id);
+    if (olddoing) {
+      update_post_status(olddoing.post_id);
+    }
   });
 
 }
