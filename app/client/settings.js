@@ -33,6 +33,17 @@ module.exports = {
     this.update_trip_colors();
     $.cookie("tripcode", tripcode, cookie_opts);
   },
+  unremember_tripcode: function(tripname, tripcode) {
+    console.log("UNREMEMBERING", tripname, tripcode);
+    // Saves to history
+    var code = { tripname: tripname, tripcode: tripcode };
+    var trips = _.filter(TRIPCODES, function(f) {
+      return f.tripname !== code.tripname || f.tripcode !== code.tripcode;
+    });
+    TRIPCODES = trips.slice(0, 10);
+    console.log(TRIPCODES);
+    $.cookie("tripcodes", JSON.stringify(TRIPCODES), cookie_opts);
+  },
   remember_tripcode: function(tripname, tripcode) {
     // Saves to history
     var code = { tripname: tripname, tripcode: tripcode };
@@ -88,18 +99,56 @@ module.exports = {
 
     }
   },
+  delete_old_code: function(el) {
+    console.log("DELETING OLD CODE", el);
+    var $el = $(el.target).siblings(".tripcode_button");
+    var code = LOOKUP[$el.data("tripcode")];
+    if (code) {
+      var self = this;
+      self.unremember_tripcode(code.tripname, code.tripcode);
+      var parent = $(el.target).parent();
+      var appended;
+      var children = parent.children().fadeOut(function() {
+        if (!appended) {
+          var restoreLink = $("<a href='#'>reremember</a>");
+          parent.append(restoreLink);
+
+          restoreLink.on("click", function() {
+            self.remember_tripcode(code.tripname, code.tripcode);
+            restoreLink.remove();
+            children.fadeIn();
+          });
+
+          appended = true;
+        }
+        
+      });
+    }
+  },
   tripcode_history: function() {
     var buttonEl = $("#benjamin_button .buttons");
     buttonEl.empty();
     _.each(TRIPCODES, function(code) {
-      var tripcodeEl = $("<div class='col-md-3 tripcode_button'/>");
+      var tripcodeContainer = $("<div class='clearfix col-md-4'/>");
+      tripcodeContainer.css("position", "relative");
+
+      var tripcodeEl = $("<div class='tripcode_button lfloat'/>");
+      tripcodeEl.css("width", "95%");
       tripcodeEl.css("cursor", "pointer");
       var triphash = window.md5(code.tripname + ":" + window.md5(code.tripcode));
       LOOKUP[triphash] = code;
       tripcodeEl.data("tripcode", triphash);
 
-      buttonEl.append(tripcodeEl);
+
       tripcode_gen(tripcodeEl);
+      tripcodeContainer.append(tripcodeEl);
+      var deleteEl = $("<a href='#' class='tripcode_delete icon-remove' />");
+      tripcodeContainer.append(deleteEl);
+      deleteEl.css("position", "absolute");
+      deleteEl.css("right", "0px");
+
+
+      buttonEl.append(tripcodeContainer);
 
     });
 

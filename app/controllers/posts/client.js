@@ -12,6 +12,7 @@ module.exports = {
     "click .identity_tripcode" : "regen_tripcode",
     "click .regen_tripcode" : "regen_tripcode",
     "click .tripcode_button" : "restore_old_code",
+    "click .tripcode_delete" : "delete_old_code",
     "click .tripcode_history" : "tripcode_history"
   },
   init: function() {
