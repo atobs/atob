@@ -1,24 +1,9 @@
 "use strict";
 
 var controller = require_core("server/controller");
-// Helpers for serialized form elements
-var value_of = controller.value_of,
-    array_of = controller.array_of;
-    
-
-var posting = require_app("server/posting");
-var Post = require_app("models/post");
-var ArchivedPost = require_app("models/archived_post");
+var gen_md5 = require_app("server/md5");
 var Board = require_app("models/board");
-
-var crypto = require("crypto");
-var gen_md5 = function(h) {
-  var hash = crypto.Hash("md5");
-  hash.update(h + "");
-  return hash.digest("hex");
-};
-
-
+var ArchivedPost = require_app("models/archived_post");
 module.exports = {
   // If the controller has assets in its subdirs, set is_package to true
   is_package: false,
@@ -66,15 +51,16 @@ module.exports = {
         });
 
         post_data.client_options = _.clone(post_data);
+        post_data.archived = true;
+
         var postCmp = $C("post", post_data);
-        api.bridge.controller("posts", "set_board", post_data.board_id);
         flush(postCmp.toString());
       }
 
-      Post.find({
+      ArchivedPost.find({
           where: { id: ctx.req.params.id},
           include: [
-            {model: Post, as: "Children" },
+            {model: ArchivedPost, as: "Children" },
           ]})
         .success(function(result) {
           if (!result) { return flush("Couldn't find post. "); }
@@ -83,10 +69,10 @@ module.exports = {
 
           // If it's a child post, get its thread
           if (post_data.parent_id) {
-            Post.find({
+            ArchivedPost.find({
               where: { id: post_data.thread_id },
               include: [
-                {model: Post, as: "Children" },
+                {model: ArchivedPost, as: "Children" },
               ]
             }).success(function(parent) {
               if (!parent) {
@@ -109,31 +95,5 @@ module.exports = {
     api.page.render({ content: template_str, socket: true });
   },
 
-  socket: function(s) {
-    var _board;
-    s.on("join", function(board) {
-      s.spark.join(board);
-      s.board = board;
-      _board = board;
-      s.emit("joined", board);
-    });
-
-    s.on("new_reply", function(post, cb) {
-      posting.handle_new_reply(s, _board, post, cb);
-    });
-
-    s.on("new_post", function(post, cb) {
-      posting.handle_new_post(s, _board, post, cb);
-    });
-
-    s.on("delete_post", function(post) {
-      posting.handle_delete_post(s, _board, post);
-    });
-
-    var load_controller = require_core("server/controller").load;
-    var boards_controller = load_controller("boards");
-    boards_controller.subscribe_to_updates(s);
-
-
-  }
+  socket: function() {}
 };

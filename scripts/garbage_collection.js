@@ -1,6 +1,7 @@
 var superfluous = require("superfluous");
 
 var Post = require_app("models/post");
+var ArchivedPost = require_app("models/archived_post");
 var Board = require_app("models/board");
 var IP = require_app("models/ip");
 
@@ -39,14 +40,28 @@ function collect_garbage() {
         console.log("TO KEEP POSTS", keep_posts.length);
 
         _.each(delete_posts, function(post) {
-          post.destroy();
-          Post.destroy({
-            parent_id: post.id
-          });
+          var archive = false;
+          if (post.replies > 50 || post.ups > 10) {
+            console.log(post.replies, post.ups);
+            archive = true;
+            ArchivedPost.findOrCreate({ id: post.id }, post.dataValues);
+          }
 
+          post.destroy();
           post.getChildren().success(function(children) {
             console.log("CHILDREN IDS ARE", _.map(children, function(p) { return p.id; }));
+
+            if (archive) {
+              _.each(children, function(p) {
+                ArchivedPost.findOrCreate({ id: p.id }, p.dataValues);
+              });
+            }
+
+            Post.destroy({
+              parent_id: post.id
+            });
           });
+
         });
 
       }

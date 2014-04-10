@@ -8,6 +8,7 @@
 <% set_default("tripcode", "") %>
 <% set_default("author", "anon") %>
 <% set_default("highlight_id", null) %>
+<% set_default("archived", false) %>
 
 <div class="post <%= maximized ? "maximize" : "" %>" data-post-id="<%= post_id %>" style="display: none">
   <div class="title clearfix">
@@ -119,13 +120,15 @@
   </div>
 
   <div class="mtl clearfix">
-    <form class="reply">
-      <div class="mtl clearfix mbl" style="position: relative">
-        <a style="position: absolute; right: -5px; top: 5px; z-index: 10" 
-             class="glyphs icon-emojigrin rfloat mrl"> </a>
-        <textarea type="text" class="form-control" placeholder="reply"></textarea>
-      </div>
-    </form>
+    <% if (!archived) { %>
+      <form class="reply">
+        <div class="mtl clearfix mbl" style="position: relative">
+          <a style="position: absolute; right: -5px; top: 5px; z-index: 10" 
+               class="glyphs icon-emojigrin rfloat mrl"> </a>
+          <textarea type="text" class="form-control" placeholder="reply"></textarea>
+        </div>
+      </form>
+    <% } %>
   </div>
 
 

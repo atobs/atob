@@ -3,7 +3,9 @@
 var Board = require_app("models/board");
 
 var $ = require("cheerio");
+var ArchivedPost = require_app("models/archived_post");
 var Post = require_app("models/post");
+var gen_md5 = require_app("server/md5");
 
 var ICONS = [
   "aaabattery", "abacus", "accountfilter", "acsource", "addfriend", "address",
@@ -396,13 +398,67 @@ module.exports = {
     "" : "index",
     "rules" : "rules",
     "faq" : "faq",
+    "archives" : "archives",
     "icons" : "icons",
     "robots.txt" : "robots"
+  },
+
+  archives: function(ctx, api) {
+
+    var render_boards = api.page.async(function(flush) {
+      Board.findAll({
+          order: "name ASC"
+        })
+        .success(function(results) {
+          var boards = _.map(results, function(r) { 
+            return r.getDataValue('name'); 
+          });
+
+          var template_str = api.template.partial("home/board_links.html.erb", {
+            boards: boards 
+          });
+
+          flush(template_str);
+
+        });
+    });
+
+    var render_recent_archives = api.page.async(function(flush) {
+      ArchivedPost.findAll({
+        where: {
+          thread_id: null,
+          parent_id: null
+        },
+        order: "id DESC"
+      }).success(function(posts) {
+        posts = _.unique(posts, function(p) { return p.id; } );
+        var template_str = api.template.partial("home/recent_posts.html.erb", {
+          posts: posts,
+          archive: "a"
+        });
+
+        api.bridge.controller("home", "show_recent_archives");
+        flush(template_str);
+      });
+
+
+    });
+
+    var template_str = api.template.render("controllers/archives.html.erb", {
+      render_boards: render_boards,
+      render_archives: render_recent_archives
+    });
+
+    api.bridge.controller("home", "init_tripcodes");
+
+    api.page.render({ content: template_str, socket: false});
+
   },
 
   index: function(ctx, api) {
     this.set_fullscreen(true);
     this.set_title("atob");
+
     var render_recent_posts = api.page.async(function(flush) {
       Post.findAll({
         where: {

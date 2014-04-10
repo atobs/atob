@@ -1,5 +1,7 @@
 
+var settings = require("app/client/settings");
 var format_text = require("app/client/text");
+var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 
 module.exports = {
   click_handler_uno: function() {
@@ -16,5 +18,11 @@ module.exports = {
       format_text.add_icons($(this));
     });
     $(".posts.recent.hidden").removeClass("hidden").hide().fadeIn();
+  },
+  gen_tripcodes: function() {
+    $(".tripcode").each(function() {
+      tripcode_gen(this);
+    });
   }
 };
+_.extend(module.exports, settings);

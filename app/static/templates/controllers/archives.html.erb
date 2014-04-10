@@ -1,0 +1,18 @@
+<% set_default("tripcode", "") %>
+
+<div class="container mbl mtl clearfix">
+  <div class="col-md-12 clearfix">
+    <%= render_partial("shared/logo_and_links.html.erb", { render_boards: render_boards, tripcode: tripcode }) %>
+
+  </div>
+
+  <div class="col-md-12">
+    <h2>the archives</h2>
+    where the noisiest posts come to settle down
+
+    <div class="mtl">
+      <%= render_archives() %>
+    </div>
+  </div>
+
+</div>

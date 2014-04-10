@@ -1,5 +1,6 @@
 *.sw?
 db.sqlite
+ab.sqlite
 node_modules
 garbage_collector.log
 bak

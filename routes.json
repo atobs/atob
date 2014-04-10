@@ -1,5 +1,6 @@
 {
   "/": "home",
+  "/a/" : "archives",
   "/b/" : "boards",
   "/p/" : "posts",
   "/r/" : "rss"
