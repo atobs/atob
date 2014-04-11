@@ -404,6 +404,8 @@ module.exports = {
   },
 
   archives: function(ctx, api) {
+    this.set_fullscreen(true);
+    this.set_title("atob archives");
 
     var render_boards = api.page.async(function(flush) {
       Board.findAll({
