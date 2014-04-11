@@ -200,3 +200,13 @@
   max-height: 6em;
   overflow: hidden;
 }
+
+.archived .icon-remove {
+  display: none;
+}
+
+.archived .replies {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-left: -3px;
+}

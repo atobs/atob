@@ -10,7 +10,8 @@
 <% set_default("highlight_id", null) %>
 <% set_default("archived", false) %>
 
-<div class="post <%= maximized ? "maximize" : "" %>" data-post-id="<%= post_id %>" style="display: none">
+<div class="post <%= maximized ? "maximize" : "" %> <%= archived ? "archived" : "" %>" 
+    data-post-id="<%= post_id %>" style="display: none">
   <div class="title clearfix">
     <a href="/p/<%= post_id %>" data-parent-id="<%= post_id %>">
       <h4><b class="text"><%- title %></b> </h4>
