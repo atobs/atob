@@ -2,6 +2,7 @@
 
 var Board = require_app("models/board");
 
+var Sequelize = require("sequelize");
 var $ = require("cheerio");
 var ArchivedPost = require_app("models/archived_post");
 var Post = require_app("models/post");
@@ -397,6 +398,7 @@ module.exports = {
   routes: {
     "" : "index",
     "rules" : "rules",
+    "anon" : "colors",
     "faq" : "faq",
     "archives" : "archives",
     "icons" : "icons",
@@ -570,6 +572,38 @@ module.exports = {
 
     api.page.render({ content: template_str});
 
+  },
+  colors: function(ctx, api) {
+    var hashes = [];
+    this.set_fullscreen(true);
+    Post.findAll({ 
+      group: ["tripcode", "author"],
+      attributes: [
+        [Sequelize.fn('COUNT', Sequelize.col('*')), 'count'],
+        "tripcode",
+        "author"
+        ],
+      }).success(function(groups) {
+        var count = 0;
+        _.each(groups, function(group) {
+          hashes.push(group.dataValues);
+          count += 1;
+        });
+
+        var content = $("<div class='container mtl' />");
+        _.each(hashes, function(hash) {
+          var hashEl = $("<div class='col-xs-4 col-md-2 tripcode'>");
+          hashEl.attr("data-tripcode", hash.tripcode);
+          var opacity = Math.max(parseFloat(hash.count * 50) / count);
+          hashEl.css("opacity", opacity);
+          content.append(hashEl);
+        });
+
+        api.bridge.controller("home", "gen_tripcodes");
+        api.page.render({content: content.toString() });
+
+
+      });
   },
   robots: function(ctx) {
     ctx.res.end("User-agent: *\nDisallow: /");
