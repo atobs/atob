@@ -586,15 +586,18 @@ module.exports = {
       }).success(function(groups) {
         var count = 0;
         _.each(groups, function(group) {
-          hashes.push(group.dataValues);
-          count += 1;
+          if (group.dataValues.count > 1) {
+            hashes.push(group.dataValues);
+            count += 1;
+          }
+
         });
 
         var content = $("<div class='container mtl' />");
         _.each(hashes, function(hash) {
           var hashEl = $("<div class='col-xs-4 col-md-2 tripcode'>");
           hashEl.attr("data-tripcode", hash.tripcode);
-          var opacity = Math.max(parseFloat(hash.count * 50) / count);
+          var opacity = Math.max(parseFloat(hash.count * 20) / count);
           hashEl.css("opacity", opacity);
           content.append(hashEl);
         });
