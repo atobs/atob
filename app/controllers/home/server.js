@@ -578,6 +578,7 @@ module.exports = {
     this.set_fullscreen(true);
     Post.findAll({ 
       group: ["tripcode", "author"],
+      order: "count DESC",
       attributes: [
         [Sequelize.fn('COUNT', Sequelize.col('*')), 'count'],
         "tripcode",
