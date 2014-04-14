@@ -63,7 +63,10 @@ module.exports = {
             {model: ArchivedPost, as: "Children" },
           ]})
         .success(function(result) {
-          if (!result) { return flush("Couldn't find post. "); }
+          if (!result) { 
+            var upeye = $C("upeye", { title: "something's not right here..."});
+            return flush(upeye.toString());
+          }
 
           var post_data = result.dataValues;
 
