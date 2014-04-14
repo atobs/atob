@@ -1,0 +1,9 @@
+{
+  "main" : "upeye",
+  "style": "upeye.css",
+  "styles": [],
+
+  "template": "upeye.html.erb",
+  "helpers": [],
+  "no_redefine" : false
+}
