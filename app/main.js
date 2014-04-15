@@ -68,7 +68,6 @@ module.exports = {
         });
 
 
-        api.bridge.controller("home", "init_tripcodes");
         api.page.render({ content: template_str });
         ctx.exit();
       });
