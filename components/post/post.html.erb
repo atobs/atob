@@ -79,7 +79,7 @@
             title="delete / report post">
             <i class='icon-remove'> </i>
           </a>
-          <a href="/p/<%=r.id%>" class="addreply"
+          <a href="/<%= archived ? "a" : "p" %>/<%=r.id%>" class="addreply"
             data-parent-id="<%= r.id %>"
             title="<%= new Date(r.created_at).toLocaleString() %>">
 
