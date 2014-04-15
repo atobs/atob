@@ -1,0 +1,9 @@
+.hidey {
+  opacity: 0.01;
+  transition: opacity 2s;
+
+  &:hover {
+    opacity: 0.9;
+    transition: opacity 5s;
+  }
+}

@@ -1,6 +1,7 @@
 <% set_default("title", "a new borad approaches") %>
 <% set_default("boards", []) %>
 
+<% add_stylesheet("home.css") %>
 <div class="container" style="margin: auto; margin-top: 10px">
   <%= render_partial("home/header.html.erb", {}) %>
   <div class="col-md-6">
@@ -24,7 +25,15 @@
 
     <div>
       <h3><a href="/b/a">get started!</a></h3>
+
+      <div class='hidey mtl clearfix'>
+        <h3 class="mts"><a href="/anon">meet anon</a></h3>
+        <h3 class="mts"><a href="/archives">archives</a></h3>
+      </div>
+
+
     </div>
+
 
   </div>
 
