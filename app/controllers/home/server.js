@@ -391,7 +391,41 @@ var ICONS = [
 var ICON_GROUPS = _.groupBy(ICONS, function(icon, index) {
   return index % 50;
 });
-                  
+
+var SLOGANS = [
+  "Eting your children since february",
+  "Establishing hippy communes since 2014",
+  "where James vs. John was decided",
+  "totally not being sarcastic about enslvaving the children",
+  "where great minds -- HHHnnnnnnggghhhh -- ",
+  "home of the serial shitter",
+  "HULK SMASH!",
+  "a less degenerate 4chan",
+  "JAMES JAMES JAMES JAMES hulk JAMES JAMES JAMES JAMES",
+  "When you stare into the anon, the anon also stares into you",
+  "where poop and colors combine to make magic",
+  "where it is foretold that one day an anon shall achieve quadruple black and transcend humankind to take their place by JAMES's side",
+  "Let us touch your poop",
+  "Totally not racist toward the Japs",
+  "where colors set you free and then -- oh hold on -- hnnnnnNnnNNÑÑÑÑGH",
+  "Home of the incontinent",
+  "taste the rainbow FUCK YOU SKITTLES",
+  "many voices, one anon",
+  "destroying battery power since 2014",
+  "questioning purple since 2014",
+  "no you don't fucking love science",
+  "where you don't look crazy having conversations with yourself",
+  "where colors go to die",
+  "redefining purple",
+  "spoiler alert",
+  "50 or the void",
+  "sloganeering our way to a brighter future",
+  "where well adjusted people go to anon",
+  "if i lose my privilege, what will i have left?"
+];
+
+
+
 
 
 module.exports = {
@@ -401,8 +435,28 @@ module.exports = {
     "anon" : "colors",
     "faq" : "faq",
     "archives" : "archives",
+    "guide" : "about",
     "icons" : "icons",
     "robots.txt" : "robots"
+  },
+
+  about: function(ctx, api) {
+    this.set_fullscreen(true);
+    this.set_title("atob archives");
+
+    var slogan = SLOGANS[_.random(SLOGANS.length)];
+
+    // bring the slogans in over here
+    var template_str = api.template.render("controllers/about.html.erb", {
+      slogan: slogan
+
+    });
+
+
+    api.page.render({ content: template_str, socket: false});
+
+
+
   },
 
   archives: function(ctx, api) {
