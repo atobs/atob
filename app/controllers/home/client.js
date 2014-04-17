@@ -7,6 +7,11 @@ module.exports = {
   click_handler_uno: function() {
     console.log("Handling a click");
   },
+  format_text: function() {
+    $(".text").each(function() {
+      format_text.add_icons($(this));
+    });
+  },
   show_recent_threads: function() {
     $(".threads.recent.hidden .text").each(function() {
       format_text.add_icons($(this));

@@ -495,7 +495,7 @@ module.exports = {
           archive: "a"
         });
 
-        api.bridge.controller("home", "show_recent_archives");
+        api.bridge.controller("home", "format_text");
         flush(template_str);
       });
 
