@@ -4,8 +4,8 @@ require("app/static/vendor/Autolinker");
 function add_newlines($el) {
   var escaped = $el.html();
   if (escaped) {
-    escaped = escaped.replace(/^\s*(.*)\s*$/, "$1");
-    var replaced = escaped.replace(/\n\s*\n+/g, 
+    escaped = escaped.trim();
+    var replaced = escaped.replace(/\n\s*\n*/g, 
       "<br class='mtl mbl' /> <span class='placeholder' >&nbsp;</span>");
     $el.html(replaced);
   }
