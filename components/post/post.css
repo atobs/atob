@@ -193,6 +193,7 @@
 .deletereply {
   float: left;
   margin-left: -20px;
+  margin-top: 2px;
   opacity: 0.1;
   font-size: 80%;
 }

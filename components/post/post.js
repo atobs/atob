@@ -92,17 +92,18 @@ module.exports = {
     infoEl.attr("data-parent-id", data.post_id);
     infoEl.attr("title", (new Date(data.created_at)).toLocaleString());
     replyEl.append($("<small />").append(infoEl));
+
+    var deleteEl = $("<a class='deletereply icon-remove' href='#' />");
+    deleteEl.attr("data-parent-id", data.post_id);
+    replyEl.append(deleteEl);
+
     var titleEl = $("<b />").text(data.title);
     this.helpers['app/client/text'].format_text(titleEl);
     replyEl.append(titleEl);
 
-    var deleteEl = $("<a class='deletereply icon-remove' href='#' />");
-    deleteEl.attr("data-parent-id", data.post_id);
-
     // need to find the icons in the text and fix them
     var smallEl = $("<small />").text(data.text);
     replyEl.append(smallEl);
-    replyEl.append(deleteEl);
 
     this.helpers['app/client/text'].format_text(smallEl);
 
