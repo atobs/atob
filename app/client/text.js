@@ -19,6 +19,10 @@ renderer.paragraph = function(quote) {
   return quote + "<br />";
 };
 
+renderer.heading = function(head) {
+  return "#" + head;
+};
+
 // Takes HTML
 function add_newlines($el) {
   var escaped = $el.html();
