@@ -9,17 +9,20 @@ module.exports = {
   },
   format_text: function() {
     $(".text").each(function() {
+      format_text.add_markdown($(this));
       format_text.add_icons($(this));
     });
   },
   show_recent_threads: function() {
     $(".threads.recent.hidden .text").each(function() {
+      format_text.add_markdown($(this));
       format_text.add_icons($(this));
     });
     $(".threads.recent.hidden").removeClass("hidden").hide().fadeIn();
   },
   show_recent_posts: function() {
     $(".posts.recent.hidden .text").each(function() {
+      format_text.add_markdown($(this));
       format_text.add_icons($(this));
     });
     $(".posts.recent.hidden").removeClass("hidden").hide().fadeIn();

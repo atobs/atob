@@ -4,6 +4,9 @@
   "styles": [],
 
   "template": "post.html.erb",
-  "helpers": [ "app/client/tripcode", "app/client/text", "app/static/vendor/Autolinker" ],
+  "helpers": [ 
+    "app/client/tripcode", 
+    "app/client/text",
+    "app/static/vendor/Autolinker" ],
   "no_redefine" : false
 }

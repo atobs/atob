@@ -1,4 +1,23 @@
 require("app/static/vendor/Autolinker");
+require("app/static/vendor/marked");
+
+var renderer = new marked.Renderer();
+renderer.blockquote = function(quote) {
+  var quote_text = "";
+  if (quote) {
+    try {
+      quote_text = $(quote).text();
+    } catch(e) {
+      quote_text = quote;
+    }
+  }
+
+  return "&gt;" + quote_text.trim();
+};
+
+renderer.paragraph = function(quote) {
+  return quote + "<br />";
+};
 
 // Takes HTML
 function add_newlines($el) {
@@ -13,7 +32,7 @@ function add_newlines($el) {
 
 // Takes escaped text
 function add_icons($el, replace_urls) {
-  var escaped = $el.text();
+  var escaped = $el.html();
 
   if (escaped) {
     var icon_str = "<i class='icon icon-NAME' title=':NAME:' />";
@@ -47,6 +66,15 @@ function add_replies($el) {
   }
 }
 
+// Hmmm...
+function add_markdown($el) {
+  var escaped = $el.text().trim();
+  escaped = marked(escaped, { renderer: renderer});
+
+  $el.html(escaped);
+  $el.addClass("marked");
+}
+
 function shorten_text($el) {
   var escaped = $el.html();
   if (escaped.length > 800) {
@@ -59,9 +87,9 @@ function shorten_text($el) {
 }
 
 function format_text($el) {
-  add_icons($el, true /* replace URLS */);
+  add_markdown($el);
   add_replies($el);
-  add_newlines($el);
+  add_icons($el, true /* replace URLS */);
   shorten_text($el);
 }
 
@@ -69,5 +97,6 @@ module.exports = {
   format_text: format_text,
   add_icons: add_icons,
   add_newlines: add_newlines,
-  add_replies: add_replies
+  add_replies: add_replies,
+  add_markdown: add_markdown
 };

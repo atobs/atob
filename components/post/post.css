@@ -44,6 +44,14 @@
   cursor: pointer;
 }
 
+.reply p {
+  display: block;
+}
+
+.marked {
+  display: inline;
+}
+
 .reply .truncable {
   text-indent: 90px;
   margin-right: 40px;
@@ -179,6 +187,7 @@
 
 .addreply {
   float: right;
+  margin-left: 10px;
 }
 
 .deletereply {
