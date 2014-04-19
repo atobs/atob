@@ -219,3 +219,16 @@
   padding-right: 0px;
   margin-left: -3px;
 }
+
+.replypreview {
+  display: none;
+  opacity: 0.6;
+
+  border: 3px dotted #ddd;
+  padding: 5px;
+  padding-left: 15px;
+
+  @media @device {
+    display: none !important;
+  }
+}

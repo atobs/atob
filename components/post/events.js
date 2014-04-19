@@ -1,5 +1,6 @@
 "use strict";
 
+require("app/static/vendor/marked");
 module.exports = { 
   // Component event handling goes here
   // This is purposefully kept separate from
@@ -143,19 +144,38 @@ module.exports = {
   // Alright. so we rely on users updating their socket status.  any one socket
   // can either be: 1. doing nothing, 2. typing a reply, 3. watching a post
   handle_typing: _.throttle(function() {
+    
     SF.socket().emit("isdoing", { what: "typing", post_id: this.get_post_id()});
+
+    // Update our preview with markdwon, too
+    var replyInput = this.$el.find(".reply textarea");
+    var reply = replyInput.val().trim();
+
+    var replyPreview = this.$el.find(".replypreview");
+    if (replyPreview.is(":visible")) {
+      console.log("FORMATTING");
+      replyPreview.text(reply);
+      this.helpers['app/client/text'].format_text(replyPreview);
+    }
+
+
   }, 500),
   handle_unfocus: function() {
     SF.socket().emit("isdoing", { what: "unfocused", post_id: this.get_post_id()});
+    var replyPreview = this.$el.find(".replypreview");
+    replyPreview.fadeOut();
   },
   handle_focus: function() {
     this.expand();
+    var replyPreview = this.$el.find(".replypreview");
+    replyPreview.fadeIn();
     SF.socket().emit("isdoing", { what: "focused", post_id: this.get_post_id()});
   },
 
   handle_reply: function(e) {
     e.preventDefault();
     var replyInput = this.$el.find(".reply textarea");
+    var replyPreview = this.$el.find(".replypreview");
     var reply = replyInput.val();
 
     if (reply.trim() === "") {
@@ -176,6 +196,7 @@ module.exports = {
     }, function() {
       // Success or not... 
       replyInput.val("");
+      replyPreview.text("");
       SF.controller().remember_tripcode(author, tripcode);
     });
   },
