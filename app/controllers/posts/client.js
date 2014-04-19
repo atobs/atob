@@ -60,6 +60,10 @@ module.exports = {
     self.do_when(self.board, "set_board", function() {
       s.emit("join", self.board);
     });
+  },
+  goto: function(url) {
+    console.log("GOING TO", url);
+    window.location = url;
   }
 };
 

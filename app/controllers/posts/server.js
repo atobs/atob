@@ -78,8 +78,29 @@ module.exports = {
           ]})
         .success(function(result) {
           if (!result) { 
-            var upeye = $C("upeye", { title: "something's not right here..."});
-            return flush(upeye.toString());
+            // Do a check to see if the post is archived...
+            var app = require_core("server/main").app;
+            ArchivedPost.find({
+              where: { id: ctx.req.params.id},
+            }).success(function(result) {
+              if (result) {
+
+                var url = app.router.build("archives.get", {
+                  id: ctx.req.params.id
+                });
+                console.log("GOING TO", url);
+                api.bridge.controller("posts", "goto", url);
+
+                flush("");
+                return;
+              } else {
+                var upeye = $C("upeye", { title: "something's not right here..."});
+                return flush(upeye.toString());
+
+              }
+            });
+
+            return;
           }
 
           var post_data = result.dataValues;
