@@ -119,13 +119,19 @@ module.exports = {
       Post.findAll({
           where: { board_id: board_id, thread_id: null },
           order: "bumped_at DESC",
-          limit: 10
+          limit: 30
       }).success(function(results) {
         if (!results || !results.length) {
           return flush();
         }
 
         var div = $("<div></div>");
+
+        // add an old post, for fun
+        var grabbag = results[_.random(10, results.length-1)];
+        results = results.slice(0, 10);
+        results.push(grabbag);
+
         _.each(results, function(result) {
           var async_work = api.page.async(function(flush_post) {
             result.getChildren().success(function(children) {

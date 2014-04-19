@@ -88,11 +88,10 @@ module.exports = {
                 var url = app.router.build("archives.get", {
                   id: ctx.req.params.id
                 });
-                console.log("GOING TO", url);
+
                 api.bridge.controller("posts", "goto", url);
 
-                flush("");
-                return;
+                return flush("");
               } else {
                 var upeye = $C("upeye", { title: "something's not right here..."});
                 return flush(upeye.toString());

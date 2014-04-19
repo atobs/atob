@@ -62,7 +62,7 @@ module.exports = {
     });
   },
   goto: function(url) {
-    console.log("GOING TO", url);
+    // redirecting
     window.location = url;
   }
 };
