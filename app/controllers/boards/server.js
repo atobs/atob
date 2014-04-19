@@ -130,7 +130,9 @@ module.exports = {
         // add an old post, for fun
         var grabbag = results[_.random(10, results.length-1)];
         results = results.slice(0, 10);
-        results.push(grabbag);
+        if (grabbag) {
+          results.push(grabbag);
+        }
 
         _.each(results, function(result) {
           var async_work = api.page.async(function(flush_post) {
