@@ -57,6 +57,7 @@ module.exports = {
   }, 200),
 
   handle_mouseenter_imglink: function(e) {
+    e.stopPropagation();
     $(e.target).popover("destroy");
     var responseEl = $("<div />");
     var img_link = $(e.target).attr("href");
@@ -81,6 +82,7 @@ module.exports = {
   },
 
   handle_mouseenter_replylink: function(e) {
+    e.stopPropagation();
     $(e.target).popover("destroy");
     var clone_id = $(e.target).data("parent-id");
     var responseEl = $("#reply" + clone_id);
