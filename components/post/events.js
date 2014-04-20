@@ -24,6 +24,7 @@ module.exports = {
     "mouseenter .post" : "handle_removepulse",
     "mouseleave .post" : "handle_removepulse",
     "mousemove .post" : "handle_removepulse",
+    "click .replylink" : "handle_mouseenter_replylink",
     "mouseenter .replylink" : "handle_mouseenter_replylink",
     "mouseleave .replylink" : "handle_mouseleave_replylink"
   },
@@ -80,6 +81,7 @@ module.exports = {
   },
 
   handle_mouseenter_replylink: function(e) {
+    $(e.target).popover("destroy");
     var clone_id = $(e.target).data("parent-id");
     var responseEl = $("#reply" + clone_id);
     var container = this.$el;

@@ -241,6 +241,7 @@
 .replylink,
 .imglink {
   color: #ff43ca;
+  cursor: pointer;
 
   &:hover {
     color: #000;

@@ -87,7 +87,7 @@ function add_icons($el, replace_urls) {
 function add_replies($el) {
   var escaped = $el.html();
   if (escaped) {
-    var reply_str = "<a href='#' class='replylink' data-parent-id='NAME' >&gt;&gt;NAME</a>";
+    var reply_str = "<span href='#' class='replylink' data-parent-id='NAME' >&gt;&gt;NAME</span>";
     var replaced = escaped.replace(/&gt;&gt;#?([\d]+)/g, function(x, post_id) {
       return reply_str.replace(/NAME/g, post_id.toLowerCase());
     });
