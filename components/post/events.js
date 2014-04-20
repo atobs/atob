@@ -24,7 +24,6 @@ module.exports = {
     "mouseenter .post" : "handle_removepulse",
     "mouseleave .post" : "handle_removepulse",
     "mousemove .post" : "handle_removepulse",
-    "click .replylink" : "handle_mouseenter_replylink",
     "mouseenter .replylink" : "handle_mouseenter_replylink",
     "mouseleave .replylink" : "handle_mouseleave_replylink"
   },
