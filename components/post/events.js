@@ -18,12 +18,14 @@ module.exports = {
     "click .deletereply" : "handle_deletereply",
     "click .truncable" : "handle_click_truncable",
     "click .show_more" : "handle_see_more",
+    "click .imglink" : "handle_mouseenter_imglink",
     "mouseenter .imglink" : "handle_mouseenter_imglink",
     "mouseleave .imglink" : "handle_mouseleave_imglink",
-    "mouseenter .replylink" : "handle_mouseenter_replylink",
     "mouseenter .post" : "handle_removepulse",
     "mouseleave .post" : "handle_removepulse",
     "mousemove .post" : "handle_removepulse",
+    "click .replylink" : "handle_mouseenter_replylink",
+    "mouseenter .replylink" : "handle_mouseenter_replylink",
     "mouseleave .replylink" : "handle_mouseleave_replylink"
   },
 
@@ -55,6 +57,7 @@ module.exports = {
   }, 200),
 
   handle_mouseenter_imglink: function(e) {
+    $(e.target).popover("destroy");
     var responseEl = $("<div />");
     var img_link = $(e.target).attr("href");
 
@@ -74,7 +77,7 @@ module.exports = {
 
   },
   handle_mouseleave_imglink: function(e) {
-    $(e.target).popover("hide");
+    $(e.target).popover("destroy");
   },
 
   handle_mouseenter_replylink: function(e) {
@@ -87,7 +90,7 @@ module.exports = {
   },
 
   handle_mouseleave_replylink: function(e) {
-    $(e.target).popover("hide");
+    $(e.target).popover("destroy");
   },
 
   handle_addglyph: function(e) {
