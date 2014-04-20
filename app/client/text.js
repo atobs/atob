@@ -44,6 +44,16 @@ renderer.image = function(href, title, text) {
   return tag;
 };
 
+renderer.link = function(href, title, text) {
+  var outer = $("<div/>");
+  var link = $("<a />");
+  link.html(text);
+  link.attr("href", href);
+  link.attr("target", "_blank");
+
+  return outer.append(link).html();
+};
+
 // Takes HTML
 function add_newlines($el) {
   var escaped = $el.html();

@@ -9,10 +9,14 @@
       <% } %>
       <a href="/<%= archive %>/<%= post.id %>">
         <small style='word-wrap: break-word'>
+          #<%= post.id %>
+        </small>
+        <small>
           <b class="text"><%- post.title.substr(0, 140) %></b>
           <span class="text"><%- post.text.substr(0, 140) %></span>
         </small>
       </a>
+
     </div>
   <% }) %>
 </div>
