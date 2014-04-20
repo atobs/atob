@@ -24,22 +24,23 @@ renderer.heading = function(head) {
 };
 
 renderer.image = function(href, title, text) {
-  var url_tag = $("<a />");
-  url_tag.attr("href", href);
+  var url_tag = $("<span>");
+  var img_tag = $("<a>[link]</a>");
 
-  var img_tag = $("<img />");
-  img_tag.attr("src", href);
-  img_tag.attr('title', title);
-  img_tag.css("height", "50px");
-  
-  url_tag.append(img_tag);
+  url_tag.text(text);
+  url_tag.attr("href", href);
+  url_tag.css("cursor", "pointer");
+
+  img_tag.attr("href", href);
+  img_tag.css("margin-left", "5px");
+  url_tag.addClass("imglink");
 
   var outer = $("<div />");
   outer.append(url_tag);
+  outer.append(img_tag);
 
   var tag = outer.html();
   return tag;
-
 };
 
 // Takes HTML

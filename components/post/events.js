@@ -1,7 +1,6 @@
 "use strict";
 
-require("app/static/vendor/marked");
-module.exports = { 
+module.exports = {
   // Component event handling goes here
   // This is purposefully kept separate from
   // the main component file, since it has code
@@ -19,13 +18,15 @@ module.exports = {
     "click .deletereply" : "handle_deletereply",
     "click .truncable" : "handle_click_truncable",
     "click .show_more" : "handle_see_more",
+    "mouseenter .imglink" : "handle_mouseenter_imglink",
+    "mouseleave .imglink" : "handle_mouseleave_imglink",
     "mouseenter .replylink" : "handle_mouseenter_replylink",
     "mouseenter .post" : "handle_removepulse",
     "mouseleave .post" : "handle_removepulse",
     "mousemove .post" : "handle_removepulse",
     "mouseleave .replylink" : "handle_mouseleave_replylink"
   },
-  
+
   handle_click_truncable: function(e) {
     $(e.target).closest(".truncable").toggleClass("hideContent");
   },
@@ -53,6 +54,29 @@ module.exports = {
     this.$el.find(".post").removeClass("pulse");
   }, 200),
 
+  handle_mouseenter_imglink: function(e) {
+    var responseEl = $("<div />");
+    var img_link = $(e.target).attr("href");
+
+    var img_tag = $("<img />") .attr("src", img_link);
+    img_tag.css("max-height", "200px");
+    img_tag.css("max-width", "100%");
+    img_tag.css("display", "block");
+    responseEl.append(img_tag);
+
+    $(e.target).popover({
+      html: true,
+      content: responseEl.html(),
+      placement: "right",
+      container: this.$el });
+
+    $(e.target).popover("show");
+
+  },
+  handle_mouseleave_imglink: function(e) {
+    $(e.target).popover("hide");
+  },
+
   handle_mouseenter_replylink: function(e) {
     var clone_id = $(e.target).data("parent-id");
     var responseEl = $("#reply" + clone_id);
@@ -78,7 +102,7 @@ module.exports = {
   },
   handle_click_glyphs: function(e) {
     var container = this.$el;
-    var glyphs = [ 
+    var glyphs = [
       "emojigrin",
       "emojidead",
       "blankstare",
@@ -105,10 +129,10 @@ module.exports = {
       responseEl.append(glyphContainer);
     });
 
-    $(e.target).popover({ 
-      html: true, 
-      content: outerEl, 
-      placement: "top", 
+    $(e.target).popover({
+      html: true,
+      content: outerEl,
+      placement: "top",
       container: container });
 
 
@@ -144,7 +168,7 @@ module.exports = {
   // Alright. so we rely on users updating their socket status.  any one socket
   // can either be: 1. doing nothing, 2. typing a reply, 3. watching a post
   handle_typing: _.throttle(function() {
-    
+
     SF.socket().emit("isdoing", { what: "typing", post_id: this.get_post_id()});
 
     // Update our preview with markdwon, too
@@ -193,7 +217,7 @@ module.exports = {
       tripcode: triphash,
       text: reply
     }, function() {
-      // Success or not... 
+      // Success or not...
       replyInput.val("");
       replyPreview.text("");
       SF.controller().remember_tripcode(author, tripcode);

@@ -233,3 +233,16 @@
     display: none !important;
   }
 }
+
+.popover.right .arrow {
+  top: 10px;
+}
+
+.replylink,
+.imglink {
+  color: #ff43ca;
+
+  &:hover {
+    color: #000;
+  }
+}
