@@ -1,6 +1,5 @@
-
 var settings = require("app/client/settings");
-var format_text = require("app/client/text");
+
 var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 
 module.exports = {
@@ -8,22 +7,31 @@ module.exports = {
     console.log("Handling a click");
   },
   format_text: function() {
-    $(".text").each(function() {
-      format_text.add_markdown($(this));
-      format_text.add_icons($(this));
+    require("app/client/text", function(format_text) {
+      var self = this;
+      $(".text").each(function() {
+          format_text.add_markdown($(self));
+          format_text.add_icons($(self));
+      });
     });
   },
   show_recent_threads: function() {
     $(".threads.recent.hidden .text").each(function() {
-      format_text.add_markdown($(this));
-      format_text.add_icons($(this));
+      var self = this;
+      require("app/client/text", function(format_text) {
+        format_text.add_markdown($(self));
+        format_text.add_icons($(self));
+      });
     });
     $(".threads.recent.hidden").removeClass("hidden").hide().fadeIn();
   },
   show_recent_posts: function() {
     $(".posts.recent.hidden .text").each(function() {
-      format_text.add_markdown($(this));
-      format_text.add_icons($(this));
+      var self = this;
+      require("app/client/text", function(format_text) {
+        format_text.add_markdown($(self));
+        format_text.add_icons($(self));
+      });
     });
     $(".posts.recent.hidden").removeClass("hidden").hide().fadeIn();
   },

@@ -1,6 +1,7 @@
 require("app/static/vendor/Autolinker");
 require("app/static/vendor/marked");
 
+
 var renderer = new marked.Renderer();
 renderer.blockquote = function(quote) {
   var quote_text = "";
@@ -25,7 +26,7 @@ renderer.heading = function(head) {
 
 renderer.image = function(href, title, text) {
   var url_tag = $("<span>");
-  var img_tag = $("<a>[link]</a>");
+  var img_tag = $("<a target='_blank'>[link]</a>");
 
   url_tag.text(text);
   url_tag.attr("href", href);
