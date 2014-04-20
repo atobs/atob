@@ -11,6 +11,10 @@ module.exports = {
     "change input.handle" : "save_handle",
     "keyup input.tripcode" : "update_trip_colors",
     "keyup input.handle" : "update_trip_colors",
+    "blur .new_post input" : "remove_post_preview",
+    "blur .new_post textarea" : "remove_post_preview",
+    "focus .new_post input" : "update_post_preview",
+    "focus .new_post textarea" : "update_post_preview",
     "keyup .new_post input" : "update_post_preview",
     "keyup .new_post textarea" : "update_post_preview",
     "change input.newtrip" : "save_newtrip",
@@ -21,20 +25,30 @@ module.exports = {
     "click .tripcode_history" : "tripcode_history"
   },
   update_post_preview: _.throttle(function(e) {
-    var title = this.$el.find(".new_post input");
-    var text = this.$el.find(".new_post textarea");
+    var title = this.$el.find(".new_post input").val();
+    var text = this.$el.find(".new_post textarea").val();
 
     var preview = this.$el.find(".post_preview");
+    preview.stop().fadeIn();
 
     if (!preview.is(":visible")) {
       return;
     }
 
-    $C("post", { title: title.val(), text: text.val(), ups: 0, downs: 0, id: "preview" }, function(cmp) {
+    if (!title.trim() && !text.trim()) {
+      preview.empty();
+      return;
+    }
+
+    $C("post", { title: title, text: text, ups: 0, downs: 0, id: "preview" }, function(cmp) {
       preview.empty();
       preview.append(cmp.$el);
     });
   }, 200),
+
+  remove_post_preview: function() {
+    $(".post_preview").stop(true, true).fadeOut();
+  },
   add_post: function(e) {
     e.preventDefault();
 
