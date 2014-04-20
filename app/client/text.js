@@ -23,6 +23,25 @@ renderer.heading = function(head) {
   return "#" + head;
 };
 
+renderer.image = function(href, title, text) {
+  var url_tag = $("<a />");
+  url_tag.attr("href", href);
+
+  var img_tag = $("<img />");
+  img_tag.attr("src", href);
+  img_tag.attr('title', title);
+  img_tag.css("height", "50px");
+  
+  url_tag.append(img_tag);
+
+  var outer = $("<div />");
+  outer.append(url_tag);
+
+  var tag = outer.html();
+  return tag;
+
+};
+
 // Takes HTML
 function add_newlines($el) {
   var escaped = $el.html();

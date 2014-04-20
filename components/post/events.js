@@ -153,7 +153,6 @@ module.exports = {
 
     var replyPreview = this.$el.find(".replypreview");
     if (replyPreview.is(":visible")) {
-      console.log("FORMATTING");
       replyPreview.text(reply);
       this.helpers['app/client/text'].format_text(replyPreview);
     }
