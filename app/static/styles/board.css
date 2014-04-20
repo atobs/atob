@@ -2,3 +2,11 @@
   margin-bottom: 100px;
   min-height: 100%;
 }
+
+.post_preview {
+  opacity: 0.7;
+
+  @media @device {
+    display: none;
+  }
+}

@@ -1,5 +1,4 @@
 require("app/static/vendor/Autolinker");
-require("app/static/vendor/marked");
 
 
 var renderer = new marked.Renderer();

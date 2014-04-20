@@ -2,6 +2,7 @@
 <% set_default("posts", [] ) %>
 <% set_default("tripcode", "") %>
 
+<% add_stylesheet("board.css") %>
 <div class="container mbl mtl clearfix">
 
   <div class="col-md-12 clearfix">
@@ -20,20 +21,27 @@
 
   <div class="col-md-12">
     <form class="form-inline new_post collapse">
-      <hr />
-      <div class="col-md-12">
+      <div>
+        <hr />
         <label for="title">Title</label>
         <input name="title" class="form-control" type="text"> </input>
       </div>
-      <div class="col-md-12">
+      <div>
         <label for="text">Text</label>
         <textarea name="text" class="form-control col-md-4"> </textarea>
       </div>
 
-      <div class="col-md-12">
+      <div>
         <button type="submit" class="mtl btn btn-default">let it be written</button>
       </div>
+
+      <div>
+        <div class="post_preview">
+      </div>
+
+      </div>
     </form>
+
   </div>
 
   <div class="col-md-12 mtl posts" style="min-height: 600px">

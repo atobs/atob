@@ -4,7 +4,6 @@ require("core/client/component");
 var settings = require("app/client/settings");
 var notif = require("app/client/notif");
 
-
 module.exports = {
   events: {
     "submit form.new_post" : "add_post",
@@ -12,6 +11,8 @@ module.exports = {
     "change input.handle" : "save_handle",
     "keyup input.tripcode" : "update_trip_colors",
     "keyup input.handle" : "update_trip_colors",
+    "keyup .new_post input" : "update_post_preview",
+    "keyup .new_post textarea" : "update_post_preview",
     "change input.newtrip" : "save_newtrip",
     "click .identity_tripcode" : "regen_tripcode",
     "click .regen_tripcode" : "regen_tripcode",
@@ -19,6 +20,21 @@ module.exports = {
     "click .tripcode_delete" : "delete_old_code",
     "click .tripcode_history" : "tripcode_history"
   },
+  update_post_preview: _.throttle(function(e) {
+    var title = this.$el.find(".new_post input");
+    var text = this.$el.find(".new_post textarea");
+
+    var preview = this.$el.find(".post_preview");
+
+    if (!preview.is(":visible")) {
+      return;
+    }
+
+    $C("post", { title: title.val(), text: text.val(), ups: 0, downs: 0, id: "preview" }, function(cmp) {
+      preview.empty();
+      preview.append(cmp.$el);
+    });
+  }, 200),
   add_post: function(e) {
     e.preventDefault();
 
@@ -41,6 +57,9 @@ module.exports = {
     }
 
     $(e.target).find("input, textarea").val("");
+    $(".post_preview").fadeOut(function() {
+      $(this).empty(); 
+    });
 
     SF.socket().emit("new_post", datas);
     this.remember_tripcode(handle, tripcode);
