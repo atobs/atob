@@ -27,7 +27,7 @@ renderer.image = function(href, title, text) {
   var url_tag = $("<span>");
   var img_tag = $("<a target='_blank'>[link]</a>");
 
-  url_tag.text(text);
+  url_tag.html(text);
   url_tag.attr("href", href);
   url_tag.css("cursor", "pointer");
 
