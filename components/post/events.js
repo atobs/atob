@@ -183,8 +183,11 @@ module.exports = {
 
     var replyPreview = this.$el.find(".replypreview");
     if (replyPreview.is(":visible")) {
-      replyPreview.text(reply);
-      this.helpers['app/client/text'].format_text(replyPreview);
+      replyPreview.empty();
+      var replyContainer = $("<div />");
+      replyContainer.text(reply);
+      this.helpers['app/client/text'].format_text(replyContainer);
+      replyPreview.append(replyContainer);
     }
 
 
