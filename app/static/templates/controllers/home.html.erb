@@ -1,9 +1,10 @@
 <% set_default("title", "a new borad approaches") %>
 <% set_default("boards", []) %>
+<% set_default("slogan", "something something something") %>
 
 <% add_stylesheet("home.css") %>
 <div class="container" style="margin: auto; margin-top: 10px">
-  <%= render_partial("home/header.html.erb", {}) %>
+  <%= render_partial("home/header.html.erb", { slogan: slogan}) %>
   <div class="col-md-6">
     <h2>a practical guide</h2>
 

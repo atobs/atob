@@ -575,7 +575,8 @@ module.exports = {
     var template_str = api.template.render("controllers/home.html.erb", {
       render_boards: render_boards,
       render_recent_posts: render_recent_posts,
-      render_recent_threads: render_recent_threads
+      render_recent_threads: render_recent_threads,
+      slogan: SLOGANS[_.random(SLOGANS.length)]
     });
 
     api.page.render({ content: template_str, socket: true});
