@@ -46,11 +46,15 @@ renderer.image = function(href, title, text) {
 renderer.link = function(href, title, text) {
   var outer = $("<div/>");
   var link = $("<a />");
+
+  text += " [link]";
   link.html(text);
+  link.addClass("linklink");
   link.attr("href", href);
   link.attr("target", "_blank");
 
-  return outer.append(link).html();
+  outer.append(link)
+  return outer.html();
 };
 
 // Takes HTML

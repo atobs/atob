@@ -7,3 +7,17 @@
     transition: opacity 5s;
   }
 }
+
+.replylink,
+.imglink {
+  color: #ff43ca;
+  cursor: pointer;
+
+  &:hover {
+    color: #000;
+  }
+}
+
+.linklink {
+  text-decoration: underline;
+}
