@@ -40,7 +40,14 @@ module.exports = {
       return;
     }
 
-    $C("post", { title: title, text: text, ups: 0, downs: 0, id: "preview" }, function(cmp) {
+    $C("post", { 
+      title: title, 
+      text: text, 
+      ups: 0, 
+      downs: 0, id: "preview",
+      author: this.get_handle(),
+      tripcode: this.get_trip_identity()
+    }, function(cmp) {
       preview.empty();
       preview.append(cmp.$el);
     });
