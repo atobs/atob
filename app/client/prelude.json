@@ -8,6 +8,7 @@
     "app/static/vendor/md5.js",
     "app/static/vendor/marked.js",
     "app/static/vendor/jquery-deparam.js",
+    "app/static/vendor/jquery.scrollTo.js",
     "app/static/vendor/jquery.cookie.js",
     "app/static/vendor/jquery.timeago.js",
     "app/static/vendor/notify.js",

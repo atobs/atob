@@ -23,7 +23,16 @@ module.exports = {
     this.trigger("set_board");
   },
   focus_post: function(id) {
-    $("#reply" + id)[0].scrollIntoView();
+    var self = this;
+    setTimeout(function() {
+      var dest = $("#reply" + id);
+      if (!dest.length) {
+        self.focus_post(id);
+      } else {
+        $("body").scrollTo(dest, { duration: 400, offset: { top: -100 } });
+      }
+
+    }, 50);
   },
   socket: function(s) {
     s.on("doings", function(data) {
