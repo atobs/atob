@@ -47,13 +47,28 @@ renderer.link = function(href, title, text) {
   var outer = $("<div/>");
   var link = $("<a />");
 
-  text += " [link]";
-  link.html(text);
   link.addClass("linklink");
+
+  var unsafe;
+  if (href.match("^\s*javascript:")) {
+    unsafe = true;
+    link.addClass("unsafelink");
+    outer.addClass("unsafelink");
+    var textEl = $("<span />");
+    textEl.addClass("unsafelink");
+    textEl.html("[<b>UNSAFE</b>] " + text + " ");
+    outer.append(textEl);
+    text = "[click here at your own risk!]";
+  } else {
+    text += " [link]";
+  }
+
+  link.html(text);
   link.attr("href", href);
   link.attr("target", "_blank");
 
-  outer.append(link)
+  outer.append(link);
+
   return outer.html();
 };
 
