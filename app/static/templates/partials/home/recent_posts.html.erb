@@ -5,7 +5,7 @@
   <% _.each(posts, function(post) { %>
     <div>
       <a href="/<%= archive %>/<%= post.id %>">
-        <small style='word-wrap: break-word; font-family: monospace;'>
+        <small style='word-wrap: break-word;'>
           #<%= post.id %></small></a>
       <% if (archive == "p") { %>
         /<%- post.board_id || "?" %> 
