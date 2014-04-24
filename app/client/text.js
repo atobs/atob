@@ -1,3 +1,5 @@
+"use strict";
+
 require("app/static/vendor/Autolinker");
 
 
@@ -102,6 +104,19 @@ function add_icons($el, replace_urls) {
 }
 
 // Takes HTML
+function add_board_links($el) {
+  var escaped = " " + $el.html() + " ";
+  if (escaped) {
+    var reply_str = " <a href='/b/NAME' class='boardlink' target='_blank'>/NAME</a>";
+    var replaced = escaped.replace(/\s\/(\w+)/g, function(x, post_id) {
+      return reply_str.replace(/NAME/g, post_id.toLowerCase());
+    });
+
+    $el.html(replaced);
+  }
+}
+
+// Takes HTML
 function add_replies($el) {
   var escaped = $el.html();
   if (escaped) {
@@ -142,6 +157,7 @@ function shorten_text($el) {
 function format_text($el) {
   add_markdown($el);
   add_replies($el);
+  add_board_links($el);
   add_icons($el, true /* replace URLS */);
   shorten_text($el);
 }
