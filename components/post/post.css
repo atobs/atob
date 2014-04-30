@@ -39,7 +39,7 @@
   word-wrap: break-word;
 }
 
-.truncable {
+.marked.truncable {
   display: inline-block;
   cursor: pointer;
 }
@@ -207,7 +207,7 @@
 }
 
 .hideContent {
-  max-height: 6em;
+  max-height: 4em;
   overflow: hidden;
 }
 
