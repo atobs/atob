@@ -209,6 +209,10 @@
 .hideContent {
   max-height: 4em;
   overflow: hidden;
+
+  @media @device {
+    max-height: 6em;
+  }
 }
 
 .archived .icon-remove {

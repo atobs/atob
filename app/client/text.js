@@ -144,7 +144,7 @@ function add_markdown($el) {
 }
 
 function shorten_text($el) {
-  var escaped = $el.html();
+  var escaped = $el.text();
   if (escaped.length > 800) {
     $el.addClass("hideContent");
     $el.addClass("truncable");
