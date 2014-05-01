@@ -90,7 +90,7 @@ module.exports = {
           );
         }
 
-        tripcode = keywords.join(" ");
+        tripcode = keywords.join(" ").replace(/  /, ' ');
       } catch(e) {
       }
     }
