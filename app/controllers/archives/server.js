@@ -15,6 +15,7 @@ module.exports = {
     this.set_fullscreen(true);
     this.set_title("atob");
     api.template.add_stylesheet("post");
+    api.template.add_stylesheet("archive");
 
     var render_boards = api.page.async(function(flush) {
       Board.findAll({
