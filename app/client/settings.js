@@ -76,8 +76,27 @@ module.exports = {
   },
   regen_tripcode: function() {
     var tripcodeEl = this.$page.find("input.tripcode");
+
+    // try out choosing 5 words:
     var tripcode = md5(Math.random() + "");
+    var words = $(".text").text().split(" ");
+    var keywords = [];
+    if (words.length) {
+      try {
+        for (var i = 0; i < 5; i++) {
+          keywords.push(
+            words[parseInt(Math.random() * words.length, 10)]
+              .trim(" ").replace(/\W/g, '')
+          );
+        }
+
+        tripcode = keywords.join(" ");
+      } catch(e) {
+      }
+    }
+
     tripcodeEl.val(tripcode);
+
     this.save_tripcode();
     this.update_trip_colors();
   },
