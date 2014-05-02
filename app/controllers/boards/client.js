@@ -128,6 +128,23 @@ module.exports = {
 
     });
 
+    s.on("update_post", function(post_id, text) {
+      var replyEl = $("#reply" + post_id).children("small.text");
+
+      require("app/client/text", function(formatter) {
+        var replyContainer = $("<div />");
+        replyContainer.text(text);
+        formatter.format_text(replyContainer);
+
+        replyEl.fadeOut(1000, function() {
+          replyEl.empty();
+          replyEl.append(replyContainer);
+          replyEl.fadeIn();
+        });
+      });
+
+    });
+
     s.on("shake_post", function(post_id, duration) {
       var post = window._POSTS[post_id];
       if (post) {

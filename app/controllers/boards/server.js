@@ -94,6 +94,9 @@ module.exports = {
     this.set_title("atob/" + board_id);
     this.set_fullscreen(true);
 
+    // make sure it stays up to date
+    $C("delete_post_modal", {}).marshall();
+
     api.template.add_stylesheet("board.css");
 
     var render_boards = api.page.async(function(flush) {
@@ -184,6 +187,11 @@ module.exports = {
       s.spark.join(board);
       _board = board;
       s.emit("joined", board);
+    });
+
+    s.on("update_post", function(post, cb) {
+      var board = post.board || _board;
+      posting.handle_update_post(s, board, post, cb);
     });
 
     s.on("delete_post", function(post) {

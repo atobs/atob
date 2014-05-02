@@ -16,6 +16,8 @@
   .form-horizontal input,
   .form-horizontal textarea {
     width: 90%;
+    padding: 5px;
+
   }
   .form-horizontal .control-label {
     padding-top: 5px;
@@ -24,3 +26,17 @@
     font-weight: bold;
     width: 100%; }
 }
+
+.replypreview {
+  opacity: 0.6;
+
+  border: 3px dotted #ddd;
+  padding: 5px;
+  margin-top: 5px;
+  width: 90%;
+
+  @media @device {
+    display: none !important;
+  }
+}
+

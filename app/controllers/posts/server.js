@@ -30,6 +30,7 @@ module.exports = {
     this.set_fullscreen(true);
     this.set_title("atob");
     api.template.add_stylesheet("post");
+    $C("delete_post_modal", {}).marshall();
 
     var render_boards = api.page.async(function(flush) {
       Board.findAll({
@@ -151,6 +152,10 @@ module.exports = {
 
     s.on("delete_post", function(post) {
       posting.handle_delete_post(s, _board, post);
+    });
+
+    s.on("update_post", function(post, cb) {
+      posting.handle_update_post(s, _board, post, cb);
     });
 
     var load_controller = require_core("server/controller").load;

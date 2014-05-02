@@ -240,6 +240,51 @@ function handle_new_reply(s, board, post, cb) {
   return Date.now();
 }
 
+function handle_update_post(socket, board, post, cb) {
+  if (board === "log" || board === "mod") {
+    return;
+  }
+
+  Post.find({
+    where: {
+      id: post.id
+    }
+  }).success(function(result) {
+    var delete_code = gen_md5(post.author + ':' + post.tripcode);
+    if (result) {
+
+      var action_name = "Reported post #";
+      if (result.tripcode === delete_code) {
+        action_name = "OP Updated post #";
+
+        Post.create({
+          board_id: "log",
+          tripcode: delete_code,
+          title: "update " + post.id,
+          text: "**new text for #" + post.id + ":**\n\n" + escape_html(post.text) +  "\n\n\n\n**old text for #" + post.id + ":**\n\n " + result.text,
+          author: post.author,
+          bumped_at: Date.now()
+        });
+
+        result.text = escape_html(post.text);
+        result.save();
+
+        socket.emit("notif", action_name + post.id, "success");
+        socket.emit("update_post", post.id, result.text);
+        socket.broadcast.to(result.board_id).emit("update_post", post.id, result.text);
+
+        if (cb) {
+          cb();
+        }
+
+      } else {
+        socket.emit("notif", "Can't update post #" + post.id + ", you didnt anon it", "error");
+      }
+    }
+  });
+}
+
+
 function handle_delete_post(socket, board, post) {
   console.log("DELETING POST", post);
   Post.find({
@@ -308,6 +353,7 @@ function handle_delete_post(socket, board, post) {
 module.exports = {
   handle_new_reply: handle_new_reply,
   handle_new_post: handle_new_post,
-  handle_delete_post: handle_delete_post
+  handle_delete_post: handle_delete_post,
+  handle_update_post: handle_update_post
 };
 

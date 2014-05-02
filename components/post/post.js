@@ -1,5 +1,6 @@
 "use strict";
 
+var REPLY_TEXT = {};
 module.exports = {
   tagName: "div",
   className: "",
@@ -18,6 +19,7 @@ module.exports = {
     var POSTS = window._POSTS || {};
     var self = this;
     window._POSTS = POSTS;
+    window._REPLIES = REPLY_TEXT;
     POSTS[options.post_id] = this;
 
     // need to find the icons in the text and fix them
@@ -27,6 +29,12 @@ module.exports = {
       self.helpers['app/client/text'].format_text($(this));
     });
 
+    REPLY_TEXT[options.post_id] = options;
+
+    _.each(options.replies, function(reply) {
+      REPLY_TEXT[reply.id] = reply;
+    });
+
 
     self.$el.find(".timeago").timeago();
 
@@ -34,8 +42,6 @@ module.exports = {
 
     self.$el.find(".post").show();
     self.bumped();
-
-
   },
 
   init_tripcodes: function() {
@@ -75,6 +81,8 @@ module.exports = {
       return;
     }
 
+    REPLY_TEXT[data.post_id] = data;
+
     var replyEl =$("<div class='pam reply'/>");
     replyEl.attr("id", replyId);
     var tripEl = $("<div class='tripcode' />")
@@ -102,7 +110,7 @@ module.exports = {
     replyEl.append(titleEl);
 
     // need to find the icons in the text and fix them
-    var smallEl = $("<small />").text(data.text);
+    var smallEl = $("<small class='text'/>").text(data.text);
     replyEl.append(smallEl);
 
     this.helpers['app/client/text'].format_text(smallEl);

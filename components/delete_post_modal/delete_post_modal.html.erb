@@ -1,5 +1,6 @@
 <% set_default("author", ""); %>
 <% set_default("tripcode", ""); %>
+<% set_default("text", ""); %>
 
 <div class="modal">
   <div class="modal-dialog">
@@ -15,7 +16,7 @@
           If you aren't the author of this post, the post will be reported to
           <a href="/b/log">/log</a> for review.
         </p>
-
+    
         <div class="form-horizontal">
           <div class="control-group">
             <label class="control-label">Author</label>
@@ -30,13 +31,22 @@
             </div>
           </div>
 
+        <div class="clearfix">
+          <div class="edit-post collapse mtl">
+            <textarea name="text" type="text" placeholder="reply"><%- text %> </textarea>
+            <div class="replypreview">
+            </div>
+          </div>
         </div>
       </div>
+    </div>
 
-      <div class="modal-footer mtl">
-        <a href="#" class="btn btn-primary delete mll">delete</a>
-        <a href="#" data-dismiss="modal" class="btn btn-info">nvm</a>
-      </div>
+    <div class="modal-footer mtl">
+      <a href="#" class="lfloat btn btn-success edit">edit</a>
+
+      <a href="#" class="btn btn-primary delete mll">delete</a>
+      <a href="#" data-dismiss="modal" class="btn btn-info">nvm</a>
+    </div>
     </div>
   </div>
 </div>

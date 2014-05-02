@@ -1,6 +1,8 @@
 {
   "main" : "delete_post_modal",
-  "helpers": [],
+  "helpers": [
+    "app/client/text"
+  ],
   "style": "delete_post_modal.css",
   "styles": [],
   "template": "delete_post_modal.html.erb"
