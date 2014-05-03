@@ -1,6 +1,7 @@
 "use strict";
 
 var settings = require("app/client/settings");
+var post_utils = require("app/client/post_utils");
 var notif = require("app/client/notif");
 module.exports = {
   events: {
@@ -62,23 +63,7 @@ module.exports = {
     });
 
     s.on("update_post", function(post_id, text) {
-      var replyEl = $("#reply" + post_id).children("small.text");
-      if (!text) {
-        replyEl.parent().fadeOut();
-        return;
-      }
-
-      require("app/client/text", function(formatter) {
-        var replyContainer = $("<div />");
-        replyContainer.text(text);
-        formatter.format_text(replyContainer);
-
-        replyEl.fadeOut(1000, function() {
-          replyEl.empty();
-          replyEl.append(replyContainer);
-          replyEl.fadeIn();
-        });
-      });
+      post_utils.update_post(post_id, text);
     });
 
     s.on("notif", function(msg, type, options) {
