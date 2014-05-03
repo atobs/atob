@@ -12,6 +12,8 @@ var POST_TIMEOUTS = {
   a: 30 * 1000
 };
 
+var UPDATE_LIMIT = 60 * 60 * 1000; // 1 hour editing timeout
+
 var load_controller = require_core("server/controller").load;
 var gen_md5 = require_app("server/md5");
 
@@ -245,6 +247,11 @@ function handle_update_post(socket, board, post, cb) {
     return;
   }
 
+  if (!post.text || !post.text.trim()) {
+    socket.emit("notif", "if you want to remove a post, use delete", "error");
+    return;
+  }
+
   Post.find({
     where: {
       id: post.id
@@ -252,10 +259,13 @@ function handle_update_post(socket, board, post, cb) {
   }).success(function(result) {
     var delete_code = gen_md5(post.author + ':' + post.tripcode);
     if (result) {
+      if (Date.now() - result.created_at > UPDATE_LIMIT) {
+        socket.emit("notif", "this post was created over 1 hour ago and is no longer editable", "error");
+        return;
+      }
 
-      var action_name = "Reported post #";
       if (result.tripcode === delete_code) {
-        action_name = "OP Updated post #";
+        var action_name = "OP Updated post #";
 
         Post.create({
           board_id: "log",
@@ -293,7 +303,6 @@ function handle_delete_post(socket, board, post) {
     }
   }).success(function(result) {
     var delete_code = gen_md5(post.author + ':' + post.tripcode);
-    var admin_code = gen_md5(post.author + ':' + gen_md5(post.tripcode));
     if (result) {
 
       var action_name = "Reported post #";
