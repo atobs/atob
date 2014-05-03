@@ -187,12 +187,13 @@ module.exports = {
     // Update our preview with markdwon, too
     var replyInput = this.$el.find(".reply textarea");
     var reply = replyInput.val().trim();
+    var escaped_reply = $("<div />").text(reply).html();
 
     var replyPreview = this.$el.find(".replypreview");
     if (replyPreview.is(":visible")) {
       replyPreview.empty();
       var replyContainer = $("<div />");
-      replyContainer.text(reply);
+      replyContainer.text(escaped_reply);
       this.helpers['app/client/text'].format_text(replyContainer);
       replyPreview.append(replyContainer);
     }
