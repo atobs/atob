@@ -63,6 +63,10 @@ module.exports = {
 
     s.on("update_post", function(post_id, text) {
       var replyEl = $("#reply" + post_id).children("small.text");
+      if (!text) {
+        replyEl.parent().fadeOut();
+        return;
+      }
 
       require("app/client/text", function(formatter) {
         var replyContainer = $("<div />");

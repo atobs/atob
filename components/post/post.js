@@ -101,7 +101,7 @@ module.exports = {
     infoEl.attr("title", (new Date(data.created_at)).toLocaleString());
     replyEl.append($("<small />").append(infoEl));
 
-    var deleteEl = $("<a class='deletereply icon-remove' href='#' />");
+    var deleteEl = $("<a class='deletereply icon-edit' href='#' />");
     deleteEl.attr("data-parent-id", data.post_id);
     replyEl.append(deleteEl);
 

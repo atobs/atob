@@ -311,6 +311,8 @@ function handle_delete_post(socket, board, post) {
         result.destroy();
 
         socket.emit("notif", action_name + post.id, "success");
+        socket.emit("update_post", post.id);
+        socket.broadcast.to(result.board_id).emit("update_post", post.id);
       } else {
         User.find({
           where: {
@@ -329,6 +331,8 @@ function handle_delete_post(socket, board, post) {
               author: post.author,
               bumped_at: Date.now()
             });
+            socket.emit("update_post", post.id);
+            socket.broadcast.to(result.board_id).emit("update_post", post.id);
 
           } else {
             socket.emit("notif", action_name + post.id, "success");
