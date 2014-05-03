@@ -27,6 +27,7 @@ module.exports = {
   update_post_preview: _.throttle(function(e) {
     var title = this.$el.find(".new_post input").val();
     var text = this.$el.find(".new_post textarea").val();
+    var escaped_text = $("<div />").text(text).html();
 
     var preview = this.$el.find(".post_preview");
     preview.stop().fadeIn();
@@ -42,7 +43,7 @@ module.exports = {
 
     $C("post", { 
       title: title, 
-      text: text, 
+      text: escaped_text, 
       ups: 0, 
       downs: 0, id: "preview",
       author: this.get_handle(),
