@@ -41,6 +41,11 @@ module.exports = {
       return;
     }
 
+    // Need to save the post preview, i guess?
+
+    window.bootloader.storage.set("newpost_title_" + this.board, title);
+    window.bootloader.storage.set("newpost_text_" + this.board, text);
+
     $C("post", { 
       title: title, 
       text: escaped_text, 
@@ -56,6 +61,11 @@ module.exports = {
 
   remove_post_preview: function() {
     $(".post_preview").stop(true, true).fadeOut();
+
+    var title = this.$el.find(".new_post input").val();
+    var text = this.$el.find(".new_post textarea").val();
+    window.bootloader.storage.set("newpost_title_" + this.board, title);
+    window.bootloader.storage.set("newpost_text_" + this.board, text);
   },
   add_post: function(e) {
     e.preventDefault();
@@ -85,6 +95,8 @@ module.exports = {
 
     SF.socket().emit("new_post", datas);
     this.remember_tripcode(handle, tripcode);
+    window.bootloader.storage.delete("newpost_title_" + this.board);
+    window.bootloader.storage.delete("newpost_text_" + this.board);
   },
   init: function() {
     this.init_tripcodes();
@@ -107,6 +119,13 @@ module.exports = {
     console.log("Seeing whats up for board", "/" + b);
     this.board = b;
     this.trigger("set_board");
+
+    var title = window.bootloader.storage.get("newpost_title_" + b);
+    var text = window.bootloader.storage.get("newpost_text_" + b);
+
+    this.$el.find(".new_post input").val(title);
+    this.$el.find(".new_post textarea").val(text);
+
   },
   socket: function(s) {
     var added = {};

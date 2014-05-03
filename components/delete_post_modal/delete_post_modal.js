@@ -37,7 +37,6 @@ module.exports = {
       }
     }
 
-
     $(document.body).append(this.$el);
   }
 };

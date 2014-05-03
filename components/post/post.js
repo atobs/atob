@@ -36,6 +36,10 @@ module.exports = {
     });
 
 
+    var replyInput = this.$el.find(".reply textarea");
+    var text = window.bootloader.storage.get("reply" + this.get_post_id());
+    replyInput.val(text);
+
     self.$el.find(".timeago").timeago();
 
     self.init_tripcodes();

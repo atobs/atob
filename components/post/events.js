@@ -189,6 +189,13 @@ module.exports = {
     var reply = replyInput.val().trim();
     var escaped_reply = $("<div />").text(reply).html();
 
+    // Save escaped_reply to localStorage until we clear it
+    if (escaped_reply) {
+      window.bootloader.storage.set("reply" + this.get_post_id(), escaped_reply);
+    } else {
+      window.bootloader.storage.delete("reply" + this.get_post_id());
+    }
+
     var replyPreview = this.$el.find(".replypreview");
     if (replyPreview.is(":visible")) {
       replyPreview.empty();
@@ -237,6 +244,7 @@ module.exports = {
       // Success or not...
       replyInput.val("");
       replyPreview.text("");
+      window.bootloader.storage.delete("reply" + postId);
       SF.controller().remember_tripcode(author, tripcode);
     });
   },
