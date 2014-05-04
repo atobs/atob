@@ -191,7 +191,7 @@ module.exports = {
 
     // Save escaped_reply to localStorage until we clear it
     if (escaped_reply) {
-      window.bootloader.storage.set("reply" + this.get_post_id(), escaped_reply);
+      window.bootloader.storage.set("reply" + this.get_post_id(), reply);
     } else {
       window.bootloader.storage.delete("reply" + this.get_post_id());
     }
