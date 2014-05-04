@@ -9,9 +9,7 @@ var TRIPCODES = [];
 var LOOKUP = {};
 
 var bootloader = window.bootloader;
-if (window.localStorage) {
-  TRIPCODES = JSON.parse($.cookie("tripcodes") || "[]");
-}
+TRIPCODES = JSON.parse($.cookie("tripcodes") || "[]");
 
 module.exports = {
   gen_tripcode: tripcode_gen,
