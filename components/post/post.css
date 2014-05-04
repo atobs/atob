@@ -2,6 +2,7 @@
   padding: 10px;
   background-color: #eaeaea;
   display: block;
+  font-size: 100%;
 
   .placeholder {
     width: 0px;
