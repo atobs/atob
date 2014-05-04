@@ -21,6 +21,9 @@ var Ban = require_app("models/ban");
 var Post = require_app("models/post");
 var User = require_app("models/user");
 var IP = require_app("models/ip");
+var model = require_app("models/model");
+
+var MAX_ANONS = 300;
 
 var DOWNCONS = [
   ":thumbs-down:",
@@ -99,9 +102,10 @@ function handle_new_post(s, board, post, cb) {
 }
 
 function is_user_banned(s, board, done) {
+  var ip = s.spark.address.ip;
   Ban.findAll({
     where: {
-      ip: s.spark.address.ip,
+      ip: ip,
       board: board
     }
   }).success(function(bans) {
@@ -123,8 +127,33 @@ function is_user_banned(s, board, done) {
         }
       });
     }
+  
+    // if anon is in Ban table, finish them
+    if (banned) {
+      done(banned);
+    } else {
+      // check how many unique IPs have posted recently
+      model.instance.query("SELECT count(distinct(ip)) as count FROM IPs", null, { raw: true })
+        .success(function(rows) {
+          var row = rows[0];
+          // find out if anon was one of them
+          IP.count({ where: { ip: ip }})
+            .success(function(result) {
+              banned = false;
+              if (result && result > 0) {
+                // anon is in the DB of IPs, so is allowed through
+                banned = false;
+              } else if (row.count > MAX_ANONS) {
+                // check if there are too many anons recently
+                s.emit("notif", "sorry - too many anons are here. try again tomorrow", "error");
+                banned = true;
+              }
 
-    done(banned);
+              done(banned);
+            });
+
+        });
+    }
   });
 }
 
@@ -132,6 +161,7 @@ function handle_new_reply(s, board, post, cb) {
   var last_reply = s.last_reply || 0;
   var reply_timeout = REPLY_TIMEOUTS[board] || REPLY_TIMEOUT;
   var reply_time = Date.now() - last_reply ;
+
   if (reply_time < reply_timeout) {
     var delta = parseInt((reply_timeout - reply_time) / 1000, 10);
     // Need to message the client that they are submitting too fast...
