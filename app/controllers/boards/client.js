@@ -8,6 +8,7 @@ var notif = require("app/client/notif");
 module.exports = {
   events: {
     "submit form.new_post" : "add_post",
+    "click form.new_post .submit" : "add_post_force",
     "change input.tripcode" : "save_tripcode",
     "change input.handle" : "save_handle",
     "keyup input.tripcode" : "update_trip_colors",
@@ -43,7 +44,6 @@ module.exports = {
     }
 
     // Need to save the post preview, i guess?
-
     window.bootloader.storage.set("newpost_title_" + this.board, title);
     window.bootloader.storage.set("newpost_text_" + this.board, text);
 
@@ -68,10 +68,15 @@ module.exports = {
     window.bootloader.storage.set("newpost_title_" + this.board, title);
     window.bootloader.storage.set("newpost_text_" + this.board, text);
   },
-  add_post: function(e) {
+  add_post_force: function(e) {
+    this.add_post(e, true);
+  },
+  add_post: function(e, force) {
+    console.log("POST ADD", e, force);
     e.preventDefault();
+    var form = $(e.target).closest("form");
 
-    var serialized = $(e.target).serializeArray();
+    var serialized = form.serializeArray();
     var datas = {};
     _.each(serialized, function(obj) {
       datas[obj.name] = obj.value;
@@ -85,11 +90,13 @@ module.exports = {
     datas.author = handle;
     datas.board = this.board;
 
+    datas.force = force;
+
     if (datas.title.trim() === "" && datas.text.trim() === "") {
       return;
     }
 
-    $(e.target).find("input, textarea").val("");
+    $(form).find("input, textarea").val("");
     $(".post_preview").fadeOut(function() {
       $(this).empty(); 
     });

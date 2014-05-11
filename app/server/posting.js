@@ -23,7 +23,7 @@ var User = require_app("models/user");
 var IP = require_app("models/ip");
 var model = require_app("models/model");
 
-var MAX_ANONS = 300;
+var MAX_ANONS = 200;
 
 var DOWNCONS = [
   ":thumbs-down:",
@@ -61,6 +61,29 @@ function handle_new_post(s, board, post, cb) {
   var text = post.text;
   var tripcode = post.tripcode || "";
   var author = post.author || "anon";
+
+  var moved = false;
+
+  if ((board === "a" || board === "b") && !post.force) {
+    // figure out where this post really belongs...
+    if (text.length > 200) {
+      if (board !== "a") {
+        board = "a";
+        moved = true;
+        s.emit("notif", "this post looks more suited to /a, moving it there.", "warn");
+      }
+    }
+
+    if (text.length < 100) {
+      if (board !== "b") {
+        board = "b";
+        moved = true;
+        s.emit("notif", "this post looks more suited to /b, moving it there.", "warn");
+      }
+    }
+
+  }
+
   var data = {
     text: escape_html(text),
     title: escape_html(title),
@@ -89,7 +112,10 @@ function handle_new_post(s, board, post, cb) {
 
         data.post_id = p.id;
         s.broadcast.to(board).emit("new_post", data);
-        s.emit("new_post", data);
+
+        if (!moved) {
+          s.emit("new_post", data);
+        }
         
         if (cb) {
           cb();
