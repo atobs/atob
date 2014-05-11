@@ -1,5 +1,18 @@
 "use strict";
 
+var CLIENT_COMMANDS = {
+  "/makeme" : function(cmd, icon) {
+    var postId = this.get_post_id();
+
+    icon = $("<div />").html(icon).text();
+
+    SF.socket().emit("isdoing", { 
+      post_id: postId,
+      what: icon
+    });
+  }
+};
+
 module.exports = {
   // Component event handling goes here
   // This is purposefully kept separate from
@@ -229,7 +242,15 @@ module.exports = {
       return;
     }
 
+    var tokens = reply.split(" ");
+    var first_word = tokens[0];
     var postId = this.get_post_id();
+    if (CLIENT_COMMANDS[first_word]) {
+      CLIENT_COMMANDS[first_word].apply(this, tokens);
+      replyInput.val("");
+      return;
+    }
+
 
 
     var author = SF.controller().get_handle();

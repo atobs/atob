@@ -157,7 +157,7 @@ module.exports = {
     };
 
     var str = _.map(counts, function(c) {
-      return "<i class='" + lookup[c[0]] + "' />";
+      return "<i class='" + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' />";
     });
 
     // Update who is typing, who is idle and who is gone.

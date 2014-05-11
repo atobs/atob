@@ -72,7 +72,6 @@ module.exports = {
     this.add_post(e, true);
   },
   add_post: function(e, force) {
-    console.log("POST ADD", e, force);
     e.preventDefault();
     var form = $(e.target).closest("form");
 

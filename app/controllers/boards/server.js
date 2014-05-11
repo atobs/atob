@@ -53,8 +53,31 @@ function subscribe_to_updates(s) {
   // TODO: make a better schema for how this works
   s.on("isdoing", function(doing) {
     var olddoing = s.isdoing;
+
+    function retimer() {
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(function() {
+        delete GOING_ONS[doing.post_id][sid];
+        if (s.isdoing === doing) {
+          delete s.isdoing;
+        }
+
+        update_post_status(doing.post_id);
+      }, 30000);
+    }
+
+    // so complex. bad ideas.
     if (s.isdoing) {
-      delete GOING_ONS[s.isdoing.post_id][sid];
+      if (s.isdoing.post_id !== doing.post_id) {
+        delete GOING_ONS[s.isdoing.post_id][sid];
+      } else if (s.isdoing.what.match(":")) {
+        if (doing.what.match(":")) {
+          delete GOING_ONS[s.isdoing.post_id][sid];
+        } else {
+          retimer();
+          return;
+        }
+      }
     }
 
     s.isdoing = doing;
@@ -64,12 +87,7 @@ function subscribe_to_updates(s) {
 
     GOING_ONS[doing.post_id][sid] = doing.what;
 
-    clearTimeout(idleTimer);
-    idleTimer = setTimeout(function() {
-      delete GOING_ONS[doing.post_id][sid];
-      update_post_status(doing.post_id);
-    }, 30000);
-
+    retimer();
     update_post_status(doing.post_id);
     if (olddoing) {
       update_post_status(olddoing.post_id);
