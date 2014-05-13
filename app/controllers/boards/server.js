@@ -58,9 +58,7 @@ function subscribe_to_updates(s) {
       clearTimeout(idleTimer);
       idleTimer = setTimeout(function() {
         delete GOING_ONS[doing.post_id][sid];
-        if (s.isdoing === doing) {
-          delete s.isdoing;
-        }
+        delete s.isdoing;
 
         update_post_status(doing.post_id);
       }, 30000);
