@@ -135,7 +135,13 @@ module.exports = {
 
   socket: function(s) {
     var _board;
+
+    var load_controller = require_core("server/controller").load;
+    var boards_controller = load_controller("boards");
+    boards_controller.subscribe_to_updates(s);
+
     s.on("join", function(board) {
+      boards_controller.lurk(s);
       s.spark.join(board);
       s.board = board;
       _board = board;
@@ -157,10 +163,6 @@ module.exports = {
     s.on("update_post", function(post, cb) {
       posting.handle_update_post(s, _board, post, cb);
     });
-
-    var load_controller = require_core("server/controller").load;
-    var boards_controller = load_controller("boards");
-    boards_controller.subscribe_to_updates(s);
 
 
   }

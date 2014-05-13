@@ -11,9 +11,8 @@ var mod = require_app("server/mod");
 
 var load_controller = require_core("server/controller").load;
 
-var GOING_ONS = {
-  active: {},
-  idle: {}
+var GOING_ONS = { 
+  0: {}
 };
 
 var LAST_UPDATE = {};
@@ -48,6 +47,10 @@ function subscribe_to_updates(s) {
     var posts_controller = load_controller("posts");
     var post_socket = posts_controller.get_socket();
     post_socket.broadcast.to(s.board).emit("doings", doings);
+
+    var home_controller = load_controller("home");
+    var home_socket = home_controller.get_socket();
+    home_socket.emit("doings", GOING_ONS);
   }
 
   // TODO: make a better schema for how this works
@@ -196,10 +199,28 @@ module.exports = {
 
   },
 
+  lurk: function(s) {
+    var sid = s.spark.headers.sid;
+    // pick a random lurk icon?
+    var icons = [ ":coffee:", ":cup-coffeealt:", ":mug:", ":coffeecupalt:" ];
+    GOING_ONS[0][sid] = icons[_.random(icons.length-1)];
+    clearTimeout(s.lurk_timer);
+    s.lurk_timer = setTimeout(function() {
+      delete GOING_ONS[0][sid];
+    }, 60000);
+
+    var load_controller = require_core("server/controller").load;
+    var home_controller = load_controller("home");
+
+    home_controller.get_socket().emit("doings", GOING_ONS);
+
+  },
+
   socket: function(s) {
     var _board;
     s.on("join", function(board) {
       s.board = board;
+      module.exports.lurk(s);
       s.spark.join(board);
       _board = board;
       s.emit("joined", board);
@@ -237,5 +258,6 @@ module.exports = {
 
   handle_new_reply: posting.handle_new_reply,
   handle_new_post: posting.handle_new_post,
-  subscribe_to_updates: subscribe_to_updates
+  subscribe_to_updates: subscribe_to_updates,
+  GOING_ONS: GOING_ONS
 };

@@ -554,6 +554,29 @@ module.exports = {
       });
     });
 
+    var render_anons = function() {
+      var counts = {};
+      var load_controller = require_core("server/controller").load;
+      var boards_controller = load_controller("boards");
+      _.each(boards_controller.GOING_ONS, function(anons) {
+        _.each(anons, function(emote, id) {
+          counts[id] = emote;
+        });
+      });
+
+      var lookup = {
+        t: "icon-keyboardalt",
+        f: "icon-glassesalt",
+        u: "icon-glassesalt"
+      };
+
+      var str = _.map(_.values(counts), function(c) {
+        return "<i class='" + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' />";
+      });
+
+      return str.join(" ");
+    };
+
     var render_boards = api.page.async(function(flush) {
       Board.findAll({
           order: "name ASC"
@@ -574,6 +597,7 @@ module.exports = {
 
     var template_str = api.template.render("controllers/home.html.erb", {
       render_boards: render_boards,
+      render_anons: render_anons,
       render_recent_posts: render_recent_posts,
       render_recent_threads: render_recent_threads,
       slogan: SLOGANS[_.random(SLOGANS.length)]
@@ -668,5 +692,9 @@ module.exports = {
     ctx.res.end("User-agent: *\nDisallow: /");
   },
 
-  socket: function() {}
+  socket: function(s) { 
+    var load_controller = require_core("server/controller").load;
+    var boards_controller = load_controller("boards");
+    boards_controller.lurk(s); 
+  }
 };

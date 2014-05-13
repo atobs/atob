@@ -4,7 +4,13 @@
 
 <% add_stylesheet("home.css") %>
 <div class="container" style="margin: auto; margin-top: 10px">
+
   <%= render_partial("home/header.html.erb", { slogan: slogan}) %>
+
+  <div id="anons" class="rfloat" style="margin-top: -50px; margin-right: 25px;">
+    <%= render_anons() %>
+  </div>
+
   <div class="col-md-6">
     <h2>a practical guide</h2>
 
