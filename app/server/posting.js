@@ -29,6 +29,8 @@ var DOWNCONS = [
   ":thumbs-down:",
   ":law:",
   ":deathstar:",
+  ":poop:",
+  ":poopalt:",
   ":sage:"
 ];
 
