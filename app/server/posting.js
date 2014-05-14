@@ -113,6 +113,13 @@ function handle_new_post(s, board, post, cb) {
         data.post_id = p.id;
         s.broadcast.to(board).emit("new_post", data);
 
+        if (board === "a" || board === "b") {
+          var home_controller = load_controller("home");
+          var home_socket = home_controller.get_socket();
+          home_socket.emit("new_post", p.dataValues);
+        }
+
+
         if (!moved) {
           s.emit("new_post", data);
         }
@@ -286,6 +293,12 @@ function handle_new_reply(s, board, post, cb) {
           var posts_controller = load_controller("posts");
           var post_socket = posts_controller.get_socket();
           post_socket.broadcast.to(board).emit("new_reply", p.dataValues);
+
+          if (board === "a" || board === "b") {
+            var home_controller = load_controller("home");
+            var home_socket = home_controller.get_socket();
+            home_socket.emit("new_reply", p.dataValues);
+          }
 
           if (cb) {
             cb();

@@ -1,6 +1,7 @@
 var settings = require("app/client/settings");
 
 var tripcode_gen = require("app/client/tripcode").gen_tripcode;
+var summarize = require("app/client/summarize");
 
 module.exports = {
   click_handler_uno: function() {
@@ -41,6 +42,29 @@ module.exports = {
     });
   },
   socket: function(s) {
+    s.on("new_reply", function(reply) {
+      console.log("NEW REPLY", reply);
+      var postParent = $(".posts .post").parent();
+      reply.id = reply.post_id || reply.id;
+      var summary = $(summarize(reply));
+      summary.hide();
+      postParent.prepend(summary);
+      summary.fadeIn();
+
+      postParent.find(".post").last().fadeOut().remove();
+    });
+
+    s.on("new_post", function(post) {
+      var postParent = $(".threads .post").parent();
+      post.id = post.post_id || post.id;
+      var summary = $(summarize(post));
+      summary.hide();
+      postParent.prepend(summary);
+      summary.fadeIn();
+
+      postParent.find(".post").last().fadeOut().remove();
+    });
+
     s.on("doings", function(doings) {
       
       var counts = {};

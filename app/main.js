@@ -73,5 +73,8 @@ module.exports = {
       });
 
     });
+  },
+  setup_template_context: function(ret) {
+    ret.$ = require("cheerio");
   }
 };

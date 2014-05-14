@@ -3,20 +3,6 @@
 
 <div>
   <% _.each(posts, function(post) { %>
-    <div>
-      <a href="/<%= archive %>/<%= post.id %>">
-        <small style='word-wrap: break-word;'>
-          #<%= post.id %></small></a>
-      <% if (archive == "p") { %>
-        /<%- post.board_id || "?" %> 
-      <% } %>
-      <a href="/<%= archive %>/<%= post.id %>">
-        <small>
-          <b class="text"><%- post.title.substr(0, 140) %></b>
-          <span class="text"><%- post.text.substr(0, 240) %></span>
-        </small>
-      </a>
-
-    </div>
+    <%= summarize(post.dataValues, archive) %>
   <% }) %>
 </div>

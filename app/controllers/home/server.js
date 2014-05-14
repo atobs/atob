@@ -482,6 +482,7 @@ module.exports = {
     });
 
     var render_recent_archives = api.page.async(function(flush) {
+      var summarize = require_app("client/summarize");
       ArchivedPost.findAll({
         where: {
           thread_id: null,
@@ -492,6 +493,7 @@ module.exports = {
         posts = _.unique(posts, function(p) { return p.id; } );
         var template_str = api.template.partial("home/recent_posts.html.erb", {
           posts: posts,
+          summarize: summarize,
           archive: "a"
         });
 
@@ -517,6 +519,8 @@ module.exports = {
     this.set_fullscreen(true);
     this.set_title("atob");
 
+    var summarize = require_app("client/summarize");
+
     var render_recent_posts = api.page.async(function(flush) {
       Post.findAll({
         where: {
@@ -530,6 +534,7 @@ module.exports = {
       }).success(function(posts) {
         var template_str = api.template.partial("home/recent_posts.html.erb", {
           posts: posts,
+          summarize: summarize
         });
         api.bridge.controller("home", "show_recent_posts");
         flush(template_str);
@@ -546,7 +551,8 @@ module.exports = {
         limit: 3
       }).success(function(posts) {
         var template_str = api.template.partial("home/recent_posts.html.erb", {
-          posts: posts
+          posts: posts,
+          summarize: summarize
         });
 
         api.bridge.controller("home", "show_recent_threads");
