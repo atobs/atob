@@ -202,7 +202,7 @@ module.exports = {
   lurk: function(s) {
     var sid = s.spark.headers.sid;
     // pick a random lurk icon?
-    var icons = [ ":coffee:", ":cup-coffeealt:", ":mug:", ":coffeecupalt:" ];
+    var icons = [ ":coffee:", ":cup-coffeealt:", ":mug:", ":coffeecupalt:", ":tea:", ":teapot:" ];
     GOING_ONS[0][sid] = icons[_.random(icons.length-1)];
     clearTimeout(s.lurk_timer);
     s.lurk_timer = setTimeout(function() {
