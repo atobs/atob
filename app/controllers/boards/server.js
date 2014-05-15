@@ -48,9 +48,7 @@ function subscribe_to_updates(s) {
     var post_socket = posts_controller.get_socket();
     post_socket.broadcast.to(s.board).emit("doings", doings);
 
-    var home_controller = load_controller("home");
-    var home_socket = home_controller.get_socket();
-    home_socket.emit("doings", GOING_ONS);
+    module.exports.update_doings();
   }
 
   // TODO: make a better schema for how this works
@@ -199,6 +197,13 @@ module.exports = {
 
   },
 
+  update_doings: _.throttle(function() {
+    var load_controller = require_core("server/controller").load;
+    var home_controller = load_controller("home");
+
+    home_controller.get_socket().emit("doings", GOING_ONS);
+  }, 2000),
+
   lurk: function(s) {
     var sid = s.spark.headers.sid;
     // pick a random lurk icon?
@@ -209,10 +214,7 @@ module.exports = {
       delete GOING_ONS[0][sid];
     }, 60000);
 
-    var load_controller = require_core("server/controller").load;
-    var home_controller = load_controller("home");
-
-    home_controller.get_socket().emit("doings", GOING_ONS);
+    module.exports.update_doings();
 
   },
 
