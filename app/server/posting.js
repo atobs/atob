@@ -67,8 +67,11 @@ function handle_new_post(s, board, post, cb) {
   var moved = false;
 
   if ((board === "a" || board === "b") && !post.force) {
+    var marked = require_app("static/vendor/marked");
+    var cheerio = require("cheerio");
+    var parsed_text = cheerio(marked.parse(text)).text();
     // figure out where this post really belongs...
-    if (text.length > 200) {
+    if (parsed_text.length > 200) {
       if (board !== "a") {
         board = "a";
         moved = true;
@@ -76,7 +79,7 @@ function handle_new_post(s, board, post, cb) {
       }
     }
 
-    if (text.length < 100) {
+    if (parsed_text.length < 100) {
       if (board !== "b") {
         board = "b";
         moved = true;
