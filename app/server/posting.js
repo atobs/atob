@@ -218,6 +218,13 @@ function handle_new_reply(s, board, post, cb) {
     text = text.join("|");
   }
 
+  var no_reply_text = post.text.toString().replace(/>>\d+/g, '').trim();
+  if (no_reply_text === "") {
+    s.emit("notif", "Please contribute something more than replycodes in this thread", "warn");
+    s.emit("shake_post", post.post_id, 3000);
+    return;
+  }
+
   // Do things to the parent, now...
   var down = false, up = false;
 
