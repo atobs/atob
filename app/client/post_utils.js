@@ -12,6 +12,13 @@ module.exports = {
 
     require("app/client/text", function(formatter) {
       var replyContainer = $("<div />");
+
+      // Update our in memory text for this post
+      var reply = window._REPLIES[post_id];
+      if (reply) {
+        reply.text = text;
+      }
+
       replyContainer.text(text);
       formatter.format_text(replyContainer);
 
