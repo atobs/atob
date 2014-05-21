@@ -25,7 +25,7 @@ module.exports = {
     $(e.target).popover({
       html: true,
       content: responseEl.html(),
-      placement: "right",
+      placement: "bottom",
       container: this.$el });
 
     $(e.target).popover("show");
