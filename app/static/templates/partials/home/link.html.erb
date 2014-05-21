@@ -7,7 +7,10 @@
   </div>
 
   <div class='mrl link_text'>
-    <a class="<%= image ? "image" : "" %>" href=<%= href %>><%= title || href %></a>
+    <a target="_blank" class="<%= image ? "image imglink" : "" %>" href=<%= href %>><%= title || href %></a>
+    <% if (image) { %>
+      <a  href=<%= href %> target="_blank">[link]</a>
+    <% } %>
     <small style='opacity: 0.6'><%= domain %></small>
   </div>
 

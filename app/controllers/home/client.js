@@ -4,9 +4,37 @@ var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var summarize = require("app/client/summarize");
 
 module.exports = {
-  click_handler_uno: function() {
-    console.log("Handling a click");
+  events: {
+    "click .imglink" : "handle_mouseenter_imglink",
+    "mouseenter .imglink" : "handle_mouseenter_imglink",
+    "mouseleave .imglink" : "handle_mouseleave_imglink",
   },
+  handle_mouseenter_imglink: function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    $(e.target).popover("destroy");
+    var responseEl = $("<div />");
+    var img_link = $(e.target).attr("href");
+
+    var img_tag = $("<img />") .attr("src", img_link);
+    img_tag.css("max-height", "200px");
+    img_tag.css("max-width", "100%");
+    img_tag.css("display", "block");
+    responseEl.append(img_tag);
+
+    $(e.target).popover({
+      html: true,
+      content: responseEl.html(),
+      placement: "right",
+      container: this.$el });
+
+    $(e.target).popover("show");
+
+  },
+  handle_mouseleave_imglink: function(e) {
+    $(e.target).popover("destroy");
+  },
+
   format_text: function() {
     require("app/client/text", function(format_text) {
       var self = this;
