@@ -1,0 +1,49 @@
+.link:hover {
+  background-color: #dedede; 
+}
+
+.link_text {
+  a {
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+
+    &.image {
+      color: #ff43ca;
+    }
+  }
+  margin-right: 200px;
+
+  @media @device {
+    margin-right: 90px;
+  }
+}
+
+.post_id {
+  min-width: 50px;
+  float: right;
+
+  @media @device {
+    font-size: 85%;
+    min-width: 40px;
+    margin-top: 2px;
+    clear: both;
+  }
+}
+
+.tripcode {
+  width: 100px;
+  float: left;
+  margin-right: 10px;
+
+  @media @device {
+    margin-top: 5px;
+    zoom: 0.7;
+    margin-right: 5px;
+  }
+
+}
+
+.container {
+  margin: auto;
+}

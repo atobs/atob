@@ -45,7 +45,14 @@
 
   <div class="col-md-4">
     <h2>boards</h2>
-    <%= render_boards() %>
+    <div class="clearfix">
+      <div class='lfloat'>
+        <%= render_boards() %>
+      </div>
+      <h4 class='lfloat' style='margin: 0'>
+        <a href="/links">/links</a>
+      </h4>
+    </div>
 
     <div class="recent hidden threads">
       <h3>recent threads</h3>

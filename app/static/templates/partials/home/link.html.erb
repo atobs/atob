@@ -1,0 +1,14 @@
+<% set_default("image", false) %>
+
+<div class="clearfix mtl mbl pam mll ptl link" >
+  <div class="rfloat">
+    <div class='tripcode' data-tripcode=<%= tripcode %> > </div>
+    <a class='post_id' href='/p/<%= post_id %>'>#<%= post_id %></a>
+  </div>
+
+  <div class='mrl link_text'>
+    <a class="<%= image ? "image" : "" %>" href=<%= href %>><%= title || href %></a>
+    <small style='opacity: 0.6'><%= domain %></small>
+  </div>
+
+</div>

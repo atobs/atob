@@ -22,6 +22,7 @@ var Post = require_app("models/post");
 var User = require_app("models/user");
 var IP = require_app("models/ip");
 var model = require_app("models/model");
+var post_links = require_app("server/post_links");
 
 var MAX_ANONS = 200;
 
@@ -114,6 +115,8 @@ function handle_new_post(s, board, post, cb) {
           ip: s.spark.address.ip,
           browser: s.spark.headers['user-agent']
         });
+
+        post_links.find_and_create_links(p);
 
         data.post_id = p.id;
         s.broadcast.to(board).emit("new_post", data);
@@ -287,7 +290,7 @@ function handle_new_reply(s, board, post, cb) {
           p.dataValues.post_id = p.dataValues.id;
           p.dataValues.up = up;
           p.dataValues.down = down;
-          delete p.dataValues.id;
+          post_links.find_and_create_links(p.dataValues);
 
           IP.create({
             post_id: p.dataValues.post_id,
@@ -357,6 +360,7 @@ function handle_update_post(socket, board, post, cb) {
           bumped_at: Date.now()
         });
 
+        post_links.find_and_create_links(result);
         result.text = escape_html(post.text);
         result.save();
 

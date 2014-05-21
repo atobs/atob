@@ -11,6 +11,7 @@ var archive = new Sequelize('database', 'username', 'password', {
 module.exports = {
   up: function(migration, DataTypes, done) {
     // add altering commands here, calling 'done' when finished
+    var old_migrator = migration.migrator.sequelize;
     migration.migrator.sequelize = archive;
     migration.queryInterface.sequelize = archive;
 
@@ -34,13 +35,18 @@ module.exports = {
       dialect: 'sqlite'
     });
 
+    migration.migrator.sequelize = old_migrator;
+    migration.queryInterface.sequelize = old_migrator;
     done();
   },
   down: function(migration, DataTypes, done) {
     // add reverting commands here, calling 'done' when finished
+    var old_migrator = migration.migrator.sequelize;
     migration.migrator.sequelize = archive;
     migration.queryInterface.sequelize = archive;
     migration.dropTable("ArchivedPosts", { storage: 'ab.sqlite' });
+    migration.migrator.sequelize = old_migrator;
+    migration.queryInterface.sequelize = old_migrator;
     done();
   }
 }

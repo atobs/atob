@@ -1,5 +1,14 @@
 var Sequelize = require("sequelize");
 
+var archive = new Sequelize('database', 'username', 'password', {
+  dialect: 'sqlite',
+  storage: 'ab.sqlite',
+  define: {
+    sync: { force: true },
+    underscored: true
+  }
+});
+
 var sequelize = new Sequelize('database', 'username', 'password', {
   dialect: 'sqlite',
   storage: 'db.sqlite',
@@ -9,14 +18,6 @@ var sequelize = new Sequelize('database', 'username', 'password', {
   }
 });
 
-var archive = new Sequelize('database', 'username', 'password', {
-  dialect: 'sqlite',
-  storage: 'ab.sqlite',
-  define: {
-    sync: { force: true },
-    underscored: true
-  }
-});
 
 module.exports = Sequelize;
 module.exports.instance = sequelize;

@@ -6,6 +6,7 @@ var Sequelize = require("sequelize");
 var $ = require("cheerio");
 var ArchivedPost = require_app("models/archived_post");
 var Post = require_app("models/post");
+var Link = require_app("models/link");
 var gen_md5 = require_app("server/md5");
 
 var ICONS = [
@@ -433,6 +434,7 @@ module.exports = {
     "" : "index",
     "rules" : "rules",
     "anon" : "colors",
+    "links" : "links",
     "faq" : "faq",
     "archives" : "archives",
     "guide" : "about",
@@ -657,6 +659,25 @@ module.exports = {
 
     api.page.render({ content: template_str});
 
+  },
+  links: function(ctx, api) {
+    var hashes = [];
+    this.set_fullscreen(true);
+    api.template.add_stylesheet("links");
+    var url = require("url");
+    Link.findAll({ order: "post_id DESC", limit: 67 }).success(function(links) {
+        var content = $("<div class='container mtl mll' />");
+        content.append($("<h1 class='mll'>links from anon</h1>"));
+        _.each(links, function(link) {
+          link.dataValues.domain = url.parse(link.href).hostname;
+          var template_str = api.template.partial("home/link.html.erb", link.dataValues);
+
+          content.append($(template_str));
+        });
+
+        api.bridge.controller("home", "gen_tripcodes");
+        api.page.render({content: content.toString() });
+      });
   },
   colors: function(ctx, api) {
     var hashes = [];
