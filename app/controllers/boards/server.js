@@ -112,10 +112,9 @@ module.exports = {
     this.set_fullscreen(true);
 
     // Special case the links board
-    if (board_id == "links") {
-      var load_controller = require_core("server/controller").load;
-      var home_controller = load_controller("home");
-      return home_controller.links(ctx, api);
+    if (board_id === "links") {
+      ctx.res.redirect("/links");
+      return;
     }
 
     // make sure it stays up to date
