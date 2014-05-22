@@ -741,6 +741,7 @@ module.exports = {
     s.on("upboat", function(link_id, cb) {
       Link.find(link_id).success(function(link) {
         if (Date.now() - link.updated_at < UPBOAT_TIMEOUT) {
+          if (cb) { cb(); }
           return;
         }
 
