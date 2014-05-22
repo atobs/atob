@@ -665,12 +665,18 @@ module.exports = {
     var hashes = [];
     this.set_fullscreen(true);
     api.template.add_stylesheet("links");
+    var MAX_BUMP_AGE = 12;
     var url = require("url");
     var render_links = api.page.async(function(flush) {
       Link.findAll({ order: "post_id DESC", limit: 67 }).success(function(links) {
           var content = $("<div class='container mtl mll' />");
           links = _.sortBy(links, function(link) {
-            return -link.ups || 0;
+            var recency = parseInt((Date.now() - link.created_at) / 1000 / 60 / 60, 10);
+            var bump_amount = Math.max(MAX_BUMP_AGE - recency, 0);
+            var amount = (link.ups || 0) + bump_amount;
+            
+
+            return -amount;
           });
 
           _.each(links, function(link) {

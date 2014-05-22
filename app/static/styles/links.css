@@ -12,7 +12,9 @@
       color: #ff43ca;
     }
   }
+
   margin-right: 200px;
+  padding-left: 30px;
 
   @media @device {
     margin-right: 90px;
@@ -22,11 +24,11 @@
 .post_id {
   min-width: 50px;
   float: right;
+  margin-top: 10px;
 
   @media @device {
     font-size: 85%;
     min-width: 40px;
-    margin-top: 2px;
     clear: both;
   }
 }
@@ -37,7 +39,7 @@
   margin-right: 10px;
 
   @media @device {
-    margin-top: 5px;
+    margin-top: 10px;
     zoom: 0.7;
     margin-right: 5px;
   }
@@ -49,9 +51,19 @@
 }
 
 .indicator {
-  float: left;
-  margin-right: 10px;
+  position: absolute;
+  margin-left: -30px;
+  margin-right: 2px;
 }
+
+
+.numboats {
+  position: relative;
+  left: -15px;
+  top: 15px;
+  font-size: 90%;
+}
+
 
 .upboat {
   opacity: 0.5;
