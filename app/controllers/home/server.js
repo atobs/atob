@@ -670,11 +670,12 @@ module.exports = {
     var render_links = api.page.async(function(flush) {
       Link.findAll({ order: "post_id DESC", limit: 67 }).success(function(links) {
           var content = $("<div class='container mtl mll' />");
+          var max_ups = _.max(links, function(link) { return link.ups || 0; });
           links = _.sortBy(links, function(link) {
-            var recency = parseInt((Date.now() - link.created_at) / 1000 / 60 / 60, 10);
-            var bump_amount = Math.max(MAX_BUMP_AGE - recency, 0);
+            var recency = (Date.now() - link.created_at) / 1000 / 60 / 60;
+            var bump_amount = Math.max((MAX_BUMP_AGE - recency) / MAX_BUMP_AGE * max_ups.ups, 0);
+
             var amount = (link.ups || 0) + bump_amount;
-            
 
             return -amount;
           });
