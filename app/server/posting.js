@@ -360,7 +360,6 @@ function handle_update_post(socket, board, post, cb) {
           bumped_at: Date.now()
         });
 
-        post_links.find_and_create_links(result);
         result.text = escape_html(post.text);
         result.save();
 
@@ -368,7 +367,7 @@ function handle_update_post(socket, board, post, cb) {
         socket.emit("update_post", post.id, result.text);
         socket.broadcast.to(result.board_id).emit("update_post", post.id, result.text);
 
-        post_links.find_and_create_links(post);
+        post_links.find_and_create_links(result);
 
         if (cb) {
           cb();
