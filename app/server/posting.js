@@ -367,7 +367,9 @@ function handle_update_post(socket, board, post, cb) {
         socket.emit("update_post", post.id, result.text);
         socket.broadcast.to(result.board_id).emit("update_post", post.id, result.text);
 
-        post_links.find_and_create_links(result);
+        post_links.erase_links(result, function() {
+          post_links.find_and_create_links(result);
+        });
 
         if (cb) {
           cb();

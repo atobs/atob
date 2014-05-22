@@ -1,3 +1,4 @@
+"use strict";
 
 var $ = require("cheerio");
 var Link = require_app("models/link");
@@ -64,5 +65,12 @@ renderer.link = add_link;
 renderer.image = add_image_link;
 
 module.exports = {
-  find_and_create_links: find_and_create_links
-}
+  find_and_create_links: find_and_create_links,
+  erase_links: function(post, cb) {
+    Link.destroy({ post_id: post.id }).success(function() {
+      if (cb) {
+        cb();
+      }
+    });
+  }
+};
