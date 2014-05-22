@@ -666,26 +666,32 @@ module.exports = {
     this.set_fullscreen(true);
     api.template.add_stylesheet("links");
     var url = require("url");
-    Link.findAll({ order: "post_id DESC", limit: 67 }).success(function(links) {
-        var content = $("<div class='container mtl mll' />");
-        content.append($("<h1 class='mll'>links from anon</h1>"));
-        links = _.sortBy(links, function(link) {
-          return -link.ups || 0;
+    var render_links = api.page.async(function(flush) {
+      Link.findAll({ order: "post_id DESC", limit: 67 }).success(function(links) {
+          var content = $("<div class='container mtl mll' />");
+          links = _.sortBy(links, function(link) {
+            return -link.ups || 0;
+          });
+
+          _.each(links, function(link) {
+            link.dataValues.domain = url.parse(link.href).hostname;
+            link.dataValues.id = link.id;
+            link.dataValues.uppable = (Date.now() - link.updated_at > UPBOAT_TIMEOUT);
+            link.dataValues.timeout = parseInt((UPBOAT_TIMEOUT - (Date.now() - link.updated_at))/1000, 10);
+            var template_str = api.template.partial("home/link.html.erb", link.dataValues);
+
+            content.append($(template_str));
+          });
+
+          api.bridge.controller("home", "gen_tripcodes");
+          flush(content);
         });
-
-        _.each(links, function(link) {
-          link.dataValues.domain = url.parse(link.href).hostname;
-          link.dataValues.id = link.id;
-          link.dataValues.uppable = (Date.now() - link.updated_at > UPBOAT_TIMEOUT);
-          link.dataValues.timeout = parseInt((UPBOAT_TIMEOUT - (Date.now() - link.updated_at))/1000, 10);
-          var template_str = api.template.partial("home/link.html.erb", link.dataValues);
-
-          content.append($(template_str));
-        });
-
-        api.bridge.controller("home", "gen_tripcodes");
-        api.page.render({content: content.toString(), socket: true });
       });
+
+      var template_str = api.template.render("controllers/links.html.erb", {
+        render_links: render_links
+      });
+      api.page.render({content: template_str, socket: true });
   },
   colors: function(ctx, api) {
     var hashes = [];
