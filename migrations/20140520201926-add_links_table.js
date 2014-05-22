@@ -3,7 +3,7 @@ module.exports = {
     // add altering commands here, calling 'done' when finished
     // add altering commands here, calling 'done' when finished
     migration.createTable('Links', {
-      id: DataTypes.INTEGER,
+      id: { type: DataTypes.INTEGER, primaryKey: true },
       ip: DataTypes.STRING,
       ups: DataTypes.INTEGER,
       href: DataTypes.STRING,

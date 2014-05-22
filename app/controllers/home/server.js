@@ -427,6 +427,7 @@ var SLOGANS = [
 
 
 
+var UPBOAT_TIMEOUT = 60 * 1000;
 
 
 module.exports = {
@@ -668,15 +669,22 @@ module.exports = {
     Link.findAll({ order: "post_id DESC", limit: 67 }).success(function(links) {
         var content = $("<div class='container mtl mll' />");
         content.append($("<h1 class='mll'>links from anon</h1>"));
+        links = _.sortBy(links, function(link) {
+          return -link.ups || 0;
+        });
+
         _.each(links, function(link) {
           link.dataValues.domain = url.parse(link.href).hostname;
+          link.dataValues.id = link.id;
+          link.dataValues.uppable = (Date.now() - link.updated_at > UPBOAT_TIMEOUT);
+          link.dataValues.timeout = parseInt((UPBOAT_TIMEOUT - (Date.now() - link.updated_at))/1000, 10);
           var template_str = api.template.partial("home/link.html.erb", link.dataValues);
 
           content.append($(template_str));
         });
 
         api.bridge.controller("home", "gen_tripcodes");
-        api.page.render({content: content.toString() });
+        api.page.render({content: content.toString(), socket: true });
       });
   },
   colors: function(ctx, api) {
@@ -723,5 +731,20 @@ module.exports = {
     var load_controller = require_core("server/controller").load;
     var boards_controller = load_controller("boards");
     boards_controller.lurk(s); 
+
+    s.on("upboat", function(link_id, cb) {
+      Link.find(link_id).success(function(link) {
+        if (Date.now() - link.updated_at < UPBOAT_TIMEOUT) {
+          return;
+        }
+
+        link.ups += 1;
+        link.save();
+
+        if (cb) {
+          cb();
+        }
+      });
+    });
   }
 };

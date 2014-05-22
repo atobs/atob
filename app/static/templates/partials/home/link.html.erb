@@ -1,12 +1,24 @@
 <% set_default("image", false) %>
+<% set_default("uppable", false) %>
 
-<div class="clearfix mtl mbl pam mll ptl link" >
+<div class="clearfix mtl mbl pam mll ptl link" data-linkid="<%= id %>">
   <div class="rfloat">
     <div class='tripcode' data-tripcode=<%= tripcode %> > </div>
     <a class='post_id' href='/p/<%= post_id %>'>#<%= post_id %></a>
   </div>
 
   <div class='mrl link_text'>
+    <% if (uppable) { %>
+      <span class='upboat indicator'>
+        <span class='icon-arrow-up' title="<%= ups ? ups + " upboats" : "noboats" %>" ></span>
+      </span>
+    <% } else { %>
+      <span class='icon-coffee indicator'
+        title="<%= ups %> upboats!
+
+this post was recently bumped, please wait a minute to bump it again"
+      > </span>
+    <% } %>
     <a target="_blank" class="<%= image ? "image imglink" : "" %>" href=<%= href %>><%= title || href %></a>
     <% if (image) { %>
       <a  href=<%= href %> target="_blank">[link]</a>

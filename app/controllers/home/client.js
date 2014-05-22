@@ -6,8 +6,24 @@ var summarize = require("app/client/summarize");
 module.exports = {
   events: {
     "click .imglink" : "handle_mouseenter_imglink",
+    "click .upboat" : "handle_upboat_link",
     "mouseenter .imglink" : "handle_mouseenter_imglink",
     "mouseleave .imglink" : "handle_mouseleave_imglink",
+  },
+
+  handle_upboat_link: function(e) {
+    var link = $(e.target).closest(".link");
+    var arrow = link.find(".upboat");
+    var linkId = link.data("linkid");
+
+    SF.socket().emit("upboat", linkId, function() {
+      arrow.fadeOut(function() {
+        arrow.html("<span class='icon-heart' />");
+        arrow.fadeIn();
+
+      });
+    });
+
   },
   handle_mouseenter_imglink: function(e) {
     e.stopPropagation();

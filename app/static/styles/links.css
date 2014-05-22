@@ -47,3 +47,17 @@
 .container {
   margin: auto;
 }
+
+.indicator {
+  float: left;
+  margin-right: 10px;
+}
+
+.upboat {
+  opacity: 0.5;
+  &:hover {
+    opacity: 0.8;
+  }
+
+  cursor: pointer;
+}
