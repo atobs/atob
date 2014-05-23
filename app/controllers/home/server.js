@@ -668,7 +668,7 @@ module.exports = {
     var MAX_BUMP_AGE = 12;
     var url = require("url");
     var render_links = api.page.async(function(flush) {
-      Link.findAll({ order: "post_id DESC", limit: 67 }).success(function(links) {
+      Link.findAll({ order: "post_id DESC", limit: 29 }).success(function(links) {
           var content = $("<div class='container mtl mll' />");
           var max_ups = _.max(links, function(link) { return link.ups || 0; });
           links = _.sortBy(links, function(link) {
