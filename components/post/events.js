@@ -192,12 +192,7 @@ module.exports = {
 
   },
 
-  // Alright. so we rely on users updating their socket status.  any one socket
-  // can either be: 1. doing nothing, 2. typing a reply, 3. watching a post
-  handle_typing: _.throttle(function() {
-
-    SF.socket().emit("isdoing", { what: "typing", post_id: this.get_post_id()});
-
+  update_reply_preview: function() {
     // Update our preview with markdwon, too
     var replyInput = this.$el.find(".reply textarea");
     var reply = replyInput.val().trim();
@@ -220,6 +215,16 @@ module.exports = {
     }
 
 
+  },
+
+  // Alright. so we rely on users updating their socket status.  any one socket
+  // can either be: 1. doing nothing, 2. typing a reply, 3. watching a post
+  handle_typing: _.throttle(function() {
+
+    SF.socket().emit("isdoing", { what: "typing", post_id: this.get_post_id()});
+
+    this.update_reply_preview();
+
   }, 500),
   handle_unfocus: function() {
     SF.socket().emit("isdoing", { what: "unfocused", post_id: this.get_post_id()});
@@ -231,6 +236,7 @@ module.exports = {
     var replyPreview = this.$el.find(".replypreview");
     replyPreview.fadeIn();
     SF.socket().emit("isdoing", { what: "focused", post_id: this.get_post_id()});
+    this.update_reply_preview();
   },
 
   handle_reply: function(e) {
