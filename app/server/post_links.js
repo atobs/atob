@@ -4,6 +4,8 @@ var $ = require("cheerio");
 var Link = require_app("models/link");
 var marked = require_app("static/vendor/marked");
 var UPBOAT_TIMEOUT = 60 * 1000;
+var Link = require_app("models/link");
+var bridge = require_core("server/bridge");
 
 function find_and_create_links(post) {
   if (post.dataValues) {
@@ -102,5 +104,38 @@ module.exports = {
       }
 
     });
+  },
+  freshen_client: function(post_id, children, cb) {
+
+    var UPBOAT_TIMEOUT = 60 * 1000;
+    var post_ids = _.map(children, function(c) { return c.id; });
+    post_ids.push(post_id);
+
+    Link.findAll({ where: { post_id: post_ids }}).success(function(links) {
+
+      var fresh_links = _.filter(links, function(l) {
+        return (Date.now() - l.updated_at) < UPBOAT_TIMEOUT;
+      });
+
+      fresh_links = _.map(fresh_links, function(l) {
+        return {
+          href: l.href,
+          post_id: l.post_id,
+          updated_at: l.updated_at,
+          title: l.title,
+          remaining: UPBOAT_TIMEOUT - (Date.now() - l.updated_at)
+        };
+      });
+
+      if (fresh_links.length) {
+        bridge.call("app/client/post_utils", "freshen_links", post_id, fresh_links);
+      }
+
+      if (cb) {
+        cb();
+      }
+
+    });
+
   }
 };

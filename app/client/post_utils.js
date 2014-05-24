@@ -28,5 +28,49 @@ module.exports = {
         replyEl.fadeIn();
       });
     });
+  },
+  freshen_links: function(post_id, links) {
+    var post = window._POSTS && window._POSTS[post_id];
+    SF.do_when(post, 'post' + post_id, function() {
+      var postEl = $(".post[data-post-id=" + post_id + "]");
+
+      _.each(links, function(link) {
+        var textEl;
+        if (link.post_id === post_id) {
+          // Look for the link in postEls .op.text
+          textEl = postEl.find(".op.text");
+        } else {
+          textEl = postEl.find("#reply" + link.post_id + " .text");
+        }
+
+        var a_candidates = textEl.find(".upboat");
+
+        a_candidates.each(function() {
+          var $this = $(this);
+          var href = $this.data('href');
+          var title = $this.data('text');
+
+          if (href === link.href && title === link.title) {
+            setTimeout(function() {
+              $this.fadeOut(function() {
+                $this.addClass('icon-arrow-up upboat');
+                $this.removeClass('icon-coffee');
+                $this.fadeIn();
+              });
+            }, link.remaining);
+
+            $this.fadeOut(function() {
+              $this.removeClass('icon-arrow-up');
+              $this.removeClass("upboat");
+              $this.addClass('icon-coffee');
+              $this.fadeIn();
+
+            });
+          }
+        });
+      });
+
+    });
+
   }
 };

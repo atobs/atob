@@ -8,7 +8,7 @@ module.exports = {
     content: "default content"
   },
   get_post_id: function() { return this.$el.find(".post").data("post-id"); },
-  initialize: function() { },
+  initialize: function(options) { },
   collapse: function() {
     this.$el.find(".cpost").collapse("hide");
   },
@@ -46,6 +46,7 @@ module.exports = {
 
     self.$el.find(".post").show();
     self.bumped();
+    SF.trigger("post" + options.post_id);
   },
 
   init_tripcodes: function() {

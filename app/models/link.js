@@ -18,6 +18,7 @@ var Link = sequelize.instance.define('Links', {
   board: sequelize.STRING
 });
 
-Link.belongsTo(Post);
+Link.belongsTo(Post, {foreignKey: 'post_id'});
+Post.hasMany(Link);
 
 module.exports = Link;

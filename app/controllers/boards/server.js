@@ -2,6 +2,7 @@
 
 var Post = require_app("models/post");
 var Board = require_app("models/board");
+var Link = require_app("models/link");
 
 var $ = require("cheerio");
 
@@ -173,8 +174,13 @@ module.exports = {
               });
 
               post_data.client_options = _.clone(post_data);
-              var postCmp = $C("post", post_data);
-              flush_post(postCmp.toString());
+
+              post_links.freshen_client(post_data.post_id, children, function() {
+                var postCmp = $C("post", post_data);
+                flush_post(postCmp.toString());
+              
+              });
+
             });
           });
 
