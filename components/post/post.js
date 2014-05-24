@@ -5,6 +5,14 @@ function async_loop(items, func, timeout) {
   var start = Date.now();
   timeout = timeout || 50;
 
+  var last_items = 2;
+  for (var i = 0; i < last_items; i++) {
+    var last = items.pop();
+    if (last) {
+      func(last);
+    }
+  }
+
   function async_func() {
     while (index < items.length) {
       func(items[index]);
@@ -46,6 +54,7 @@ module.exports = {
     // need to find the icons in the text and fix them
     var textEl = this.$el.find(".text");
 
+    // do the title and the OP text, first, supposedly
     var async_text_work = async_loop(textEl.get().reverse(), function(el) {
       self.helpers['app/client/text'].format_text($(el));
     });
@@ -75,8 +84,6 @@ module.exports = {
   init_tripcodes: function() {
     var self = this;
     var tripcodes = self.$el.find("div.tripcode");
-
-    self.helpers['app/client/tripcode'].gen_tripcode(tripcodes[0]);
 
     var generate_tripcodes = async_loop(tripcodes.get().reverse(), function(trip_el) {
       self.helpers['app/client/tripcode'].gen_tripcode(trip_el);
