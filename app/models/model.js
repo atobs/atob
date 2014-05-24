@@ -3,6 +3,7 @@ var Sequelize = require("sequelize");
 var archive = new Sequelize('database', 'username', 'password', {
   dialect: 'sqlite',
   storage: 'ab.sqlite',
+  logging: function() { },
   define: {
     sync: { force: true },
     underscored: true
@@ -12,6 +13,7 @@ var archive = new Sequelize('database', 'username', 'password', {
 var sequelize = new Sequelize('database', 'username', 'password', {
   dialect: 'sqlite',
   storage: 'db.sqlite',
+  logging: function() { },
   define: {
     sync: { force: true },
     underscored: true
