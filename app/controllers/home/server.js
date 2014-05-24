@@ -664,6 +664,7 @@ module.exports = {
   links: function(ctx, api) {
     var hashes = [];
     this.set_fullscreen(true);
+    this.set_title("atob/links");
     api.template.add_stylesheet("links");
     var MAX_BUMP_AGE = 12;
     var url = require("url");
