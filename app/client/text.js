@@ -1,7 +1,7 @@
 "use strict";
 
 require("app/static/vendor/Autolinker");
-
+var USE_UPBOATS = true;
 
 var renderer = new marked.Renderer();
 renderer.blockquote = function(quote) {
@@ -25,6 +25,18 @@ renderer.heading = function(head) {
   return "#" + head;
 };
 
+function add_upboat(el, href, text) {
+  if (!USE_UPBOATS) {
+    return;
+  }
+
+  var upboat = $("<a class='icon-arrow-up upboat indicator'/>");
+
+  el.append(upboat);
+  upboat.attr('data-href', href.toString());
+  upboat.attr('data-text', text.toString());
+}
+
 renderer.image = function(href, title, text) {
   var url_tag = $("<span>");
   var img_tag = $("<a target='_blank'>[link]</a>");
@@ -41,6 +53,8 @@ renderer.image = function(href, title, text) {
   outer.append(url_tag);
   outer.append(img_tag);
 
+  add_upboat(img_tag, href, text);
+
   var tag = outer.html();
   return tag;
 };
@@ -48,6 +62,7 @@ renderer.image = function(href, title, text) {
 renderer.link = function(href, title, text) {
   var outer = $("<div/>");
   var link = $("<a />");
+  var orig_text = text;
 
   link.addClass("linklink");
 
@@ -70,6 +85,8 @@ renderer.link = function(href, title, text) {
   link.attr("target", "_blank");
 
   outer.append(link);
+
+  add_upboat(link, href, orig_text);
 
   return outer.html();
 };
@@ -126,9 +143,10 @@ function add_replies($el) {
     });
 
     reply_str = "<a href='/p/ID' class='postlink'>#ID</a>";
-    replaced = replaced.replace(/#([\d]+)/g, function(x, post_id) {
+    replaced = replaced.replace(/[^;]#([\d]+)/g, function(x, post_id) {
       return reply_str.replace(/ID/g, post_id.toLowerCase());
     });
+
 
     $el.html(replaced);
   }
@@ -167,5 +185,8 @@ module.exports = {
   add_icons: add_icons,
   add_newlines: add_newlines,
   add_replies: add_replies,
-  add_markdown: add_markdown
+  add_markdown: add_markdown,
+  add_upboats: function(val) {
+    USE_UPBOATS = val;
+  }
 };

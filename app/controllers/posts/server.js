@@ -7,6 +7,7 @@ var value_of = controller.value_of,
     
 
 var posting = require_app("server/posting");
+var post_links = require_app("server/post_links");
 var Post = require_app("models/post");
 var ArchivedPost = require_app("models/archived_post");
 var Board = require_app("models/board");
@@ -162,6 +163,10 @@ module.exports = {
 
     s.on("update_post", function(post, cb) {
       posting.handle_update_post(s, _board, post, cb);
+    });
+
+    s.on("upboat", function(link, cb) {
+      post_links.upvote_link(link, cb);
     });
 
 

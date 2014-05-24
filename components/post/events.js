@@ -19,6 +19,7 @@ module.exports = {
   // the main component file, since it has code
   // that is generally not relevant to the server.
   events: {
+    "click .upboat" : "handle_upboat_link",
     "click .restore" :  "handle_restore",
     "click .glyphs" :  "handle_click_glyphs",
     "click .addglyph" :  "handle_addglyph",
@@ -272,6 +273,37 @@ module.exports = {
 
   handle_template_click: function() {
     this.handle_focus();
+  },
+
+  handle_upboat_link: function(e) {
+    // handles clicking inline upboats
+    var a = $(e.target);
+    var href = a.data('href');
+    var text = a.data("text");
+    var reply = a.closest(".reply");
+    var post = a.closest(".post");
+
+    var post_id;
+    if (reply.length) {
+      post_id = reply.attr("id").replace(/reply/g, "");
+    } else if (post.length) {
+      post_id = post.data("post-id");
+    }
+
+      
+
+    SF.socket().emit("upboat", {
+      href: href,
+      title: text,
+      post_id: post_id
+    }, function() {
+      a.fadeOut(function() {
+        a.removeClass("icon-arrow");
+        a.addClass("icon-coffee");
+        a.removeClass("upboat");
+        a.fadeIn();
+      });
+    });
   }
 
 };

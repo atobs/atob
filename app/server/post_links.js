@@ -3,6 +3,7 @@
 var $ = require("cheerio");
 var Link = require_app("models/link");
 var marked = require_app("static/vendor/marked");
+var UPBOAT_TIMEOUT = 60 * 1000;
 
 function find_and_create_links(post) {
   if (post.dataValues) {
@@ -71,6 +72,35 @@ module.exports = {
       if (cb) {
         cb();
       }
+    });
+  },
+  upvote_link: function(link, cb) {
+    if (!link.post_id || !link.href || !link.title) {
+      if (cb) { 
+        cb();
+      }
+      return;
+    }
+
+    Link.find({ where: {
+      post_id: link.post_id,
+      href: link.href,
+      title: link.title
+    }}).success(function(result) {
+      if (Date.now() - result.updated_at < UPBOAT_TIMEOUT) {
+        if (cb) { cb(); }
+        return;
+      }
+
+      if (result) {
+        result.ups += 1;
+        result.save();
+      }
+
+      if (cb) {
+        cb();
+      }
+
     });
   }
 };

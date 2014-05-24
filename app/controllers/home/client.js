@@ -53,6 +53,7 @@ module.exports = {
 
   format_text: function() {
     require("app/client/text", function(format_text) {
+      format_text.add_upboats(false);
       var self = this;
       $(".text").each(function() {
           format_text.add_markdown($(self));
@@ -64,6 +65,7 @@ module.exports = {
     $(".threads.recent.hidden .text").each(function() {
       var self = this;
       require("app/client/text", function(format_text) {
+        format_text.add_upboats(false);
         format_text.add_markdown($(self));
         format_text.add_icons($(self));
       });
@@ -74,6 +76,7 @@ module.exports = {
     $(".posts.recent.hidden .text").each(function() {
       var self = this;
       require("app/client/text", function(format_text) {
+        format_text.add_upboats(false);
         format_text.add_markdown($(self));
         format_text.add_icons($(self));
       });

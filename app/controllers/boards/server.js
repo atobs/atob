@@ -7,6 +7,7 @@ var $ = require("cheerio");
 
 var gen_md5 = require_app("server/md5");
 var posting = require_app("server/posting");
+var post_links = require_app("server/post_links");
 var mod = require_app("server/mod");
 
 var load_controller = require_core("server/controller").load;
@@ -258,6 +259,11 @@ module.exports = {
     s.on("new_reply", function(post, cb) {
       posting.handle_new_reply(s, _board, post, cb);
     });
+
+    s.on("upboat", function(link, cb) {
+      post_links.upvote_link(link, cb);
+    });
+
 
 
     subscribe_to_updates(s);

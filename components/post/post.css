@@ -256,3 +256,20 @@
 .unsafelink {
   color: #ff3300;
 }
+
+.indicator {
+  cursor: pointer;
+  position: relative;
+  margin-right: 10px;
+  left: 5px;
+  color: #000;
+
+}
+
+.upboat {
+  opacity: 0.2;
+  &:hover {
+    opacity: 1.0;
+    text-decoration: none;
+  }
+}

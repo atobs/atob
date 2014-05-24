@@ -18,4 +18,6 @@ var Link = sequelize.instance.define('Links', {
   board: sequelize.STRING
 });
 
+Link.belongsTo(Post);
+
 module.exports = Link;
