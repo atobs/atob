@@ -1,5 +1,26 @@
 "use strict";
 
+function async_loop(items, func, timeout) {
+  var index = 0;
+  var start = Date.now();
+  timeout = timeout || 50;
+
+  function async_func() {
+    while (index < items.length) {
+      func(items[index]);
+      index += 1;
+
+      if (Date.now() - start > timeout) {
+        setTimeout(async_func);
+        break;
+      }
+    }
+  }
+
+  return async_func;
+
+}
+
 var REPLY_TEXT = {};
 module.exports = {
   tagName: "div",
@@ -8,7 +29,7 @@ module.exports = {
     content: "default content"
   },
   get_post_id: function() { return this.$el.find(".post").data("post-id"); },
-  initialize: function(options) { },
+  initialize: function() { },
   collapse: function() {
     this.$el.find(".cpost").collapse("hide");
   },
@@ -25,9 +46,11 @@ module.exports = {
     // need to find the icons in the text and fix them
     var textEl = this.$el.find(".text");
 
-    textEl.each(function() {
-      self.helpers['app/client/text'].format_text($(this));
+    var async_text_work = async_loop(textEl.get().reverse(), function(el) {
+      self.helpers['app/client/text'].format_text($(el));
     });
+
+    async_text_work();
 
     REPLY_TEXT[options.post_id] = options;
 
@@ -45,32 +68,19 @@ module.exports = {
     self.init_tripcodes();
 
     self.$el.find(".post").show();
-    self.bumped();
+    _.defer(function() { self.bumped(); });
     SF.trigger("post" + options.post_id);
   },
 
   init_tripcodes: function() {
     var self = this;
     var tripcodes = self.$el.find("div.tripcode");
-    var index = tripcodes.length;
-    var start = Date.now();
 
     self.helpers['app/client/tripcode'].gen_tripcode(tripcodes[0]);
 
-
-    function generate_tripcodes() {
-      while (index > 1) {
-        index -= 1;
-
-        var trip_el = tripcodes[index];
-        self.helpers['app/client/tripcode'].gen_tripcode(trip_el);
-
-        if (Date.now() - start > 50) {
-          setTimeout(generate_tripcodes, Math.random() * 20);
-          break;
-        }
-      }
-    }
+    var generate_tripcodes = async_loop(tripcodes.get().reverse(), function(trip_el) {
+      self.helpers['app/client/tripcode'].gen_tripcode(trip_el);
+    });
 
     generate_tripcodes();
   },

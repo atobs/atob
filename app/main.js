@@ -35,7 +35,9 @@ module.exports = {
 
   },
   setup_request: function(req, res) {
-    console.log("Handling request", req.path, req.query, req.params);
+    if (req.path.indexOf("/pkg") !== 0) {
+      console.log("Handling request", req.path, req.query, req.params);
+    }
     res.charset = "utf-8";
   },
   setup_plugins: function(app) {
