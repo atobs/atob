@@ -155,6 +155,7 @@ function add_replies($el) {
 // Hmmm...
 function add_markdown($el) {
   var escaped = $el.text().trim();
+  $el.data("text", escaped);
   escaped = marked(escaped, { renderer: renderer});
 
   $el.html(escaped);

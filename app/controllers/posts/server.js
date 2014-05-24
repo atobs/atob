@@ -68,6 +68,7 @@ module.exports = {
         });
 
         post_data.client_options = _.clone(post_data);
+        posting.trim_post(post_data.client_options);
         post_links.freshen_client(post_data.post_id, result.children, function() {
           var postCmp = $C("post", post_data);
           api.bridge.controller("posts", "set_board", post_data.board_id);

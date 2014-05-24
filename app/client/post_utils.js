@@ -19,12 +19,10 @@ module.exports = {
         reply.text = text;
       }
 
-      replyContainer.text(text);
-      formatter.format_text(replyContainer);
-
       replyEl.fadeOut(1000, function() {
         replyEl.empty();
-        replyEl.append(replyContainer);
+        replyEl.text(text);
+        formatter.format_text(replyEl);
         replyEl.fadeIn();
       });
     });

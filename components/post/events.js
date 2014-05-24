@@ -57,12 +57,17 @@ module.exports = {
     var reply = $(e.target).closest("a").data("parent-id");
     var tripcode = SF.controller().get_triphash();
     var author = SF.controller().get_handle();
-    var replyPost = window._REPLIES[reply];
-    var text;
-    if (replyPost) {
-      text = replyPost.text;
-      text = $("<div/>").html(text).text();
+
+    var replyEl = $(e.target).closest(".reply");
+    var postEl = $(e.target).closest(".post");
+    var text = "";
+    if (replyEl.length) {
+      text = replyEl.find("small.text.marked").data("text");
+    } else if (postEl.length) {
+      text = postEl.find(".op.text.marked").data("text");
     }
+
+    text = $("<div />").html(text).text();
 
     $C("delete_post_modal", { tripcode: tripcode, reply_id: reply, author: author, text: text});
   },

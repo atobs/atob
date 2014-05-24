@@ -173,12 +173,14 @@ module.exports = {
                 return d.id;
               });
 
-              post_data.client_options = _.clone(post_data);
+              var client_options = _.clone(post_data);
+              post_data.client_options = client_options;
+              posting.trim_post(client_options);
 
               post_links.freshen_client(post_data.post_id, children, function() {
                 var postCmp = $C("post", post_data);
+
                 flush_post(postCmp.toString());
-              
               });
 
             });

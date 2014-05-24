@@ -455,6 +455,33 @@ module.exports = {
   handle_new_reply: handle_new_reply,
   handle_new_post: handle_new_post,
   handle_delete_post: handle_delete_post,
-  handle_update_post: handle_update_post
+  handle_update_post: handle_update_post,
+  trim_post: function(post) {
+    var replies = post.replies;
+    post.replies = [];
+    _.each(replies, function(reply) {
+      post.replies.push({
+        id: reply.id,
+        tripcode: reply.tripcode,
+        created_at: reply.created_at
+      });
+    });
+
+    // things we should remove from posts...
+    // created_at, ip, id, replies, bumped_at, author, thread_id
+    //
+    // from replies:
+    // ups, downs, bumped_at, author
+    //
+    var post_delete = [ 
+      "ip",
+      "updated_at",
+    ];
+
+    _.each(post_delete, function(key) {
+      delete post[key];
+    });
+    
+  }
 };
 

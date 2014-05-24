@@ -31,7 +31,7 @@ module.exports = {
       if (reply.tripcode === tripdone) {
         this.$el.find(".reportable").fadeOut();
         this.$el.find(".editable").fadeIn().css("display", "inline-block");
-      } else{
+      } else {
         this.$el.find(".reportable").fadeIn().css("display", "inline-block");
         this.$el.find(".editable").fadeOut();
       }
