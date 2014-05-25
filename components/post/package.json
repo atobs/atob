@@ -6,7 +6,6 @@
   "template": "post.html.erb",
   "helpers": [ 
     "app/client/tripcode", 
-    "app/client/text",
-    "app/static/vendor/Autolinker" ],
+    "app/client/text" ],
   "no_redefine" : false
 }
