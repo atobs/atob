@@ -45,11 +45,23 @@ module.exports = {
     this.$el.find(".collapse").collapse("show");
   },
   add_markdown: function(text_formatter) {
+    if (!text_formatter) {
+      text_formatter = this.helpers["app/client/text"];
+    }
     var textEl = this.$el.find(".text");
     _.each(textEl, function(el) {
       text_formatter.format_text($(el));
     });
-    
+  },
+  gen_tripcodes: function(tripcode_gen) {
+    if (!tripcode_gen) {
+      tripcode_gen = this.helpers["app/client/tripcode"].gen_tripcode;
+    }
+    var tripcodes = this.$el.find("div.tripcode");
+
+    _.each(tripcodes, function(el) {
+      tripcode_gen(el);
+    });
   },
   client: function(options) {
     var POSTS = window._POSTS || {};
@@ -81,13 +93,6 @@ module.exports = {
 
   init_tripcodes: function() {
     var self = this;
-    var tripcodes = self.$el.find("div.tripcode");
-
-    var generate_tripcodes = async_loop(tripcodes.get().reverse(), function(trip_el) {
-      self.helpers['app/client/tripcode'].gen_tripcode(trip_el);
-    });
-
-    generate_tripcodes();
   },
   bumped: function() {
     var repliesEl = this.$el.find(".replies");

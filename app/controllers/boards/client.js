@@ -57,6 +57,8 @@ module.exports = {
     }, function(cmp) {
       preview.empty();
       preview.append(cmp.$el);
+      cmp.gen_tripcodes();
+      cmp.add_markdown();
     });
   }, 200),
 
@@ -144,6 +146,8 @@ module.exports = {
 
       $C("post", data, function(cmp) {
         $(".posts").prepend(cmp.$el);
+        cmp.gen_tripcodes();
+        cmp.add_markdown();
       });
     });
 

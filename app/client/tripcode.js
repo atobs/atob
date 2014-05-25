@@ -28,6 +28,11 @@ function get_ints_for_hash(hashed) {
   return hexes;
 }
 
+// http://stackoverflow.com/a/10075654/442652
+function padDigits(number, digits) {
+  return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
+}
+
 function get_colors_for_hash(hashed) {
   hashed = hashed || window.md5(hashed);
   var colors = hashed.match(/([\dABCDEF]{6})/ig);

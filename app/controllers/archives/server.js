@@ -55,6 +55,11 @@ module.exports = {
         post_data.archived = true;
 
         var postCmp = $C("post", post_data);
+        var text_formatter = require_root("app/client/text");
+        postCmp.add_markdown(text_formatter);
+        var tripcode_gen = require_app("server/tripcode");
+        postCmp.gen_tripcodes(tripcode_gen.gen_tripcode);
+
         flush(postCmp.toString());
       }
 

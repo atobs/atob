@@ -72,7 +72,9 @@ module.exports = {
         post_links.freshen_client(post_data.post_id, result.children, function() {
           var postCmp = $C("post", post_data);
           var text_formatter = require_root("app/client/text");
+          var tripcode_gen = require_app("server/tripcode");
           postCmp.add_markdown(text_formatter);
+          postCmp.gen_tripcodes(tripcode_gen.gen_tripcode);
           api.bridge.controller("posts", "set_board", post_data.board_id);
           flush(postCmp.toString());
         });
