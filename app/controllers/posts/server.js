@@ -71,6 +71,8 @@ module.exports = {
         posting.trim_post(post_data.client_options);
         post_links.freshen_client(post_data.post_id, result.children, function() {
           var postCmp = $C("post", post_data);
+          var text_formatter = require_root("app/client/text");
+          postCmp.add_markdown(text_formatter);
           api.bridge.controller("posts", "set_board", post_data.board_id);
           flush(postCmp.toString());
         });

@@ -179,6 +179,8 @@ module.exports = {
 
               post_links.freshen_client(post_data.post_id, children, function() {
                 var postCmp = $C("post", post_data);
+                var text_formatter = require_root("app/client/text");
+                postCmp.add_markdown(text_formatter);
 
                 flush_post(postCmp.toString());
               });

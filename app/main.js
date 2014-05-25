@@ -18,6 +18,11 @@ var DEFAULT_BOARDS = [
 module.exports = {
   setup_app: function(app) {
     var force_reset = process.env.RESET;
+
+    // add in marked and cheerio to our globals
+    global.marked = require_root("app/static/vendor/marked");
+    global.$ = require("cheerio");
+
     sequelize.instance.sync({ force: force_reset }).success(function() {
       console.log("Synced SQL DB to models");
 

@@ -44,6 +44,13 @@ module.exports = {
   expand: function() {
     this.$el.find(".collapse").collapse("show");
   },
+  add_markdown: function(text_formatter) {
+    var textEl = this.$el.find(".text");
+    _.each(textEl, function(el) {
+      text_formatter.format_text($(el));
+    });
+    
+  },
   client: function(options) {
     var POSTS = window._POSTS || {};
     var self = this;
@@ -51,15 +58,6 @@ module.exports = {
     window._REPLIES = REPLY_TEXT;
     POSTS[options.post_id] = this;
 
-    // need to find the icons in the text and fix them
-    var textEl = this.$el.find(".text");
-
-    // do the title and the OP text, first, supposedly
-    var async_text_work = async_loop(textEl.get().reverse(), function(el) {
-      self.helpers['app/client/text'].format_text($(el));
-    });
-
-    async_text_work();
 
     REPLY_TEXT[options.post_id] = options;
 

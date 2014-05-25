@@ -106,7 +106,7 @@ function add_icons($el, replace_urls) {
   var escaped = $el.html();
 
   if (escaped) {
-    var icon_str = "<i class='icon icon-NAME' />";
+    var icon_str = "<i class='icon icon-NAME' > </i>";
     var replaced = escaped.replace(/:([\w-]+):/g, function(x, icon) {
       return icon_str.replace(/NAME/g, icon.toLowerCase());
     });
@@ -138,7 +138,7 @@ function add_replies($el) {
     });
 
     reply_str = "<a href='/p/ID' class='postlink'>#ID</a>";
-    replaced = replaced.replace(/[^;]#([\d]+)/g, function(x, post_id) {
+    replaced = replaced.replace(/[^&;]#([\d]+)/g, function(x, post_id) {
       return reply_str.replace(/ID/g, post_id.toLowerCase());
     });
 
