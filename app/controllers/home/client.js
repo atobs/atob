@@ -30,7 +30,7 @@ module.exports = {
     e.preventDefault();
     $(e.target).popover("destroy");
     var responseEl = $("<div />");
-    var img_link = $(e.target).attr("href");
+    var img_link = $(e.target).closest(".imglink").attr("href");
 
     var img_tag = $("<img />") .attr("src", img_link);
     img_tag.css("max-height", "200px");

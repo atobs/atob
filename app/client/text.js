@@ -1,6 +1,5 @@
 "use strict";
 
-require("app/static/vendor/Autolinker");
 var USE_UPBOATS = true;
 
 var renderer = new marked.Renderer();
@@ -107,14 +106,10 @@ function add_icons($el, replace_urls) {
   var escaped = $el.html();
 
   if (escaped) {
-    var icon_str = "<i class='icon icon-NAME' title=':NAME:' />";
+    var icon_str = "<i class='icon icon-NAME' />";
     var replaced = escaped.replace(/:([\w-]+):/g, function(x, icon) {
       return icon_str.replace(/NAME/g, icon.toLowerCase());
     });
-
-    if (replace_urls) {
-      replaced = window.Autolinker.link(replaced);
-    }
 
     $el.html(replaced);
   }
@@ -177,7 +172,7 @@ function format_text($el) {
   add_markdown($el);
   add_replies($el);
   add_board_links($el);
-  add_icons($el, true /* replace URLS */);
+  add_icons($el);
   shorten_text($el);
 }
 
