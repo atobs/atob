@@ -23,6 +23,7 @@ module.exports = {
     "click .restore" :  "handle_restore",
     "click .glyphs" :  "handle_click_glyphs",
     "click .addglyph" :  "handle_addglyph",
+    "click .boardlink" : "handle_click_boardlink",
     "submit form": "handle_reply",
     "keydown .post .reply textarea" : "handle_maybe_submit",
     "keydown .reply textarea" : "handle_typing",
@@ -41,6 +42,12 @@ module.exports = {
     "click .replylink" : "handle_mouseenter_replylink",
     "mouseenter .replylink" : "handle_mouseenter_replylink",
     "mouseleave .replylink" : "handle_mouseleave_replylink"
+  },
+
+  handle_click_boardlink: function(e) {
+    e.preventDefault();
+    var dest = $(e.target).closest(".boardlink").attr("href");
+    window.open(dest, '_blank');
   },
 
   handle_click_truncable: function(e) {

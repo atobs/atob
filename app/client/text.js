@@ -119,7 +119,7 @@ function add_icons($el, replace_urls) {
 function add_board_links($el) {
   var escaped = " " + $el.html() + " ";
   if (escaped) {
-    var reply_str = " <a href='/b/NAME' class='boardlink' target='_blank'>/NAME</a>";
+    var reply_str = " <span href='/b/NAME' class='boardlink' target='_blank'>/NAME</span>";
     var replaced = escaped.replace(/\s\/(\w+)/g, function(x, post_id) {
       return reply_str.replace(/NAME/g, post_id.toLowerCase());
     });

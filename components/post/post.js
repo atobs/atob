@@ -84,16 +84,11 @@ module.exports = {
 
     self.$el.find(".timeago").timeago();
 
-    self.init_tripcodes();
-
     self.$el.find(".post").show();
     _.defer(function() { self.bumped(); });
     SF.trigger("post" + options.post_id);
   },
 
-  init_tripcodes: function() {
-    var self = this;
-  },
   bumped: function() {
     var repliesEl = this.$el.find(".replies");
     repliesEl.animate({ scrollTop: repliesEl[0].scrollHeight});

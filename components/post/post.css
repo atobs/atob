@@ -279,3 +279,11 @@
     text-decoration: none;
   }
 }
+
+.boardlink {
+  color: #428bca;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
