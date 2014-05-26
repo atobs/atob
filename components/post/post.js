@@ -85,15 +85,19 @@ module.exports = {
     self.$el.find(".timeago").timeago();
 
     _.defer(function() { 
-      self.$el.find(".post").show();
+      self.$el.find(".post").css("visibility", "visible");
       self.bumped(); 
     });
     SF.trigger("post" + options.post_id);
   },
 
-  bumped: function() {
+  bumped: function(animate) {
     var repliesEl = this.$el.find(".replies");
-    repliesEl.animate({ scrollTop: repliesEl[0].scrollHeight});
+    if (animate) {
+      repliesEl.animate({ scrollTop: repliesEl[0].scrollHeight});
+    } else {
+      repliesEl.scrollTop(repliesEl[0].scrollHeight);
+    }
   },
   add_reply: function(data) {
     this.$el.find(".post").addClass("pulse");
@@ -141,7 +145,7 @@ module.exports = {
 
     var repliesEl = this.$el.find(".replies");
     repliesEl.append(replyEl);
-    this.bumped();
+    this.bumped(true);
 
     var timeagoEl = this.$el.find(".last_reply .timeago");
     timeagoEl.attr("title", Date.now());
