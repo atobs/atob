@@ -84,11 +84,14 @@ module.exports = {
 
     self.$el.find(".timeago").timeago();
 
-    self.$el.find(".post").show();
     SF.trigger("post" + options.post_id);
+    
+    // TODO: better queueing
     _.defer(function() {
+      $(".loading").remove();
+      self.$el.find(".post").show();
       self.bumped(); 
-    });
+    }, Math.random() * 300);
   },
 
   bumped: function(animate) {

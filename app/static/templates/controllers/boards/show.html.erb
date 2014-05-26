@@ -47,6 +47,10 @@
 
   <div class="col-md-12 mtl posts" style="min-height: 600px">
     <%= render_posts() %>
+    <div class="loading clearfix row">
+      <h4 class='mtl'>Loading </h4>
+      <div class="mtl"><%= render_partial("shared/loading.html.erb") %></div>
+    </div>
 
     <div class="rfloat">
       <a href="/r/<%= board %>" class="icon-rss"> </a>
