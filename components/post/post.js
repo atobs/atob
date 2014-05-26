@@ -84,8 +84,10 @@ module.exports = {
 
     self.$el.find(".timeago").timeago();
 
-    self.$el.find(".post").show();
-    _.defer(function() { self.bumped(); });
+    _.defer(function() { 
+      self.$el.find(".post").show();
+      self.bumped(); 
+    });
     SF.trigger("post" + options.post_id);
   },
 

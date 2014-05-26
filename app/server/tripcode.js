@@ -32,10 +32,7 @@ function gen_tripcode(el) {
   var div = $(el);
   _.each(colors, function(color) {
     var colorDiv = $("<div />").css({
-      "background-color": "#" + color,
-      display: "inline-block",
-      height: "20px",
-      width: "25%"
+      "background-color": "#" + color
     });
     div.append(colorDiv);
 

@@ -19,6 +19,8 @@ module.exports = {
         reply.text = text;
       }
 
+      replyEl.data("text", text);
+
       replyEl.fadeOut(1000, function() {
         replyEl.empty();
         replyEl.text(text);

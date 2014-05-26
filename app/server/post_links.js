@@ -12,7 +12,7 @@ function find_and_create_links(post) {
     post = post.dataValues;
   }
 
-  if (post.board_id === 'log' || post.board_id === 'ban') {
+  if (post.board_id === 'log' || post.board_id === 'ban' || post.board_id === 'bugs') {
     return;
   }
 
