@@ -84,11 +84,11 @@ module.exports = {
 
     self.$el.find(".timeago").timeago();
 
-    _.defer(function() { 
-      self.$el.find(".post").css("visibility", "visible");
+    self.$el.find(".post").show();
+    SF.trigger("post" + options.post_id);
+    _.defer(function() {
       self.bumped(); 
     });
-    SF.trigger("post" + options.post_id);
   },
 
   bumped: function(animate) {
