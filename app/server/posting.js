@@ -475,7 +475,6 @@ module.exports = {
     //
     var post_delete = [ 
       "ip",
-      "updated_at",
     ];
 
     _.each(post_delete, function(key) {
