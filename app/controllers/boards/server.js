@@ -119,6 +119,13 @@ module.exports = {
       return;
     }
 
+    // Special case the archives board
+    if (board_id === "archives") {
+      ctx.res.redirect("/archives");
+      return;
+    }
+
+
     // make sure it stays up to date
     $C("delete_post_modal", {}).marshall();
 
