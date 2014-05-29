@@ -1,4 +1,5 @@
 <% set_default("tripcode", null) %>
+<% set_default("hide_settings", false) %>
 
 <style>
   .identity_tripcode {
@@ -40,7 +41,9 @@
           <div class="identity_tripcode"></div>
         
         </div>
-        <a class="rfloat" href="#" data-toggle="collapse" data-target=".settings">settings</a>
+        <% if (!hide_settings) { %>
+          <a class="rfloat" href="#" data-toggle="collapse" data-target=".settings">settings</a>
+        <% } %>
 
         <%= render_boards() %>
       </div>
@@ -48,7 +51,9 @@
 
       <div class="clearfix identity_tripcode" style="height: 20px; width: 100%" ></div>
 
-      <%= render_partial("shared/settings.html.erb", { tripcode: tripcode }) %>
+      <% if (!hide_settings) { %>
+        <%= render_partial("shared/settings.html.erb", { tripcode: tripcode }) %>
+      <% } %>
 
     </div>
 

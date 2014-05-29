@@ -34,7 +34,7 @@ function padDigits(number, digits) {
 }
 
 function get_colors_for_hash(hashed) {
-  hashed = hashed || window.md5(hashed);
+  hashed = hashed || window.md5(hashed || "");
   var colors = hashed.match(/([\dABCDEF]{6})/ig);
 
   var hexes = [];

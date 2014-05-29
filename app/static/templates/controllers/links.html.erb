@@ -1,8 +1,6 @@
 <div class="container" style="margin-left: 10px; margin-top: 10px; margin: auto;">
   <div class="col-md-12 clearfix">
-    <a href="/" class='lfloat mtl'>
-      <img src="/images/atobi.png" style="width: 50px; height: 50px; border-style: none" class="mrl" />
-    </a>
+    <%= render_partial("shared/logo_and_links.html.erb", { render_boards: render_boards, tripcode: tripcode, hide_settings: true }) %>
 
     <h2 class='mll'><%= images ? "images" : " links" %> from anon</h2>
     <hr />
