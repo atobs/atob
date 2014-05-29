@@ -719,6 +719,7 @@ module.exports = {
         tripcode: "",
         images: images_only
       });
+      api.bridge.controller("home", "init_tripcodes");
       api.page.render({content: template_str, socket: true });
 
   },
