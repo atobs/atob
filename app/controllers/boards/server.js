@@ -150,6 +150,7 @@ module.exports = {
           limit: 30
       }).success(function(results) {
         if (!results || !results.length) {
+          api.bridge.controller("boards", "no_posts");
           return flush();
         }
 

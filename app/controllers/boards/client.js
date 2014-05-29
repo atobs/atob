@@ -73,6 +73,9 @@ module.exports = {
   add_post_force: function(e) {
     this.add_post(e, true);
   },
+  no_posts: function() {
+    $(".loading").html("<h2>there are no posts on this board, plz make some</h2>");
+  },
   add_post: function(e, force) {
     e.preventDefault();
     var form = $(e.target).closest("form");
