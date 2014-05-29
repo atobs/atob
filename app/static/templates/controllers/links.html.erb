@@ -2,8 +2,8 @@
   <div class="col-md-12 clearfix">
     <%= render_partial("shared/logo_and_links.html.erb", { render_boards: render_boards, tripcode: tripcode, hide_settings: true }) %>
 
-    <h1 class='mll'>/<%- images ? "gifs" : "links" %></h1>
-    <hr />
+    <h1 class='ptl'>/<%- images ? "gifs" : "links" %></h1>
+    <div style="margin-bottom: 40px"> </div>
 
     <%= render_links() %>
   </div>

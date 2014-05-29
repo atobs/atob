@@ -670,7 +670,7 @@ module.exports = {
     var url = require("url");
     var render_links = api.page.async(function(flush) {
       Link.findAll({ order: "post_id DESC", limit: 49, where: { image: images_only ? 1 : 0} }).success(function(links) {
-          var content = $("<div class='container mtl mll' />");
+          var content = $("<div class='container col-md-12 mtl mll' />");
           var max_ups = _.max(links, function(link) { return link.ups || 0; });
           links = _.sortBy(links, function(link) {
             var recency = (Date.now() - link.created_at) / 1000 / 60 / 60;
