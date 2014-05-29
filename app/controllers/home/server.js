@@ -436,6 +436,7 @@ module.exports = {
     "rules" : "rules",
     "anon" : "colors",
     "links" : "links",
+    "gifs" : "gifs",
     "faq" : "faq",
     "archives" : "archives",
     "guide" : "about",
@@ -661,15 +662,14 @@ module.exports = {
     api.page.render({ content: template_str});
 
   },
-  links: function(ctx, api) {
-    var hashes = [];
+  render_links: function(ctx, api, images_only) {
     this.set_fullscreen(true);
     this.set_title("atob/links");
     api.template.add_stylesheet("links");
     var MAX_BUMP_AGE = 12;
     var url = require("url");
     var render_links = api.page.async(function(flush) {
-      Link.findAll({ order: "post_id DESC", limit: 49 }).success(function(links) {
+      Link.findAll({ order: "post_id DESC", limit: 49, where: { image: images_only ? 1 : 0} }).success(function(links) {
           var content = $("<div class='container mtl mll' />");
           var max_ups = _.max(links, function(link) { return link.ups || 0; });
           links = _.sortBy(links, function(link) {
@@ -697,9 +697,17 @@ module.exports = {
       });
 
       var template_str = api.template.render("controllers/links.html.erb", {
-        render_links: render_links
+        render_links: render_links,
+        images: images_only
       });
       api.page.render({content: template_str, socket: true });
+
+  },
+  gifs: function(ctx, api) {
+    this.render_links(ctx, api, true);
+  },
+  links: function(ctx, api) {
+    this.render_links(ctx, api);
   },
   colors: function(ctx, api) {
     var hashes = [];

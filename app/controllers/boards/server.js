@@ -113,18 +113,18 @@ module.exports = {
     this.set_title("atob/" + board_id);
     this.set_fullscreen(true);
 
-    // Special case the links board
-    if (board_id === "links") {
-      ctx.res.redirect("/links");
+    var specials = [ "links", "archives", "gifs" ];
+    var redir;
+    _.each(specials, function(board) {
+      if (board_id === board) {
+        ctx.res.redirect("/" + board);
+        redir = true;
+      }
+    });
+
+    if (redir) {
       return;
     }
-
-    // Special case the archives board
-    if (board_id === "archives") {
-      ctx.res.redirect("/archives");
-      return;
-    }
-
 
     // make sure it stays up to date
     $C("delete_post_modal", {}).marshall();
