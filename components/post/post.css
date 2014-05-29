@@ -13,7 +13,7 @@
   float: right;
   margin-top: -30px;
   margin-right: 0px;
-  opacity: 0.8px;
+  opacity: 0.8;
 }
 
 .highlight {
@@ -195,7 +195,7 @@
   float: left;
   margin-left: -20px;
   margin-top: 2px;
-  opacity: 0.1;
+  opacity: 0.3;
   font-size: 80%;
 }
 

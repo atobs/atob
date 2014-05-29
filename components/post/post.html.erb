@@ -19,8 +19,8 @@
 
     <a href="#" class="deletereply rfloat op"
       data-parent-id="<%= post_id %>"
-      title="delete / report post">
-      <i class='icon-remove'> </i>
+      title="edit / delete / report post">
+      <i class='icon-edit'> </i>
     </a>
 
 
@@ -78,7 +78,7 @@
           <div class="tripcode" title="<%- 'anon' %>" data-tripcode="<%= r.tripcode %>"></div>
           <a href="#" class="deletereply"
             data-parent-id="<%= r.id %>"
-            title="delete / report post">
+            title="edit / delete / report post">
             <i class='icon-edit'> </i>
           </a>
           <a href="/<%= archived ? "a" : "p" %>/<%=r.id%>" class="addreply"
