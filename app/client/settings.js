@@ -138,7 +138,7 @@ module.exports = {
 
           appended = true;
         }
-        
+
       });
     }
   },
@@ -198,5 +198,28 @@ module.exports = {
 
     this.save_tripcode();
     this.update_trip_colors();
+  },
+  handle_anonicators: function(doings) {
+
+    var counts = {};
+    _.each(doings, function(anons) {
+      _.each(anons, function(emote, id) {
+        counts[id] = emote;
+      });
+    });
+
+    var lookup = {
+      t: "icon-keyboardalt",
+      f: "icon-glassesalt",
+      u: "icon-glassesalt"
+    };
+
+    var str = _.map(_.values(counts), function(c) {
+      return "<i class='" + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' />";
+    });
+
+
+    $("#anons").html(str.join(" "));
+
   }
 };

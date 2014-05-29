@@ -112,29 +112,7 @@ module.exports = {
       postParent.find(".post").last().fadeOut().remove();
     });
 
-    s.on("doings", function(doings) {
-      
-      var counts = {};
-      _.each(doings, function(anons) {
-        _.each(anons, function(emote, id) {
-          counts[id] = emote;
-        });
-      });
-
-      var lookup = {
-        t: "icon-keyboardalt",
-        f: "icon-glassesalt",
-        u: "icon-glassesalt"
-      };
-
-      var str = _.map(_.values(counts), function(c) {
-        return "<i class='" + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' />";
-      });
-
-
-      $("#anons").html(str.join(" "));
-
-    });
+    s.on("anons", this.handle_anonicators);
   }
 };
 _.extend(module.exports, settings);

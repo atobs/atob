@@ -20,6 +20,16 @@
     background-color: #fafafa;
     border: 0px;
   }
+  #anons {
+    position: absolute;
+    top: 30px;
+    right: 18px;
+    opacity: 0.4;
+    zoom: 0.8;
+  }
+  #anons:hover {
+    opacity: 0.8; 
+  }
   body { padding-top: 70px; }
 
 </style>
@@ -28,7 +38,7 @@
   <div class="clearfix container">
 
     <div class="mtl col-md-12">
-      <div class="clearfix">
+      <div class="clearfix" style="zoom: 1.2">
         <div class="lfloat mrl logo">
         
           <strong><a href="/">
@@ -46,6 +56,10 @@
         <% } %>
 
         <%= render_boards() %>
+      </div>
+
+      <div id="anons">
+
       </div>
 
 

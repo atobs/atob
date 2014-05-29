@@ -36,6 +36,7 @@ module.exports = {
     }, 50);
   },
   socket: function(s) {
+    s.on("anons", this.handle_anonicators);
     s.on("doings", function(data) {
       var post = window._POSTS[data.post_id];
       if (post) {

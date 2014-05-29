@@ -227,8 +227,12 @@ module.exports = {
   update_doings: _.throttle(function() {
     var load_controller = require_core("server/controller").load;
     var home_controller = load_controller("home");
+    var boards_controller = load_controller("boards");
+    var posts_controller = load_controller("posts");
 
-    home_controller.get_socket().emit("doings", GOING_ONS);
+    home_controller.get_socket().emit("anons", GOING_ONS);
+    boards_controller.get_socket().emit("anons", GOING_ONS);
+    posts_controller.get_socket().emit("anons", GOING_ONS);
   }, 2000),
 
   lurk: function(s) {
