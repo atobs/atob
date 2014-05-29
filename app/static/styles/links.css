@@ -73,3 +73,10 @@
 
   cursor: pointer;
 }
+
+.link {
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}

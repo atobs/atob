@@ -6,6 +6,7 @@ var summarize = require("app/client/summarize");
 module.exports = {
   events: {
     "click .imglink" : "handle_mouseenter_imglink",
+    "click .identity_tripcode" : "regen_tripcode",
     "click .upboat" : "handle_upboat_link",
     "mouseenter .imglink" : "handle_mouseenter_imglink",
     "mouseleave .imglink" : "handle_mouseleave_imglink",

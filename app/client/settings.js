@@ -79,7 +79,7 @@ module.exports = {
     var tripcode = md5(Math.random() + "");
     var words = $(".text").text().split(" ");
     var keywords = [];
-    if (words.length) {
+    if (words.length > 10) {
       try {
         for (var i = 0; i < 5; i++) {
           keywords.push(
