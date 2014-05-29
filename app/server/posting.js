@@ -410,6 +410,7 @@ function handle_delete_post(socket, board, post) {
         socket.emit("notif", action_name + post.id, "success");
         socket.emit("update_post", post.id);
         socket.broadcast.to(result.board_id).emit("update_post", post.id);
+        post_links.erase_links(result, function() { });
       } else {
         User.find({
           where: {
@@ -430,6 +431,8 @@ function handle_delete_post(socket, board, post) {
             });
             socket.emit("update_post", post.id);
             socket.broadcast.to(result.board_id).emit("update_post", post.id);
+            post_links.erase_links(result, function() { });
+
 
           } else {
             socket.emit("notif", action_name + post.id, "success");
