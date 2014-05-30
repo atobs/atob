@@ -205,11 +205,24 @@ module.exports = {
       });
     });
 
+    var render_sinners = api.page.async(function(flush) {
+      Post.findAll({
+        where: {
+          board_id: "heretics"
+        }
+      }).success(function(results) {
+        var sinners = _.map(results, function(r) { return r.dataValues; });
+        api.bridge.call("app/client/sinners", "punish", sinners);
+        flush();
+      });
+    });
+    render_sinners();
+
     var template_str = api.template.render("controllers/boards/show.html.erb", {
       board: board_id,
       tripcode: gen_md5(Math.random()),
       render_posts: render_posts,
-      render_boards: render_boards
+      render_boards: render_boards,
     });
 
     api.bridge.controller("boards", "set_board", board_id);

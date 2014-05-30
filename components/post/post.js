@@ -84,6 +84,10 @@ module.exports = {
 
     self.$el.find(".timeago").timeago();
 
+    require("app/client/sinners", function(sinners) {
+      sinners.check_reply(self.$el, options.tripcode);
+    });
+
     
     // TODO: better queueing
     _.defer(function() {
@@ -144,6 +148,9 @@ module.exports = {
 
     this.helpers['app/client/text'].format_text(smallEl);
 
+    require("app/client/sinners", function(sinners) {
+      sinners.check_reply(replyEl, data.tripcode);
+    });
     replyEl.fadeIn();
 
     var repliesEl = this.$el.find(".replies");

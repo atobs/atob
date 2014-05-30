@@ -136,6 +136,18 @@ module.exports = {
 
     });
 
+    var render_sinners = api.page.async(function(flush) {
+      Post.findAll({
+        where: {
+          board_id: "heretics"
+        }
+      }).success(function(results) {
+        var sinners = _.map(results, function(r) { return r.dataValues; });
+        api.bridge.call("app/client/sinners", "punish", sinners);
+        flush();
+      });
+    });
+    render_sinners();
     var template_str = api.template.render("controllers/posts/show.html.erb", 
       { render_post: render_post, render_boards: render_boards, tripcode: gen_md5(Math.random()) });
     api.page.render({ content: template_str, socket: true });

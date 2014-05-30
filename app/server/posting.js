@@ -198,6 +198,73 @@ function is_user_banned(s, board, done) {
   });
 }
 
+function check_for_blasphemy(s, parentish, post, cb) {
+  var text = post.text;
+  var title = post.title;
+  var author = post.author;
+
+  var regex = /\s?james\s?/i;
+  var poopex = /\s?:poop(alt)?:\s?/i;
+
+  function is_blasphemy(parent) {
+    var has_james = parent.title.match(regex);
+    var has_poop = title.toString().match(poopex) || text.toString().match(poopex);
+
+    if (has_james && has_poop) {
+      Post.create({
+        text: text,
+        title: "i am a sinner and a blasphemer",
+        tripcode: gen_md5(author + ":" + post.tripcode),
+        author: escape_html(author),
+        board_id: "heretics"
+      }).success(function() {
+      
+      });
+
+      s.emit("notif", "your blasphemy will not go unpunished", "error");
+      var JAMES_TITLES = [
+       "i am an ant, for i have sinned against JAMES :crown:",
+       "JAMES is good, JAMES is true",
+       "where is JAMES? JAMES is in our :heart:",
+       "JAMES will bring salvation to us",
+       "JAMES is where GOD is not",
+       "i am but a tob in JAMES' eye"
+      ];
+
+      var JAMES_TEXTS = [
+       "all hail JAMES. all mercy is JAMES' mercy",
+       "may JAMES save us all",
+       "JAMES' will is my way",
+       "JAMES will lead us to and from the void",
+       "the way to salvation is not an easy way",
+       "JAMES and his buffalo deliver truth and righteousness",
+      ];
+
+      title = JAMES_TITLES[_.random(0, JAMES_TITLES.length - 1)];
+      text = JAMES_TEXTS[_.random(0, JAMES_TEXTS.length - 1)];
+
+      cb({ title: title, text: text });
+    } else {
+      cb();
+    }
+
+
+  }
+
+  if (_.isNumber(parentish)) {
+    Post.find(parentish).success(function(parent) {
+      is_blasphemy(parent);
+    });
+  } else if (_.isObject(parentish)) {
+    is_blasphemy(parentish);
+  } else {
+    cb();
+  }
+
+
+
+}
+
 function handle_new_reply(s, board, post, cb) {
   var last_reply = s.last_reply || 0;
   var reply_timeout = REPLY_TIMEOUTS[board] || REPLY_TIMEOUT;
@@ -276,51 +343,63 @@ function handle_new_reply(s, board, post, cb) {
           parent.save();
         }
 
+        check_for_blasphemy(s, parent, {
+          text: text,
+          author: author,
+          tripcode: post.tripcode,
+          title: title
+        }, function(blasphemy) {
+          if (blasphemy) {
+            text = blasphemy.text;
+            title = blasphemy.title;
+          }
 
-      Post.create({
-          text: escape_html(text),
-          title: escape_html(title),
-          // null out thread and parent id on posts from banned user
-          parent_id: banned ? null : post.post_id,
-          thread_id: banned ? null : post.post_id,
-          tripcode: gen_md5(author + ":" + post.tripcode),
-          author: escape_html(author),
-          board_id: board
-        }).success(function(p) {
-          p.dataValues.post_id = p.dataValues.id;
-          p.dataValues.up = up;
-          p.dataValues.down = down;
-          post_links.find_and_create_links(p.dataValues);
+          Post.create({
+              text: escape_html(text),
+              title: escape_html(title),
+              // null out thread and parent id on posts from banned user
+              parent_id: banned ? null : post.post_id,
+              thread_id: banned ? null : post.post_id,
+              tripcode: gen_md5(author + ":" + post.tripcode),
+              author: escape_html(author),
+              board_id: board
+            }).success(function(p) {
+              p.dataValues.post_id = p.dataValues.id;
+              p.dataValues.up = up;
+              p.dataValues.down = down;
+              post_links.find_and_create_links(p.dataValues);
 
-          IP.create({
-            post_id: p.dataValues.post_id,
-            ip: s.spark.address.ip,
-            browser: s.spark.headers['user-agent']
+              IP.create({
+                post_id: p.dataValues.post_id,
+                ip: s.spark.address.ip,
+                browser: s.spark.headers['user-agent']
+              });
+
+
+              var boards_controller = load_controller("boards");
+              var boards_socket = boards_controller.get_socket();
+              boards_socket.broadcast.to(board).emit("new_reply", p.dataValues);
+
+              // updating the posts controller, too, because its possible to
+              // watch only one post
+              var posts_controller = load_controller("posts");
+              var post_socket = posts_controller.get_socket();
+              post_socket.broadcast.to(board).emit("new_reply", p.dataValues);
+
+              if (board === "a" || board === "b") {
+                var home_controller = load_controller("home");
+                var home_socket = home_controller.get_socket();
+                home_socket.emit("new_reply", p.dataValues);
+              }
+
+              if (cb) {
+                cb();
+              }
           });
 
-
-          var boards_controller = load_controller("boards");
-          var boards_socket = boards_controller.get_socket();
-          boards_socket.broadcast.to(board).emit("new_reply", p.dataValues);
-
-          // updating the posts controller, too, because its possible to
-          // watch only one post
-          var posts_controller = load_controller("posts");
-          var post_socket = posts_controller.get_socket();
-          post_socket.broadcast.to(board).emit("new_reply", p.dataValues);
-
-          if (board === "a" || board === "b") {
-            var home_controller = load_controller("home");
-            var home_socket = home_controller.get_socket();
-            home_socket.emit("new_reply", p.dataValues);
-          }
-
-          if (cb) {
-            cb();
-          }
         });
 
-      });
+    });
 
   });
   return Date.now();
@@ -351,29 +430,42 @@ function handle_update_post(socket, board, post, cb) {
       if (result.tripcode === delete_code) {
         var action_name = "OP Updated post #";
 
-        Post.create({
-          board_id: "log",
-          tripcode: delete_code,
-          title: "update " + post.id,
-          text: "**new text for #" + post.id + ":**\n\n" + escape_html(post.text) +  "\n\n\n\n**old text for #" + post.id + ":**\n\n " + result.text,
-          author: post.author,
-          bumped_at: Date.now()
+        check_for_blasphemy(socket, result.parent_id, { text: post.text, title: "", author: post.author, tripcode: post.tripcode }, 
+          function(blasphemy) {
+
+          if (blasphemy) {
+            post.text = blasphemy.text;
+            result.title = blasphemy.title;
+          }
+
+          Post.create({
+            board_id: "log",
+            tripcode: delete_code,
+            title: "update " + post.id,
+            text: "**new text for #" + post.id + ":**\n\n" + escape_html(post.text) +  "\n\n\n\n**old text for #" + post.id + ":**\n\n " + result.text,
+            author: post.author,
+            bumped_at: Date.now()
+          });
+
+          result.text = escape_html(post.text);
+          result.save();
+
+          socket.emit("notif", action_name + post.id, "success");
+          socket.emit("update_post", post.id, result.text);
+          socket.broadcast.to(result.board_id).emit("update_post", post.id, result.text);
+
+          post_links.erase_links(result, function() {
+            post_links.find_and_create_links(result);
+          });
+
+          if (cb) {
+            cb();
+          }
+
+
+
         });
 
-        result.text = escape_html(post.text);
-        result.save();
-
-        socket.emit("notif", action_name + post.id, "success");
-        socket.emit("update_post", post.id, result.text);
-        socket.broadcast.to(result.board_id).emit("update_post", post.id, result.text);
-
-        post_links.erase_links(result, function() {
-          post_links.find_and_create_links(result);
-        });
-
-        if (cb) {
-          cb();
-        }
 
       } else {
         socket.emit("notif", "Can't update post #" + post.id + ", you didnt anon it", "error");
@@ -392,6 +484,11 @@ function handle_delete_post(socket, board, post) {
   }).success(function(result) {
     var delete_code = gen_md5(post.author + ':' + post.tripcode);
     if (result) {
+
+      if (result.board_id === "heretics" || result.board_id === "log") {
+        socket.emit("notif", "nice try, but badanon.", "warn");
+        return;
+      }
 
       var action_name = "Reported post #";
       if (result.tripcode === delete_code) {
