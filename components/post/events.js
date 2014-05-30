@@ -299,6 +299,17 @@ module.exports = {
     var a = $(e.target);
     var href = a.data('href');
     var text = a.data("text");
+    var new_text = $("<div />").html(text);
+
+    // stupid junk for handling icons in links... and re-replacing with :icon:
+    var icons = new_text.find("i.icon");
+    _.each(icons, function(icon) {
+      var iconclass = $(icon).attr("class").replace("icon icon-", "");
+      $(icon).text(":" + iconclass + ":");
+    });
+
+    text = new_text.text();
+
     var reply = a.closest(".reply");
     var post = a.closest(".post");
 

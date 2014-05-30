@@ -51,7 +51,7 @@ renderer.image = function(href, title, text) {
   var outer = $("<div />");
   outer.append(url_tag);
   outer.append(img_tag);
-
+  
   add_upboat(img_tag, href, text);
 
   var tag = outer.html();
