@@ -153,7 +153,12 @@ function add_markdown($el) {
   $el.attr("data-text", escaped);
   escaped = marked(escaped, { renderer: renderer});
 
-  $el.html(escaped);
+  // need to add icons here before data-text is added to the element
+  var icon_str = "<i class='icon icon-NAME' > </i>";
+  var replaced = escaped.replace(/:([\w-]+):/g, function(x, icon) {
+    return icon_str.replace(/NAME/g, icon.toLowerCase());
+  });
+  $el.html(replaced);
   $el.addClass("marked");
 }
 
@@ -172,7 +177,6 @@ function format_text($el) {
   add_markdown($el);
   add_replies($el);
   add_board_links($el);
-  add_icons($el);
   shorten_text($el);
 }
 

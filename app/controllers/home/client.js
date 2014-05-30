@@ -58,7 +58,6 @@ module.exports = {
       var self = this;
       $(".text").each(function() {
           format_text.add_markdown($(self));
-          format_text.add_icons($(self));
       });
     });
   },
@@ -68,7 +67,6 @@ module.exports = {
       require("app/client/text", function(format_text) {
         format_text.add_upboats(false);
         format_text.add_markdown($(self));
-        format_text.add_icons($(self));
       });
     });
     $(".threads.recent.hidden").removeClass("hidden").hide().fadeIn();
@@ -79,7 +77,6 @@ module.exports = {
       require("app/client/text", function(format_text) {
         format_text.add_upboats(false);
         format_text.add_markdown($(self));
-        format_text.add_icons($(self));
       });
     });
     $(".posts.recent.hidden").removeClass("hidden").hide().fadeIn();
