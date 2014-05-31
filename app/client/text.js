@@ -51,7 +51,7 @@ renderer.image = function(href, title, text) {
   var outer = $("<div />");
   outer.append(url_tag);
   outer.append(img_tag);
-  
+
   add_upboat(img_tag, href, text);
 
   var tag = outer.html();
@@ -137,7 +137,7 @@ function add_replies($el) {
       return reply_str.replace(/NAME/g, post_id.toLowerCase());
     });
 
-    reply_str = "<a href='/p/ID' class='postlink'>#ID</a>";
+    reply_str = " <a href='/p/ID' class='postlink'>#ID</a> ";
     replaced = replaced.replace(/[^&;]#([\d]+)/g, function(x, post_id) {
       return reply_str.replace(/ID/g, post_id.toLowerCase());
     });
