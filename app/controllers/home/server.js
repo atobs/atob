@@ -446,7 +446,7 @@ module.exports = {
 
   about: function(ctx, api) {
     this.set_fullscreen(true);
-    this.set_title("atob archives");
+    this.set_title("atob/about");
 
     var slogan = SLOGANS[_.random(SLOGANS.length)];
 
@@ -465,7 +465,8 @@ module.exports = {
 
   archives: function(ctx, api) {
     this.set_fullscreen(true);
-    this.set_title("atob archives");
+    this.set_title("atob/archives");
+    api.template.add_stylesheet("archive");
 
     var render_boards = api.page.async(function(flush) {
       Board.findAll({
