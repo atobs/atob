@@ -293,3 +293,11 @@
   height: 20px;
   display: inline-block;
 }
+
+.poop {
+  top: 3px;
+}
+
+.title .poop {
+  top: -5px;
+}

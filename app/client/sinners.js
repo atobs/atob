@@ -4,6 +4,7 @@ module.exports = {
   poopcode: function(el) {
     var tripcodeEl = $(el);
     tripcodeEl.css("height", "20px");
+    tripcodeEl.addClass("poop");
     tripcodeEl.children().each(function() {
       $(this).html("<i class='icon icon-poop' > </i>");
       var color = $(this).css("backgroundColor");
