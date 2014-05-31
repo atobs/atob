@@ -1,0 +1,9 @@
+{
+  "main" : "markdown_dialog",
+  "style": "markdown_dialog.css",
+  "styles": [],
+
+  "template": "markdown_dialog.html.erb",
+  "helpers": [],
+  "no_redefine" : false
+}

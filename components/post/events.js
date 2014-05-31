@@ -22,6 +22,7 @@ module.exports = {
     "click .upboat" : "handle_upboat_link",
     "click .restore" :  "handle_restore",
     "click .glyphs" :  "handle_click_glyphs",
+    "click .formatting_help" :  "handle_click_help",
     "click .addglyph" :  "handle_addglyph",
     "click .boardlink" : "handle_click_boardlink",
     "submit form": "handle_reply",
@@ -139,6 +140,9 @@ module.exports = {
     $('.popover.in').each(function () {
       $(this).popover("destroy");
     });
+  },
+  handle_click_help: function() {
+    $C("markdown_dialog", {});
   },
   handle_click_glyphs: function(e) {
     var container = this.$el;

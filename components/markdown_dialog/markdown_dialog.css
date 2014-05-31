@@ -1,0 +1,30 @@
+// mobile devices & portrait
+// 200 - 767px
+@media @device {
+
+}
+
+// netbooks, mobile devices in landscape
+// laptops, desktops
+// 768 - 1900px
+@media @computer {
+
+}
+
+// huge screens
+// 1900px
+@media @large_screen {
+
+}
+
+.row {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dotted #ddd;
+}
+
+.modal-header,
+.modal-footer {
+  border-top: 0px;
+  border-bottom: 0px;
+}
