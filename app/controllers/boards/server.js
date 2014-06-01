@@ -135,12 +135,14 @@ module.exports = {
     var render_boards = board_utils.render_boards();
 
     var board_id_clause = board_id;
+    var board_slogan = "";
     var limit = 30;
     var order_clause = "bumped_at DESC";
     if (board_id === "to") {
       board_id_clause = [ "a", "b" ];
       order_clause = "created_at DESC";
       limit = 100;
+      board_slogan = "random anon is random";
     }
 
     var render_posts = api.page.async(function(flush) {
@@ -220,6 +222,7 @@ module.exports = {
       tripcode: gen_md5(Math.random()),
       render_posts: render_posts,
       render_boards: render_boards,
+      board_slogan: board_slogan,
       new_thread: board_id !== "to"
     });
 

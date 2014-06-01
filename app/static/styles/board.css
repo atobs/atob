@@ -53,3 +53,9 @@
     font-size: 32px;
   }
 }
+
+.board_slogan {
+  @media @device {
+    display: none;
+  }
+}

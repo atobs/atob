@@ -1,6 +1,7 @@
 <% set_default("title", "a to b to ") %>
 <% set_default("posts", [] ) %>
 <% set_default("tripcode", "") %>
+<% set_default("board_slogan", "") %>
 
 <% add_stylesheet("board.css") %>
 <div class="container mbl mtl clearfix">
@@ -9,7 +10,10 @@
     <%= render_partial("shared/logo_and_links.html.erb", { render_boards: render_boards, tripcode: tripcode }) %>
 
     <div class="clearfix">
-      <h1>/<%= board %>
+      <h1>/<%= board %> 
+        <% if (board_slogan) { %>
+            <small class='board_slogan' style='position: relative'><%= board_slogan %></small>
+        <% } %>
         <a class="rfloat" href="#" data-toggle="collapse" data-target=".new_post">new thread</a>
       </h1>
     </div>
