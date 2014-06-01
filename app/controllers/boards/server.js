@@ -317,5 +317,6 @@ module.exports = {
   handle_new_reply: posting.handle_new_reply,
   handle_new_post: posting.handle_new_post,
   subscribe_to_updates: subscribe_to_updates,
-  GOING_ONS: GOING_ONS
+  GOING_ONS: GOING_ONS,
+  BOARD_SLOGANS: BOARD_SLOGANS
 };

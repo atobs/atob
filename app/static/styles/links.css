@@ -80,3 +80,8 @@
   padding-bottom: 10px;
   border-bottom: 1px solid #ddd;
 }
+.board_slogan {
+  @media @device {
+    display: none;
+  }
+}

@@ -667,11 +667,16 @@ module.exports = {
 
       var board_utils = require_app("server/board_utils");
       var render_boards = board_utils.render_boards();
+      var board_slogan = "and lists";
+      if (images_only) {
+        board_slogan = "and other pics";
+      }
       var template_str = api.template.render("controllers/links.html.erb", {
         render_links: render_links,
         render_boards: render_boards,
         tripcode: "",
-        images: images_only
+        images: images_only,
+        board_slogan: board_slogan
       });
       api.bridge.controller("home", "init_tripcodes");
       api.page.render({content: template_str, socket: true });
