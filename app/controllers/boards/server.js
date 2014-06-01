@@ -20,6 +20,13 @@ var GOING_ONS = {
 var LAST_UPDATE = {};
 var SCHEDULED = {};
 
+var BOARD_SLOGANS = {
+  "a" : "is for anon",
+  "b" : "is for banal",
+  "to" : "random anon is random",
+  "gifs" : "and other pics"
+};
+
 var board_utils = require_app("server/board_utils");
 
 function subscribe_to_updates(s) {
@@ -135,14 +142,13 @@ module.exports = {
     var render_boards = board_utils.render_boards();
 
     var board_id_clause = board_id;
-    var board_slogan = "";
+    var board_slogan = BOARD_SLOGANS[board_id] || "";
     var limit = 30;
     var order_clause = "bumped_at DESC";
     if (board_id === "to") {
       board_id_clause = [ "a", "b" ];
       order_clause = "created_at DESC";
       limit = 100;
-      board_slogan = "random anon is random";
     }
 
     var render_posts = api.page.async(function(flush) {
