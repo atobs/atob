@@ -150,15 +150,29 @@ module.exports = {
 
 
     });
+
+    var board_id_clause = board_id;
+    var limit = 30;
+    var order_clause = "bumped_at DESC";
+    if (board_id === "to") {
+      board_id_clause = [ "a", "b" ];
+      order_clause = "created_at DESC";
+      limit = 100;
+    }
+
     var render_posts = api.page.async(function(flush) {
       Post.findAll({
-          where: { board_id: board_id, thread_id: null },
-          order: "bumped_at DESC",
-          limit: 30
+          where: { board_id: board_id_clause, thread_id: null },
+          order: order_clause,
+          limit: limit
       }).success(function(results) {
         if (!results || !results.length) {
           api.bridge.controller("boards", "no_posts");
           return flush();
+        }
+
+        if (board_id === "to") {
+          results = _.shuffle(results);
         }
 
         var div = $("<div></div>");
@@ -223,6 +237,7 @@ module.exports = {
       tripcode: gen_md5(Math.random()),
       render_posts: render_posts,
       render_boards: render_boards,
+      new_thread: board_id !== "to"
     });
 
     api.bridge.controller("boards", "set_board", board_id);

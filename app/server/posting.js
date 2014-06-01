@@ -67,6 +67,11 @@ function handle_new_post(s, board, post, cb) {
 
   var moved = false;
 
+  if (board === "to") {
+    board = "b";
+    post.force = false;
+  }
+
   if ((board === "a" || board === "b") && !post.force) {
     var marked = require_app("static/vendor/marked");
     var cheerio = require("cheerio");
