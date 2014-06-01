@@ -20,6 +20,8 @@ var GOING_ONS = {
 var LAST_UPDATE = {};
 var SCHEDULED = {};
 
+var board_utils = require_app("server/board_utils");
+
 function subscribe_to_updates(s) {
   var idleTimer;
   var sid = s.spark.headers.sid;
@@ -130,26 +132,7 @@ module.exports = {
     $C("delete_post_modal", {}).marshall();
 
     api.template.add_stylesheet("board.css");
-
-    var render_boards = api.page.async(function(flush) {
-      Board.findAll({
-          order: "name ASC"
-        })
-        .success(function(results) {
-          var boards = _.map(results, function(r) {
-            return r.getDataValue('name');
-          });
-
-          var template_str = api.template.partial("home/board_links.html.erb", {
-            boards: boards
-          });
-
-          flush(template_str);
-
-        });
-
-
-    });
+    var render_boards = board_utils.render_boards();
 
     var board_id_clause = board_id;
     var limit = 30;

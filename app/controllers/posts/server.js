@@ -33,25 +33,8 @@ module.exports = {
     api.template.add_stylesheet("post");
     $C("delete_post_modal", {}).marshall();
 
-    var render_boards = api.page.async(function(flush) {
-      Board.findAll({
-          order: "name ASC"
-        })
-        .success(function(results) {
-          var boards = _.map(results, function(r) { 
-            return r.getDataValue('name'); 
-          });
-
-          var template_str = api.template.partial("home/board_links.html.erb", {
-            boards: boards 
-          });
-
-          flush(template_str);
-
-        });
-
-
-    });
+    var board_utils = require_app("server/board_utils");
+    var render_boards = board_utils.render_boards();
     var render_post = api.page.async(function(flush) {
       function render_posting(result, highlight_id) {
         var post_data = result.dataValues;

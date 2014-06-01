@@ -468,24 +468,8 @@ module.exports = {
     this.set_title("atob/archives");
     api.template.add_stylesheet("archive");
 
-    var render_boards = api.page.async(function(flush) {
-      Board.findAll({
-          order: "name ASC"
-        })
-        .success(function(results) {
-          var boards = _.map(results, function(r) { 
-            return r.getDataValue('name'); 
-          });
-
-          var template_str = api.template.partial("home/board_links.html.erb", {
-            boards: boards 
-          });
-
-          flush(template_str);
-
-        });
-    });
-
+    var board_utils = require_app("server/board_utils");
+    var render_boards = board_utils.render_boards();
     var render_recent_archives = api.page.async(function(flush) {
       var summarize = require_app("client/summarize");
       ArchivedPost.findAll({
@@ -588,24 +572,8 @@ module.exports = {
       return str.join(" ");
     };
 
-    var render_boards = api.page.async(function(flush) {
-      Board.findAll({
-          order: "name ASC"
-        })
-        .success(function(results) {
-          var boards = _.map(results, function(r) { 
-            return r.getDataValue('name'); 
-          });
-
-          var template_str = api.template.partial("home/board_links.html.erb", {
-            boards: boards 
-          });
-
-          flush(template_str);
-
-        });
-    });
-
+    var board_utils = require_app("server/board_utils");
+    var render_boards = board_utils.render_boards();
     var template_str = api.template.render("controllers/home.html.erb", {
       render_boards: render_boards,
       render_anons: render_anons,
@@ -697,23 +665,8 @@ module.exports = {
         });
       });
 
-      var render_boards = api.page.async(function(flush) {
-        Board.findAll({
-            order: "name ASC"
-          })
-          .success(function(results) {
-            var boards = _.map(results, function(r) {
-              return r.getDataValue('name');
-            });
-
-            var template_str = api.template.partial("home/board_links.html.erb", {
-              boards: boards
-            });
-
-            flush(template_str);
-
-          });
-      });
+      var board_utils = require_app("server/board_utils");
+      var render_boards = board_utils.render_boards();
       var template_str = api.template.render("controllers/links.html.erb", {
         render_links: render_links,
         render_boards: render_boards,
