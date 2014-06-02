@@ -26,7 +26,7 @@ module.exports = {
   focus_post: function(id) {
     var self = this;
     setTimeout(function() {
-      var dest = $("#reply" + id);
+      var dest = $("#reply" + id).filter(":visible");
       if (!dest.length) {
         self.focus_post(id);
       } else {

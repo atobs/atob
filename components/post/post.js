@@ -95,7 +95,7 @@ module.exports = {
       self.$el.find(".post").show();
       self.bumped(); 
       SF.trigger("post" + options.post_id);
-    }, Math.random() * 300);
+    });
   },
 
   bumped: function(animate) {
