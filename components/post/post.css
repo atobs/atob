@@ -301,3 +301,24 @@
 .title .poop {
   top: -5px;
 }
+
+.created {
+  margin-top: -10px;
+  clear: right;
+  display: inline-block;
+
+  @media @mobile {
+    float: right;
+    margin-top: 0px;
+  }
+}
+
+.last_reply {
+
+
+  @media @mobile {
+    display: block;
+    float: right;
+    clear: left;
+  }
+}

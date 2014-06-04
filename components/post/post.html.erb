@@ -36,28 +36,27 @@
       </div>
 
 
-      <div class="created" style="margin-top: -10px; display: inline-block">
+      <div class="created">
         <small>posted
           <span class="timeago" title="<%= new Date(created_at).toISOString() %>"> </span>
         </small>
       </div>
 
-      <small class="<%= replies.length > 6 ? "many" : "" %>">
-        <a title="maximize" class="mll rfloat restore icon-maximize"></a>
-      </small>
-      <small class="last_reply rfloat">
-        last reply was
-        <% if (replies.length) { %>
-          <% var last_reply_date = new Date(updated_at) %>
-            <span
-              class="timeago"
-              title="<%= last_reply_date.toISOString() %>" />
-        <% } else { %>
-            <span
-              class="timeago"
-              title="">never. be first! </span>
-        <% } %>
-      </small>
+      <div class="rfloat last_reply">
+        <small>
+          last reply was
+          <% if (replies.length) { %>
+            <% var last_reply_date = new Date(updated_at) %>
+              <span
+                class="timeago"
+                title="<%= last_reply_date.toISOString() %>" />
+          <% } else { %>
+              <span
+                class="timeago"
+                title="">never. be first! </span>
+          <% } %>
+        </small>
+      </div>
 
     </div>
 
