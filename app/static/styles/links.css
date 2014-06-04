@@ -82,6 +82,8 @@
 }
 .board_slogan {
   @media @device {
-    display: none;
+    position: absolute;
+    left: 15px;
+    top: 75px;
   }
 }
