@@ -39,3 +39,9 @@ body {
 .boardlink {
   font-size: 125%;
 }
+
+.hideContent {
+  height: 6em;
+  display: block;
+  overflow: hidden;
+}

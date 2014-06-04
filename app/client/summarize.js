@@ -12,8 +12,8 @@ function summarize_post(post, archive) {
   second_a.attr("href", url);
   var small = $("<small />");
   first_a.text("#" + post.id);
-  var b = $("<b class='text' />").html(post.title.substr(0, 140));
-  var span = $("<span class='text' />").html(post.text.substr(0, 240));
+  var b = $("<b class='text' />").html(post.title);
+  var span = $("<span class='text' />").html(post.text);
   second_a.append(b);
   second_a.append(span);
 
@@ -29,6 +29,13 @@ function summarize_post(post, archive) {
 
   var outer = $("<div />");
   outer.append(div);
+
+  var escaped = outer.text();
+  if (escaped.length > 800) {
+    small.addClass("hideContent");
+    small.addClass("truncable");
+  }
+
   return outer.html();
 }
 
