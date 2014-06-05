@@ -308,15 +308,16 @@
   display: inline-block;
 
   @media @mobile {
+    font-size: 80%;
     float: right;
     margin-top: 0px;
   }
 }
 
 .last_reply {
-
-
   @media @mobile {
+    font-size: 80%;
+    margin-top: -10px;
     display: block;
     float: right;
     clear: left;
