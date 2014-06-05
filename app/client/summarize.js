@@ -31,7 +31,7 @@ function summarize_post(post, archive) {
   outer.append(div);
 
   var escaped = outer.text();
-  if (escaped.length > 800) {
+  if (escaped.length > 300) {
     small.addClass("hideContent");
     small.addClass("truncable");
   }

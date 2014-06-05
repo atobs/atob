@@ -3,6 +3,18 @@ var settings = require("app/client/settings");
 var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var summarize = require("app/client/summarize");
 
+function format_and_show($el) {
+  console.log("FORMAT AND SHOW", $el);
+  $el.find(".text").each(function() {
+    var self = this;
+    require("app/client/text", function(format_text) {
+      format_text.add_upboats(false);
+      format_text.add_markdown($(self));
+    });
+  });
+  $el.removeClass("hidden").hide().fadeIn();
+}
+
 module.exports = {
   events: {
     "click .imglink" : "handle_mouseenter_imglink",
@@ -62,24 +74,13 @@ module.exports = {
     });
   },
   show_recent_threads: function() {
-    $(".threads.recent.hidden .text").each(function() {
-      var self = this;
-      require("app/client/text", function(format_text) {
-        format_text.add_upboats(false);
-        format_text.add_markdown($(self));
-      });
-    });
-    $(".threads.recent.hidden").removeClass("hidden").hide().fadeIn();
+    format_and_show($(".threads.recent.hidden"));
   },
   show_recent_posts: function() {
-    $(".posts.recent.hidden .text").each(function() {
-      var self = this;
-      require("app/client/text", function(format_text) {
-        format_text.add_upboats(false);
-        format_text.add_markdown($(self));
-      });
-    });
-    $(".posts.recent.hidden").removeClass("hidden").hide().fadeIn();
+    format_and_show($(".posts.recent.hidden"));
+  },
+  show_recent_links: function() {
+    format_and_show($(".links.recent.hidden"));
   },
   gen_tripcodes: function() {
     $(".tripcode").each(function() {

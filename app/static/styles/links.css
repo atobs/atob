@@ -19,6 +19,16 @@
   @media @device {
     margin-right: 90px;
   }
+
+  &.condensed {
+    margin-right: 0px;
+    padding-left: 0px;
+  }
+}
+
+.condensed .post_id {
+  margin-top: 0px;
+  float: left;
 }
 
 .post_id {
@@ -27,7 +37,6 @@
   margin-top: 10px;
 
   @media @device {
-    font-size: 85%;
     min-width: 40px;
     clear: both;
   }
@@ -44,6 +53,12 @@
     margin-right: 5px;
   }
 
+}
+
+.condensed {
+  .tripcode {
+    display: none;
+  }
 }
 
 .container {

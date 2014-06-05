@@ -45,3 +45,14 @@ body {
   display: block;
   overflow: hidden;
 }
+
+.post_id,
+.link_text {
+  font-size: 85%;
+  margin-top: 5px;
+}
+
+h1, h2, h3 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
