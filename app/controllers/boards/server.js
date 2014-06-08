@@ -10,6 +10,7 @@ var gen_md5 = require_app("server/md5");
 var posting = require_app("server/posting");
 var post_links = require_app("server/post_links");
 var mod = require_app("server/mod");
+var config = require_core("server/config");
 
 var load_controller = require_core("server/controller").load;
 
@@ -249,6 +250,7 @@ module.exports = {
     });
 
     api.bridge.controller("boards", "set_board", board_id);
+    api.bridge.controller("boards", "set_api_key", config.imgur_key);
     var rss_str = api.template.partial("rss.html.erb", { board: board_id });
     this.add_to_head(rss_str);
 

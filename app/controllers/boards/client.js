@@ -5,12 +5,16 @@ var post_utils = require("app/client/post_utils");
 var settings = require("app/client/settings");
 var notif = require("app/client/notif");
 
+var IMGUR_KEY;
+
 module.exports = {
   events: {
     "submit form.new_post" : "add_post",
     "click form.new_post .submit" : "add_post_force",
     "change input.tripcode" : "save_tripcode",
     "change input.handle" : "save_handle",
+    "change input.photoupload" : "handle_upload_image",
+    "click .upload_photo": "click_upload_image",
     "keyup input.tripcode" : "update_trip_colors",
     "keyup input.handle" : "update_trip_colors",
     "blur .new_post input" : "remove_post_preview",
@@ -27,7 +31,7 @@ module.exports = {
     "click .tripcode_history" : "tripcode_history"
   },
   update_post_preview: _.throttle(function(e) {
-    var title = this.$el.find(".new_post input").val();
+    var title = this.$el.find(".new_post input[name='title']").val();
     var text = this.$el.find(".new_post textarea").val();
     var escaped_text = $("<div />").text(text).html();
 
@@ -65,7 +69,7 @@ module.exports = {
   remove_post_preview: function() {
     $(".post_preview").stop(true, true).fadeOut();
 
-    var title = this.$el.find(".new_post input").val();
+    var title = this.$el.find(".new_post input[name='title']").val();
     var text = this.$el.find(".new_post textarea").val();
     window.bootloader.storage.set("newpost_title_" + this.board, title);
     window.bootloader.storage.set("newpost_text_" + this.board, text);
@@ -135,7 +139,7 @@ module.exports = {
     var title = window.bootloader.storage.get("newpost_title_" + b);
     var text = window.bootloader.storage.get("newpost_text_" + b);
 
-    this.$el.find(".new_post input").val(title);
+    this.$el.find(".new_post input[name='title']").val(title);
     this.$el.find(".new_post textarea").val(text);
 
   },
@@ -198,7 +202,43 @@ module.exports = {
         s.emit("join", self.board);
       }
     });
+  },
+  click_upload_image: function() {
+    this.$el.find(".photoupload").click();
+  },
+  // FROM: https://github.com/paulrouget/miniuploader/blob/gh-pages/index.html
+  handle_upload_image: function(e) {
+    var self = this;
+    /* Is the file an image? */
+    var files = e.target.files;
+    var file = files[0];
+    if (!file || !file.type.match(/image.*/)) return;
+
+    // now do we add the image to the post?
+    var textareaEl = this.$el.find(".new_post textarea");
+    // add feedback to indiciate its uploading
+
+    /* Lets build a FormData object*/
+    var fd = new FormData(); // I wrote about it: https://hacks.mozilla.org/2011/01/how-to-develop-a-html5-image-uploader/
+    fd.append("image", file); // Append the file
+    var xhr = new XMLHttpRequest(); // Create the XHR (Cross-Domain XHR FTW!!!) Thank you sooooo much imgur.com
+    xhr.open("POST", "https://api.imgur.com/3/image.json"); // Boooom!
+    xhr.onload = function() {
+      var response = JSON.parse(xhr.responseText);
+      var link = response.data.link;
+
+      var val = textareaEl.val();
+      textareaEl.val(val + " ![anon's image](" + link + ") ");
+      self.update_post_preview();
+    };
+    
+    xhr.setRequestHeader('Authorization', "Client-ID " + IMGUR_KEY); // Get your own key http://api.imgur.com/
+    xhr.send(fd);
+  },
+  set_api_key: function(key) {
+    IMGUR_KEY = key;
   }
+  
 };
 
 _.extend(module.exports, settings);
