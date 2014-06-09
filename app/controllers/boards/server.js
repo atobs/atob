@@ -146,14 +146,20 @@ module.exports = {
     var limit = 30;
     var order_clause = "bumped_at DESC";
     if (board_id === "to") {
-      board_id_clause = [ "a", "b" ];
+      board_id_clause = null;
       order_clause = "created_at DESC";
-      limit = 100;
+      limit = 200;
     }
+
+    var where = {};
+    if (board_id_clause) {
+      where.board_id = board_id_clause;
+    }
+    where.thread_id = null;
 
     var render_posts = api.page.async(function(flush) {
       Post.findAll({
-          where: { board_id: board_id_clause, thread_id: null },
+          where: where,
           order: order_clause,
           limit: limit
       }).success(function(results) {
@@ -163,6 +169,16 @@ module.exports = {
         }
 
         if (board_id === "to") {
+          
+          results = _.filter(results, function(r) { 
+            var is_hidden = false;
+            _.each([ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test"], function(board) {
+              is_hidden = is_hidden || board === r.board_id;
+            });
+
+            return !is_hidden;
+          });
+
           results = _.shuffle(results);
         }
 
@@ -271,8 +287,15 @@ module.exports = {
 
   socket: function(s) {
     var _board;
+
+    var joined = {};
     s.on("join", function(board) {
       s.board = board;
+      if (joined[board]) {
+        return;
+      }
+
+      joined[board] = true;
       module.exports.lurk(s);
       s.spark.join(board);
       _board = board;

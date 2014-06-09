@@ -191,13 +191,12 @@ module.exports = {
 
     var self = this;
     self.do_when(self.board, "set_board", function() {
-      s.emit("join", self.board);
-
       if (self.board === "to") {
         s.emit("join", "a");
         s.emit("join", "b");
+      } else {
+        s.emit("join", self.board);
       }
-      s.emit("join", self.board);
     });
   }
 };

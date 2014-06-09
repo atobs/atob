@@ -70,7 +70,6 @@ module.exports = {
     window._REPLIES = REPLY_TEXT;
     POSTS[options.post_id] = this;
 
-
     REPLY_TEXT[options.post_id] = options;
 
     _.each(options.replies, function(reply) {
@@ -95,6 +94,17 @@ module.exports = {
       self.$el.find(".post").show();
       self.bumped(); 
       SF.trigger("post" + options.post_id);
+    });
+
+    _.defer(function() {
+      var socket = SF.socket();
+      if (!socket) {
+        SF.once("bridge/socket", function(socket) {
+          socket.emit("join", options.board_id);
+        });
+      } else {
+        SF.socket().emit("join", options.board_id);
+      }
     });
   },
 
