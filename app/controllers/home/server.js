@@ -511,32 +511,6 @@ module.exports = {
     var summarize = require_app("client/summarize");
 
     api.template.add_stylesheet("links");
-    var render_recent_links = api.page.async(function(flush) {
-      Link.findAll({
-        where: {
-          image: 1,
-        },
-        order: "id DESC",
-        limit: 5
-      }).success(function(links) {
-        var container = $("<div />");
-        var url = require("url");
-        _.each(links, function(link) {
-          link.dataValues.domain = url.parse(link.href).hostname;
-          link.dataValues.id = link.id;
-          link.dataValues.uppable = (Date.now() - link.updated_at > UPBOAT_TIMEOUT);
-          link.dataValues.condensed = true;
-          link.dataValues.timeout = parseInt((UPBOAT_TIMEOUT - (Date.now() - link.updated_at))/1000, 10);
-          var template_str = api.template.partial("home/link.html.erb", link.dataValues);
-          container.append($(template_str));
-        });
-
-        api.bridge.controller("home", "show_recent_links");
-        api.bridge.controller("home", "gen_tripcodes");
-        flush(container.html());
-      });
-    });
-
     var render_recent_posts = api.page.async(function(flush) {
       Post.findAll({
         where: {
@@ -606,7 +580,6 @@ module.exports = {
       render_anons: render_anons,
       render_recent_posts: render_recent_posts,
       render_recent_threads: render_recent_threads,
-      render_recent_links: render_recent_links,
       slogan: SLOGANS[_.random(SLOGANS.length)]
     });
 
