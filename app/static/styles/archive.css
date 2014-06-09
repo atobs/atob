@@ -4,3 +4,26 @@
     filter: gray; /* IE6-9 */
     -webkit-filter: grayscale(90%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 }
+
+.loading {
+  opacity: 0.6;
+  margin-top: 20px;
+  overflow-x: hidden;
+  max-width: 100%;
+
+  position: relative;
+  margin: 0 auto;
+  margin-top: 50px;
+  margin-bottom: 400px;
+  text-align: center;
+
+  #fountainG {
+    margin: auto;
+  }
+
+  h4 {
+    font-size: 32px;
+  }
+}
+
+
