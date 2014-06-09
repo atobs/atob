@@ -323,3 +323,9 @@
     clear: left;
   }
 }
+
+.popover-content {
+  .created, .last_reply, .deletereply {
+    display: none;
+  }
+}

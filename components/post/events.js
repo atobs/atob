@@ -121,9 +121,18 @@ module.exports = {
     $(e.target).popover("destroy");
     var clone_id = $(e.target).data("parent-id");
     var responseEl = $("#reply" + clone_id);
+    var titleEl = responseEl.siblings(".title");
+
+    var div = $("<div />");
+    div.append(responseEl.clone());
+    
+    if (titleEl.length) {
+      div.prepend(titleEl.clone());
+    }
+
     var container = this.$el;
 
-    $(e.target).popover({ html: true, content: responseEl.html(), placement: "top", container: container });
+    $(e.target).popover({ html: true, content: div.html(), placement: "top", container: container });
     $(e.target).popover("show");
   },
 
