@@ -4,7 +4,6 @@ var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var summarize = require("app/client/summarize");
 
 function format_and_show($el) {
-  console.log("FORMAT AND SHOW", $el);
   $el.find(".text").each(function() {
     var self = this;
     require("app/client/text", function(format_text) {
