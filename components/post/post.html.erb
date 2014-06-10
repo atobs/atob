@@ -9,6 +9,7 @@
 <% set_default("author", "anon") %>
 <% set_default("highlight_id", null) %>
 <% set_default("archived", false) %>
+<% set_default("board_id", "?") %>
 
 <div class="post <%= maximized ? "maximize" : "" %> <%= archived ? "archived" : "" %>" 
     data-post-id="<%= post_id %>" style="display: none">
