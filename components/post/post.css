@@ -302,25 +302,33 @@
   top: -5px;
 }
 
-.created {
-  margin-top: -10px;
-  clear: right;
-  display: inline-block;
+.timebox {
 
   @media @mobile {
-    font-size: 80%;
-    float: right;
-    margin-top: 0px;
+    float: left;
   }
-}
 
-.last_reply {
-  @media @mobile {
-    font-size: 80%;
-    margin-top: -10px;
-    display: block;
-    float: right;
-    clear: left;
+  .created {
+    clear: right;
+    display: inline-block;
+    float: left;
+
+    @media @mobile {
+      font-size: 80%;
+      float: left;
+      margin-top: -5px;
+      clear: both;
+    }
+  }
+
+  .last_reply {
+    @media @mobile {
+      font-size: 80%;
+      display: block;
+      float: left;
+      clear: both;
+      margin-top: -5px;
+    }
   }
 }
 
