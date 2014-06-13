@@ -8,6 +8,7 @@ var Ban = require_app("models/ban");
 var load_controller = require_core("server/controller").load;
 var gen_md5 = require_app("server/md5");
 var config = require_core("server/config");
+var post_links = require_app("server/post_links");
 
 var OPS = {
   ban: function(post, hours) {
@@ -36,10 +37,22 @@ var OPS = {
     return true;
   },
   delete: function(post) {
+    post_links.erase_links(post);
     post.destroy();
     return true;
   }
 };
+
+function post_text(result) {
+  var text = "";
+  if (result.title) {
+    text += "**TITLE** " + result.title + "\n";
+  }
+  if (result.text) {
+    text += "**TEXT** " + result.text + "\n";
+  }
+  return text;
+}
 
 module.exports = {
   handle_new_post: function(socket, post) {
@@ -73,7 +86,7 @@ module.exports = {
           args.unshift(p);
 
           // all authors are renamed to "atob". no reason.
-          post.text = escape_html(post.text);
+          post.text = escape_html(post.text || p.dataValues.text);
           post.title = escape_html(post.title);
           if (user) {
             post.author = "atob";
@@ -82,6 +95,7 @@ module.exports = {
 
           post.tripcode = gen_md5(post.tripcode + secret + post.author);
           post.bumped_at = Date.now();
+          post.text = post_text(p);
 
           var success = false;
           if (OPS[op] && p && user) {

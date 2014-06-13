@@ -43,6 +43,17 @@ var UPCONS = [
 ];
 
 
+function post_text(result) {
+  var text = "";
+  if (result.title) {
+    text += "**TITLE** " + result.title + "\n";
+  }
+  if (result.text) {
+    text += "**TEXT** " + result.text + "\n";
+  }
+  return text;
+}
+
 var escape_html = require("escape-html");
 function handle_new_post(s, board, post, cb) {
   var last_post = s.last_post || 0;
@@ -524,13 +535,17 @@ function handle_delete_post(socket, board, post) {
             socket.emit("notif", "Mod Deleted #" + post.id, "success");
             result.destroy();
 
-            Post.create({
+            var text = post_text(result);
+            var post_data = {
               board_id: "mod",
               tripcode: delete_code,
               title: "delete " + post.id,
               author: post.author,
+              text: text,
               bumped_at: Date.now()
-            });
+            };
+            
+            Post.create(post_data);
             socket.emit("update_post", post.id);
             socket.broadcast.to(result.board_id).emit("update_post", post.id);
             post_links.erase_links(result, function() { });
