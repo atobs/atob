@@ -148,7 +148,7 @@ module.exports = {
     if (board_id === "to") {
       board_id_clause = null;
       order_clause = "created_at DESC";
-      limit = 200;
+      limit = 300;
     }
 
     var where = {};

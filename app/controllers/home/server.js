@@ -514,16 +514,23 @@ module.exports = {
     var render_recent_posts = api.page.async(function(flush) {
       Post.findAll({
         where: {
-          board_id: ["a", "b"],
           parent_id: {
             ne: null
-          }
+          },
         },
         order: "id DESC",
-        limit: 5
+        limit: 50
       }).success(function(posts) {
+        posts = _.filter(posts, function(p) {
+          var is_hidden = false;
+          _.each([ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test"], function(board) {
+            is_hidden = is_hidden || board === p.board_id;
+          });
+
+          return !is_hidden;
+        });
         var template_str = api.template.partial("home/recent_posts.html.erb", {
-          posts: posts,
+          posts: posts.slice(0, 5),
           summarize: summarize
         });
         api.bridge.controller("home", "show_recent_posts");
