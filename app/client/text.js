@@ -62,6 +62,7 @@ renderer.link = function(href, title, text) {
   var outer = $("<div/>");
   var link = $("<a />");
   var orig_text = text;
+  var escaped_href = $("<div />").html(href).text();
 
   link.addClass("linklink");
 
@@ -80,7 +81,7 @@ renderer.link = function(href, title, text) {
   }
 
   link.html(text);
-  link.attr("href", href);
+  link.attr("href", escaped_href);
   link.attr("target", "_blank");
 
   outer.append(link);
