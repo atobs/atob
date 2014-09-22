@@ -214,26 +214,78 @@ module.exports = {
     var file = files[0];
     if (!file || !file.type.match(/image.*/)) return;
 
+    e.preventDefault();
+
     // now do we add the image to the post?
     var textareaEl = this.$el.find(".new_post textarea");
     // add feedback to indiciate its uploading
 
-    /* Lets build a FormData object*/
-    var fd = new FormData(); // I wrote about it: https://hacks.mozilla.org/2011/01/how-to-develop-a-html5-image-uploader/
-    fd.append("image", file); // Append the file
-    var xhr = new XMLHttpRequest(); // Create the XHR (Cross-Domain XHR FTW!!!) Thank you sooooo much imgur.com
-    xhr.open("POST", "https://api.imgur.com/3/image.json"); // Boooom!
-    xhr.onload = function() {
-      var response = JSON.parse(xhr.responseText);
-      var link = response.data.link;
+    function set_upload_state() {
+      textareaEl.attr("disabled", true);
 
-      var val = textareaEl.val();
-      textareaEl.val(val + " ![anon's image](" + link + ") ");
-      self.update_post_preview();
-    };
+    }
+
+    function end_upload_state() {
+      textareaEl.attr("disabled", false);
+      setTimeout(function() {
+        textareaEl.focus();
+        moveCaretToEnd(textareaEl[0]);
+        setTimeout(function() {
+          moveCaretToEnd(textareaEl[0]);
+          textareaEl.focus();
+        });
+      });
+    }
+
+    // from http://stackoverflow.com/questions/4715762/javascript-move-caret-to-last-character
+    function moveCaretToEnd(el) {
+      if (typeof el.selectionStart == "number") {
+        el.selectionStart = el.selectionEnd = el.value.length;
+      } else if (typeof el.createTextRange != "undefined") {
+        el.focus();
+        var range = el.createTextRange();
+        range.collapse(false);
+        range.select();
+      }
+    }
+
     
-    xhr.setRequestHeader('Authorization', "Client-ID " + IMGUR_KEY); // Get your own key http://api.imgur.com/
-    xhr.send(fd);
+    function set_textarea_val(stub) {
+      var val = textareaEl.val();
+      textareaEl.val('').focus().val(val + stub);
+    }
+
+    function stub_imgur_request() {
+      setTimeout(function() {
+        var link = "/images/atobi.png";
+
+        set_textarea_val(" ![my dumb photo](" + link + ") ");
+        end_upload_state();
+        self.update_post_preview();
+      }, 1000);
+    }
+
+    function real_imgur_request() {
+      /* Lets build a FormData object*/
+      var fd = new FormData(); // I wrote about it: https://hacks.mozilla.org/2011/01/how-to-develop-a-html5-image-uploader/
+      fd.append("image", file); // Append the file
+      var xhr = new XMLHttpRequest(); // Create the XHR (Cross-Domain XHR FTW!!!) Thank you sooooo much imgur.com
+      xhr.open("POST", "https://api.imgur.com/3/image.json"); // Boooom!
+      xhr.onload = function() {
+        var response = JSON.parse(xhr.responseText);
+        var link = response.data.link;
+
+        set_textarea_val(" ![my dumb photo](" + link + ") ");
+        end_upload_state();
+        self.update_post_preview();
+      };
+      xhr.setRequestHeader('Authorization', "Client-ID " + IMGUR_KEY); // Get your own key http://api.imgur.com/
+      xhr.send(fd);
+    }
+
+    set_upload_state();
+    real_imgur_request();
+    
   },
   set_api_key: function(key) {
     IMGUR_KEY = key;
