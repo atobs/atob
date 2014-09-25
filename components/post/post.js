@@ -80,6 +80,9 @@ module.exports = {
     var replyInput = this.$el.find(".reply textarea");
     var text = window.bootloader.storage.get("reply" + this.get_post_id());
     replyInput.val(text);
+    require("app/client/emojies", function(emojies) {
+      emojies.add_textcomplete(replyInput);
+    });
 
     self.$el.find(".timeago").timeago();
 

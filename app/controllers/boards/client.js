@@ -4,6 +4,7 @@ require("core/client/component");
 var post_utils = require("app/client/post_utils");
 var settings = require("app/client/settings");
 var notif = require("app/client/notif");
+var emojies = require("app/client/emojies");
 
 var IMGUR_KEY;
 
@@ -119,6 +120,9 @@ module.exports = {
     SF.trigger("board_ready");
 
     var lastTime = (new Date()).getTime();
+    var textarea = this.$el.find(".new_post textarea[name='text']");
+    emojies.add_textcomplete(textarea);
+
 
     // http://stackoverflow.com/questions/4079115/can-any-desktop-browsers-detect-when-the-computer-resumes-from-sleep
     // if the page becomes inactive for long enough, reload it on the next focus
