@@ -79,6 +79,9 @@ module.exports = {
   goto: function(url) {
     // redirecting
     window.location = url;
+  },
+  hide_loading: function() {
+    $(".loading").fadeOut();
   }
 };
 

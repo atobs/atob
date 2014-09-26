@@ -86,6 +86,7 @@ module.exports = {
                 return flush("");
               } else {
                 var upeye = $C("upeye", { title: "something's not right here..."});
+                api.bridge.controller("posts", "hide_loading");
                 return flush(upeye.toString());
 
               }
