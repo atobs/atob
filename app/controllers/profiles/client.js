@@ -39,6 +39,10 @@ module.exports = {
     }
 
     loop_jaw();
+  },
+  is_noob: function() {
+    this.$el.find(".profile_photo").addClass("noob");
+    this.$el.find(".cover_photo_bottom").addClass("desaturate");
   }
 };
 _.extend(module.exports, settings);

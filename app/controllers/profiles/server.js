@@ -40,6 +40,10 @@ module.exports = {
             age: new Date(first_seen.created_at).toISOString()
           });
           api.bridge.controller("profiles", "timeago");
+
+          if (post_count + reply_count < 5) {
+            api.bridge.controller("profiles", "is_noob");
+          }
           flush(template_str);
         } else {
           flush("");

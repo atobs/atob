@@ -1,7 +1,7 @@
 .profile_photo {
   border-radius: 100px;
   background-color: #fff;
-  border: 4px solid #fff;
+  border: 4px solid #ddd;
   display: block;
   height: 200px;
   width: 200px;
@@ -17,6 +17,14 @@
     border-radius: 50px;
     bottom: -25px;
 
+  }
+}
+
+.profile_photo.noob {
+  border: 40px solid #ddd;
+
+  @media @mobile {
+    border: 20px solid #ddd;
   }
 }
 
@@ -83,3 +91,25 @@
   height: 300px;
 }
 
+
+// spinning from http://stackoverflow.com/questions/14859322/css3-spin-animation
+// and http://jsfiddle.net/gionaf/Ugc5g/
+.spin {
+  -webkit-animation:spin 3s linear infinite;
+  -moz-animation:spin 3s linear infinite;
+  animation:spin 3s linear infinite;
+}
+
+
+@-moz-keyframes spin { 
+  80% { -moz-transform: rotate(0deg); }
+  100% { -moz-transform: rotate(360deg); } 
+}
+@-webkit-keyframes spin { 
+  80% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); } 
+}
+@keyframes spin { 
+  80% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } 
+}

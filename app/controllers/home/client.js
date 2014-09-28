@@ -19,8 +19,16 @@ module.exports = {
     "click .imglink" : "handle_mouseenter_imglink",
     "click .identity_tripcode" : "regen_tripcode",
     "click .upboat" : "handle_upboat_link",
+    "click .tripcode" : "handle_click_tripcode",
     "mouseenter .imglink" : "handle_mouseenter_imglink",
     "mouseleave .imglink" : "handle_mouseleave_imglink",
+  },
+
+  handle_click_tripcode: function(e) {
+    var target = $(e.target).closest(".tripcode");
+    var tripcode = target.data("tripcode");
+
+    window.open("/u/" + tripcode, "_blank");
   },
 
   handle_upboat_link: function(e) {

@@ -321,6 +321,7 @@ module.exports = {
   colors: function(ctx, api) {
     var hashes = [];
     this.set_fullscreen(true);
+    api.template.add_stylesheet("home");
     Post.findAll({ 
       group: ["tripcode", "author"],
       order: "count DESC",
