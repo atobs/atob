@@ -20,6 +20,7 @@ module.exports = {
   // that is generally not relevant to the server.
   events: {
     "click .upboat" : "handle_upboat_link",
+    "click .tripcode" : "handle_click_tripcode",
     "click .restore" :  "handle_restore",
     "click .glyphs" :  "handle_click_glyphs",
     "click .formatting_help" :  "handle_click_help",
@@ -43,6 +44,13 @@ module.exports = {
     "click .replylink" : "handle_mouseenter_replylink",
     "mouseenter .replylink" : "handle_mouseenter_replylink",
     "mouseleave .replylink" : "handle_mouseleave_replylink"
+  },
+
+  handle_click_tripcode: function(e) {
+    var target = $(e.target).closest(".tripcode");
+    var tripcode = target.data("tripcode");
+
+    window.open("/u/" + tripcode, "_blank");
   },
 
   handle_click_boardlink: function(e) {

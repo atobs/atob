@@ -1,0 +1,38 @@
+<% set_default("board_slogan", "") %>
+
+
+<div class="container" style="margin-left: 10px; margin-top: 10px; margin: auto;">
+  <div class="col-md-12 clearfix">
+    <%= render_partial("shared/logo_and_links.html.erb", { render_boards: render_boards, tripcode: tripcode, hide_settings: true }) %>
+
+    <div class="clearfix cover">
+      <div class="cover_photo desaturate">
+        <div class="profile_code" data-tripcode="<%= tripcode %>"> </div>
+
+      </div>
+
+      <div class="profile_photo">
+        <div style="height: 100%" class="profile_code" data-tripcode="<%= tripcode %>"> </div>
+      </div>
+
+      <div class="profile_photo profile_photo_right">
+        <div style="height: 100%" class="profile_code" data-tripcode="<%= tripcode %>"> </div>
+      </div>
+
+    </div>
+
+    <div class="clearfix" style="text-align: center">
+      <%= render_about() %>
+    </div>
+
+
+    <div class="clearfix">
+      <div class="cover_photo cover_photo_bottom desaturate" style="margin-top: -90px">
+        <div class="profile_code" data-tripcode="<%= tripcode %>"> </div>
+
+      </div>
+    </div>
+
+
+  
+</div>

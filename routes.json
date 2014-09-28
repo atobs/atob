@@ -3,5 +3,6 @@
   "/a/" : "archives",
   "/b/" : "boards",
   "/p/" : "posts",
+  "/u/" : "profiles",
   "/r/" : "rss"
 }
