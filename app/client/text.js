@@ -138,7 +138,7 @@ function add_board_links($el) {
 function add_replies($el) {
   var escaped = $el.html();
   if (escaped) {
-    var reply_str = "<span href='#' class='replylink' data-parent-id='NAME' >&gt;&gt;NAME</span>";
+    var reply_str = "<a href='/p/NAME' class='replylink' data-parent-id='NAME' target='_blank'>&gt;&gt;NAME</a>";
     var replaced = escaped.replace(/&gt;&gt;#?([\d]+)/g, function(x, post_id) {
       return reply_str.replace(/NAME/g, post_id.toLowerCase());
     });

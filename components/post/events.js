@@ -131,6 +131,10 @@ module.exports = {
     var responseEl = $("#reply" + clone_id);
     var titleEl = responseEl.siblings(".title");
 
+    if (responseEl.length) {
+      e.preventDefault();
+    }
+
     var div = $("<div />");
     div.append(responseEl.clone());
     
