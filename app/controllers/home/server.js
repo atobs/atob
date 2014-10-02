@@ -325,6 +325,9 @@ module.exports = {
     Post.findAll({ 
       group: ["tripcode", "author"],
       order: "count DESC",
+      where: {
+        board_id: ["a", "b"]
+      },
       attributes: [
         [Sequelize.fn('COUNT', Sequelize.col('*')), 'count'],
         "tripcode",
@@ -333,7 +336,7 @@ module.exports = {
       }).success(function(groups) {
         var count = 0;
         _.each(groups, function(group) {
-          if (group.dataValues.count > 1) {
+          if (group.dataValues.count) {
             hashes.push(group.dataValues);
             count += 1;
           }

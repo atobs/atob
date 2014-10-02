@@ -120,14 +120,14 @@ function add_icons($el, replace_urls) {
 function add_board_links($el) {
   var escaped = " " + $el.html() + " ";
   if (escaped) {
-    var replaced = escaped.replace(/\s\/(\w+)/g, function(x, post_id) {
-      var reply_str = " <span href='/b/NAME' class='boardlink' target='_blank'>/NAME</span>";
-      return reply_str.replace(/NAME/g, post_id.toLowerCase());
-    });
-
-    replaced = escaped.replace(/\s\/r\/(\w+)/g, function(x, post_id) {
+    var replaced = escaped.replace(/\s\/r\/(\w+)/g, function(x, post_id) {
       var reddit_str = " <a href='http://www.reddit.com/r/NAME' target='_blank'><i class='icon-reddit'></i>/NAME</a>";
       return reddit_str.replace(/NAME/g, post_id.toLowerCase());
+    });
+
+    replaced = replaced.replace(/\s\/(\w+)/g, function(x, post_id) {
+      var reply_str = " <span href='/b/NAME' class='boardlink' target='_blank'>/NAME</span>";
+      return reply_str.replace(/NAME/g, post_id.toLowerCase());
     });
 
     $el.html(replaced);
