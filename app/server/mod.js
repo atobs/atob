@@ -16,7 +16,10 @@ var OPS = {
 
     IP.find({where: { post_id: post.id} })
       .success(function(ip) {
-        console.log("BANNING USER FOR POST", ip);
+        if (!ip) {
+          console.log("COULDNT FIND USER TO BAN FOR POST", post.id);
+          return;
+        } 
 
         post.title = "[banned from " + post.board_id + "] " + post.title;
         var old_board_id = post.board_id;
@@ -82,6 +85,11 @@ module.exports = {
         where: {
           id: post_id
         }}).success(function(p) {
+          if (!p) {
+            socket.emit("notif", "couldn't find post, " + post_id);
+            return;
+          }
+
           var args = tokens;
           args.unshift(p);
 

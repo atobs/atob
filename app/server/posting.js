@@ -128,7 +128,7 @@ function handle_new_post(s, board, post, cb) {
       .success(function(p) {
         IP.create({
           post_id: p.id,
-          ip: s.spark.address.ip,
+          ip: IP.toHash(s.spark.address.ip),
           browser: s.spark.headers['user-agent']
         });
 
@@ -159,7 +159,9 @@ function handle_new_post(s, board, post, cb) {
 }
 
 function is_user_banned(s, board, done) {
-  var ip = s.spark.address.ip;
+  var ip = IP.toHash(s.spark.address.ip);
+
+  // take the md5 of the IP + a salt?
   Ban.findAll({
     where: {
       ip: ip,
@@ -179,6 +181,7 @@ function is_user_banned(s, board, done) {
 
         var created_at = +new Date(b.created_at);
         var banned_until = created_at + (60 * 60 * hours * 1000);
+
         if (Date.now() - banned_until < 0) {
           banned = true;
         }
@@ -186,6 +189,7 @@ function is_user_banned(s, board, done) {
     }
   
     // if anon is in Ban table, finish them
+    //
     if (banned) {
       done(banned);
     } else {
@@ -387,7 +391,7 @@ function handle_new_reply(s, board, post, cb) {
 
               IP.create({
                 post_id: p.dataValues.post_id,
-                ip: s.spark.address.ip,
+                ip: IP.toHash(s.spark.address.ip),
                 browser: s.spark.headers['user-agent']
               });
 
@@ -528,7 +532,7 @@ function handle_delete_post(socket, board, post) {
         User.find({
           where: {
             tripname: post.author || "BOO", 
-            tripcode: gen_md5(post.tripcode || "URNS")
+            tripcode: [post.tripcode || gen_md5("URNS"), gen_md5(post.tripcode)]
           }
         }).success(function(user) {
           if (user) {
