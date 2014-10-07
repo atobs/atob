@@ -129,6 +129,7 @@ module.exports = {
   index: function(ctx, api) {
     this.set_fullscreen(true);
     this.set_title("atob");
+    var HIDDEN_BOARDS = [ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test"];
 
     var summarize = require_app("client/summarize");
 
@@ -145,7 +146,7 @@ module.exports = {
       }).success(function(posts) {
         posts = _.filter(posts, function(p) {
           var is_hidden = false;
-          _.each([ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test"], function(board) {
+          _.each(HIDDEN_BOARDS, function(board) {
             is_hidden = is_hidden || board === p.board_id;
           });
 
@@ -163,12 +164,19 @@ module.exports = {
     var render_recent_threads = api.page.async(function(flush) {
       Post.findAll({
         where: {
-          board_id: ["a", "b"],
           thread_id: null
         },
         order: "id DESC",
         limit: 3
       }).success(function(posts) {
+        posts = _.filter(posts, function(p) {
+          var is_hidden = false;
+          _.each(HIDDEN_BOARDS, function(board) {
+            is_hidden = is_hidden || board === p.board_id;
+          });
+
+          return !is_hidden;
+        });
         var template_str = api.template.partial("home/recent_posts.html.erb", {
           posts: posts,
           summarize: summarize
