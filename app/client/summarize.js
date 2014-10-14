@@ -1,4 +1,4 @@
-function summarize_post(post, archive) {
+function summarize_post(post, archive, title_only) {
   if (typeof $ === "undefined") {
     $ = require("cheerio");
   }
@@ -13,9 +13,12 @@ function summarize_post(post, archive) {
   var small = $("<small />");
   first_a.text("#" + post.id);
   var b = $("<b class='text' />").html(post.title);
-  var span = $("<span class='text' />").html(post.text);
+
   second_a.append(b);
-  second_a.append(span);
+  if (!title_only) {
+    var span = $("<span class='text' />").html(post.text);
+    second_a.append(span);
+  }
 
   small.append(first_a);
   if (archive === "p") {

@@ -104,6 +104,7 @@ module.exports = {
         posts = _.unique(posts, function(p) { return p.id; } );
         var template_str = api.template.partial("home/recent_posts.html.erb", {
           posts: posts,
+          title_only: true,
           summarize: summarize,
           archive: "a"
         });
@@ -167,7 +168,7 @@ module.exports = {
           thread_id: null
         },
         order: "id DESC",
-        limit: 3
+        limit: 30
       }).success(function(posts) {
         posts = _.filter(posts, function(p) {
           var is_hidden = false;
@@ -177,6 +178,9 @@ module.exports = {
 
           return !is_hidden;
         });
+
+        posts = _.first(posts, 3);
+
         var template_str = api.template.partial("home/recent_posts.html.erb", {
           posts: posts,
           summarize: summarize
@@ -272,6 +276,10 @@ module.exports = {
   render_links: function(ctx, api, images_only) {
     this.set_fullscreen(true);
     this.set_title("atob/links");
+    if (images_only) {
+      this.set_title("atob/gifs");
+    }
+
     api.template.add_stylesheet("links");
     var MAX_BUMP_AGE = 12;
     var url = require("url");

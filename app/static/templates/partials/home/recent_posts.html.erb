@@ -1,8 +1,9 @@
 <% set_default("posts", []) %>
 <% set_default("archive", "p") %>
+<% set_default("title_only", false) %>
 
 <div>
   <% _.each(posts, function(post) { %>
-    <%= summarize(post.dataValues, archive) %>
+    <%= summarize(post.dataValues, archive, title_only) %>
   <% }) %>
 </div>
