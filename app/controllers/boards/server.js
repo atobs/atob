@@ -273,11 +273,20 @@ module.exports = {
     posts_controller.get_socket().emit("anons", GOING_ONS);
   }, 2000),
 
-  lurk: function(s) {
+  lurk: function(s, board_id) {
     var sid = s.spark.headers.sid;
-    // pick a random lurk icon?
-    var icons = [ ":coffee:", ":cup-coffeealt:", ":mug:", ":coffeecupalt:", ":tea:", ":teapot:" ];
-    GOING_ONS[0][sid] = icons[_.random(icons.length-1)];
+
+    if (board_id && board_id.length === 1) {
+      if (Math.random() < 0.50) {
+        GOING_ONS[0][sid] = ":circle" + board_id + ":"; 
+      } else {
+        GOING_ONS[0][sid] = ":square" + board_id + ":"; 
+      }
+    } else {
+      // pick a random lurk icon?
+      var icons = [ ":coffee:", ":cup-coffeealt:", ":mug:", ":coffeecupalt:", ":tea:", ":teapot:" ];
+      GOING_ONS[0][sid] = icons[_.random(icons.length-1)];
+    }
     clearTimeout(s.lurk_timer);
     s.lurk_timer = setTimeout(function() {
       delete GOING_ONS[0][sid];
@@ -298,7 +307,7 @@ module.exports = {
       }
 
       joined[board] = true;
-      module.exports.lurk(s);
+      module.exports.lurk(s, board);
       s.spark.join(board);
       _board = board;
       s.emit("joined", board);
