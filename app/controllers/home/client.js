@@ -94,6 +94,21 @@ module.exports = {
       tripcode_gen(this);
     });
   },
+  gen_tagcloud: function() {
+    bootloader.require("app/static/vendor/jquery.tagcloud", function() {
+      $(".tagcloud a").tagcloud({
+        color: {start: '#8aa', end: '#aaf'} ,
+        size: { start: 2, end: 4, unit: 'em' } 
+      }).css("margin", "10px");;
+
+      $(".tagcloud")
+        .fadeOut(function() {
+          $(this)
+            .removeClass("hidden")
+            .fadeIn();
+        });
+    });
+  },
   socket: function(s) {
     s.on("new_reply", function(reply) {
       console.log("NEW REPLY", reply);

@@ -15,6 +15,7 @@ var ICON_GROUPS = _.groupBy(ICONS, function(icon, index) {
   return index % 50;
 });
 
+var HIDDEN_BOARDS = [ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test"];
 var SLOGANS = [
   "Eting your children since february",
   "Establishing hippy communes since 2014",
@@ -58,6 +59,7 @@ module.exports = {
     "rules" : "rules",
     "anon" : "colors",
     "links" : "links",
+    "boards" : "boards",
     "gifs" : "gifs",
     "faq" : "faq",
     "archives" : "archives",
@@ -65,6 +67,56 @@ module.exports = {
     "icons" : "icons",
     "robots.txt" : "robots"
   },
+
+  
+  boards: function(ctx, api) {
+    var render_boards = api.page.async(function(flush) {
+      Sequelize.instance.query("select board_id, count(*) as count from posts group by board_id order by count desc")
+      .success(function(results) {
+        if (results && results.length) {
+          api.bridge.controller("home", "set_boards", results);
+          results = _.shuffle(_.filter(results, function(r) {
+            var is_hidden = false;
+            _.each(HIDDEN_BOARDS, function(board) {
+              is_hidden = is_hidden || board === r.board_id;
+            });
+
+            return r.count > 1 && !is_hidden && r.board_id != "a" && r.board_id != "b";
+          }));
+
+          var container = $("<div />");
+          _.each(results, function(r) {
+            var a = $("<a />");
+            a.attr("href", "/b/" + r.board_id);
+            a.attr("rel", Math.sqrt(r.count));
+            a.html(r.board_id);
+
+            container.append(" ");
+            container.append(a);
+          });
+
+          api.bridge.controller("home", "gen_tagcloud");
+          flush(container);
+        }
+
+
+      });
+
+    });
+
+    var template_str = api.template.render("controllers/boards/list.html.erb", {
+      render_boards: render_boards,
+    });
+
+    api.bridge.controller("home", "init_tripcodes");
+
+    api.page.render({
+      content: template_str
+    });
+
+
+  },
+
 
   about: function(ctx, api) {
     this.set_fullscreen(true);
@@ -130,7 +182,6 @@ module.exports = {
   index: function(ctx, api) {
     this.set_fullscreen(true);
     this.set_title("atob");
-    var HIDDEN_BOARDS = [ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test"];
 
     var summarize = require_app("client/summarize");
 

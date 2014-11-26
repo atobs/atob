@@ -1,0 +1,14 @@
+<% add_stylesheet("home.css") %>
+<% set_default("tripcode", ""); %>
+
+<div class="container" style="margin: auto; margin-top: 10px">
+
+  <%= render_partial("shared/logo_and_links.html.erb", { render_boards: function() { }, tripcode: tripcode }) %>
+
+  <div class='col-md-12 '>
+    <div class='tagcloud hidden ptl' style="text-align: center; margin: auto;">
+      <%= render_boards() %>
+    </div>
+
+  </div>
+</div>

@@ -145,7 +145,7 @@ module.exports = {
     boards_controller.subscribe_to_updates(s);
 
     s.on("join", function(board) {
-      boards_controller.lurk(s);
+      boards_controller.lurk(s, board);
       s.spark.join(board);
       s.board = board;
       _board = board;

@@ -1,7 +1,7 @@
 {
+  "/b/" : "boards",
   "/": "home",
   "/a/" : "archives",
-  "/b/" : "boards",
   "/p/" : "posts",
   "/u/" : "profiles",
   "/r/" : "rss"
