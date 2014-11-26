@@ -20,9 +20,9 @@
     "app/static/styles/bootstrap/bootstrap.css",
     "app/static/styles/bootstrap/bootstrap.theme.css",
     "app/static/styles/bootstrap/responsive.css",
-    "app/static/styles/bootstrap/overrides.css",
     "app/static/styles/box.css",
     "app/static/styles/scrollers.css",
-    "app/static/styles/whhg.css"
+    "app/static/styles/whhg.css",
+    "app/static/styles/bootstrap/overrides.css"
   ]
 }
