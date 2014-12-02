@@ -52,6 +52,7 @@ module.exports = {
     window.bootloader.storage.set("newpost_title_" + this.board, title);
     window.bootloader.storage.set("newpost_text_" + this.board, text);
 
+    var children = preview.children();
     $C("post", { 
       title: title, 
       text: escaped_text, 
@@ -60,10 +61,13 @@ module.exports = {
       author: this.get_handle(),
       tripcode: this.get_trip_identity()
     }, function(cmp) {
-      preview.empty();
-      preview.append(cmp.$el);
       cmp.gen_tripcodes();
       cmp.add_markdown();
+      preview.prepend(cmp.$el);
+
+      setTimeout(function() {
+        children.remove();
+      });
     });
   }, 200),
 

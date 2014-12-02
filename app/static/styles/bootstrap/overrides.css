@@ -19,12 +19,12 @@ body.modal-open {
 }
 
 .icon-atob {
-  background-image: url("/images/atobi.png");
+  background-image: url("/images/atobn.png");
   background-size: cover;
-  width: 2em;
-  height: 2em;
+  width: 1.25em;
+  height: 1.25em;
   overflow: visible;
   display: inline-block;
   position: relative;
-  top: 5px;
+  top: 2px;
 };
