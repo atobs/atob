@@ -22,7 +22,6 @@ module.exports = {
     "click .upboat" : "handle_upboat_link",
     "click .tripcode" : "handle_click_tripcode",
     "click .restore" :  "handle_restore",
-    "click .glyphs" :  "handle_click_glyphs",
     "click .formatting_help" :  "handle_click_help",
     "click .addglyph" :  "handle_addglyph",
     "click .boardlink" : "handle_click_boardlink",
@@ -165,50 +164,6 @@ module.exports = {
   handle_click_help: function() {
     $C("markdown_dialog", {});
   },
-  handle_click_glyphs: function(e) {
-    var container = this.$el;
-    var glyphs = [
-      "emojigrin",
-      "emojidead",
-      "blankstare",
-      "laugh",
-      "thumbs-up",
-      "thumbs-down",
-      "batman",
-      "ironman",
-      "catface",
-      "ghost",
-      "poop",
-      "law"
-      ];
-
-    var outerEl = $("<div />");
-    var responseEl = $("<div class='clearfix' />");
-    outerEl.append(responseEl);
-    _.each(glyphs, function(glyph) {
-      var glyphContainer = $("<div class='ptl col-md-3 col-xs-3' />");
-      var glyphEl = $("<div class='addglyph' />");
-      glyphEl.data("glyph", glyph);
-      glyphEl.addClass("icon-" + glyph);
-      glyphContainer.append(glyphEl);
-      responseEl.append(glyphContainer);
-    });
-
-    $(e.target).popover({
-      html: true,
-      content: outerEl,
-      placement: "top",
-      container: container });
-
-
-    $(e.target).popover("show");
-    _.defer(function() {
-      $("body").one("click", function() {
-        $(e.target).popover("destroy");
-      });
-    }, 50);
-  },
-
   handle_restore: function(e) {
     this.$el.find(".post").toggleClass("maximize");
     var maximized = this.$el.find(".post").hasClass("maximize");
