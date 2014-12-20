@@ -15,7 +15,7 @@ module.exports = {
   gen_tripcode: tripcode_gen,
   update_trip_colors: _.throttle(function() {
     var tripcodeHash = this.$el.find(".identity_tripcode");
-    tripcodeHash.empty();
+    // this could be cleaner? not sure how to, yet...
     tripcodeHash.data("tripcode", this.get_trip_identity());
     tripcode_gen(tripcodeHash);
   }, 100),

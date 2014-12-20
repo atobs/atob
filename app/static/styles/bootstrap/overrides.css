@@ -28,3 +28,13 @@ body.modal-open {
   position: relative;
   top: 2px;
 };
+
+
+.identity_tripcode div.tripcolor {
+  -webkit-transition: background-color 400ms linear;
+  -moz-transition: background-color 400ms linear;
+  -o-transition: background-color 400ms linear;
+  -ms-transition: background-color 400ms linear;
+  transition: background-color 400ms linear;
+}
+

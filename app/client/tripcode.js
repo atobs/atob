@@ -57,18 +57,31 @@ function gen_tripcode(el) {
   // Now that we have our tripcodes, do other things...
   var colors = get_colors_for_hash($(el).data("tripcode"));
   var div = $(el);
-  _.each(colors, function(color) {
-    var colorDiv = $("<div />").css({
-      backgroundColor: "#" + color,
-      display: "inline-block",
-      height: "20px",
-      width: "25%"
-    });
-    div.append(colorDiv);
+  var has_children = false;
 
-    $(el).css({
-      position: "relative"
-    });
+  if (div.children().length > 0) {
+    has_children = true;
+  }
+
+  _.each(colors, function(color, index) {
+    if (!has_children) {
+      var colorDiv = $("<div class='tripcolor' />").css({
+        backgroundColor: "#" + color,
+        display: "inline-block",
+        height: "20px",
+        width: "25%"
+      });
+      div.append(colorDiv);
+    } else {
+      div.each(function(el) {
+        var child = $(this.children[index]);
+        child.css("backgroundColor", "#" + color);
+      });
+    }
+  });
+
+  $(el).css({
+    position: "relative"
   });
 }
 
