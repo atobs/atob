@@ -256,18 +256,43 @@ module.exports = {
     var author = SF.controller().get_handle();
     var tripcode = SF.controller().get_tripcode();
     var triphash = SF.controller().get_triphash();
-    SF.socket().emit("new_reply", {
-      post_id: postId,
-      author: author,
-      tripcode: triphash,
-      text: reply
-    }, function() {
+
+    // should input the preview / half sent version here
+    var data = {
+        post_id: postId,
+        author: author,
+        tripcode: triphash,
+        text: reply
+    };
+
+
+
+    var replyEl, received;
+    var self = this;
+
+    setTimeout(function() {
+      if (!received) {
+        data.post_id = postId + _.uniqueId("reply");
+        data.tripcode = SF.controller().get_trip_identity();
+        replyEl = self.add_reply_preview(data);
+        replyEl.addClass("desaturate");
+      }
+    }, 400);
+
+    data.post_id = postId;
+    SF.socket().emit("new_reply", data, function() {
       // Success or not...
       replyInput.val("");
       replyPreview.text("");
+      received = true;
       window.bootloader.storage.delete("reply" + postId);
       SF.controller().remember_tripcode(author, tripcode);
+      if (replyEl) {
+        replyEl.slideUp();
+      }
+
     });
+
   },
 
   handle_template_click: function() {

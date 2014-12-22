@@ -119,8 +119,25 @@ module.exports = {
       repliesEl.scrollTop(repliesEl[0].scrollHeight);
     }
   },
-  add_reply: function(data) {
-    this.$el.find(".post").addClass("pulse");
+
+  add_reply_preview: function(data) {
+    // alright... let's see..
+    var replyId = "reply" + data.post_id;
+    if ($("#" + replyId).length) {
+      $("#" + replyId).remove();
+    }
+
+    this.add_reply(data, true);
+
+    var replyEl = $("#" + replyId);
+    return replyEl;
+  },
+
+  add_reply: function(data, dontpulse) {
+   
+    if (!dontpulse) {
+      this.$el.find(".post").addClass("pulse");
+    }
 
     var replyId = "reply" + data.post_id;
     if ($("#" + replyId).length) {
