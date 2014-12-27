@@ -3,6 +3,20 @@ var settings = require("app/client/settings");
 var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var summarize = require("app/client/summarize");
 
+function convert_post_text(post, cb) {
+  require("app/client/text", function(format_text) {
+    var postEl = $("<span />");
+    postEl.text(post.text);
+
+    format_text.add_markdown(postEl);
+    post.text = postEl.html();
+
+    cb(post);
+  });
+
+
+}
+
 function format_and_show($el) {
   $el.find(".text").each(function() {
     var self = this;
@@ -114,23 +128,31 @@ module.exports = {
       console.log("NEW REPLY", reply);
       var postParent = $(".posts .post").parent();
       reply.id = reply.post_id || reply.id;
-      var summary = $(summarize(reply));
-      summary.hide();
-      postParent.prepend(summary);
-      summary.fadeIn();
 
-      postParent.find(".post").last().fadeOut().remove();
+      var self = this;
+      convert_post_text(reply, function(reply) {
+        var summary = $(summarize(reply));
+        summary.hide();
+        postParent.prepend(summary);
+        summary.fadeIn();
+        postParent.find(".post").last().fadeOut().remove();
+
+      });
+
+
     });
 
     s.on("new_post", function(post) {
-      var postParent = $(".threads .post").parent();
-      post.id = post.post_id || post.id;
-      var summary = $(summarize(post));
-      summary.hide();
-      postParent.prepend(summary);
-      summary.fadeIn();
+      convert_post_text(post, function(post) {
+        var postParent = $(".threads .post").parent();
+        post.id = post.post_id || post.id;
+        var summary = $(summarize(post));
+        summary.hide();
+        postParent.prepend(summary);
+        summary.fadeIn();
 
-      postParent.find(".post").last().fadeOut().remove();
+        postParent.find(".post").last().fadeOut().remove();
+      });
     });
 
     s.on("anons", this.handle_anonicators);
