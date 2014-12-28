@@ -1,5 +1,12 @@
+<% add_stylesheet("settings.css") %>
+
 <div class="col-sm-12 col-md-12 collapse settings clearfix mtl mbl" style="background-color: #eaeaea">
-  <h2>identity</h2>
+  <h2>identity
+    <small class="beeper rfloat mrl mtl mbl">
+      beep me
+    </small>
+  </h2>
+
   <input name="handle" class="form-control handle" type="text" placeholder="handle" value="anon" />
   <div class="mtl"> </div>
   <input name="tripcode" class="tripcode form-control" type="text" placeholder="tripcode" value=" <%= tripcode %>" />

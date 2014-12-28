@@ -2,6 +2,7 @@ var settings = require("app/client/settings");
 
 var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var summarize = require("app/client/summarize");
+var notif = require("app/client/notif");
 
 function convert_post_text(post, cb) {
   require("app/client/text", function(format_text) {
@@ -9,7 +10,7 @@ function convert_post_text(post, cb) {
     postEl.text(post.text);
 
     format_text.add_markdown(postEl);
-    post.text = postEl.html();
+    post.formatted_text = postEl.html();
 
     cb(post);
   });
@@ -124,26 +125,34 @@ module.exports = {
     });
   },
   socket: function(s) {
+
+    notif.subscribe_to_socket(s);
+
+
     s.on("new_reply", function(reply) {
-      console.log("NEW REPLY", reply);
       var postParent = $(".posts .post").parent();
       reply.id = reply.post_id || reply.id;
 
+
       var self = this;
       convert_post_text(reply, function(reply) {
+        reply.text = reply.formatted_text;
         var summary = $(summarize(reply));
+
         summary.hide();
         postParent.prepend(summary);
         summary.fadeIn();
         postParent.find(".post").last().fadeOut().remove();
-
       });
+
 
 
     });
 
     s.on("new_post", function(post) {
+
       convert_post_text(post, function(post) {
+        post.text = post.formatted_text;
         var postParent = $(".threads .post").parent();
         post.id = post.post_id || post.id;
         var summary = $(summarize(post));
@@ -152,6 +161,7 @@ module.exports = {
         summary.fadeIn();
 
         postParent.find(".post").last().fadeOut().remove();
+
       });
     });
 

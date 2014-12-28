@@ -5,16 +5,6 @@ var post_utils = require("app/client/post_utils");
 var notif = require("app/client/notif");
 module.exports = {
   events: {
-    "change input.tripcode" : "save_tripcode",
-    "change input.handle" : "save_handle",
-    "keyup input.tripcode" : "update_trip_colors",
-    "keyup input.handle" : "update_trip_colors",
-    "change input.newtrip" : "save_newtrip",
-    "click .identity_tripcode" : "regen_tripcode",
-    "click .regen_tripcode" : "regen_tripcode",
-    "click .tripcode_button" : "restore_old_code",
-    "click .tripcode_delete" : "delete_old_code",
-    "click .tripcode_history" : "tripcode_history"
   },
   init: function() {
     this.init_tripcodes();
@@ -36,6 +26,7 @@ module.exports = {
     }, 50);
   },
   socket: function(s) {
+    notif.subscribe_to_socket(s);
     s.on("anons", this.handle_anonicators);
     s.on("doings", function(data) {
       var post = window._POSTS[data.post_id];
@@ -86,3 +77,4 @@ module.exports = {
 };
 
 _.extend(module.exports, settings);
+_.extend(module.exports.events, settings.controller_events);

@@ -272,7 +272,7 @@ module.exports = {
 
     setTimeout(function() {
       if (!received) {
-        data.post_id = postId + _.uniqueId("reply");
+        data.post_id = _.uniqueId("pending");
         data.tripcode = SF.controller().get_trip_identity();
         replyEl = self.add_reply_preview(data);
         replyEl.addClass("desaturate");

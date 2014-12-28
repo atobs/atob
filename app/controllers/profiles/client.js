@@ -4,8 +4,6 @@ var tripcoder = require("app/client/tripcode");
 var settings = require("app/client/settings");
 module.exports = {
   events: {
-    "click .identity_tripcode" : "regen_tripcode",
-
   },
   init: function() {
     this.init_tripcodes();
@@ -46,3 +44,4 @@ module.exports = {
   }
 };
 _.extend(module.exports, settings);
+_.extend(module.exports.events, settings.controller_events);

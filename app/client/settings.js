@@ -1,4 +1,5 @@
 var tripcode_gen = require("app/client/tripcode").gen_tripcode;
+var notif = require("app/client/notif");
 
 var cookie_opts = {
   path: '/',
@@ -221,5 +222,21 @@ module.exports = {
 
     $("#anons").html(str.join(" "));
 
+  },
+  request_notifs: function() {
+    notif.notify_user("you've been beeped", { force: true });
+  },
+  controller_events: {
+    "change input.newtrip" : "save_newtrip",
+    "click .beeper" : "request_notifs",
+    "click .identity_tripcode" : "regen_tripcode",
+    "click .regen_tripcode" : "regen_tripcode",
+    "click .tripcode_button" : "restore_old_code",
+    "click .tripcode_delete" : "delete_old_code",
+    "click .tripcode_history" : "tripcode_history",
+    "change input.tripcode" : "save_tripcode",
+    "change input.handle" : "save_handle",
+    "keyup input.tripcode" : "update_trip_colors",
+    "keyup input.handle" : "update_trip_colors",
   }
 };

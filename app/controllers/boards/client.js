@@ -12,24 +12,14 @@ module.exports = {
   events: {
     "submit form.new_post" : "add_post",
     "click form.new_post .submit" : "add_post_force",
-    "change input.tripcode" : "save_tripcode",
-    "change input.handle" : "save_handle",
     "change input.photoupload" : "handle_upload_image",
     "click .upload_photo": "click_upload_image",
-    "keyup input.tripcode" : "update_trip_colors",
-    "keyup input.handle" : "update_trip_colors",
     "blur .new_post input" : "remove_post_preview",
     "blur .new_post textarea" : "remove_post_preview",
     "focus .new_post input" : "update_post_preview",
     "focus .new_post textarea" : "update_post_preview",
     "keyup .new_post input" : "update_post_preview",
     "keyup .new_post textarea" : "update_post_preview",
-    "change input.newtrip" : "save_newtrip",
-    "click .identity_tripcode" : "regen_tripcode",
-    "click .regen_tripcode" : "regen_tripcode",
-    "click .tripcode_button" : "restore_old_code",
-    "click .tripcode_delete" : "delete_old_code",
-    "click .tripcode_history" : "tripcode_history"
   },
   update_post_preview: _.throttle(function(e) {
     var title = this.$el.find(".new_post input[name='title']").val();
@@ -153,6 +143,7 @@ module.exports = {
   },
   socket: function(s) {
     var added = {};
+    notif.subscribe_to_socket(s);
     s.on("new_post", function(data) {
       if (added[data.post_id]) {
         return;
@@ -302,3 +293,4 @@ module.exports = {
 };
 
 _.extend(module.exports, settings);
+_.extend(module.exports.events, settings.controller_events);
