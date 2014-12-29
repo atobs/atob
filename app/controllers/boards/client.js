@@ -6,6 +6,8 @@ var settings = require("app/client/settings");
 var notif = require("app/client/notif");
 var emojies = require("app/client/emojies");
 
+require("app/client/cordova");
+
 var IMGUR_KEY;
 
 module.exports = {
@@ -143,7 +145,7 @@ module.exports = {
   },
   socket: function(s) {
     var added = {};
-    notif.subscribe_to_socket(s);
+    notif.subscribe();
     s.on("new_post", function(data) {
       if (added[data.post_id]) {
         return;

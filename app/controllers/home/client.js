@@ -4,6 +4,8 @@ var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var summarize = require("app/client/summarize");
 var notif = require("app/client/notif");
 
+require("app/client/cordova");
+
 function convert_post_text(post, cb) {
   require("app/client/text", function(format_text) {
     var postEl = $("<span />");
@@ -168,4 +170,5 @@ module.exports = {
     s.on("anons", this.handle_anonicators);
   }
 };
+
 _.extend(module.exports, settings);

@@ -3,6 +3,8 @@
 var settings = require("app/client/settings");
 var post_utils = require("app/client/post_utils");
 var notif = require("app/client/notif");
+
+require("app/client/cordova");
 module.exports = {
   events: {
   },
@@ -26,7 +28,7 @@ module.exports = {
     }, 50);
   },
   socket: function(s) {
-    notif.subscribe_to_socket(s);
+    notif.subscribe(s);
     s.on("anons", this.handle_anonicators);
     s.on("doings", function(data) {
       var post = window._POSTS[data.post_id];

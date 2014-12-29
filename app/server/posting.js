@@ -24,6 +24,8 @@ var IP = require_app("models/ip");
 var model = require_app("models/model");
 var post_links = require_app("server/post_links");
 
+var HIDDEN_BOARDS = [ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test"];
+
 var MAX_ANONS = 200;
 
 var DOWNCONS = [
@@ -137,7 +139,11 @@ function handle_new_post(s, board, post, cb) {
         data.post_id = p.id;
         s.broadcast.to(board).emit("new_post", data);
 
-        if (board === "a" || board === "b") {
+        var is_hidden = false;
+        _.each(HIDDEN_BOARDS, function(board) {
+          is_hidden = is_hidden || board === p.dataValues.board_id;
+        });
+        if (!is_hidden) {
           var home_controller = load_controller("home");
           var home_socket = home_controller.get_socket();
           home_socket.emit("new_post", p.dataValues);
@@ -406,7 +412,11 @@ function handle_new_reply(s, board, post, cb) {
               var post_socket = posts_controller.get_socket();
               post_socket.broadcast.to(board).emit("new_reply", p.dataValues);
 
-              if (board === "a" || board === "b") {
+              var is_hidden = false;
+              _.each(HIDDEN_BOARDS, function(board) {
+                is_hidden = is_hidden || board === p.dataValues.board_id;
+              });
+              if (!is_hidden) {
                 var home_controller = load_controller("home");
                 var home_socket = home_controller.get_socket();
                 home_socket.emit("new_reply", p.dataValues);

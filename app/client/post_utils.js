@@ -1,3 +1,5 @@
+require("app/client/cordova");
+
 module.exports = {
   update_post: function(post_id, text) {
     var replyEl = $("#reply" + post_id).children("small.text");

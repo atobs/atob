@@ -63,17 +63,30 @@ function _notify_user(title, options, post) {
 
     notification.onclick = function () {
       console.log("GOING TO NOTIFICATION", post.id);
-      window.open("/p/" + post.id, "_blank");
+      window.open("/p/" + post.id, "_system");
     };
 
     if (navigator.vibrate) {
       navigator.vibrate(400);
     }
+
+
   }
 
 }
 
 function notify_user(title, options, post) {
+  if (window.plugin && window.plugin.notification) {
+    setTimeout(function() {
+      window.plugin.notification.local.add({
+          id:      1,
+          title:   title,
+          message: options.body,
+          autoCancel: true
+      });
+    });
+  }
+
   if (!window.Notification || (!options.force && !document.hidden)) {
     return;
   }
@@ -130,5 +143,11 @@ module.exports = {
   subscribe_to_socket: function(s) {
     add_notification_handlers(s);
   },
-  notify_user: notify_user
+  notify_user: notify_user,
+  subscribe: function() {
+    var s = SF.primus.channel("ctrl_home");
+    // setup new_reply and new_post socket handlers
+    this.subscribe_to_socket(s);
+  }
+
 };
