@@ -76,26 +76,22 @@ function _notify_user(title, options, post) {
 }
 
 function notify_user(title, options, post) {
-  if (window.plugin && window.plugin.notification) {
-    setTimeout(function() {
-      window.plugin.notification.local.add({
-          id:      1,
-          title:   title,
-          message: options.body,
-          autoCancel: true
-      });
-    });
-  }
+  var my_trip;
+  try {
+    my_trip = SF.controller().get_trip_identity();
+  } catch(e) { }
 
-  if (!window.Notification || (!options.force && !document.hidden)) {
+  // ignore posts we make, ideally
+  if (my_trip && post && my_trip === post.tripcode) {
     return;
   }
 
-  _notify_user(title, options, post);
+  if (window.Notification && (options.force || document.hidden)) {
+    _notify_user(title, options, post);
+  }
 
+  SF.trigger("notify", title, options, post);
 }
-
-notify_user = _.throttle(notify_user, 3000);
 
 function convert_post_text(post, cb) {
   require("app/client/text", function(format_text) {

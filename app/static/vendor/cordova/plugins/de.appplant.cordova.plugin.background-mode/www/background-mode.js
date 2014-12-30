@@ -61,9 +61,9 @@ exports._isActive = false;
  * Default values of all available options.
  */
 exports._defaults = {
-    title:  'App is running in background',
-    text:   'Doing heavy tasks.',
-    ticker: 'App is running in background',
+    title:  'atob',
+    text:   'listening for new truths',
+    ticker: 'atob is with you',
     resume: true
 };
 

@@ -10,11 +10,47 @@ function try_cordova_backgrounding() {
           ticker: 'atob is with you'
         });
       window.plugin.backgroundMode.enable();
+      window.plugin.backgroundMode.onactivate = function() {
+        notif_count = 0;
+      };
+      window.plugin.backgroundMode.ondeactivate = function() {
+        notif_count = 0;
+      };
+
     } catch(e) {
-      console.log("COULDNT BACKGROUND APP: " + e);
       setTimeout(try_cordova_backgrounding, 3000);
     }
   }, 0);
+}
+
+var notif_count = 0;
+function handle_notif(title, options, post) {
+  if (window.plugin && window.plugin.notification) {
+    setTimeout(function() {
+      window.plugin.notification.local.add({
+          id:      1,
+          title:   title,
+          message: options.body,
+          autoCancel: true
+      });
+    });
+  }
+
+  if (window.plugin && window.plugin.backgroundMode) {
+    if (window.plugin.backgroundMode.isActive()) {
+      console.log("BG MODE IS ACTIVE");
+      notif_count += 1;
+      window.plugin.backgroundMode.configure({ 
+        text: notif_count + " new truths"
+      });
+    } else {
+      notif_count = 0;
+      window.plugin.backgroundMode.configure({ 
+        text: "listening for new truths"
+      });
+    }
+  }
+
 }
 
 if (window._cordovaNative && !window._initCordova) {
@@ -44,7 +80,14 @@ if (window._cordovaNative && !window._initCordova) {
 
   try_cordova_backgrounding();
 
+  SF.on("notify", function(title, options, post) {
+    try {
+      handle_notif(title, options, post);
+    } catch(e) {
+      console.log("NOTIFY FAILED");
+      console.log(e);
 
-
+    }
+  });
 }
 
