@@ -58,7 +58,20 @@ if (window._cordovaNative && !window._initCordova) {
   window._initCordova = true;
   var cordova_script = $("<script />");
   var script_el = cordova_script[0];
-  
+ 
+  // install pull to refresh
+  bootloader.css(["RubberBand"], function() {
+    bootloader.require("app/static/vendor/RubberBand", function() {
+      var RB = new RubberBand(function(e) {
+        window.location.reload();
+      });
+    });
+  });
+
+  // TODO: 
+  // install nav bar (maybe) or a sidebar
+  // look at thread conversation recreation
+  // some sort of per thread 'last left off' marker
   script_el.src = "/vendor/cordova/cordova.js";
   $("head").append(cordova_script);
 
