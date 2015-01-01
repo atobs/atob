@@ -3,7 +3,8 @@
         background: #ccc;
 	height: 90px;
 	position: absolute;
-	top: -90px;
+	top: -70px;
+        margin-top: -20px;
         z-index: 1040;
 	width: 100%;
         text-align: center;

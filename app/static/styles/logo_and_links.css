@@ -19,10 +19,15 @@
 #anons {
   position: absolute;
   top: 25px;
-  right: 18px;
+  right: 36px;
   opacity: 0.4;
   zoom: 0.8;
+
+  @media only screen and (max-width: 991px) {
+    right: 18px;
+  }
 }
+
 body:not(:-moz-handler-blocked) #anons { 
   top: 20px;
 }
@@ -51,7 +56,7 @@ body:not(:-moz-handler-blocked) #anons {
 
   padding-right: 30px;
 
-  @media @device {
+  @media only screen and (max-width: 991px) {
     padding-right: 15px;
   }
 }

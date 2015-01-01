@@ -67,14 +67,15 @@ function subscribe_to_updates(s) {
   s.on("isdoing", function(doing) {
     var olddoing = s.isdoing;
 
-    function retimer() {
+    function retimer(interval) {
+      interval = interval || 30000;
       clearTimeout(idleTimer);
       idleTimer = setTimeout(function() {
         delete GOING_ONS[doing.post_id][sid];
         delete s.isdoing;
 
         update_post_status(doing.post_id);
-      }, 30000);
+      }, interval);
     }
 
     // so complex. bad ideas.
@@ -85,7 +86,7 @@ function subscribe_to_updates(s) {
         if (doing.what.match(":")) {
           delete GOING_ONS[s.isdoing.post_id][sid];
         } else {
-          retimer();
+          retimer(30 * 60 * 1000);
           return;
         }
       }
