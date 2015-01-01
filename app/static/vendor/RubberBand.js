@@ -87,7 +87,7 @@
 						diff = 6;
 					}
 
-          diff += 4;
+          diff += 6;
 					
 					// determine values and set css rules
 					$me.variables.e_height = $me.variables.e_height + diff;
