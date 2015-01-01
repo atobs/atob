@@ -1,4 +1,6 @@
 
+var bridge = require_core("server/bridge");
+
 var page = require_core("server/page");
 var template = require_core("server/template");
 var Board = require_app("models/board");
@@ -12,6 +14,8 @@ module.exports = {
       });
 
       flush(template_str);
+
+      bridge.call("app/client/cordova", "add_sidebars");
 
     });
 

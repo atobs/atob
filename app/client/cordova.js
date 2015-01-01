@@ -91,13 +91,16 @@ function make_sidebar(toggle_selector, content_selector, side) {
 }
 
 
-var added = false;
 function add_sidebars() {
+  if (!window._cordovaNative) {
+    return;
+  }
+
   bootloader.css("jquery.sidr.light", function() {
-    if (added) {
+    if (window._addedSidebars) {
       return;
     }
-    added = true;
+    window._addedSidebars = true;
 
 
     make_sidebar(".logo", ".navbar .navlinks", "left");
@@ -213,10 +216,12 @@ if (window._cordovaNative && !window._initCordova) {
   
   insert_cordova();
 
-  add_sidebars();
   add_notifications();
   add_in_app_browser();
   add_pull_to_refresh();
   add_background_notifications();
 }
 
+module.exports = {
+  add_sidebars: add_sidebars
+};
