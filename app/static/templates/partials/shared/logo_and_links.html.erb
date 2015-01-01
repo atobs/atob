@@ -1,49 +1,12 @@
 <% set_default("tripcode", null) %>
 <% set_default("hide_settings", false) %>
 
-<style>
-  .identity_tripcode {
-    cursor: pointer;
-  }
+<% add_stylesheet("logo_and_links") %>
 
-  .logo .identity_tripcode {
-    max-height: 5px;
-    height: 4px;
-    width: 40px;
-    position: relative;
-    top: -8px;
-    left: 0px;
-    overflow: hidden;
-  }
-  .navbar {
-    padding-top: 10px;
-    background-color: #fafafa;
-    border: 0px;
-  }
-  #anons {
-    position: absolute;
-    top: 25px;
-    right: 18px;
-    opacity: 0.4;
-    zoom: 0.8;
-  }
-  body:not(:-moz-handler-blocked) #anons { 
-    top: 20px;
-  }
-
-  #anons:hover {
-    opacity: 0.8; 
-  }
-  body { 
-    margin-top: 70px; 
-  }
-
-</style>
-
-<div class="clearfix navbar navbar-fixed-top navbar-default" role="navigation">
+<div id="logobar" class="clearfix navbar navbar-default" role="navigation">
   <div class="clearfix container">
 
-    <div class="mtl col-md-12">
+    <div class="mtl col-md-12 navbar_helper">
       <div class="clearfix" >
         <div class="lfloat mrl logo">
         
@@ -58,10 +21,12 @@
         
         </div>
         <% if (!hide_settings) { %>
-          <a class="rfloat" href="#" data-toggle="collapse" data-target=".settings">settings</a>
+          <a class="rfloat settingslink" href="#" data-toggle="collapse" data-target=".settings">settings</a>
         <% } %>
 
-        <%= render_boards() %>
+        <div class="navlinks">
+          <%= render_boards() %>
+        </div>
       </div>
 
       <div id="anons">
@@ -81,3 +46,5 @@
 
 
 </div>
+
+<%= render_partial("shared/benjamin_buttons.html.erb") %>

@@ -6,8 +6,6 @@ var settings = require("app/client/settings");
 var notif = require("app/client/notif");
 var emojies = require("app/client/emojies");
 
-require("app/client/cordova");
-
 var IMGUR_KEY;
 
 module.exports = {

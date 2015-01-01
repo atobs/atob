@@ -4,7 +4,6 @@ var settings = require("app/client/settings");
 var post_utils = require("app/client/post_utils");
 var notif = require("app/client/notif");
 
-require("app/client/cordova");
 module.exports = {
   events: {
   },

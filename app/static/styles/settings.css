@@ -6,3 +6,17 @@
   }
 }
 
+.sidr {
+  .beeper {
+    margin-bottom: 5px;
+    color: #eee;
+    padding-left: 10px;
+
+    display: block;
+    clear: both;
+    width: 100%;
+
+  }
+}
+
+

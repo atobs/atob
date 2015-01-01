@@ -1,0 +1,58 @@
+.identity_tripcode {
+  cursor: pointer;
+}
+
+.logo .identity_tripcode {
+  max-height: 5px;
+  height: 4px;
+  width: 40px;
+  position: relative;
+  top: -8px;
+  left: 0px;
+  overflow: hidden;
+}
+.navbar {
+  padding-top: 10px;
+  background-color: #fafafa;
+  border: 0px;
+}
+#anons {
+  position: absolute;
+  top: 25px;
+  right: 18px;
+  opacity: 0.4;
+  zoom: 0.8;
+}
+body:not(:-moz-handler-blocked) #anons { 
+  top: 20px;
+}
+
+#anons:hover {
+  opacity: 0.8; 
+}
+#page_content { 
+  margin-top: 70px; 
+}
+
+#logobar.navbar {
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+
+  @media @device {
+    width: 100%;
+  }
+}
+
+#logobar .navbar_helper {
+  margin-left: 0px;
+  margin-right: 15px;
+  padding-left: 0;
+
+  padding-right: 30px;
+
+  @media @device {
+    padding-right: 15px;
+  }
+}
+

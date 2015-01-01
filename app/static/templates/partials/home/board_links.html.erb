@@ -1,7 +1,5 @@
 <div class="clearfix">
   <% _.each(boards, function(board) { %>
-    <div class="lfloat mrl">
-      <span class='boardlink' ><a href="<%= url_for("boards.show", { id: board }) %>">/<%= board %></a></span>
-    </div>
+    <span class='lfloat mrl boardlink' ><a href="<%= url_for("boards.show", { id: board }) %>">/<%= board %></a></span>
   <% }) %>
 </div>
