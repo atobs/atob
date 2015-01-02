@@ -211,6 +211,12 @@ function insert_cordova() {
   $("head").append(cordova_script);
 }
 
+function setup_back_button() {
+  document.addEventListener("backbutton", function() {
+    window.history.back();
+  });
+}
+
 
 if (window._cordovaNative && !window._initCordova) {
   
@@ -220,6 +226,7 @@ if (window._cordovaNative && !window._initCordova) {
   add_in_app_browser();
   add_pull_to_refresh();
   add_background_notifications();
+  setup_back_button();
 }
 
 module.exports = {

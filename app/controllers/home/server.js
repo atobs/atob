@@ -57,6 +57,7 @@ module.exports = {
   routes: {
     "" : "index",
     "rules" : "rules",
+    "recent" : "recent",
     "anon" : "colors",
     "links" : "links",
     "boards" : "boards",
@@ -176,6 +177,81 @@ module.exports = {
     api.bridge.controller("home", "init_tripcodes");
 
     api.page.render({ content: template_str, socket: false});
+
+  },
+
+  recent: function(ctx, api) {
+    this.set_fullscreen(true);
+    this.set_title("atob");
+
+    var summarize = require_app("client/summarize");
+
+    api.template.add_stylesheet("links");
+    var render_recent_posts = api.page.async(function(flush) {
+      Post.findAll({
+        where: {
+          parent_id: {
+            ne: null
+          },
+        },
+        order: "id DESC",
+        limit: 50
+      }).success(function(posts) {
+        posts = _.filter(posts, function(p) {
+          var is_hidden = false;
+          _.each(HIDDEN_BOARDS, function(board) {
+            is_hidden = is_hidden || board === p.board_id;
+          });
+
+          return !is_hidden;
+        });
+        var template_str = api.template.partial("home/recent_posts.html.erb", {
+          posts: posts.slice(0, 30),
+          summarize: summarize
+        });
+        api.bridge.controller("home", "show_recent_posts");
+        flush(template_str);
+      });
+    });
+
+    var render_recent_threads = api.page.async(function(flush) {
+      Post.findAll({
+        where: {
+          thread_id: null
+        },
+        order: "id DESC",
+        limit: 30
+      }).success(function(posts) {
+        posts = _.filter(posts, function(p) {
+          var is_hidden = false;
+          _.each(HIDDEN_BOARDS, function(board) {
+            is_hidden = is_hidden || board === p.board_id;
+          });
+
+          return !is_hidden;
+        });
+
+        posts = _.first(posts, 10);
+
+        var template_str = api.template.partial("home/recent_posts.html.erb", {
+          posts: posts,
+          summarize: summarize
+        });
+
+        api.bridge.controller("home", "show_recent_threads");
+        flush(template_str);
+      });
+    });
+
+    var slogan = SLOGANS[_.random(SLOGANS.length)];
+    var template_str = api.template.render("controllers/recent.html.erb", {
+      render_recent_posts: render_recent_posts,
+      render_recent_threads: render_recent_threads,
+      slogan: slogan
+    });
+
+    api.page.render({ content: template_str, socket: true});
+
 
   },
 
