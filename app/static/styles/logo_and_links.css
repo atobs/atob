@@ -61,3 +61,17 @@ body:not(:-moz-handler-blocked) #anons {
   }
 }
 
+
+.boardlink a {
+  text-align: center;
+  cursor: pointer;
+  display: block;
+  min-width: 50px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+
+  &:hover {
+    background-color: #ddd;
+  }
+}
+

@@ -1,6 +1,11 @@
 // TODO
 // look at thread conversation recreation
 // some sort of per thread 'last left off' marker
+//
+//
+// icon
+// pinned posts?
+// starred boards
 
 function try_cordova_backgrounding() {
   setTimeout(function() { 
@@ -111,11 +116,10 @@ function add_sidebars() {
 
     // make the up top links animate a bit...
     $(".navbar .navlinks a").animate({
-      "margin-left": "-200px"
+      "margin-left": "-1000px"
     }).fadeOut();
 
     
-    console.log("MAKING HOME LINK");
     // append a /home link to the navlinks, too
     var link_sidebar = $(".sidr .boardlink")[0];
     var home_link = $(link_sidebar).clone();
@@ -123,6 +127,9 @@ function add_sidebars() {
       .attr("href", "/")
       .html("HOME");
     $(link_sidebar).parent().prepend(home_link);
+
+    $(".sidr h2.identity").remove();
+    $(".sidr .boardlink").css("width", "100%");
 
   });
 }

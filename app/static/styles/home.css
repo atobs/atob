@@ -38,6 +38,10 @@ body {
 
 .boardlink {
   font-size: 125%;
+  min-width: 50px;
+  a {
+    display: block;
+  }
 }
 
 .hideContent {
@@ -59,4 +63,8 @@ h1, h2, h3 {
 
 .tripcode {
   cursor: pointer;
+}
+
+.recent_container {
+  padding-top: 10px;
 }

@@ -206,7 +206,7 @@ module.exports = {
           return !is_hidden;
         });
         var template_str = api.template.partial("home/recent_posts.html.erb", {
-          posts: posts.slice(0, 30),
+          posts: posts.slice(0, 15),
           summarize: summarize
         });
         api.bridge.controller("home", "show_recent_posts");
