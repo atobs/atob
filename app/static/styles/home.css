@@ -23,13 +23,9 @@
 }
 
 #anons {
-  margin-right: 25px;
-  margin-top: -50px;
-
-  @media @mobile {
-    margin-top: -140px;
-    margin-right: 5px;
-  }
+  display: block;
+  float: none;
+  margin-left: 15px;
 }
 
 body {

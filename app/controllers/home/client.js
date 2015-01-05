@@ -172,3 +172,4 @@ module.exports = {
 };
 
 _.extend(module.exports, settings);
+_.extend(module.exports.events, settings.controller_events);

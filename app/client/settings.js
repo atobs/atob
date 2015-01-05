@@ -203,8 +203,10 @@ module.exports = {
   handle_anonicators: function(doings) {
 
     var counts = {};
-    _.each(doings, function(anons) {
+    var anon_to_post = {};
+    _.each(doings, function(anons, object_id) {
       _.each(anons, function(emote, id) {
+        anon_to_post[id] = object_id;
         counts[id] = emote;
       });
     });
@@ -215,8 +217,11 @@ module.exports = {
       u: "icon-glassesalt"
     };
 
-    var str = _.map(_.values(counts), function(c) {
-      return "<i class='" + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' />";
+    var str = _.map(counts, function(c, id) {
+      var el = $("<i class='anonicator " + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' />");
+      el.attr("data-post", anon_to_post[id] || 0);
+
+      return $("<div />").append(el).html();
     });
 
 
@@ -226,6 +231,17 @@ module.exports = {
   request_notifs: function() {
     notif.notify_user("you've been beeped", { force: true });
   },
+  follow_anonicator: function(e) {
+    var target = $(e.target);
+    var post_id = target.data("post");
+
+    if (post_id) {
+      window.location = "/p/" + post_id;
+    } else {
+      // should probably let anon know they didnt get it right
+    }
+
+  },
   controller_events: {
     "change input.newtrip" : "save_newtrip",
     "click .beeper" : "request_notifs",
@@ -234,6 +250,7 @@ module.exports = {
     "click .tripcode_button" : "restore_old_code",
     "click .tripcode_delete" : "delete_old_code",
     "click .tripcode_history" : "tripcode_history",
+    "click .anonicator" : "follow_anonicator",
     "change input.tripcode" : "save_tripcode",
     "change input.handle" : "save_handle",
     "keyup input.tripcode" : "update_trip_colors",
