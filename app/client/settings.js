@@ -75,7 +75,7 @@ module.exports = {
     set_in_storage("handle", handle);
   },
   get_triphash: function() {
-    return md5($("input.tripcode").val());
+    return md5($("input.tripcode").val() || get_from_storage("tripcode"));
   },
   get_tripcode: function() {
     return $("input.tripcode").val();
@@ -85,7 +85,7 @@ module.exports = {
     return md5(this.get_handle() + ":" + this.get_triphash());
   },
   get_handle: function() {
-    return $("input.handle").val();
+    return $("input.handle").val() || get_from_storage("handle") || "anon";
   },
   regen_tripcode: function() {
     var tripcodeEl = this.$page.find("input.tripcode");
