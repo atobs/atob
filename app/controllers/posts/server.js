@@ -114,6 +114,9 @@ module.exports = {
             });
 
           } else {
+            if (ctx.req.query && ctx.req.query.e) {
+              api.bridge.controller("posts", "focus_post", post_data.id);
+            }
             render_posting(result);
           }
         });

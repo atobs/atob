@@ -55,7 +55,6 @@ module.exports = {
       return f.tripname !== code.tripname || f.tripcode !== code.tripcode;
     });
     TRIPCODES = trips.slice(0, 10);
-    console.log(TRIPCODES);
     set_in_storage("tripcodes", JSON.stringify(TRIPCODES));
   },
   remember_tripcode: function(tripname, tripcode) {
@@ -229,7 +228,8 @@ module.exports = {
     var lookup = {
       t: "icon-keyboardalt",
       f: "icon-glassesalt",
-      u: "icon-glassesalt"
+      u: "icon-glassesalt",
+      s: "icon-poop"
     };
 
     var str = _.map(counts, function(c, id) {
@@ -251,7 +251,8 @@ module.exports = {
     var post_id = target.data("post");
 
     if (post_id) {
-      window.location = "/p/" + post_id;
+      SF.socket().emit("isdoing", { what: "stalking", post_id: post_id });
+      window.location = "/p/" + post_id + "?e=1";
     } else {
       // should probably let anon know they didnt get it right
     }

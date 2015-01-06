@@ -331,7 +331,8 @@ module.exports = {
       var lookup = {
         t: "icon-keyboardalt",
         f: "icon-glassesalt",
-        u: "icon-glassesalt"
+        u: "icon-glassesalt",
+        s: "icon-poop"
       };
 
       var str = _.map(_.values(counts), function(c) {

@@ -16,8 +16,15 @@ module.exports = {
   },
   focus_post: function(id) {
     var self = this;
+    var params = $.deparam(window.location.search.substr(1));
+
     setTimeout(function() {
       var dest = $("#reply" + id).filter(":visible");
+      if (params.e) {
+        dest = $("form.reply");
+        $("form.reply textarea").focus();
+      } 
+
       if (!dest.length) {
         self.focus_post(id);
       } else {

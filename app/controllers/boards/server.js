@@ -17,6 +17,7 @@ var load_controller = require_core("server/controller").load;
 var GOING_ONS = { 
   0: {}
 };
+var DOINGS = {};
 
 var LAST_UPDATE = {};
 var SCHEDULED = {};
@@ -65,7 +66,7 @@ function subscribe_to_updates(s) {
 
   // TODO: make a better schema for how this works
   s.on("isdoing", function(doing) {
-    var olddoing = s.isdoing;
+    var olddoing = s.isdoing || DOINGS[sid];
 
     function retimer(interval) {
       interval = interval || 30000;
@@ -73,26 +74,36 @@ function subscribe_to_updates(s) {
       idleTimer = setTimeout(function() {
         delete GOING_ONS[doing.post_id][sid];
         delete s.isdoing;
+        delete DOINGS[sid];
 
         update_post_status(doing.post_id);
       }, interval);
     }
 
     // so complex. bad ideas.
-    if (s.isdoing) {
-      if (s.isdoing.post_id !== doing.post_id) {
-        delete GOING_ONS[s.isdoing.post_id][sid];
-      } else if (s.isdoing.what.match(":")) {
+    if (olddoing) {
+      if (olddoing.post_id !== doing.post_id) {
+        delete GOING_ONS[olddoing.post_id][sid];
+      } else if (olddoing.what.match(":")) {
         if (doing.what.match(":")) {
-          delete GOING_ONS[s.isdoing.post_id][sid];
+          delete GOING_ONS[olddoing.post_id][sid];
         } else {
           retimer(30 * 60 * 1000);
           return;
         }
+      } else {
+        // check if we are stalking...
+        // if so, we dont let the icon change for a little while
+        if (olddoing.what === "stalking") {
+          update_post_status(doing.post_id);
+          return;
+        }
+
       }
+
     }
 
-    s.isdoing = doing;
+    DOINGS[sid] = s.isdoing = doing;
     if (!GOING_ONS[doing.post_id]) {
       GOING_ONS[doing.post_id] = {};
     }
