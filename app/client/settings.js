@@ -9,8 +9,23 @@ var cookie_opts = {
 var TRIPCODES = [];
 var LOOKUP = {};
 
-var bootloader = window.bootloader;
-TRIPCODES = JSON.parse($.cookie("tripcodes") || "[]");
+function get_from_storage(key) {
+  
+  var val = window.bootloader.storage.get(key);
+  if (!val) {
+    val = $.cookie(key);
+  }
+
+  return val;
+}
+
+function set_in_storage(key, value) {
+  window.bootloader.storage.set(key, value);
+  $.removeCookie(key);
+
+}
+
+TRIPCODES = JSON.parse(get_from_storage("tripcodes") || "[]");
 
 module.exports = {
   gen_tripcode: tripcode_gen,
@@ -23,14 +38,14 @@ module.exports = {
   save_newtrip: function() {
     var newtripEl = this.$page.find("input.newtrip");
     var newtrip = !!newtripEl.prop('checked');
-    $.cookie("newtrip", newtrip, cookie_opts);
+    set_in_storage("newtrip", newtrip);
   },
   save_tripcode: function() {
     var tripcodeEl = this.$page.find("input.tripcode");
     var tripcode = tripcodeEl.val();
     this.save_newtrip();
     this.update_trip_colors();
-    $.cookie("tripcode", tripcode, cookie_opts);
+    set_in_storage("tripcode", tripcode);
   },
   unremember_tripcode: function(tripname, tripcode) {
     console.log("UNREMEMBERING", tripname, tripcode);
@@ -41,7 +56,7 @@ module.exports = {
     });
     TRIPCODES = trips.slice(0, 10);
     console.log(TRIPCODES);
-    $.cookie("tripcodes", JSON.stringify(TRIPCODES), cookie_opts);
+    set_in_storage("tripcodes", JSON.stringify(TRIPCODES));
   },
   remember_tripcode: function(tripname, tripcode) {
     // Saves to history
@@ -51,14 +66,14 @@ module.exports = {
     });
     trips.unshift(code);
     TRIPCODES = trips.slice(0, 10);
-    $.cookie("tripcodes", JSON.stringify(TRIPCODES), cookie_opts);
+    set_in_storage("tripcodes", JSON.stringify(TRIPCODES));
   },
   save_handle: function() {
     var handleEl = this.$page.find("input.handle");
     var handle = handleEl.val();
     this.save_newtrip();
     this.update_trip_colors();
-    $.cookie("handle", handle, cookie_opts);
+    set_in_storage("handle", handle);
   },
   get_triphash: function() {
     return md5($("input.tripcode").val());
@@ -178,9 +193,9 @@ module.exports = {
     var tripcodeEl = this.$page.find("input.tripcode");
     var handleEl = this.$page.find("input.handle");
     var newtripEl = this.$page.find("input.newtrip");
-    var newtrip = $.cookie("newtrip") === "true";
-    var tripcode = $.cookie("tripcode");
-    var handle = $.cookie("handle");
+    var newtrip = get_from_storage("newtrip") === "true";
+    var tripcode = get_from_storage("tripcode");
+    var handle = get_from_storage("handle");
 
     $.removeCookie("newtrip");
     $.removeCookie("tripcode");
