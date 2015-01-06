@@ -65,8 +65,9 @@ function subscribe_to_updates(s) {
   }
 
   // TODO: make a better schema for how this works
-  s.on("isdoing", function(doing) {
+  s.on("isdoing", function(doing, cb) {
     var olddoing = s.isdoing || DOINGS[sid];
+
 
     function retimer(interval) {
       interval = interval || 30000;
@@ -89,6 +90,7 @@ function subscribe_to_updates(s) {
           delete GOING_ONS[olddoing.post_id][sid];
         } else {
           retimer(30 * 60 * 1000);
+          if (cb) { cb(); }
           return;
         }
       } else {
@@ -96,6 +98,8 @@ function subscribe_to_updates(s) {
         // if so, we dont let the icon change for a little while
         if (olddoing.what === "stalking") {
           update_post_status(doing.post_id);
+
+          if (cb) { cb(); }
           return;
         }
 
@@ -115,6 +119,8 @@ function subscribe_to_updates(s) {
     if (olddoing) {
       update_post_status(olddoing.post_id);
     }
+
+    if (cb) { cb(); }
   });
 
 }

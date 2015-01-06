@@ -247,12 +247,14 @@ module.exports = {
     notif.notify_user("you've been beeped", { force: true });
   },
   follow_anonicator: function(e) {
+
     var target = $(e.target);
     var post_id = target.data("post");
 
     if (post_id) {
-      SF.socket().emit("isdoing", { what: "stalking", post_id: post_id });
-      window.location = "/p/" + post_id + "?e=1";
+      SF.socket().emit("isdoing", { what: "stalking", post_id: post_id }, function() {
+        window.location = "/p/" + post_id + "?e=1";
+      });
     } else {
       // should probably let anon know they didnt get it right
     }

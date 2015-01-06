@@ -510,6 +510,7 @@ module.exports = {
     var load_controller = require_core("server/controller").load;
     var boards_controller = load_controller("boards");
     boards_controller.lurk(s); 
+    boards_controller.subscribe_to_updates(s);
 
     s.on("upboat", function(link_id, cb) {
       Link.find(link_id).success(function(link) {
