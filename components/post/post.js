@@ -216,7 +216,7 @@ module.exports = {
       t: "icon-keyboardalt",
       f: "icon-glassesalt",
       u: "icon-glassesalt",
-      s: "icon-poop"
+      s: "icon-ghost hue"
     };
 
     var str = _.map(counts, function(c) {

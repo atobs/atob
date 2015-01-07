@@ -229,7 +229,7 @@ module.exports = {
       t: "icon-keyboardalt",
       f: "icon-glassesalt",
       u: "icon-glassesalt",
-      s: "icon-poop"
+      s: "icon-ghost"
     };
 
     var str = _.map(counts, function(c, id) {
@@ -247,7 +247,6 @@ module.exports = {
     notif.notify_user("you've been beeped", { force: true });
   },
   follow_anonicator: function(e) {
-
     var target = $(e.target);
     var post_id = target.data("post");
 

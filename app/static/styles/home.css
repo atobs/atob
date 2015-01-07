@@ -23,9 +23,9 @@
 }
 
 #anons {
-  display: block;
-  float: none;
-  margin-left: 15px;
+  margin-right: 15px;
+  position: relative;
+  z-index: 1000;
 }
 
 body {

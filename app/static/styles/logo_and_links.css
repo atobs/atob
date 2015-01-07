@@ -16,6 +16,7 @@
   background-color: #fafafa;
   border: 0px;
 }
+
 #anons {
   position: absolute;
   top: 25px;
@@ -75,3 +76,17 @@ body:not(:-moz-handler-blocked) #anons {
   }
 }
 
+
+.hue {
+  -webkit-animation: hue 10s infinite;
+  color: #ff0;
+}
+
+@-webkit-keyframes hue {
+  0%, 100%  { -webkit-filter: hue-rotate(0deg); }
+  50% { -webkit-filter: hue-rotate(360deg); }
+}
+
+.anonicator {
+  padding: 5px;
+}

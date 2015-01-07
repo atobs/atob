@@ -332,7 +332,7 @@ module.exports = {
         t: "icon-keyboardalt",
         f: "icon-glassesalt",
         u: "icon-glassesalt",
-        s: "icon-poop"
+        s: "icon-ghost"
       };
 
       var str = _.map(_.values(counts), function(c) {
