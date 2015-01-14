@@ -74,6 +74,9 @@ module.exports = {
     self.do_when(self.board, "set_board", function() {
       s.emit("join", self.board);
     });
+
+    var post_id = $(".post").data("post-id");
+    s.emit("isdoing", { what: "focused", post_id: post_id });
   },
   goto: function(url) {
     // redirecting
