@@ -5,10 +5,14 @@
   <%= render_partial("home/header.html.erb", { slogan: slogan }) %>
 
   <div class="col-md-12">
-    <h2>recent posts</h2>
-    <%= render_recent_threads() %>
-    <h2>recent replies</h2>
-    <%= render_recent_posts() %>
+    <div class="recent hidden threads">
+      <h2>recent posts</h2>
+      <%= render_recent_threads() %>
+    </div>
+    <div class="recent hidden posts">
+      <h2>recent replies</h2>
+      <%= render_recent_posts() %>
+    </div>
   </div>
 
 </div>
