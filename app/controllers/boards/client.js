@@ -41,6 +41,7 @@ module.exports = {
     // Need to save the post preview, i guess?
     window.bootloader.storage.set("newpost_title_" + this.board, title);
     window.bootloader.storage.set("newpost_text_" + this.board, text);
+    SF.controller().emit("isdoing", { what: "newthread" });
 
     var children = preview.children();
     $C("post", { 
