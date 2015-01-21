@@ -3,6 +3,11 @@
 var controller = require_core("server/controller");
 var Post = require_app("models/post");
 
+var marked = require("marked");
+global.marked = marked;
+
+var client_text = require_app("client/text");
+
 var RSS = require('rss');
 
 var FEEDS = {};
@@ -55,8 +60,13 @@ function refresh_feed(board, cb) {
           return;
         }
 
+        var div = $("<div />");
+        div.text(post.title);
+
+        var title = client_text.format_text(div);
+        title = div.text();
         feed.item({
-          title: post.title + " [" + (post.replies || 0) + " replies]",
+          title: title + " [" + (post.replies || 0) + " replies]",
           description: post.text,
           url: "http://atob.kthxb.ai/p/" + post.id,
           categories: [ post.board ],
