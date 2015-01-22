@@ -7,6 +7,7 @@ var value_of = controller.value_of,
     
 
 var posting = require_app("server/posting");
+var render_posting = posting.render_posting;
 var post_links = require_app("server/post_links");
 var Post = require_app("models/post");
 var ArchivedPost = require_app("models/archived_post");
@@ -18,6 +19,7 @@ var gen_md5 = function(h) {
   hash.update(h + "");
   return hash.digest("hex");
 };
+
 
 
 module.exports = {
@@ -36,32 +38,6 @@ module.exports = {
     var board_utils = require_app("server/board_utils");
     var render_boards = board_utils.render_boards();
     var render_post = api.page.async(function(flush) {
-      function render_posting(result, highlight_id) {
-        var post_data = result.dataValues;
-        post_data = result.dataValues;
-        post_data.post_id = post_data.id;
-        post_data.highlight_id = highlight_id;
-        post_data.maximized = true;
-        post_data.collapsed = false;
-        delete post_data.id;
-
-        post_data.replies = _.map(result.children, function(c) { return c.dataValues; } );
-        post_data.replies = _.sortBy(post_data.replies, function(d) {
-          return new Date(d.created_at);
-        });
-
-        post_data.client_options = _.clone(post_data);
-        posting.trim_post(post_data.client_options);
-        post_links.freshen_client(post_data.post_id, result.children, function() {
-          var postCmp = $C("post", post_data);
-          var text_formatter = require_root("app/client/text");
-          var tripcode_gen = require_app("server/tripcode");
-          postCmp.add_markdown(text_formatter);
-          postCmp.gen_tripcodes(tripcode_gen.gen_tripcode);
-          api.bridge.controller("posts", "set_board", post_data.board_id);
-          flush(postCmp.toString());
-        });
-      }
 
       Post.find({
           where: { id: ctx.req.params.id},
@@ -106,10 +82,10 @@ module.exports = {
               ]
             }).success(function(parent) {
               if (!parent) {
-                render_posting(result);
+                render_posting(api, flush, result);
               } else {
                 api.bridge.controller("posts", "focus_post", post_data.id);
-                render_posting(parent, post_data.id);
+                render_posting(api, flush, parent, post_data.id);
               }
             });
 
@@ -117,7 +93,7 @@ module.exports = {
             if (ctx.req.query && ctx.req.query.e) {
               api.bridge.controller("posts", "focus_post", post_data.id);
             }
-            render_posting(result);
+            render_posting(api, flush, result);
           }
         });
 

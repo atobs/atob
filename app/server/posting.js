@@ -24,7 +24,7 @@ var IP = require_app("models/ip");
 var model = require_app("models/model");
 var post_links = require_app("server/post_links");
 
-var HIDDEN_BOARDS = [ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test"];
+var HIDDEN_BOARDS = [ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test", "chat"];
 
 var MAX_ANONS = 200;
 
@@ -585,11 +585,40 @@ function handle_delete_post(socket, board, post) {
 }
 
 
+function render_posting(api, flush, result, highlight_id) {
+  var post_data = result.dataValues;
+  post_data = result.dataValues;
+  post_data.post_id = post_data.id;
+  post_data.highlight_id = highlight_id;
+  post_data.maximized = true;
+  post_data.collapsed = false;
+  delete post_data.id;
+
+  post_data.replies = _.map(result.children, function(c) { return c.dataValues; } );
+  post_data.replies = _.sortBy(post_data.replies, function(d) {
+    return new Date(d.created_at);
+  });
+
+  post_data.client_options = _.clone(post_data);
+  module.exports.trim_post(post_data.client_options);
+  post_links.freshen_client(post_data.post_id, result.children, function() {
+    var postCmp = $C("post", post_data);
+    var text_formatter = require_root("app/client/text");
+    var tripcode_gen = require_app("server/tripcode");
+    postCmp.add_markdown(text_formatter);
+    postCmp.gen_tripcodes(tripcode_gen.gen_tripcode);
+
+    api.bridge.controller("posts", "set_board", post_data.board_id);
+    flush(postCmp.toString());
+  });
+}
+
 module.exports = {
   handle_new_reply: handle_new_reply,
   handle_new_post: handle_new_post,
   handle_delete_post: handle_delete_post,
   handle_update_post: handle_update_post,
+  render_posting: render_posting,
   trim_post: function(post) {
     var replies = post.replies;
     post.replies = [];

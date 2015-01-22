@@ -9,13 +9,14 @@ var Post = require_app("models/post");
 var Link = require_app("models/link");
 var gen_md5 = require_app("server/md5");
 
+
 var ICONS = require_app("client/emojies");
 
 var ICON_GROUPS = _.groupBy(ICONS, function(icon, index) {
   return index % 50;
 });
 
-var HIDDEN_BOARDS = [ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test"];
+var HIDDEN_BOARDS = [ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test", "chat"];
 var SLOGANS = [
   "Eting your children since february",
   "Establishing hippy communes since 2014",
@@ -59,6 +60,7 @@ module.exports = {
     "rules" : "rules",
     "recent" : "recent",
     "anon" : "colors",
+    "chat" : "chat",
     "links" : "links",
     "boards" : "boards",
     "gifs" : "gifs",
@@ -177,6 +179,42 @@ module.exports = {
     api.bridge.controller("home", "init_tripcodes");
 
     api.page.render({ content: template_str, socket: false});
+
+  },
+
+  chat: function(ctx, api) {
+    this.set_fullscreen(true);
+    this.set_title("atob");
+
+    var summarize = require_app("client/summarize");
+
+    api.template.add_stylesheet("links");
+    var render_recent_chats = api.page.async(function(flush) {
+      Post.findAll({
+        where: {
+          board_id: {
+            eq: "chat"
+          },
+        },
+        order: "id DESC",
+        limit: 50
+      }).success(function(posts) {
+        var template_str = api.template.partial("home/recent_posts.html.erb", {
+          posts: posts.slice(0, 15),
+          summarize: summarize
+        });
+        api.bridge.controller("home", "show_recent_posts");
+        flush(template_str);
+      });
+    });
+
+    var template_str = api.template.render("controllers/recent.html.erb", {
+      render_recent_posts: render_recent_chats,
+      render_recent_threads: function() { },
+      slogan: ""
+    });
+
+    api.page.render({ content: template_str, socket: true});
 
   },
 
