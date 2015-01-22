@@ -145,6 +145,7 @@
   overflow-y: hidden;
   margin-bottom: 0px;
   margin-right: 8px;
+  float: none;
 }
 
 
@@ -181,10 +182,7 @@
   -webkit-transform-origin:70% 70%;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
-
-  box-shadow: 0px 0px 6px 2px rgba(119, 119, 119, 0.75);
-  -moz-box-shadow: 0px 0px 6px 2px rgba(119, 119, 119, 0.75);
-  -webkit-box-shadow: 0px 0px 6px 2px rgba(119, 119, 119, 0.75);
+  
 }
 
 .addreply {

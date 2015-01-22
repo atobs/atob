@@ -340,6 +340,10 @@ function handle_new_reply(s, board, post, cb) {
   });
 
 
+  // TODO:
+  // add board hooks here
+
+
   Post.find({ where: { id: post.post_id }})
     .success(function(parent) {
       board = parent.board_id;
@@ -378,6 +382,10 @@ function handle_new_reply(s, board, post, cb) {
           if (blasphemy) {
             text = blasphemy.text;
             title = blasphemy.title;
+          }
+
+          if (board === "chat") {
+            post.tripcode = Math.random() + "";
           }
 
           Post.create({
@@ -420,6 +428,10 @@ function handle_new_reply(s, board, post, cb) {
                 var home_controller = load_controller("home");
                 var home_socket = home_controller.get_socket();
                 home_socket.emit("new_reply", p.dataValues);
+              } else if (p.dataValues.board_id === "chat") {
+                var home_controller = load_controller("home");
+                var home_socket = home_controller.get_socket();
+                home_socket.emit("new_chat", p.dataValues);
               }
 
               if (cb) {
@@ -590,7 +602,6 @@ function render_posting(api, flush, result, highlight_id) {
   post_data = result.dataValues;
   post_data.post_id = post_data.id;
   post_data.highlight_id = highlight_id;
-  post_data.maximized = true;
   post_data.collapsed = false;
   delete post_data.id;
 

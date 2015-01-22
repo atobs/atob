@@ -65,3 +65,29 @@ h1, h2, h3 {
 .recent_container {
   padding-top: 10px;
 }
+
+.chat {
+  .cmp-post {
+    .post {
+      border: 0px;
+      padding: 0px;
+      background: inherit;
+
+      .title {
+        display: none;
+      }
+      .op.text {
+        display: none;
+      }
+
+      .restore, .see_replies, .ups, .downs {
+        display: none !important;
+      }
+
+      .replies {
+        max-height: 100px !important;
+      }
+    }
+
+  }
+}

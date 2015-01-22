@@ -8,6 +8,8 @@ var ArchivedPost = require_app("models/archived_post");
 var Post = require_app("models/post");
 var Link = require_app("models/link");
 var gen_md5 = require_app("server/md5");
+var posting = require_app("server/posting");
+var render_posting = posting.render_posting;
 
 
 var ICONS = require_app("client/emojies");
@@ -186,8 +188,6 @@ module.exports = {
     this.set_fullscreen(true);
     this.set_title("atob");
 
-    var summarize = require_app("client/summarize");
-
     api.template.add_stylesheet("links");
     var render_recent_chats = api.page.async(function(flush) {
       Post.findAll({
@@ -197,22 +197,37 @@ module.exports = {
           },
         },
         order: "id DESC",
-        limit: 50
+        limit: 30
       }).success(function(posts) {
-        var template_str = api.template.partial("home/recent_posts.html.erb", {
-          posts: posts.slice(0, 15),
-          summarize: summarize
+        // Find the most recent thread
+        var parent = null;
+        _.each(posts, function(post) {
+          if (post && !post.dataValues.parent_id && !parent) {
+            parent = post;
+          }
         });
-        api.bridge.controller("home", "show_recent_posts");
-        flush(template_str);
+
+
+        if (!parent && posts.length) {
+          parent = posts[0];
+        }
+
+        if (!parent) {
+          return flush();
+        }
+        parent.children = posts;
+        render_posting(api, flush, parent);
       });
     });
 
-    var template_str = api.template.render("controllers/recent.html.erb", {
+    var template_str = api.template.render("controllers/chat.html.erb", {
       render_recent_posts: render_recent_chats,
       render_recent_threads: function() { },
       slogan: ""
     });
+
+    api.bridge.controller("home", "join_chat");
+    api.bridge.controller("home", "init_tripcodes");
 
     api.page.render({ content: template_str, socket: true});
 
@@ -380,6 +395,39 @@ module.exports = {
       return str.join(" ");
     };
 
+    var render_recent_chats = api.page.async(function(flush) {
+      Post.findAll({
+        where: {
+          board_id: {
+            eq: "chat"
+          },
+        },
+        order: "id DESC",
+        limit: 50
+      }).success(function(posts) {
+        // Find the most recent thread
+        var parent = null;
+        _.each(posts, function(post) {
+          if (post && !post.dataValues.parent_id && !parent) {
+            parent = post;
+          }
+        });
+
+
+        if (!parent) {
+          parent = posts[0];
+        }
+
+        if (!parent) {
+          return flush("");
+        }
+
+        parent.children = posts;
+        render_posting(api, flush, parent);
+      });
+    });
+
+
     var board_utils = require_app("server/board_utils");
     var render_boards = board_utils.render_boards();
     var template_str = api.template.render("controllers/home.html.erb", {
@@ -387,6 +435,7 @@ module.exports = {
       render_anons: render_anons,
       render_recent_posts: render_recent_posts,
       render_recent_threads: render_recent_threads,
+      render_recent_chats: render_recent_chats,
       slogan: SLOGANS[_.random(SLOGANS.length)]
     });
 
@@ -549,6 +598,11 @@ module.exports = {
     var boards_controller = load_controller("boards");
     boards_controller.lurk(s); 
     boards_controller.subscribe_to_updates(s);
+
+    s.on("new_reply", function(post, cb) {
+      post.tripcode = Math.random() + "";
+      posting.handle_new_reply(s, "chat", post, cb);
+    });
 
     s.on("upboat", function(link_id, cb) {
       Link.find(link_id).success(function(link) {

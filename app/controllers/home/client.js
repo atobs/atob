@@ -97,6 +97,9 @@ module.exports = {
       });
     });
   },
+  join_chat: function() {
+    console.log("JOINING CHAT?");
+  },
   show_recent_threads: function() {
     format_and_show($(".threads.recent.hidden"));
   },
@@ -130,6 +133,13 @@ module.exports = {
 
     notif.subscribe_to_socket(s);
 
+    s.on("new_chat", function(reply) {
+      console.log("REPLY IS", reply);
+      var only_post = _.keys(_POSTS)[0];
+      if (only_post) {
+        _POSTS[only_post].add_reply(reply);
+      }
+    });
 
     s.on("new_reply", function(reply) {
       var postParent = $(".posts .post").parent();

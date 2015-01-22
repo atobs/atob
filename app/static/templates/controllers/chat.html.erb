@@ -1,0 +1,18 @@
+<% set_default("tripcode", "a") %>
+<%= add_stylesheet("home") %>
+<%= add_stylesheet("post") %>
+
+<style>
+  .navbar_helper {
+    padding-right: 0px !important;
+  }
+</style>
+
+<div class="container mtl mbl recent_container">
+
+  <%= render_partial("shared/logo_and_links.html.erb", { render_boards: function() { }, tripcode: tripcode }) %>
+
+  <%= render_recent_posts() %>
+
+</div>
+
