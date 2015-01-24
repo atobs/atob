@@ -108,3 +108,31 @@ a {
 .container {
   padding: 0px;
 }
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@-webkit-keyframes pulse_animation_big {
+  0% { -webkit-transform: scale(1); }
+  5% { -webkit-transform: scale(2); }
+  10% { -webkit-transform: scale(1); }
+  15% { -webkit-transform: scale(2); }
+  20% { -webkit-transform: scale(1); }
+  100% { -webkit-transform: scale(1); }
+}
+
+.pulse {
+  -webkit-animation-name: 'pulse_animation_big';
+  -webkit-animation-duration: 6000ms;
+  -webkit-transform-origin:50% 50%;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  
+}
+

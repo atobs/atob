@@ -31,9 +31,14 @@ var BOARD_SLOGANS = {
 
 var board_utils = require_app("server/board_utils");
 
+var sockets = {};
+
 function subscribe_to_updates(s) {
+
   var idleTimer;
   var sid = s.spark.headers.sid;
+  sockets[sid] = sockets[sid] || [];
+  sockets[sid].push(s);
   function update_post_status(post_id) {
     var doings = {
       post_id: post_id,
@@ -67,6 +72,24 @@ function subscribe_to_updates(s) {
   // TODO: make a better schema for how this works
   s.on("isdoing", function(doing, cb) {
     var olddoing = s.isdoing || DOINGS[sid];
+
+
+    if (doing.what === "stalking") {
+      if (doing.anon === sid) {
+        s.emit("bestalked");
+        return;
+      }
+
+      var stalked_socket = sockets[doing.anon];
+      if (stalked_socket) {
+        _.each(stalked_socket, function(s) {
+          s.emit("bestalked", { by: sid, sid: doing.anon });
+
+        });
+      } else {
+        s.emit("bestalked");
+      }
+    }
 
 
     function retimer(interval) {

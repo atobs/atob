@@ -161,6 +161,9 @@ module.exports = {
 
     });
 
+    s.on("bestalked", this.be_stalked);
+    s.on("stalking", this.be_stalker);
+
     s.on("new_post", function(post) {
 
       convert_post_text(post, function(post) {

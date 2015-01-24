@@ -236,6 +236,7 @@ module.exports = {
     var str = _.map(counts, function(c, id) {
       var el = $("<i class='anonicator " + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' />");
       el.attr("data-post", anon_to_post[id] || 0);
+      el.attr("data-anon", id || 0);
 
       return $("<div />").append(el).html();
     });
@@ -250,16 +251,93 @@ module.exports = {
   follow_anonicator: function(e) {
     var target = $(e.target);
     var post_id = target.data("post");
+    var anon_id = target.data("anon");
 
     if (post_id) {
-      SF.socket().emit("isdoing", { what: "stalking", post_id: post_id }, function() {
-        window.location = "/p/" + post_id + "?e=1";
+      SF.socket().emit("isdoing", { what: "stalking", post_id: post_id, anon: anon_id }, function() {
+        // so we start the stalking game...
+        var next_ref = "/p/" + post_id;
+        if (window.location.href.indexOf(next_ref) === -1) {
+          window.location = next_ref + "?e=1";
+        } else {
+          $(".logo").addClass("pulse");
+          setTimeout(function() {
+            $(".logo").removeClass("pulse");
+          }, 2000);
+        }
       });
     } else {
       // should probably let anon know they didnt get it right
+      this.be_stalked();
     }
 
   },
+
+  // have the server send over multiple people that might be stalking
+  be_stalked: _.throttle(function(data) {
+    var logo = $($(".logo")[0]).clone();
+    logo.removeClass("lfloat");
+
+    // self stalking...
+    if (!data) {
+      var counter = 3;
+      var next = function() {
+        if (counter <= 0) {
+          return;
+        }
+        counter -= 1;
+
+        var this_next = _.once(next);
+        $(".logo, .logo img").animate({
+          opacity: 0
+        }, {
+          complete: function() {
+            $(".logo, .logo img").animate({ opacity: 1 }, this_next);
+          }
+        });
+      };
+
+      next();
+      return;
+    } 
+
+    logo.on("click", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    $("body").append(logo);
+    logo.css({
+      position: "fixed",
+      right: "100%",
+      top: "20px",
+      bottom: "90%",
+      zIndex: 1050
+    });
+
+    logo.animate({
+      right: "0%"
+    }, 1000, function() {
+      logo.css({ top: "inherit" });
+      logo.animate({
+        bottom: "100%"
+      }, function() {
+        logo.animate({
+          bottom: "0%"
+        });
+
+        setTimeout(function() {
+          logo.fadeOut();
+        }, 1000);
+      });
+    });
+  }, 1000),
+  be_stalker: _.throttle(function(data) {
+    $(".logo").addClass("pulse");
+    setTimeout(function() {
+      $(".logo").removeClass("pulse");
+    }, 3000);
+  }, 3000),
   controller_events: {
     "change input.newtrip" : "save_newtrip",
     "click .beeper" : "request_notifs",
