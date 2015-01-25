@@ -80,8 +80,16 @@ h1, h2, h3 {
         display: none;
       }
 
-      .restore, .see_replies, .ups, .downs {
+      .deletereply, .restore, .see_replies, .ups, .downs {
         display: none !important;
+      }
+
+      .addreply {
+        opacity: 0.1;
+
+        &:hover {
+          opacity: 0.7;
+        }
       }
 
       .replies {
