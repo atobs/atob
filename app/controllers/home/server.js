@@ -197,7 +197,7 @@ module.exports = {
           },
         },
         order: "id DESC",
-        limit: 30
+        limit: 50
       }).success(function(posts) {
         // Find the most recent thread
         var parent = null;
@@ -209,7 +209,7 @@ module.exports = {
 
 
         if (!parent && posts.length) {
-          parent = posts[0];
+          parent = posts[posts.length - 1];
         }
 
         if (!parent) {
@@ -403,7 +403,7 @@ module.exports = {
           },
         },
         order: "id DESC",
-        limit: 50
+        limit: 30
       }).success(function(posts) {
         // Find the most recent thread
         var parent = null;
@@ -414,8 +414,8 @@ module.exports = {
         });
 
 
-        if (!parent) {
-          parent = posts[0];
+        if (!parent && posts.length) {
+          parent = posts[posts.length - 1];
         }
 
         if (!parent) {

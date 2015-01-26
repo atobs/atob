@@ -164,7 +164,7 @@ module.exports = {
     this.set_title("atob/" + board_id);
     this.set_fullscreen(true);
 
-    var specials = [ "links", "archives", "gifs" ];
+    var specials = [ "links", "archives", "gifs", "chat" ];
     var redir;
     _.each(specials, function(board) {
       if (board_id === board) {

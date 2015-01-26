@@ -603,6 +603,7 @@ function render_posting(api, flush, result, highlight_id) {
   post_data.post_id = post_data.id;
   post_data.highlight_id = highlight_id;
   post_data.collapsed = false;
+  post_data.maximized = true;
   delete post_data.id;
 
   post_data.replies = _.map(result.children, function(c) { return c.dataValues; } );

@@ -1,4 +1,5 @@
 <% set_default("slogan", "something something something") %>
+<% set_default("show_hr", true) %>
 
 <div class="col-md-12 mtl noselect">
   <div class="clearfix">
@@ -11,7 +12,6 @@
 
 
 
-
-  <hr />
+  <%= show_hr ? "<hr />" : "" %>
 </div>
 
