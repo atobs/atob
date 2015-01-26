@@ -167,7 +167,7 @@ module.exports = {
       var tripcodeEl = $("<div class='tripcode_button lfloat'/>");
       tripcodeEl.css("width", "95%");
       tripcodeEl.css("cursor", "pointer");
-      var triphash = window.md5(code.tripname + ":" + window.md5(code.tripcode));
+      var triphash = window.md5(code.tripname + ":" + window.md5(code.tripcode || ""));
       LOOKUP[triphash] = code;
       tripcodeEl.data("tripcode", triphash);
 

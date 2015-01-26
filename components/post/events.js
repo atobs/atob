@@ -101,13 +101,10 @@ module.exports = {
     e.stopPropagation();
 
     $(e.target).popover("destroy");
+
     var responseEl = $("<div />");
     var img_link = $(e.target).closest(".imglink").attr("href");
-
-    var img_tag = $("<img />") .attr("src", img_link);
-    img_tag.css("max-height", "200px");
-    img_tag.css("max-width", "100%");
-    img_tag.css("display", "block");
+    var img_tag = this.helpers['app/client/text'].format_image_link(img_link);
     responseEl.append(img_tag);
 
     $(e.target).popover({
