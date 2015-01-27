@@ -214,7 +214,7 @@ module.exports = {
     this.save_tripcode();
     this.update_trip_colors();
   },
-  handle_anonicators: function(doings) {
+  handle_anonicators: function(doings, last_seen) {
 
     var counts = {};
     var anon_to_post = {};
@@ -237,6 +237,16 @@ module.exports = {
       var el = $("<i class='anonicator " + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' />");
       el.attr("data-post", anon_to_post[id] || 0);
       el.attr("data-anon", id || 0);
+      var idle_ms = last_seen[id];
+
+      if (idle_ms) {
+        // set the opacity
+        // 60 seconds is full opacity. then it fades for the next hour
+        var idle_sec = idle_ms / 1000;
+        var opacity;
+        opacity = (1 - idle_sec / 3600);
+        el.css("opacity", parseInt(opacity * 1000, 10) / 1000);
+      }
 
       return $("<div />").append(el).html();
     });

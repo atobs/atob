@@ -17,6 +17,10 @@ var load_controller = require_core("server/controller").load;
 var GOING_ONS = { 
   0: {}
 };
+var LAST_SEEN = {
+
+};
+
 var DOINGS = {};
 
 var LAST_UPDATE = {};
@@ -90,6 +94,8 @@ function subscribe_to_updates(s) {
         s.emit("bestalked");
       }
     }
+
+    LAST_SEEN[sid] = Date.now();
 
 
     function retimer(interval) {
@@ -309,14 +315,26 @@ module.exports = {
     var boards_controller = load_controller("boards");
     var posts_controller = load_controller("posts");
 
-    home_controller.get_socket().emit("anons", GOING_ONS);
-    boards_controller.get_socket().emit("anons", GOING_ONS);
-    posts_controller.get_socket().emit("anons", GOING_ONS);
+    var now = Date.now();
+    var last_seen = {};
+    _.each(LAST_SEEN, function(then, sid) {
+      var duration = now - then; 
+      if (duration > 60 * 60 * 3600) {
+        delete LAST_SEEN[sid];
+      } else {
+        last_seen[sid] = duration;
+      }
+    });
+
+    home_controller.get_socket().emit("anons", GOING_ONS, last_seen);
+    boards_controller.get_socket().emit("anons", GOING_ONS, last_seen);
+    posts_controller.get_socket().emit("anons", GOING_ONS, last_seen);
   }, 2000),
 
   lurk: function(s, board_id) {
     var sid = s.spark.headers.sid;
 
+    LAST_SEEN[sid] = Date.now();
     if (board_id && board_id.length === 1) {
       if (Math.random() < 0.50) {
         GOING_ONS[0][sid] = ":circle" + board_id + ":"; 
@@ -331,7 +349,7 @@ module.exports = {
     clearTimeout(s.lurk_timer);
     s.lurk_timer = setTimeout(function() {
       delete GOING_ONS[0][sid];
-    }, 60000);
+    }, 60 * 60 * 1000);
 
     module.exports.update_doings();
 
