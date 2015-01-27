@@ -393,7 +393,7 @@ module.exports = {
         var last_seen = boards_controller.LAST_SEEN[id];
         if (last_seen) {
           var diff = Date.now() - last_seen;
-          opacity = (1 - diff / 3600);
+          opacity = (1 - diff / 3600 / 1000);
         }
 
         return "<i class='" + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' style='opacity:" + opacity + "' />";

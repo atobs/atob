@@ -105,6 +105,7 @@ function subscribe_to_updates(s) {
         delete GOING_ONS[doing.post_id][sid];
         delete s.isdoing;
         delete DOINGS[sid];
+        module.exports.lurk(s);
 
         update_post_status(doing.post_id);
       }, interval);
