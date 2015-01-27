@@ -411,5 +411,6 @@ module.exports = {
   handle_new_post: posting.handle_new_post,
   subscribe_to_updates: subscribe_to_updates,
   GOING_ONS: GOING_ONS,
+  LAST_SEEN: LAST_SEEN,
   BOARD_SLOGANS: BOARD_SLOGANS
 };

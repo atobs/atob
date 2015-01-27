@@ -388,8 +388,15 @@ module.exports = {
         s: "icon-ghost"
       };
 
-      var str = _.map(_.values(counts), function(c) {
-        return "<i class='" + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' />";
+      var str = _.map(counts, function(c, id) {
+        var opacity = 1;
+        var last_seen = boards_controller.LAST_SEEN[id];
+        if (last_seen) {
+          var diff = Date.now() - last_seen;
+          opacity = (1 - diff / 3600);
+        }
+
+        return "<i class='" + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' style='opacity:" + opacity + "' />";
       });
 
       return str.join(" ");
