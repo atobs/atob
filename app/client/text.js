@@ -185,6 +185,10 @@ function format_image_link(img_link) {
     img_tag.attr("height", "200px");
     return img_tag;
   } else {
+    if (img_link.indexOf("://") == -1) {
+      img_link = "http://" + img_link;
+    }
+
     var img_tag = $("<img />") .attr("src", img_link);
     img_tag.css("max-height", "200px");
     img_tag.css("max-width", "100%");
