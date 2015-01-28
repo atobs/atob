@@ -76,7 +76,7 @@ h1, h2, h3 {
       .title {
         display: none;
       }
-      .op.text {
+      .op.text, .upboat {
         display: none;
       }
 
