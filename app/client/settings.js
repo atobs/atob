@@ -214,6 +214,41 @@ module.exports = {
     this.save_tripcode();
     this.update_trip_colors();
   },
+  
+  // when someone hits their moving burtle, you get smashed
+  restalk: function() { 
+    var s = document.createElement('script');
+    $.getScript( 'http://fontbomb.ilex.ca/js/main.js', function() {
+      var scrollTop = document.body.scrollTop;
+      var width = window.innerWidth;
+      var height = window.innerHeight;
+      var hits = _.random(3, 10);
+      var locations = [];
+      for (var i = 0; i < hits; i++) {
+        
+        locations.push({
+          x: _.random(width),
+          y: _.random(height) + scrollTop
+        });
+      }
+
+      _.each(locations, function(data) {
+        setTimeout(function() { 
+          $("body").trigger({
+            type: "click",
+            pageX: data.x,
+            pageY: data.y
+          });
+        }, _.random(1, 6) * 500);
+
+      });
+
+    });
+    document.body.appendChild(s);
+
+
+    
+  },
   handle_anonicators: function(doings, last_seen) {
 
     var counts = {};
@@ -290,28 +325,19 @@ module.exports = {
 
     // self stalking...
     if (!data) {
-      var counter = 3;
-      var next = function() {
-        if (counter <= 0) {
-          return;
+      $(".logo, .logo img").animate({
+        opacity: 0
+      }, {
+        complete: function() {
+          $(".logo, .logo img").animate({ opacity: 1 });
         }
-        counter -= 1;
+      });
 
-        var this_next = _.once(next);
-        $(".logo, .logo img").animate({
-          opacity: 0
-        }, {
-          complete: function() {
-            $(".logo, .logo img").animate({ opacity: 1 }, this_next);
-          }
-        });
-      };
-
-      next();
       return;
     } 
 
     logo.on("click", function(e) {
+      SF.socket().emit("restalked", data);
       e.preventDefault();
       e.stopPropagation();
     });
@@ -338,7 +364,7 @@ module.exports = {
 
         setTimeout(function() {
           logo.fadeOut();
-        }, 1000);
+        }, 3000);
       });
     });
   }, 1000),
@@ -348,6 +374,13 @@ module.exports = {
       $(".logo").removeClass("pulse");
     }, 3000);
   }, 3000),
+  add_socket_subscriptions: function(s) {
+    s.on("anons", this.handle_anonicators);
+    s.on("bestalked", this.be_stalked);
+    s.on("restalked", this.restalk);
+    s.on("stalking", this.be_stalker);
+
+  },
   controller_events: {
     "change input.newtrip" : "save_newtrip",
     "click .beeper" : "request_notifs",

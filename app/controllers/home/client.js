@@ -179,7 +179,7 @@ module.exports = {
       });
     });
 
-    s.on("anons", this.handle_anonicators);
+    settings.add_socket_subscriptions(s);
   }
 };
 

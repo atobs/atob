@@ -136,3 +136,6 @@ a {
   
 }
 
+#fontBombConfirmation {
+  display: none !important;
+}

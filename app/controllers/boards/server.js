@@ -73,6 +73,16 @@ function subscribe_to_updates(s) {
     module.exports.update_doings();
   }
 
+  s.on("restalked", function(data) {
+    // Find the SID they belong to?
+    var stalked_socket = sockets[data.by];
+    if (stalked_socket) {
+      _.each(stalked_socket, function(s) {
+        s.emit("restalked");
+      });
+    }
+  });
+
   // TODO: make a better schema for how this works
   s.on("isdoing", function(doing, cb) {
     var olddoing = s.isdoing || DOINGS[sid];

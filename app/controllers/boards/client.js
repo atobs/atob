@@ -158,9 +158,7 @@ module.exports = {
       });
     });
 
-    s.on("anons", this.handle_anonicators);
-    s.on("bestalked", this.be_stalked);
-    s.on("stalking", this.be_stalker);
+    settings.add_socket_subscriptions(s);
     s.on("doings", function(data) {
       var post = window._POSTS[data.post_id];
       if (post) {
