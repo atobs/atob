@@ -122,30 +122,65 @@ module.exports = {
 
   handle_mouseenter_replylink: function(e) {
     e.stopPropagation();
-    $(e.target).popover("destroy");
-    var clone_id = $(e.target).data("parent-id");
-    var responseEl = $("#reply" + clone_id);
-    var titleEl = responseEl.siblings(".title");
-
-    if (responseEl.length) {
-      e.preventDefault();
-    }
-
-    var div = $("<div />");
-    div.append(responseEl.clone());
-    
-    if (titleEl.length) {
-      div.prepend(titleEl.clone());
-    }
 
     var container = this.$el;
+    var expanded = {};
 
-    $(e.target).popover({ html: true, content: div.html(), placement: "top", container: container });
-    $(e.target).popover("show");
+    function get_reply_content(el) {
+      var clone_id = $(el).data("parent-id");
+      if (expanded[clone_id]) {
+        return $("<div />");
+      }
+
+      expanded[clone_id] = true;
+      var responseEl = $("#reply" + clone_id);
+      return responseEl.clone();
+    }
+    
+    function buildreply_popup(el, anchor) {
+      var responseEl = get_reply_content(el);
+      var titleEl = responseEl.siblings(".title");
+
+      $(".popover").remove();
+
+      if (responseEl.length) {
+        e.preventDefault();
+      }
+      if (titleEl.length) {
+        div.prepend(titleEl.clone());
+      }
+      var div = $("<div />");
+      div.append(responseEl.children());
+      
+      return div;
+    }
+
+    function expand_replies(div, depth) {
+      var replylinks = div.find(".replylink");
+      depth = depth || 0;
+      replylinks.each(function() {
+        var responseEl = get_reply_content(this);
+        expand_replies(responseEl, depth + 1);
+        var wrapper = $("<div />");
+        wrapper.css({ borderLeft: "1px dotted #ddd", paddingLeft: depth * 4 + "px" });
+        wrapper.append(responseEl.children());
+
+        div.prepend(wrapper);
+      });
+    }
+
+    var div = buildreply_popup(e.target);
+    var el = e.target;
+    expand_replies(div);
+    $(el).popover({ html: true, content: div.html(), placement: "top", container: container });
+    $(el).popover("show");
+
+
   },
 
   handle_mouseleave_replylink: function(e) {
     $(e.target).popover("destroy");
+    $(".popover").remove();
   },
 
   handle_addglyph: function(e) {
