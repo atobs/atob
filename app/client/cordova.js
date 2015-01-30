@@ -108,7 +108,7 @@ function add_sidebars() {
     window._addedSidebars = true;
 
 
-    make_sidebar(".logo", ".navbar .navlinks", "left");
+    make_sidebar(".logobar .logo", ".navbar .navlinks", "left");
     // end home link
 
 
