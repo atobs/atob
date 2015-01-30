@@ -63,7 +63,7 @@ function _notify_user(title, options, post) {
 
     notification.onclick = function () {
       console.log("GOING TO NOTIFICATION", post.id);
-      window.open("/p/" + post.id, "_system");
+      window.open("/p/" + post.id, "_blank");
     };
 
     if (navigator.vibrate) {

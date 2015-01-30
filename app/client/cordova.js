@@ -151,7 +151,7 @@ function add_in_app_browser() {
     var href = el.attr("href");
     var target = el.attr("target");
 
-    if (href && href.indexOf("#") !== 0 && target === "_system") {
+    if (href && href.indexOf("#") !== 0 && target === "_blank") {
       e.preventDefault();
       e.stopPropagation();
 

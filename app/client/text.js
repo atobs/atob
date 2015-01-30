@@ -43,7 +43,7 @@ function add_upboat(el, href, text) {
 
 renderer.image = function(href, title, text) {
   var url_tag = $("<span>");
-  var img_tag = $("<a target='_system'>[link]</a>");
+  var img_tag = $("<a target='_blank'>[link]</a>");
 
   url_tag.html(text);
   url_tag.attr("href", href);
@@ -87,7 +87,7 @@ renderer.link = function(href, title, text) {
 
   link.html(text);
   link.attr("href", escaped_href);
-  link.attr("target", "_system");
+  link.attr("target", "_blank");
 
   outer.append(link);
 
@@ -112,12 +112,12 @@ function add_board_links($el) {
   var escaped = " " + $el.html() + " ";
   if (escaped) {
     var replaced = escaped.replace(/\s\/r\/(\w+)/g, function(x, post_id) {
-      var reddit_str = " <a href='http://www.reddit.com/r/NAME' target='_system'><i class='icon-reddit'></i>/NAME</a>";
+      var reddit_str = " <a href='http://www.reddit.com/r/NAME'><i class='icon-reddit'></i>/NAME</a>";
       return reddit_str.replace(/NAME/g, post_id.toLowerCase());
     });
 
     replaced = replaced.replace(/\s\/(\w+)/g, function(x, post_id) {
-      var reply_str = " <span href='/b/NAME' class='boardlink' target='_system'>/NAME</span>";
+      var reply_str = " <span href='/b/NAME' class='boardlink' target='_blank'>/NAME</span>";
       return reply_str.replace(/NAME/g, post_id.toLowerCase());
     });
 
@@ -129,7 +129,7 @@ function add_board_links($el) {
 function add_replies($el) {
   var escaped = $el.html();
   if (escaped) {
-    var reply_str = "<a href='/p/NAME' class='replylink' data-parent-id='NAME' target='_system'>&gt;&gt;NAME</a>";
+    var reply_str = "<a href='/p/NAME' class='replylink' data-parent-id='NAME'>&gt;&gt;NAME</a>";
     var replaced = escaped.replace(/&gt;&gt;#?([\d]+)/g, function(x, post_id) {
       return reply_str.replace(/NAME/g, post_id.toLowerCase());
     });
