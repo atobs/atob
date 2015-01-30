@@ -158,11 +158,17 @@ module.exports = {
     function expand_replies(div, depth) {
       var replylinks = div.find(".replylink");
       depth = depth || 0;
+      var border;
+      if (replylinks.length > 1) {
+        depth += 1;
+        border = "1px dotted #ddd";
+      }
+
       replylinks.each(function() {
         var responseEl = get_reply_content(this);
-        expand_replies(responseEl, depth + 1);
+        expand_replies(responseEl, depth);
         var wrapper = $("<div />");
-        wrapper.css({ borderLeft: "1px dotted #ddd", paddingLeft: depth * 4 + "px" });
+        wrapper.css({ borderLeft: border, paddingLeft: depth * 4 + "px" });
         wrapper.append(responseEl.children());
 
         div.prepend(wrapper);

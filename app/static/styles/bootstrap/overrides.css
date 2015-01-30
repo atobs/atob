@@ -38,3 +38,8 @@ body.modal-open {
   transition: background-color 400ms linear;
 }
 
+
+.popover {
+  max-width: 550px;
+  min-width: 250px;
+}
