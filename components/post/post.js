@@ -90,6 +90,19 @@ module.exports = {
       sinners.check_reply(self.$el, options.tripcode);
     });
 
+    // make sure this post starts with the right value of sizing for the board
+    require("app/client/storage", function(storage) {
+      var boardstyle = storage.get("boardstyle") || "";
+
+      if (self.$el.find(".post").hasClass("maximize")) {
+        return;
+      }
+
+      self.$el.find(".post").addClass(boardstyle);
+      SF.trigger("set_boardstyle", boardstyle);
+
+    });
+
     
     // TODO: better queueing
     _.defer(function() {

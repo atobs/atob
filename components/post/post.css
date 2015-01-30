@@ -34,6 +34,73 @@
   margin-bottom: 20px;
   clear: both;
   background-color: #fff;
+
+  position: relative;
+}
+
+.post.tile {
+  width: 32%;
+  max-width: 32%;
+
+  .replies {
+    display: none;
+  }
+
+  .timebox .created {
+    float: right;
+  }
+
+  clear: none;
+  float: left;
+  margin-right: 0.5%;
+  margin-left: 0.5%;
+  zoom: 0.85;
+  height: 200px;
+
+  @media @mobile {
+    max-width: 49%;
+    width: 49%;
+  }
+  .infobar {
+    opacity: 0.5;
+    color: white;
+    background-color: #000;
+    bottom: 0px;
+  }
+    
+}
+
+.post.tilerow {
+  zoom: 0.85;
+  .op.text {
+    display: none;
+  }
+}
+
+.post.tile, .post.tilerow {
+  overflow: hidden;
+  .replies, .restore {
+    display: none;
+  }
+  .infobar {
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    padding-left: 20px;
+  }
+
+  form {
+    display: none;
+  }
+
+  .op.text {
+    max-height: 80px;
+    overflow: hidden;
+  }
+  .deletereply {
+    display: none;
+  }
 }
 
 .text {

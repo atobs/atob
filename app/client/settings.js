@@ -1,5 +1,6 @@
 var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var notif = require("app/client/notif");
+var storage = require("app/client/storage");
 
 var cookie_opts = {
   path: '/',
@@ -9,22 +10,8 @@ var cookie_opts = {
 var TRIPCODES = [];
 var LOOKUP = {};
 
-function get_from_storage(key) {
-  
-  var val = window.bootloader.storage.get(key);
-  if (!val) {
-    val = $.cookie(key);
-  }
-
-  return val;
-}
-
-function set_in_storage(key, value) {
-  window.bootloader.storage.set(key, value);
-  $.removeCookie(key);
-
-}
-
+var get_from_storage = storage.get;
+var set_in_storage = storage.set;
 TRIPCODES = JSON.parse(get_from_storage("tripcodes") || "[]");
 
 module.exports = {

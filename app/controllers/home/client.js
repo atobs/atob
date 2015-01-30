@@ -133,7 +133,6 @@ module.exports = {
     notif.subscribe_to_socket(s);
 
     s.on("new_chat", function(reply) {
-      console.log("REPLY IS", reply);
       var only_post = _.keys(_POSTS)[0];
       if (only_post) {
         _POSTS[only_post].add_reply(reply);

@@ -61,3 +61,31 @@
     top: 65px;
   }
 }
+
+.boardview {
+  position: relative;
+  top: -40px;
+  left: -45%;
+
+  a {
+    color: #000;
+    opacity: 0.3;
+    text-decoration: none;
+
+    &.active {
+      opacity: 1;
+    }
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+
+  @media @device {
+    position: inherit;
+    margin-top: -5px;
+    right: 0px;
+    top: 0px;
+    left: 0px;
+  }
+}

@@ -5,6 +5,7 @@ var post_utils = require("app/client/post_utils");
 var settings = require("app/client/settings");
 var notif = require("app/client/notif");
 var emojies = require("app/client/emojies");
+var storage = require("app/client/storage");
 
 var IMGUR_KEY;
 
@@ -20,6 +21,29 @@ module.exports = {
     "focus .new_post textarea" : "update_post_preview",
     "keyup .new_post input" : "update_post_preview",
     "keyup .new_post textarea" : "update_post_preview",
+    "click .boardview .boardtiles" : "show_board_tiles",
+    "click .boardview .boardfull" : "show_board_full",
+    "click .boardview .boardlist" : "show_board_list"
+  },
+  show_board_tiles: function() {
+    $(".post").addClass("tile");
+    $(".post").removeClass("tilerow");
+
+    storage.set("boardstyle", "tile");
+
+    SF.trigger("set_boardstyle", "tile");
+  },
+  show_board_full: function() {
+    $(".post").removeClass("tilerow tile");
+    storage.set("boardstyle", "");
+    SF.trigger("set_boardstyle", "");
+
+  },
+  show_board_list: function() {
+    $(".post").addClass("tilerow");
+    $(".post").removeClass("tile");
+    storage.set("boardstyle", "tilerow");
+    SF.trigger("set_boardstyle", "tilerow");
   },
   update_post_preview: _.throttle(function(e) {
     var title = this.$el.find(".new_post input[name='title']").val();
@@ -118,6 +142,21 @@ module.exports = {
     var textarea = this.$el.find(".new_post textarea[name='text']");
     emojies.add_textcomplete(textarea);
 
+
+    SF.on("set_boardstyle", _.throttle(function(boardstyle) {
+      $(".boardview a").removeClass("active");
+      var boardlink;
+      if (boardstyle === "tile") {
+        boardlink = "boardtiles";
+
+      } else if (boardstyle === "tilerow") {
+        boardlink = "boardlist";
+
+      } else { 
+        boardlink = "boardfull";
+      }
+      $(".boardview a." + boardlink).addClass("active");
+    }, 100));
 
     // http://stackoverflow.com/questions/4079115/can-any-desktop-browsers-detect-when-the-computer-resumes-from-sleep
     // if the page becomes inactive for long enough, reload it on the next focus

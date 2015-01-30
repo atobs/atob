@@ -245,7 +245,7 @@ module.exports = {
 
         // add an old post, for fun
         var grabbag = results[_.random(10, results.length-1)];
-        results = results.slice(0, 10);
+        results = results.slice(0, 11);
         if (grabbag) {
           results.push(grabbag);
         }
