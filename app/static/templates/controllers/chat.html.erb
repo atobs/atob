@@ -8,11 +8,16 @@
     padding-right: 0px !important;
     margin-right: 0px !important;
   }
+  #anons {
+    right: 0px !important;
+  }
 </style>
 
-<div class="container mtl mbl recent_container clearfix desaturate">
+<div class="container mtl mbl recent_container clearfix">
 
-  <%= render_partial("shared/logo_and_links.html.erb", { render_boards: function() { }, tripcode: tripcode }) %>
+  <div class="desaturate">
+    <%= render_partial("shared/logo_and_links.html.erb", { render_boards: function() { }, tripcode: tripcode }) %>
+  </div>
 
 
   <%= render_recent_posts() %>
