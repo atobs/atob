@@ -66,6 +66,7 @@
   position: relative;
   top: -40px;
   left: -45%;
+  height: 0px;
 
   a {
     color: #000;

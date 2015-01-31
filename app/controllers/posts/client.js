@@ -4,6 +4,7 @@ var settings = require("app/client/settings");
 var post_utils = require("app/client/post_utils");
 var notif = require("app/client/notif");
 
+window._POSTS = window._POSTS || {};
 module.exports = {
   events: {
   },
@@ -13,6 +14,9 @@ module.exports = {
   set_board: function(board) {
     this.board = board;
     this.trigger("set_board");
+  },
+  goto_chat: function() {
+    window.location = "/chat";
   },
   focus_post: function(id) {
     var self = this;

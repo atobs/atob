@@ -73,7 +73,12 @@ module.exports = {
 
           var post_data = result.dataValues;
 
-          // If it's a child post, get its thread
+          if (post_data.board_id === "chat") {
+            api.bridge.controller("posts", "goto_chat");
+            flush();
+            return;
+          }
+
           if (post_data.parent_id) {
             Post.find({
               where: { id: post_data.thread_id },

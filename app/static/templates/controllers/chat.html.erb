@@ -1,19 +1,20 @@
 <% set_default("tripcode", "a") %>
 
+<%= add_stylesheet("chat") %>
 <%= add_stylesheet("post") %>
+
 <style>
   .navbar_helper {
     padding-right: 0px !important;
+    margin-right: 0px !important;
   }
 </style>
 
-<div class="container mtl mbl recent_container clearfix">
+<div class="container mtl mbl recent_container clearfix desaturate">
 
-  <%= render_partial("home/header.html.erb", { slogan: slogan, show_hr: false}) %>
+  <%= render_partial("shared/logo_and_links.html.erb", { render_boards: function() { }, tripcode: tripcode }) %>
 
-  <div class="clearfix col-md-12">
 
-    <%= render_recent_posts() %>
+  <%= render_recent_posts() %>
 
-  </div>
 </div>
