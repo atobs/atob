@@ -15,7 +15,7 @@ var render_posting = posting.render_posting;
 var ICONS = require_app("client/emojies");
 
 var ICON_GROUPS = _.groupBy(ICONS, function(icon, index) {
-  return index % 50;
+  return parseInt(index / 50, 10);
 });
 
 var HIDDEN_BOARDS = [ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test", "chat"];
