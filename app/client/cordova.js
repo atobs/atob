@@ -126,6 +126,7 @@ function add_sidebars() {
       var tripcodes_button = $("a.tripcode_history");
       tripcodes_button.hide();
       var tripcodeContainer = $(".tripcode_holder");
+
       if (!tripcodeContainer.length) {
         tripcodeContainer = $("<div class='lfloat clearfix tripcode_holder' style='width: 100%' />");
         tripcodeContainer.appendTo(tripcodes_button.parent());

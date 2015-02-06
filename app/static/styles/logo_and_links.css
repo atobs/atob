@@ -2,6 +2,10 @@
   cursor: pointer;
 }
 
+.tripcode_holder a {
+  color: #fff;
+}
+
 .logo .identity_tripcode {
   max-height: 5px;
   height: 4px;
