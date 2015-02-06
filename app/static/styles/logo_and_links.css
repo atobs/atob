@@ -20,12 +20,12 @@
 #anons {
   position: absolute;
   top: 25px;
-  right: 36px;
+  right: 0px;
   opacity: 0.4;
   zoom: 0.8;
 
-  @media only screen and (max-width: 991px) {
-    right: 18px;
+  @media only screen and (min-width: 767px) {
+    right: 36px;
   }
 }
 
@@ -46,19 +46,20 @@ body:not(:-moz-handler-blocked) #anons {
   z-index: 1000;
 
   @media @device {
-    width: 100%;
+    right: 15px;
+    left: 15px;
   }
 }
 
 #logobar .navbar_helper {
   margin-left: 0px;
-  margin-right: 15px;
+  margin-right: 0px;
   padding-left: 0;
 
-  padding-right: 30px;
+  padding-right: 0px;
 
-  @media only screen and (max-width: 991px) {
-    padding-right: 15px;
+  @media only screen and (min-width: 767px) {
+    padding-right: 30px;
   }
 }
 

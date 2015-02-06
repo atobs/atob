@@ -1,25 +1,14 @@
 <% set_default("tripcode", "a") %>
 
 <%= add_stylesheet("chat") %>
-<%= add_stylesheet("post") %>
-
-<style>
-  .navbar_helper {
-    padding-right: 0px !important;
-    margin-right: 0px !important;
-  }
-  #anons {
-    right: 0px !important;
-  }
-</style>
 
 <div class="container mtl mbl recent_container clearfix">
 
-  <div class="desaturate">
-    <%= render_partial("shared/logo_and_links.html.erb", { render_boards: function() { }, tripcode: tripcode }) %>
+  <div class="col-md-12">
+    <%= render_partial("shared/logo_and_links.html.erb", { render_boards: function() { }, tripcode: tripcode, desaturate: true }) %>
+
+
+    <%= render_recent_posts() %>
   </div>
-
-
-  <%= render_recent_posts() %>
 
 </div>

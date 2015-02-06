@@ -144,9 +144,13 @@ module.exports = {
       });
     }
   },
-  tripcode_history: function() {
+
+  click_tripcode_history: function() {
     var buttonEl = $("#benjamin_button .buttons");
     buttonEl.empty();
+    this.tripcode_history(buttonEl);
+  },
+  tripcode_history: function(buttonEl) {
     _.each(TRIPCODES, function(code) {
       var tripcodeContainer = $("<div class='clearfix col-md-4'/>");
       tripcodeContainer.css("position", "relative");
@@ -375,7 +379,7 @@ module.exports = {
     "click .regen_tripcode" : "regen_tripcode",
     "click .tripcode_button" : "restore_old_code",
     "click .tripcode_delete" : "delete_old_code",
-    "click .tripcode_history" : "tripcode_history",
+    "click .tripcode_history" : "click_tripcode_history",
     "click .anonicator" : "follow_anonicator",
     "change input.tripcode" : "save_tripcode",
     "change input.handle" : "save_handle",

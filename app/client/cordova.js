@@ -7,6 +7,8 @@
 // pinned posts?
 // starred boards
 
+
+
 function try_cordova_backgrounding() {
   setTimeout(function() { 
     // now we setup background notifications, too
@@ -38,6 +40,8 @@ function add_background_notifications() {
 
 var sidebars = [];
 function make_sidebar(toggle_selector, content_selector, side) {
+  var events = _.clone(Backbone.Events);
+
   var sidebar_el = $("<div />");
   sidebar_el.append($(content_selector).html());
   sidebars.push(sidebar_el);
@@ -59,6 +63,7 @@ function make_sidebar(toggle_selector, content_selector, side) {
     var other_side_name = side === "right" ? "left" : "right";
     var options = {};
     if (!was_opened) {
+      events.trigger("opened");
 
       var sidebar_options = {};
       if (side === "right") {
@@ -85,12 +90,15 @@ function make_sidebar(toggle_selector, content_selector, side) {
       options[other_side_name] = "auto";
       $("#page_content").css(options);
       options.position = "auto";
+      events.trigger("closed");
 
     }
 
     sidebar_el.data("opened", !was_opened);
     $("#logobar").hide().show(0);
   });
+
+  return events;
 
 
 }
@@ -112,7 +120,21 @@ function add_sidebars() {
     // end home link
 
 
-    make_sidebar("a.settingslink", ".navbar .settings", "right");
+    // add benjamin button directly into the sidebar
+    var sidebar_events = make_sidebar("a.settingslink", ".navbar .settings", "right");
+    sidebar_events.on("opened", function() {
+      var tripcodes_button = $("a.tripcode_history");
+      tripcodes_button.hide();
+      var tripcodeContainer = $(".tripcode_holder");
+      if (!tripcodeContainer.length) {
+        tripcodeContainer = $("<div class='lfloat clearfix tripcode_holder' style='width: 100%' />");
+        tripcodeContainer.appendTo(tripcodes_button.parent());
+      } else {
+        tripcodeContainer.empty();
+      }
+
+      require("app/client/settings").tripcode_history(tripcodeContainer);
+    });
 
     // make the up top links animate a bit...
     $(".navbar .navlinks a").animate({
