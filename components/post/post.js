@@ -51,6 +51,21 @@ module.exports = {
     var textEl = this.$el.find(".text");
     _.each(textEl, function(el) {
       text_formatter.format_text($(el));
+
+      // this is where we should verify its a title?
+      var titleParent = $(el).closest(".title");
+      if (titleParent.length) {
+        var link = $(el).find("a");
+
+        _.each(link, function(link) {
+          var linkEl = $(link);
+          var text = linkEl.text();
+          linkEl.text("[link]");
+          linkEl.addClass("titlelink");
+          linkEl.before(text.replace(/\[link\]/g, ' '));
+        });
+
+      }
     });
   },
   gen_tripcodes: function(tripcode_gen) {

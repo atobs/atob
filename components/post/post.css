@@ -352,6 +352,14 @@
   }
 }
 
+.titlelink {
+  color: #ff43ca;
+  cursor: pointer;
+  &:hover {
+    color: #000;
+  }
+}
+
 .unsafelink {
   color: #ff3300;
 }
