@@ -129,7 +129,7 @@ function subscribe_to_updates(s) {
         if (doing.what.match(":")) {
           delete GOING_ONS[olddoing.post_id][sid];
         } else {
-          retimer(30 * 60 * 1000);
+          retimer(60 * 60 * 1000);
           if (cb) { cb(); }
           return;
         }
