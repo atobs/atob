@@ -54,7 +54,6 @@
   float: left;
   margin-right: 0.5%;
   margin-left: 0.5%;
-  zoom: 0.85;
   height: 200px;
 
   @media @mobile {
@@ -85,7 +84,6 @@
   padding-bottom: 0px;
   padding-top: 0px;
 
-  zoom: 0.85;
   .op.text {
     display: none;
   }
