@@ -442,3 +442,11 @@
     display: none;
   }
 }
+
+ol li:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+ol li .votes {
+  float: right;
+}

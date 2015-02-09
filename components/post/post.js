@@ -101,6 +101,8 @@ module.exports = {
 
     self.$el.find(".timeago").timeago();
 
+    self.setup_polls();
+
     require("app/client/sinners", function(sinners) {
       sinners.check_reply(self.$el, options.tripcode);
     });
@@ -211,9 +213,12 @@ module.exports = {
     });
     replyEl.fadeIn();
 
+
     var repliesEl = this.$el.find(".replies");
     repliesEl.append(replyEl);
     this.bumped(true);
+
+    process_vote(replyEl);
 
     var timeagoEl = this.$el.find(".last_reply .timeago");
     timeagoEl.attr("title", Date.now());
@@ -268,6 +273,71 @@ module.exports = {
         opacity: 1
       });
     }, duration);
+  },
+
+  setup_polls: function() {
+    var orderedLists = this.$el.find("ol");
+    if (orderedLists.length) {
+      orderedLists.each(function() {
+        var $el = $(this);
+        var parentReply = $el.closest(".reply");
+
+        var replyId = parentReply.attr("id").replace(/reply/, '');
+
+        var repliesTo = $(".replylink[data-parent-id=" + replyId + "]");
+        repliesTo.each(function() {
+          process_vote($(this));
+        });
+      });
+    }
+
+
   }
 
 };
+
+function process_vote(replyEl) {
+
+  var replylink = replyEl.closest(".reply").find(".replylink");
+  var orderedListId = replylink.data("parent-id");
+  var orderedList = replylink.closest(".post").find("#reply" + orderedListId);
+
+  var text = replylink.closest(".text").data("text");
+
+  if (!text) {
+    return;
+  }
+
+  var this_votes = {};
+  // we allow cross votes, but only one per reply
+  var matches = text.match(/:?vote-?\d+:?/g);
+
+  _.each(matches, function(match) {
+    var vote = match.replace(/vote-?/, "").replace(/:/g, "");
+    vote = parseInt(vote, 10);
+    this_votes[vote] = true;
+  });
+
+  _.each(this_votes, function(v, key) {
+    var lis = orderedList.find("li");
+    var votedon = lis.get(key - 1); // because the list starts at 1, duh
+
+
+    if (!votedon) {
+      return;
+    }
+
+    // now, we need to add the voter at the end of the li
+    var vote_span = $(votedon).find(".votes");
+    var prev_value = 0;
+    if (!vote_span.length) {
+      vote_span = $("<span class='votes' />");
+      $(votedon).prepend(vote_span);
+    } else {
+      prev_value = parseInt(vote_span.html(), 10);
+    }
+
+    var count = prev_value + 1;
+    vote_span.html(count);
+  });
+}
