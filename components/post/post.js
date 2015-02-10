@@ -296,9 +296,13 @@ module.exports = {
 
 };
 
+
+var voted = {};
 function process_vote(replyEl) {
 
   var replylink = replyEl.closest(".reply").find(".replylink");
+  var replyId = replyEl.closest(".reply").attr("id").replace(/reply/, "");
+
   var orderedListId = replylink.data("parent-id");
   var orderedList = replylink.closest(".post").find("#reply" + orderedListId);
 
@@ -310,6 +314,10 @@ function process_vote(replyEl) {
 
   var this_votes = {};
   // we allow cross votes, but only one per reply
+  if (!voted[replyId]) {
+    voted[replyId] = {};
+  }
+
   var matches = text.match(/:?vote-?\d+:?/g);
 
   _.each(matches, function(match) {
@@ -322,10 +330,15 @@ function process_vote(replyEl) {
     var lis = orderedList.find("li");
     var votedon = lis.get(key - 1); // because the list starts at 1, duh
 
-
     if (!votedon) {
       return;
     }
+
+    if (voted[replyId][key]) {
+      return;
+    }
+    voted[replyId][key] = true;
+
 
     // now, we need to add the voter at the end of the li
     var vote_span = $(votedon).find(".votes");
