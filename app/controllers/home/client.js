@@ -39,6 +39,8 @@ module.exports = {
     "click .tripcode" : "handle_click_tripcode",
     "mouseenter .imglink" : "handle_mouseenter_imglink",
     "mouseleave .imglink" : "handle_mouseleave_imglink",
+    "mouseenter .ruleslink" : "handle_mouseenter_ruleslink",
+    "mouseleave .ruleslink" : "handle_mouseleave_ruleslink"
   },
 
   handle_click_tripcode: function(e) {
@@ -60,6 +62,31 @@ module.exports = {
 
       });
     });
+
+  },
+  handle_mouseenter_ruleslink: function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $(e.target).popover("destroy");
+
+    var html = "" + "  <li>do not post anything that violates local or US law </li>" + "  <li>spamming, advertising and flooding is bad times</li>" + "  <li>posting or aksing for dox is is ban times</li>" + "  <li>any and all <a href='http://www.urbandictionary.com/define.php?term=shitposting'>shitposting</a> belongs in /b</li>"; 
+
+    var div = $("<div />");
+    div.html(html);
+
+    $(e.target).popover({
+      html: true,
+      content: div.html(),
+      placement: "bottom",
+      container: this.$el });
+
+    $(e.target).popover("show");
+         
+
+  },
+  handle_mouseleave_ruleslink: function(e) {
+    e.preventDefault();
+    $(e.target).popover("destroy");
 
   },
   handle_mouseenter_imglink: function(e) {
