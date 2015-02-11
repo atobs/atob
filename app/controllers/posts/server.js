@@ -8,6 +8,7 @@ var value_of = controller.value_of,
 
 var posting = require_app("server/posting");
 var render_posting = posting.render_posting;
+var makeme_store = require_app("server/makeme_store");
 var post_links = require_app("server/post_links");
 var Post = require_app("models/post");
 var ArchivedPost = require_app("models/archived_post");
@@ -124,12 +125,10 @@ module.exports = {
   socket: function(s) {
     var _board;
 
-    var load_controller = require_core("server/controller").load;
-    var boards_controller = load_controller("boards");
-    boards_controller.subscribe_to_updates(s);
+    makeme_store.subscribe_to_updates(s);
 
     s.on("join", function(board) {
-      boards_controller.lurk(s, board);
+      makeme_store.lurk(s, board);
       s.spark.join(board);
       s.board = board;
       _board = board;

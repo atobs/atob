@@ -13,6 +13,7 @@ var render_posting = posting.render_posting;
 
 
 var ICONS = require_app("client/emojies");
+var makeme_store = require_app("server/makeme_store");
 
 var ICON_GROUPS = _.groupBy(ICONS, function(icon, index) {
   return parseInt(index / 50, 10);
@@ -373,9 +374,9 @@ module.exports = {
 
     var render_anons = function() {
       var counts = {};
-      var load_controller = require_core("server/controller").load;
-      var boards_controller = load_controller("boards");
-      _.each(boards_controller.GOING_ONS, function(anons) {
+      makeme_store.digest_doings();
+      
+      _.each(makeme_store.DOING_ONS, function(anons) {
         _.each(anons, function(emote, id) {
           counts[id] = emote;
         });
@@ -390,7 +391,7 @@ module.exports = {
 
       var str = _.map(counts, function(c, id) {
         var opacity = 1;
-        var last_seen = boards_controller.LAST_SEEN[id];
+        var last_seen = makeme_store.LAST_SEEN[id];
         if (last_seen) {
           var diff = Date.now() - last_seen;
           opacity = (1 - diff / 3600 / 1000);
@@ -601,10 +602,8 @@ module.exports = {
   },
 
   socket: function(s) { 
-    var load_controller = require_core("server/controller").load;
-    var boards_controller = load_controller("boards");
-    boards_controller.lurk(s); 
-    boards_controller.subscribe_to_updates(s);
+    makeme_store.lurk(s); 
+    makeme_store.subscribe_to_updates(s);
 
     s.on("new_reply", function(post, cb) {
       post.tripcode = Math.random() + "";

@@ -12,19 +12,7 @@ var post_links = require_app("server/post_links");
 var mod = require_app("server/mod");
 var config = require_core("server/config");
 
-var load_controller = require_core("server/controller").load;
-
-var GOING_ONS = { 
-  0: {}
-};
-var LAST_SEEN = {
-
-};
-
-var DOINGS = {};
-
-var LAST_UPDATE = {};
-var SCHEDULED = {};
+var makeme_store = require_app("server/makeme_store");
 
 var BOARD_SLOGANS = {
   "a" : "is for anon",
@@ -35,135 +23,6 @@ var BOARD_SLOGANS = {
 
 var board_utils = require_app("server/board_utils");
 
-var sockets = {};
-
-function subscribe_to_updates(s) {
-
-  var idleTimer;
-  var sid = s.spark.headers.sid;
-  sockets[sid] = sockets[sid] || [];
-  sockets[sid].push(s);
-  function update_post_status(post_id) {
-    var doings = {
-      post_id: post_id,
-      counts: _.map(GOING_ONS[post_id], function(v) { return v; })
-    };
-    var last_update = LAST_UPDATE[post_id];
-    if (last_update && Date.now() - last_update < 1000) {
-      // need to make sure this does happen eventually...
-      clearTimeout(SCHEDULED[post_id]);
-      SCHEDULED[post_id] = setTimeout(function() {
-        delete SCHEDULED[post_id];
-        update_post_status(post_id); 
-      }, 500);
-      return;
-    }
-
-    LAST_UPDATE[post_id] = Date.now();
-
-    var boards_controller = load_controller("boards");
-    var board_socket = boards_controller.get_socket();
-    board_socket.broadcast.to(s.board).emit("doings", doings);
-    s.emit("doings", doings);
-
-    var posts_controller = load_controller("posts");
-    var post_socket = posts_controller.get_socket();
-    post_socket.broadcast.to(s.board).emit("doings", doings);
-
-    module.exports.update_doings();
-  }
-
-  s.on("restalked", function(data) {
-    // Find the SID they belong to?
-    var stalked_socket = sockets[data.by];
-    if (stalked_socket) {
-      _.each(stalked_socket, function(s) {
-        s.emit("restalked");
-      });
-    }
-  });
-
-  // TODO: make a better schema for how this works
-  s.on("isdoing", function(doing, cb) {
-    var olddoing = s.isdoing || DOINGS[sid];
-
-
-    if (doing.what === "stalking") {
-      if (doing.anon === sid) {
-        s.emit("bestalked");
-        return;
-      }
-
-      var stalked_socket = sockets[doing.anon];
-      if (stalked_socket) {
-        _.each(stalked_socket, function(s) {
-          s.emit("bestalked", { by: sid, sid: doing.anon });
-
-        });
-      } else {
-        s.emit("bestalked");
-      }
-    }
-
-    LAST_SEEN[sid] = Date.now();
-
-
-    function retimer(interval) {
-      interval = interval || 30000;
-      clearTimeout(idleTimer);
-      idleTimer = setTimeout(function() {
-        delete GOING_ONS[doing.post_id][sid];
-        delete s.isdoing;
-        delete DOINGS[sid];
-        module.exports.lurk(s);
-
-        update_post_status(doing.post_id);
-      }, interval);
-    }
-
-    // so complex. bad ideas.
-    if (olddoing) {
-      if (olddoing.post_id !== doing.post_id) {
-        delete GOING_ONS[olddoing.post_id][sid];
-      } else if (olddoing.what.match(":")) {
-        if (doing.what.match(":")) {
-          delete GOING_ONS[olddoing.post_id][sid];
-        } else {
-          retimer(60 * 60 * 1000);
-          if (cb) { cb(); }
-          return;
-        }
-      } else {
-        // check if we are stalking...
-        // if so, we dont let the icon change for a little while
-        if (olddoing.what === "stalking") {
-          update_post_status(doing.post_id);
-
-          if (cb) { cb(); }
-          return;
-        }
-
-      }
-
-    }
-
-    DOINGS[sid] = s.isdoing = doing;
-    if (!GOING_ONS[doing.post_id]) {
-      GOING_ONS[doing.post_id] = {};
-    }
-
-    GOING_ONS[doing.post_id][sid] = doing.what;
-
-    retimer();
-    update_post_status(doing.post_id);
-    if (olddoing) {
-      update_post_status(olddoing.post_id);
-    }
-
-    if (cb) { cb(); }
-  });
-
-}
 module.exports = {
   // If the controller has assets in its subdirs, set is_package to true
   is_package: false,
@@ -320,52 +179,6 @@ module.exports = {
 
   },
 
-  update_doings: _.throttle(function() {
-    var load_controller = require_core("server/controller").load;
-    var home_controller = load_controller("home");
-    var boards_controller = load_controller("boards");
-    var posts_controller = load_controller("posts");
-
-    var now = Date.now();
-    var last_seen = {};
-    _.each(LAST_SEEN, function(then, sid) {
-      var duration = now - then; 
-      if (duration > 60 * 60 * 3600) {
-        delete LAST_SEEN[sid];
-      } else {
-        last_seen[sid] = duration;
-      }
-    });
-
-    home_controller.get_socket().emit("anons", GOING_ONS, last_seen);
-    boards_controller.get_socket().emit("anons", GOING_ONS, last_seen);
-    posts_controller.get_socket().emit("anons", GOING_ONS, last_seen);
-  }, 2000),
-
-  lurk: function(s, board_id) {
-    var sid = s.spark.headers.sid;
-
-    LAST_SEEN[sid] = Date.now();
-    if (board_id && board_id.length === 1) {
-      if (Math.random() < 0.50) {
-        GOING_ONS[0][sid] = ":circle" + board_id + ":"; 
-      } else {
-        GOING_ONS[0][sid] = ":square" + board_id + ":"; 
-      }
-    } else {
-      // pick a random lurk icon?
-      var icons = [ ":coffee:", ":cup-coffeealt:", ":mug:", ":coffeecupalt:", ":tea:", ":teapot:" ];
-      GOING_ONS[0][sid] = icons[_.random(icons.length-1)];
-    }
-    clearTimeout(s.lurk_timer);
-    s.lurk_timer = setTimeout(function() {
-      delete GOING_ONS[0][sid];
-    }, 60 * 60 * 1000);
-
-    module.exports.update_doings();
-
-  },
-
   socket: function(s) {
     var _board;
 
@@ -377,7 +190,7 @@ module.exports = {
       }
 
       joined[board] = true;
-      module.exports.lurk(s, board);
+      makeme_store.lurk(s, board);
       s.spark.join(board);
       _board = board;
       s.emit("joined", board);
@@ -414,14 +227,11 @@ module.exports = {
 
 
 
-    subscribe_to_updates(s);
+    makeme_store.subscribe_to_updates(s);
 
   },
 
   handle_new_reply: posting.handle_new_reply,
   handle_new_post: posting.handle_new_post,
-  subscribe_to_updates: subscribe_to_updates,
-  GOING_ONS: GOING_ONS,
-  LAST_SEEN: LAST_SEEN,
   BOARD_SLOGANS: BOARD_SLOGANS
 };
