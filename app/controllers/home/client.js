@@ -174,6 +174,7 @@ module.exports = {
       var self = this;
       convert_post_text(reply, function(reply) {
         reply.text = reply.formatted_text;
+        var summarize = require("app/client/summarize");
         var summary = $(summarize(reply));
 
         summary.hide();
