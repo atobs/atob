@@ -282,7 +282,10 @@ module.exports = {
         var $el = $(this);
         var parentReply = $el.closest(".reply");
 
-        var replyId = parentReply.attr("id").replace(/reply/, '');
+        var replyId = (parentReply.attr("id") || "").replace(/reply/, '');
+        if (!replyId){ 
+          return;
+        }
 
         var repliesTo = $(".replylink[data-parent-id=" + replyId + "]");
         repliesTo.each(function() {
@@ -301,7 +304,7 @@ var voted = {};
 function process_vote(replyEl) {
 
   var replylink = replyEl.closest(".reply").find(".replylink");
-  var replyId = replyEl.closest(".reply").attr("id").replace(/reply/, "");
+  var replyId = (replyEl.closest(".reply").attr("id") || "").replace(/reply/, "");
 
   var orderedListId = replylink.data("parent-id");
   var orderedList = replylink.closest(".post").find("#reply" + orderedListId);

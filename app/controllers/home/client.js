@@ -196,6 +196,7 @@ module.exports = {
         post.text = post.formatted_text;
         var postParent = $(".threads .post").parent();
         post.id = post.post_id || post.id;
+        var summarize = require("app/client/summarize");
         var summary = $(summarize(post));
         summary.hide();
         postParent.prepend(summary);
