@@ -80,7 +80,11 @@ module.exports = {
       placement: "bottom",
       container: this.$el });
 
-    $(e.target).popover("show");
+    _.defer(function() { 
+      $(e.target).popover("show");
+
+    });
+
          
 
   },
@@ -105,7 +109,9 @@ module.exports = {
         placement: "bottom",
         container: this.$el });
 
-      $(e.target).popover("show");
+      _.defer(function() { 
+        $(e.target).popover("show");
+      });
 
     });
 

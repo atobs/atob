@@ -113,7 +113,9 @@ module.exports = {
       placement: "bottom",
       container: this.$el });
 
-    $(e.target).popover("show");
+    _.defer(function() { 
+      $(e.target).popover("show");
+    });
 
   },
   handle_mouseleave_imglink: function(e) {
@@ -179,7 +181,9 @@ module.exports = {
     var el = e.target;
     expand_replies(div);
     $(el).popover({ html: true, content: div.html(), placement: "top", container: container });
-    $(el).popover("show");
+    _.defer(function() { 
+      $(el).popover("show");
+    });
 
 
   },
