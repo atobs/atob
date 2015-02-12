@@ -372,6 +372,17 @@ module.exports = {
     s.on("stalking", this.be_stalker);
 
   },
+  handle_search: function(e) {
+    var el = $(".searchinput");
+    var val = el.val();
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (val) {
+      window.location = "/s?q=" + val;
+    }
+  },
   controller_events: {
     "change input.newtrip" : "save_newtrip",
     "click .beeper" : "request_notifs",
@@ -385,5 +396,6 @@ module.exports = {
     "change input.handle" : "save_handle",
     "keyup input.tripcode" : "update_trip_colors",
     "keyup input.handle" : "update_trip_colors",
+    "submit .searchform" : "handle_search",
   }
 };

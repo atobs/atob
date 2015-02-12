@@ -1,0 +1,23 @@
+<% add_stylesheet("search") %>
+<% add_stylesheet("home") %>
+<% set_default("slogan", "") %>
+<% set_default("query", "") %>
+
+<div class="container mtl">
+  <%= render_partial("home/header.html.erb", { show_search: false}) %> 
+
+  <div class="col-md-12">
+    <input class="searchinput" placeholder="type here to search" value="<%= query %>"> </input>
+  </div>
+
+  <div class="col-md-12">
+    <div class="results">
+      <%= render_search_results() %>
+
+
+    </div>
+  </div>
+
+
+</div>
+

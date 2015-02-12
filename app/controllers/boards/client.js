@@ -23,7 +23,7 @@ module.exports = {
     "keyup .new_post textarea" : "update_post_preview",
     "click .boardview .boardtiles" : "show_board_tiles",
     "click .boardview .boardfull" : "show_board_full",
-    "click .boardview .boardlist" : "show_board_list"
+    "click .boardview .boardlist" : "show_board_list",
   },
   show_board_tiles: function() {
     $(".post").addClass("tile");
@@ -68,10 +68,10 @@ module.exports = {
     window.bootloader.storage.set("newpost_text_" + this.board, text);
 
     var children = preview.children();
-    $C("post", { 
-      title: title, 
-      text: escaped_text, 
-      ups: 0, 
+    $C("post", {
+      title: title,
+      text: escaped_text,
+      ups: 0,
       downs: 0, id: "preview",
       author: this.get_handle(),
       tripcode: this.get_trip_identity()
@@ -126,7 +126,7 @@ module.exports = {
 
     $(form).find("input, textarea").val("");
     $(".post_preview").fadeOut(function() {
-      $(this).empty(); 
+      $(this).empty();
     });
 
     SF.socket().emit("new_post", datas);
@@ -152,7 +152,7 @@ module.exports = {
       } else if (boardstyle === "tilerow") {
         boardlink = "boardlist";
 
-      } else { 
+      } else {
         boardlink = "boardfull";
       }
       $(".boardview a." + boardlink).addClass("active");
@@ -288,7 +288,7 @@ module.exports = {
       }
     }
 
-    
+
     function set_textarea_val(stub) {
       var val = textareaEl.val();
       textareaEl.val('').focus().val(val + stub);
@@ -324,12 +324,11 @@ module.exports = {
 
     set_upload_state();
     real_imgur_request();
-    
+
   },
   set_api_key: function(key) {
     IMGUR_KEY = key;
-  }
-  
+  },
 };
 
 _.extend(module.exports, settings);

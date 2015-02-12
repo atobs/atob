@@ -4,5 +4,6 @@
   "/a/" : "archives",
   "/p/" : "posts",
   "/u/" : "profiles",
-  "/r/" : "rss"
+  "/r/" : "rss",
+  "/s/" : "search"
 }
