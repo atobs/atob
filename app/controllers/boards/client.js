@@ -24,6 +24,20 @@ module.exports = {
     "click .boardview .boardtiles" : "show_board_tiles",
     "click .boardview .boardfull" : "show_board_full",
     "click .boardview .boardlist" : "show_board_list",
+    "click .post .title" : "click_post_title",
+  },
+
+  click_post_title: function(e) {
+    var target = $(e.target).closest(".post");
+
+    var post_id = target.data("post-id");
+    if (post_id) {
+      SF.go("/p/" + post_id);
+      SF.inform("popstate");
+
+      e.preventDefault();
+      e.stopPropagation();
+    }
   },
   show_board_tiles: function() {
     $(".post").addClass("tile");
@@ -134,9 +148,40 @@ module.exports = {
     window.bootloader.storage.delete("newpost_title_" + this.board);
     window.bootloader.storage.delete("newpost_text_" + this.board);
   },
+  popstate: function() {
+    var pathname = window.location.pathname;
+    var boardstyle = storage.get("boardstyle") || "";
+    if (pathname.indexOf("/b/") === 0) {
+      $(".post").show().removeClass("tile tilerow").addClass(boardstyle);
+    } else if (pathname.indexOf("/p/") === 0) {
+      $(".post").hide();
+      var postId = pathname.slice(3);
+      postId = parseInt(postId, 10);
+      var post = window._POSTS[postId];
+      if (post) {
+        post.$el.find(".post")
+          .removeClass("tile tilerow")
+          .fadeIn(function() { 
+            _.defer(function() { post.bumped(); });
+            post.$el.find("form.reply textarea").focus();
+        
+          });
+
+      } else {
+        window.location.reload();
+      }
+
+    } else {
+      // dunno what to do
+      console.log("POPPED STATE TO WHERE?");
+    }
+
+  },
   init: function() {
     this.init_tripcodes();
     SF.trigger("board_ready");
+
+    SF.subscribe("popstate", this.popstate);
 
     var lastTime = (new Date()).getTime();
     var textarea = this.$el.find(".new_post textarea[name='text']");

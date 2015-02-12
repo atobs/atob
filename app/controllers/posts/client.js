@@ -10,6 +10,13 @@ module.exports = {
   },
   init: function() {
     this.init_tripcodes();
+
+    var current_location = window.location.pathname;
+    SF.subscribe("popstate", function() {
+      if (window.location.pathname !== current_location) { 
+        window.location.reload();
+      }
+    });
   },
   set_board: function(board) {
     this.board = board;
