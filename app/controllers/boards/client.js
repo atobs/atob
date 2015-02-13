@@ -24,7 +24,7 @@ module.exports = {
     "click .boardview .boardtiles" : "show_board_tiles",
     "click .boardview .boardfull" : "show_board_full",
     "click .boardview .boardlist" : "show_board_list",
-    "click .post .title" : "click_post_title",
+    "click .post .title h4" : "click_post_title",
   },
 
   click_post_title: function(e) {
@@ -153,17 +153,21 @@ module.exports = {
     var boardstyle = storage.get("boardstyle") || "";
     if (pathname.indexOf("/b/") === 0) {
       $(".post").show().removeClass("tile tilerow").addClass(boardstyle);
+      _.each(window._POSTS, function(post) {
+        post.collapse();
+      });
     } else if (pathname.indexOf("/p/") === 0) {
       $(".post").hide();
       var postId = pathname.slice(3);
       postId = parseInt(postId, 10);
       var post = window._POSTS[postId];
       if (post) {
+        post.expand();
         post.$el.find(".post")
           .removeClass("tile tilerow")
           .fadeIn(function() { 
             _.defer(function() { post.bumped(); });
-            post.$el.find("form.reply textarea").focus();
+            SF.controller().emit("isdoing", { what: "focused", post_id: postId });
         
           });
 

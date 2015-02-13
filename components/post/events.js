@@ -206,16 +206,25 @@ module.exports = {
   handle_click_help: function() {
     $C("markdown_dialog", {});
   },
+  collapse: function() {
+    this.$el.find(".post").removeClass("maximize");
+    this.$el.find(".infobar .restore").html("[expand]");
+    this.bumped();
+  },
+  expand: function() {
+    this.$el.find(".post").addClass("maximize");
+    this.$el.find(".infobar .restore").html("[collapse]");
+    this.bumped();
+
+  },
   handle_restore: function(e) {
-    this.$el.find(".post").toggleClass("maximize");
-    var maximized = this.$el.find(".post").hasClass("maximize");
-    if (maximized) {
-      this.$el.find(".restore.link").html("[collapse]");
+    var current_max = this.$el.find(".post").hasClass("maximize");
+    if (current_max) {
+      this.collapse();
     } else {
-      this.$el.find(".restore.link").html("[expand]");
+      this.expand();
     }
 
-    this.bumped();
     e.preventDefault();
   },
 
