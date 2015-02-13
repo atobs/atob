@@ -294,6 +294,12 @@ module.exports = {
         // so we start the stalking game...
         var next_ref = "/p/" + post_id;
         if (window.location.href.indexOf(next_ref) === -1) {
+          if (window.location.href.match("/chat")) {
+            // no stalking from chat?
+            console.log("NO STALKING FROM CHAT!");
+            return;
+          }
+
           window.location = next_ref + "?e=1";
         } else {
           $(".logo").addClass("pulse");
