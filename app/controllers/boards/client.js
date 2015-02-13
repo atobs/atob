@@ -29,6 +29,10 @@ module.exports = {
 
   click_post_title: function(e) {
     var target = $(e.target).closest(".post");
+    var linklink = $(e.target).closest(".linklink");
+    if (linklink.length) {
+      return;
+    }
 
     var post_id = target.data("post-id");
     if (post_id) {
