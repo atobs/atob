@@ -152,11 +152,24 @@ function add_markdown($el) {
 
   // need to add icons here before data-text is added to the element
   var icon_str = "<i class='icon icon-NAME' title=':NAME:'> </i>";
+  var icon_re = new RegExp(icon_str.replace(/NAME/g, '(.*)'), "g");
   var replaced = escaped.replace(/:([\w-]+):/g, function(x, icon) {
     return icon_str.replace(/NAME/g, icon.toLowerCase());
   });
   $el.html(replaced);
   $el.addClass("marked");
+
+  // tidy up the links that have icony things in them
+  var links = $el.find("a");
+  links.each(function() {
+    var href = $(this).attr("href");
+    if (href) {
+      href = href.replace(icon_re, ":$1:");
+      links.attr("href", href);
+    }
+
+  });
+
 }
 
 function shorten_text($el) {

@@ -41,6 +41,7 @@ module.exports = {
 
   index: function(ctx, api) {
     var query = ctx.req.query.q;
+    this.set_fullscreen(true);
     var render_search_results = api.page.async(function(flush) {
       if (query) {
         find_posts(query, function(posts) {
