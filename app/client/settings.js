@@ -9,10 +9,13 @@ var cookie_opts = {
 
 var TRIPCODES = [];
 var LOOKUP = {};
+var SIDEBARS = false;
 
 var get_from_storage = storage.get;
 var set_in_storage = storage.set;
 TRIPCODES = JSON.parse(get_from_storage("tripcodes") || "[]");
+
+SIDEBARS = JSON.parse(get_from_storage("use_sidebars") || "false");
 
 module.exports = {
   gen_tripcode: tripcode_gen,
@@ -192,6 +195,7 @@ module.exports = {
     $.removeCookie("handle");
 
     if (newtrip) {
+      newtripEl.attr('checked', true);
       newtripEl.prop('checked', true);
     }
 
@@ -389,6 +393,27 @@ module.exports = {
       window.location = "/s?q=" + val;
     }
   },
+  toggle_sidebars: function() {
+    SIDEBARS = !SIDEBARS;
+    set_in_storage("use_sidebars", SIDEBARS);
+    if (SIDEBARS) {
+      this.add_sidebars();
+    } else {
+      window.location.reload();
+
+    }
+
+  },
+
+  add_sidebars: function() {
+    var self = this;
+    window.bootloader.js("app/client/sidebar", function() {
+      require("app/client/sidebar").add_sidebars();
+      $(".settings").fadeOut();
+
+    });
+
+  },
   controller_events: {
     "change input.newtrip" : "save_newtrip",
     "click .beeper" : "request_notifs",
@@ -398,6 +423,7 @@ module.exports = {
     "click .tripcode_delete" : "delete_old_code",
     "click .tripcode_history" : "click_tripcode_history",
     "click .anonicator" : "follow_anonicator",
+    "click .use_sidebars" : "toggle_sidebars",
     "change input.tripcode" : "save_tripcode",
     "change input.handle" : "save_handle",
     "keyup input.tripcode" : "update_trip_colors",

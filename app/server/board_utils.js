@@ -15,7 +15,7 @@ module.exports = {
 
       flush(template_str);
 
-      bridge.call("app/client/cordova", "add_sidebars");
+      bridge.call("app/client/sidebar", "add_sidebars");
 
     });
 
