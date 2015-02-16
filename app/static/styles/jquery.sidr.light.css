@@ -25,14 +25,21 @@
     clear: both;
     padding-top: 5px;
     padding-bottom: 5px;
-    padding-left: 15px;
     border-bottom: 2px dotted #e8e8e8;
 
     a {
       color: #e8e8e8;
       display: block;
       text-align: left;
+      padding-left: 15px;
+
+      &:hover {
+        color: #888;
+        text-decoration: none;
+
+      }
     }
+
 
     &:last-child {
       border-bottom: 0;

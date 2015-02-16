@@ -95,3 +95,11 @@ body:not(:-moz-handler-blocked) #anons {
 .anonicator {
   padding: 5px;
 }
+
+body .sidr {
+  padding: 0px;
+}
+
+body .sidr.right {
+  padding: 15px;
+}

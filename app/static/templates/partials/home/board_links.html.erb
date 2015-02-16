@@ -6,7 +6,7 @@
 
 <% var width = 60 / boards.length %>
 
-<div class="clearfix">
+<div class="boardlinks">
   <% _.each(boards, function(board) { %>
     <span class='lfloat boardlink' style='width: <%= width %>%' >
       <a href="<%= url_for("boards.show", { id: board }) %>"><span class='icon-<%= icons[board] || (board.length == 1 && 'square' + board) %>'</span></a>

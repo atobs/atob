@@ -8,8 +8,14 @@ function make_sidebar(toggle_selector, content_selector, side) {
   var sidebar_el = $("<div />");
   sidebar_el.append($(content_selector).html());
   sidebars.push(sidebar_el);
-  sidebar_el.addClass("sidr");
+  sidebar_el.addClass("sidr " + side);
   $("body").append(sidebar_el);
+
+  var logobarEl = $("#logobar");
+  var logobarLeft = 0;
+  if (logobarEl.length) {
+    logobarLeft = parseInt(logobarEl.css("left").replace(/px/, ""), 10);
+  }
 
   $(toggle_selector).on("click", function(e) {
     e.stopPropagation();
@@ -28,7 +34,6 @@ function make_sidebar(toggle_selector, content_selector, side) {
     if (!was_opened) {
       events.trigger("opened");
 
-      var sidebar_options = {};
       if (side === "right") {
         sidebar_el.css({
           right: 0,
@@ -47,6 +52,8 @@ function make_sidebar(toggle_selector, content_selector, side) {
       options.position = "relative";
       $("#page_content").css(options);
 
+      $("#logobar").css(side_name, logobarLeft + 250 + "px");
+
       $(".content").one("click", function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -55,12 +62,14 @@ function make_sidebar(toggle_selector, content_selector, side) {
 
         $(toggle_selector).click();
       });
-      
+
     } else {
       sidebar_el.fadeOut(function() { });
       options[side_name] = "0px";
       options[other_side_name] = "auto";
       $("#page_content").css(options);
+
+      $("#logobar").css(side_name, logobarLeft + "px");
       options.position = "auto";
       events.trigger("closed");
 
@@ -121,7 +130,7 @@ function add_sidebars() {
       "margin-left": "-2000px"
     }).fadeOut();
 
-    
+
     // append a /home link to the navlinks, too
     var link_sidebar = $(".sidr .boardlink")[0];
     var home_link = $(link_sidebar).clone();
