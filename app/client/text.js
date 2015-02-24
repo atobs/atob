@@ -148,7 +148,7 @@ function add_replies($el) {
 function add_markdown($el) {
   var escaped = $el.text().trim();
   $el.attr("data-text", escaped);
-  escaped = marked(escaped, { renderer: renderer});
+  escaped = marked(escaped, { renderer: renderer, breaks: true});
 
   // need to add icons here before data-text is added to the element
   var icon_str = "<i class='icon icon-NAME' title=':NAME:'> </i>";
@@ -168,6 +168,25 @@ function add_markdown($el) {
       links.attr("href", href);
     }
 
+  });
+
+  var brs = $el.find("br");
+  brs.each(function() {
+    var $br = $(this);
+
+    var textEl = $br[0].previousSibling || $br[0].prev;
+    if (textEl) {
+      if (textEl.data) {
+        var match = textEl.data.toString().match(/^(&gt;|>)\s/);
+        if (match) {
+          var text = textEl.data;
+          text = "<span class='blockquote'>" + text + "</span>";
+          $(textEl).remove();
+
+          $br.before($(text));
+        }
+      }
+    }
   });
 
 }

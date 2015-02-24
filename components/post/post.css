@@ -450,3 +450,7 @@ ol li:nth-child(even) {
 ol li .votes {
   float: right;
 }
+
+.blockquote {
+  color: #00af32;
+}
