@@ -98,6 +98,7 @@ body:not(:-moz-handler-blocked) #anons {
 
 body .sidr {
   padding: 0px;
+  padding-top: 15px;
 }
 
 body .sidr.right {
