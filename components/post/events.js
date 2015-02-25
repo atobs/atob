@@ -136,6 +136,16 @@ module.exports = {
 
       expanded[clone_id] = true;
       var responseEl = $("#reply" + clone_id);
+
+      var parentEl = responseEl.parent();
+      if (parentEl.hasClass("post")) {
+        var retEl = $("<div />");
+        retEl.append(parentEl.find(".title").clone());
+        retEl.append(responseEl.clone());
+
+        return retEl;
+      }
+
       return responseEl.clone();
     }
     
