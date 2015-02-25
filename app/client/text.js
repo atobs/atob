@@ -177,7 +177,7 @@ function add_markdown($el) {
     var textEl = $br[0].previousSibling || $br[0].prev;
     if (textEl) {
       if (textEl.data) {
-        var match = textEl.data.toString().match(/^(&gt;|>)\s/);
+        var match = textEl.data.toString().match(/^(&gt;|>)((?!(&gt;|>)))/);
         if (match) {
           var text = textEl.data;
           text = "<span class='blockquote'>" + text + "</span>";
