@@ -282,7 +282,14 @@ module.exports = {
         var $el = $(this);
         var parentReply = $el.closest(".reply");
 
-        var replyId = (parentReply.attr("id") || "").replace(/reply/, '');
+        var replyId;
+        if (!parentReply.length) {
+          parentReply = $el.closest(".post");
+          replyId = parentReply.data("post-id");
+        } else {
+          replyId = (parentReply.attr("id") || "").replace(/reply/, '');
+        }
+
         if (!replyId){ 
           return;
         }
