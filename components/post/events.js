@@ -42,9 +42,30 @@ module.exports = {
     "mousemove .post" : "handle_removepulse",
     "click .replylink" : "handle_mouseenter_replylink",
     "mouseenter .replylink" : "handle_mouseenter_replylink",
-    "mouseleave .replylink" : "handle_mouseleave_replylink"
+    "mouseleave .replylink" : "handle_mouseleave_replylink",
+    "mouseenter .reply" : "handle_mouseenter_reply",
+    "mouseleave .reply" : "handle_mouseleave_reply"
   },
 
+  handle_mouseenter_reply: function(e) {
+    var thisReply = $(e.target).closest(".reply").attr('id').replace(/reply/, '');
+    var replies = $(".replylink[data-parent-id=" + thisReply + "]");
+
+    replies.closest(".reply").addClass("highlight");
+
+    var replyLinks = $(e.target).find(".replylink");
+    replyLinks.each(function() {
+      var link = $(this);
+      var replyDest = $("#reply" + link.data("parent-id"));
+
+      replyDest.addClass("highlight");
+
+    });
+
+  },
+  handle_mouseleave_reply: function(e) {
+    $(e.target).closest(".post").find(".reply").removeClass("highlight");
+  },
   handle_click_tripcode: function(e) {
     var target = $(e.target).closest(".tripcode");
     var tripcode = target.data("tripcode");

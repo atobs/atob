@@ -17,7 +17,7 @@
 }
 
 .highlight {
-  background-color: #fafadd;
+  background-color: #fafaee;
 }
 
 .placeholder {
@@ -301,7 +301,7 @@
 }
 
 .reply:hover {
-  background-color: #eaeaea;
+  background-color: #fafadd;
 }
 
 .hideContent {
