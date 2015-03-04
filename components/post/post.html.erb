@@ -5,6 +5,7 @@
 <% set_default("post_id", 0) %>
 <% set_default("created_at", new Date()) %>
 <% set_default("replies", []) %>
+<% set_default("burtles", 0) %>
 <% set_default("tripcode", "") %>
 <% set_default("author", "anon") %>
 <% set_default("highlight_id", null) %>
@@ -115,6 +116,11 @@
     <div href="#" class="mtl downs lfloat <%= downs ? "" : "hidden" %>" style="margin-left: 20px">
         <span class="icon-miniangry mtl"></span>
         <span class="downs_count count"><%= downs %> </span>
+    </div>
+
+    <div href="#" class="mtl burtles lfloat <%= burtles ? "" : "hidden" %>" style="margin-left: 10px">
+        <span class="icon-atob"></span>
+        <span class="burtles_count count"><%= burtles %> </span>
     </div>
 
     <div class="counts rfloat mtl" style="display: inline-block; font-weight: bold"> </div>

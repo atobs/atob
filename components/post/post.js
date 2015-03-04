@@ -242,6 +242,10 @@ module.exports = {
       this.$el.find(".downs").removeClass("hidden");
     }
   },
+  burtle: function(burtles) {
+    this.$el.find(".burtles_count").text(burtles);
+    this.$el.find(".burtles").removeClass("hidden");
+  },
   update_counts: function(counts) {
     counts.sort();
 

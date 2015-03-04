@@ -14,6 +14,8 @@ var DOING_ONS = {};
 
 var DEFAULT_TTL = 1; // 1 minute
 
+var Post = require_app("models/post");
+
 
 // TODO: have it prioritize the doings and set up the TTLs
 function add_doing(sid, doing) {
@@ -83,6 +85,50 @@ function digest_doings() {
   });
 }
 
+function maybe_stalk(sid, doing, s) {
+  if (doing.what === "stalking") {
+    if (doing.anon === sid) {
+      s.emit("bestalked");
+      return;
+    }
+
+    var burtle_post = function(post) {
+      post.dataValues.burtles += 1;
+      post.save();
+
+      var load_controller = require_core("server/controller").load;
+      var boards_controller = load_controller("boards");
+      var board_socket = boards_controller.get_socket();
+      board_socket.broadcast.to(s.board).emit("burtled", post.dataValues.id, post.dataValues.burtles);
+
+      var posts_controller = load_controller("posts");
+      var post_socket = posts_controller.get_socket();
+      post_socket.broadcast.to(s.board).emit("burtled", post.dataValues.id, post.dataValues.burtles);
+
+
+    };
+
+    Post.find(doing.post_id).success(function(res) {
+      if (res.dataValues.parent_id) {
+        Post.find(res.dataValues.parent_id).success(burtle_post);
+      } else {
+        burtle_post(res);
+      }
+    });
+
+    var stalked_socket = SOCKETS[doing.anon];
+    if (stalked_socket) {
+      _.each(stalked_socket, function(s) {
+        s.emit("bestalked", { by: sid, sid: doing.anon });
+        s.emit("burtled", doing.post_id);
+
+      });
+    } else {
+      s.emit("bestalked");
+    }
+  }
+}
+
 function subscribe_to_updates(s) {
 
   var sid = s.spark.headers.sid;
@@ -137,23 +183,7 @@ function subscribe_to_updates(s) {
     var olddoing = s.isdoing || DOINGS[sid];
     DOINGS[sid] = s.isdoing = doing;
 
-    if (doing.what === "stalking") {
-      if (doing.anon === sid) {
-        s.emit("bestalked");
-        return;
-      }
-
-      var stalked_socket = SOCKETS[doing.anon];
-      if (stalked_socket) {
-        _.each(stalked_socket, function(s) {
-          s.emit("bestalked", { by: sid, sid: doing.anon });
-
-        });
-      } else {
-        s.emit("bestalked");
-      }
-    }
-
+    maybe_stalk(sid, doing, s);
     add_doing(sid, doing);
 
     update_post_status(doing.post_id);

@@ -48,7 +48,7 @@ module.exports = {
   },
 
   handle_mouseenter_reply: function(e) {
-    var thisReply = $(e.target).closest(".reply").attr('id').replace(/reply/, '');
+    var thisReply = ($(e.target).closest(".reply").attr('id') || "").replace(/reply/, '');
     var replies = $(".replylink[data-parent-id=" + thisReply + "]");
 
     replies.closest(".reply").addClass("highlight");

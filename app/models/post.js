@@ -12,6 +12,7 @@ var Post = sequelize.instance.define('Post', {
   replies: sequelize.INTEGER,
   downs: sequelize.INTEGER,
   ups: sequelize.INTEGER,
+  burtles: sequelize.INTEGER,
   bumped_at: sequelize.DATE
 });
 

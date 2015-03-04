@@ -381,6 +381,14 @@ module.exports = {
     s.on("restalked", this.restalk);
     s.on("stalking", this.be_stalker);
 
+    s.on("burtled", this.burtled);
+
+  },
+
+  burtled: function(post_id, burtles) {
+    if (window._POSTS[post_id]) {
+      window._POSTS[post_id].burtle(burtles);
+    }
   },
   handle_search: function(e) {
     var el = $(".searchinput");
