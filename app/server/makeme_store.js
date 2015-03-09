@@ -34,9 +34,31 @@ function add_doing(sid, doing) {
   module.exports.update_doings();
 }
 
+function digest_sockets() {
+  _.each(SOCKETS, function(sockets, sid) {
+    var next_sockets = [];
+    var cur_length = sockets.length;
+    _.each(sockets, function(s) {
+      if (s.primus.connected) {
+        next_sockets.push(s);
+      }
+      
+      SOCKETS[sid] = next_sockets;
+    });
+
+    var now_length = next_sockets.length;
+    if (now_length !== cur_length) {
+      console.log("CLEANED UP ", cur_length - now_length, "SOCKETS FOR", sid);
+    }
+
+  });
+}
+
 // parse DOING_QUEUES
 function digest_doings() {
   var now = Date.now();
+
+  digest_sockets();
 
   DOING_ONS = {};
   DOING_NOW = {};
