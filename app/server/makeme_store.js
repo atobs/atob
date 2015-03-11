@@ -194,9 +194,13 @@ function subscribe_to_updates(s) {
     // Find the SID they belong to?
     var stalked_socket = SOCKETS[data.by];
     if (stalked_socket) {
+
+      s.emit("notif", "you sunk anon's battleship", "success");
       _.each(stalked_socket, function(s) {
         s.emit("restalked");
       });
+
+
     }
   });
 
