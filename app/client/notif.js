@@ -70,6 +70,13 @@ function _notify_user(title, options, post) {
       navigator.vibrate(400);
     }
 
+    $(window).on("unload", function() {
+      notification.close();
+    });
+    $(window).on("beforeunload", function() {
+      notification.close();
+    });
+
 
   }
 
