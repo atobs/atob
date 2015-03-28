@@ -104,6 +104,7 @@ module.exports = {
     }, function(cmp) {
       cmp.gen_tripcodes();
       cmp.add_markdown();
+      cmp.$el.find(".tile, .tilerow").removeClass("tile tilerow");
       preview.prepend(cmp.$el);
 
       setTimeout(function() {
