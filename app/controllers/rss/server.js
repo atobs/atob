@@ -1,5 +1,6 @@
 "use strict";
 
+var context = require_core("server/context");
 var controller = require_core("server/controller");
 var Post = require_app("models/post");
 
@@ -68,7 +69,7 @@ function refresh_feed(board, cb) {
         feed.item({
           title: title + " [" + (post.replies || 0) + " replies]",
           description: post.text,
-          url: "http://atob.kthxb.ai/p/" + post.id,
+          url: "_ATOB_HOST_" + "/p/" + post.id,
           categories: [ post.board ],
           author: "anon",
           date: post.bumped_at
@@ -94,7 +95,11 @@ module.exports = {
     var board_id = ctx.req.params.id;
 
     refresh_feed(board_id, function(feed) {
-      ctx.res.end(feed.xml());
+      var hostname = ctx.req.headers.host;
+      var xml_data = feed.xml();
+      var proto = ctx.req.proto || "https";
+      xml_data = xml_data.replace(/_ATOB_HOST_/g, proto + "://" + hostname);
+      ctx.res.end(xml_data);
     });
   },
 
