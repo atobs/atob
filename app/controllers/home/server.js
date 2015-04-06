@@ -270,9 +270,9 @@ module.exports = {
 
     var render_recent_threads = api.page.async(function(flush) {
       Post.findAll({
-        where: {
-          thread_id: null
-        },
+        where: [
+          "Posts.thread_id is NULL AND Posts.board_id != 'ban'"
+        ],
         order: "id DESC",
         limit: 30
       }).success(function(posts) {
@@ -345,9 +345,9 @@ module.exports = {
 
     var render_recent_threads = api.page.async(function(flush) {
       Post.findAll({
-        where: {
-          thread_id: null
-        },
+        where: [
+          "Posts.thread_id is NULL AND Posts.board_id != 'ban'"
+        ],
         order: "id DESC",
         limit: 30
       }).success(function(posts) {
