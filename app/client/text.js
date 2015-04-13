@@ -112,7 +112,7 @@ function add_board_links($el) {
   var escaped = " " + $el.html() + " ";
   if (escaped) {
     var replaced = escaped.replace(/\s\/r\/(\w+)/g, function(x, post_id) {
-      var reddit_str = " <a href='http://www.reddit.com/r/NAME'><i class='icon-reddit'></i>/NAME</a>";
+      var reddit_str = " <a target='_blank' href='http://www.reddit.com/r/NAME'><i class='icon-reddit'></i>/NAME</a>";
       return reddit_str.replace(/NAME/g, post_id.toLowerCase());
     });
 
@@ -165,7 +165,7 @@ function add_markdown($el) {
     var href = $(this).attr("href");
     if (href) {
       href = href.replace(icon_re, ":$1:");
-      links.attr("href", href);
+      $(this).attr("href", href);
     }
 
   });

@@ -388,6 +388,9 @@ module.exports = {
     var text = a.data("text");
     var new_text = $("<div />").html(text);
 
+    e.preventDefault();
+    e.stopPropagation();
+
     // stupid junk for handling icons in links... and re-replacing with :icon:
     var icons = new_text.find("i.icon");
     _.each(icons, function(icon) {
