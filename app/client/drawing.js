@@ -1,4 +1,7 @@
 var iframe;
+var insertedFrame = false;
+var clearFrameTimer;
+var showing = false;
 
 function toggler(e) {
   if (e.keyCode === 192 && e.ctrlKey) {
@@ -7,10 +10,42 @@ function toggler(e) {
   }
 }
 
-function checkInstall() {
-  $("html").append(iframe);
+toggler = _.throttle(toggler, 100);
 
-  checkInstall = function() { };
+$("html").keyup(toggler);
+$(window).on("message", function(msg) {
+  if (msg.originalEvent.data == "tilde") {
+    module.exports.hide();
+  }
+});
+
+
+function maybehideframe() {
+  clearTimeout(clearFrameTimer);
+  clearFrameTimer = setTimeout(function() {
+    if (showing) {
+      return;
+    }
+
+    iframe.remove();
+    iframe = null;
+    insertedFrame = false;
+
+  }, 30000);
+
+
+}
+
+function checkInstall() {
+  if (!iframe) {
+    module.exports.install();
+  }
+
+  if (!insertedFrame) {
+    $("html").append(iframe);
+    insertedFrame = true;
+  }
+
 }
 module.exports = {
   install: function() {
@@ -26,12 +61,6 @@ module.exports = {
         iframe.attr("src", "http://gtg.kthxb.ai");
       }
 
-      $(window).on("message", function(msg) {
-        if (msg.originalEvent.data == "tilde") {
-          module.exports.hide();
-        }
-      });
-
       iframe.css({
         width: "100%",
         height: "100%",
@@ -41,7 +70,6 @@ module.exports = {
         display: "none",
         zIndex: 9999
       });
-      $("html").keyup(toggler);
 
       var toggleEl = $("<div class='drawing_board'> </div>");
       var ICONS = [ "icon-edit", "icon-poop", "icon-acorn", "icon-koala", "icon-onion", "icon-heart", "icon-grave", "icon-circlepencil" ];
@@ -67,20 +95,25 @@ module.exports = {
 
   },
   show: function() {
+    showing = true;
     checkInstall();
     iframe.fadeIn();
     iframe.focus();
 
   },
   hide: function() {
+    showing = false;
     checkInstall();
     iframe.fadeOut();
     $(window).focus();
 
+    maybehideframe();
   },
   toggle: function() {
     checkInstall();
+    showing = !showing;
     iframe.fadeToggle();
+    maybehideframe();
 
   }
 };
