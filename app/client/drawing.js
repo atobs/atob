@@ -17,7 +17,14 @@ module.exports = {
     if (!iframe) {
 
       iframe = $("<iframe id='gtgkthx' />");
-      iframe.attr("src", "http://gtg.kthxb.ai");
+
+      // Need to figure out if we are on HTTPS or on HTTP...
+      // TODO: remove these dependencies on external URLS...
+      if (document.location.protocol == "https:") {
+        iframe.attr("src", "https://atob.xyz:444");
+      } else {
+        iframe.attr("src", "http://gtg.kthxb.ai");
+      }
 
       $(window).on("message", function(msg) {
         if (msg.originalEvent.data == "tilde") {
