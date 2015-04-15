@@ -3,6 +3,7 @@ var settings = require("app/client/settings");
 var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var summarize = require("app/client/summarize");
 var notif = require("app/client/notif");
+var drawing = require("app/client/drawing");
 
 require("app/client/cordova");
 

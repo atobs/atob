@@ -5,6 +5,7 @@ var post_utils = require("app/client/post_utils");
 var settings = require("app/client/settings");
 var notif = require("app/client/notif");
 var emojies = require("app/client/emojies");
+var drawing = require("app/client/drawing");
 var storage = require("app/client/storage");
 
 var IMGUR_KEY;
@@ -205,7 +206,6 @@ module.exports = {
     var lastTime = (new Date()).getTime();
     var textarea = this.$el.find(".new_post textarea[name='text']");
     emojies.add_textcomplete(textarea);
-
 
     SF.on("set_boardstyle", _.throttle(function(boardstyle) {
       $(".boardview a").removeClass("active");

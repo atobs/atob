@@ -3,6 +3,7 @@
 var settings = require("app/client/settings");
 var post_utils = require("app/client/post_utils");
 var notif = require("app/client/notif");
+var drawing = require("app/client/drawing");
 
 window._POSTS = window._POSTS || {};
 module.exports = {
@@ -10,6 +11,7 @@ module.exports = {
   },
   init: function() {
     this.init_tripcodes();
+
 
     var current_location = window.location.pathname;
     SF.subscribe("popstate", function() {
