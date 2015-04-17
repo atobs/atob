@@ -80,7 +80,7 @@ module.exports = {
         position: "fixed",
         cursor: "pointer",
         bottom: "10px",
-        right: "10px",
+        left: "18px",
         display: "block",
         zIndex: 10000,
         width: "20px",
