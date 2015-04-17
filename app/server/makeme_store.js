@@ -1,5 +1,6 @@
 "use strict";
 
+var SID_TO_TRIP = {};
 var DOINGS = {};
 var LAST_UPDATE = {};
 var SCHEDULED = {};
@@ -15,6 +16,7 @@ var DOING_ONS = {};
 var DEFAULT_TTL = 1; // 1 minute
 
 var Post = require_app("models/post");
+var Action = require_app("models/action");
 
 
 // TODO: have it prioritize the doings and set up the TTLs
@@ -108,6 +110,12 @@ function digest_doings() {
 }
 
 function maybe_stalk(sid, doing, s) {
+
+  if (doing.mytrip) {
+    // Update trip labels, I guess
+    SID_TO_TRIP[sid] = doing.mytrip;
+  }
+
   if (doing.what === "stalking") {
     if (doing.anon === sid) {
       s.emit("bestalked");
@@ -148,7 +156,36 @@ function maybe_stalk(sid, doing, s) {
     } else {
       s.emit("bestalked");
     }
+
+
+    var actortrip = SID_TO_TRIP[sid];
+    var bytrip = SID_TO_TRIP[doing.anon];
+    var where_clause = {
+      actor: actortrip,
+      object: bytrip,
+      action: "burtled",
+    };
+
+
+    if (!bytrip || !actortrip) {
+      return;
+    }
+
+
+    Action.find({ 
+      where: where_clause
+    }).success(function(action) {
+      if (!action) {
+        Action.create(where_clause);
+      } else {
+        action.increment("count", where_clause);
+      }
+
+
+    });
+
   }
+
 }
 
 function subscribe_to_updates(s) {
@@ -195,10 +232,37 @@ function subscribe_to_updates(s) {
     var stalked_socket = SOCKETS[data.by];
     if (stalked_socket) {
 
+      var sinkertrip = SID_TO_TRIP[sid];
+      var sunktrip = SID_TO_TRIP[data.by];
+
+      var where_clause = {
+        actor: sinkertrip,
+        object: sunktrip,
+        action: "sunkship",
+      };
+
+
       s.emit("notif", "you sunk anon's battleship", "success");
       _.each(stalked_socket, function(s) {
         s.emit("restalked");
       });
+
+      if (!sinkertrip || !sunktrip) {
+        return;
+      }
+
+      Action.find({ 
+        where: where_clause
+      }).success(function(action) {
+        if (!action) {
+          Action.create(where_clause);
+        } else {
+          action.increment("count", where_clause );
+        }
+
+
+      });
+
 
 
     }
@@ -240,6 +304,7 @@ module.exports = {
       var duration = now - then;
       if (duration > 60 * 60 * 3600) {
         delete LAST_SEEN[sid];
+        delete SID_TO_TRIP[sid];
       } else {
         last_seen[sid] = duration;
       }

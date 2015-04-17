@@ -13,7 +13,7 @@ var archive = new Sequelize('database', 'username', 'password', {
 var sequelize = new Sequelize('database', 'username', 'password', {
   dialect: 'sqlite',
   storage: 'db.sqlite',
-  logging: function() { },
+  logging: console.log,
   define: {
     sync: { force: true },
     underscored: true

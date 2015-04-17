@@ -14,11 +14,11 @@ module.exports = {
       hours: DataTypes.INTEGER,
       board: DataTypes.STRING
     });
-    done()
+    done();
   },
   down: function(migration, DataTypes, done) {
     // add reverting commands here, calling 'done' when finished
     migration.dropTable('Bans');
-    done()
+    done();
   }
 }

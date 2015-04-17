@@ -31,8 +31,8 @@ function gen_tripcode(el) {
   var colors = get_colors_for_hash($(el).attr("data-tripcode"));
   var div = $(el);
   _.each(colors, function(color) {
-    var colorDiv = $("<div />").css({
-      "background-color": "#" + color
+    var colorDiv = $("<div class='tripcolor' />").css({
+      "background-color": "#" + color,
     });
     div.append(colorDiv);
 

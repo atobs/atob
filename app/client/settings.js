@@ -72,7 +72,12 @@ module.exports = {
 
   },
   get_trip_identity: function() {
-    return md5(this.get_handle() + ":" + this.get_triphash());
+    try {
+      return md5(this.get_handle() + ":" + this.get_triphash());
+    } catch(e) {
+      var tripcode = TRIPCODES[0];
+      return md5(md5(tripode.identity) + ":" + tripcode.tripcode);
+    }
   },
   get_handle: function() {
     return $("input.handle").val() || get_from_storage("handle") || "anon";
@@ -294,7 +299,12 @@ module.exports = {
     var anon_id = target.data("anon");
 
     if (post_id) {
-      SF.socket().emit("isdoing", { what: "stalking", post_id: post_id, anon: anon_id }, function() {
+      SF.socket().emit("isdoing", { 
+        what: "stalking", 
+        post_id: post_id, 
+        anon: anon_id, 
+        mytrip: module.exports.get_trip_identity()
+      }, function() {
         // so we start the stalking game...
         var next_ref = "/p/" + post_id;
         if (window.location.href.indexOf(next_ref) === -1) {
@@ -338,6 +348,11 @@ module.exports = {
     } 
 
     logo.on("click", function(e) {
+      SF.socket().emit("isdoing", {
+        what: "battleship", 
+        mytrip: module.exports.get_trip_identity()
+      });
+
       SF.socket().emit("restalked", data);
       e.preventDefault();
       e.stopPropagation();

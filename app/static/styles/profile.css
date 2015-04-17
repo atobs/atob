@@ -1,3 +1,27 @@
+.tripcontainer {
+  padding: 20px;
+}
+
+.tripcode {
+  width: 100px;
+  float: left;
+  padding-right: 15px;
+  padding-left: 15px;
+
+  @media @device {
+    margin-top: 10px;
+    margin-right: 5px;
+  }
+
+
+}
+
+.tripcolor {
+  width: 25%;
+  height: 100%;
+  display: inline-block;
+}
+
 .profile_photo {
   border-radius: 100px;
   background-color: #fff;
