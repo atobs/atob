@@ -4,7 +4,9 @@ var USE_UPBOATS = true;
 
 function is_youtube_url(url) {
   var matches = url.match(/http:\/\/(?:www\.)?youtube.*watch\?v=([a-zA-Z0-9\-_]+)/);
-  return matches && matches[1];
+  var httpsmatches = url.match(/https:\/\/(?:www\.)?youtube.*watch\?v=([a-zA-Z0-9\-_]+)/);
+  var nosmatches = url.match(/(?:www\.)?youtube.*watch\?v=([a-zA-Z0-9\-_]+)/);
+  return (matches && matches[1]) || (httpsmatches && httpsmatches[1]) || (nosmatches && nosmatches[1]);
 }
 
 var renderer = new marked.Renderer();
@@ -212,7 +214,14 @@ function format_text($el) {
 function format_image_link(img_link) {
   var match = is_youtube_url(img_link);
   if (match) {
-    var img_tag = $("<iframe frameborder=0 />").attr("src", "http://www.youtube.com/embed/" + match + "?autoplay=1");
+    var proto = document.location.protocol;
+    var youtube_url = "www.youtube.com/embed/";
+    if (proto === "https:") {
+      youtube_url = "https://" + youtube_url;
+    } else {
+      youtube_url = "http://" + youtube_url;
+    }
+    var img_tag = $("<iframe frameborder=0 />").attr("src", youtube_url + match + "?autoplay=1");
     img_tag.attr("width", "100%");
     img_tag.attr("height", "200px");
     return img_tag;
