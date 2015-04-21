@@ -135,7 +135,7 @@ if (window._cordovaNative && !window._initCordova) {
 
   add_notifications();
   add_in_app_browser();
-  add_pull_to_refresh();
+//  add_pull_to_refresh();
   add_background_notifications();
   setup_back_button();
 }
