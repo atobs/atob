@@ -38,7 +38,6 @@ module.exports = {
   show: function(ctx, api) {
     var board_id = ctx.req.params.id;
     this.set_title("atob/" + board_id);
-    this.set_fullscreen(true);
 
     var specials = [ "links", "archives", "gifs", "chat" ];
     var redir;

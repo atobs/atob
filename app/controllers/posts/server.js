@@ -31,7 +31,6 @@ module.exports = {
   },
 
   get: function(ctx, api) {
-    this.set_fullscreen(true);
     this.set_title("atob");
     api.template.add_stylesheet("post");
     $C("delete_post_modal", {}).marshall();

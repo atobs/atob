@@ -59,7 +59,6 @@ module.exports = {
 
   show: function(ctx, api) {
     api.template.add_stylesheet("profile");
-    this.set_fullscreen(true);
 
     var render_boards = board_utils.render_boards();
     var tripcode = ctx.req.params.id;

@@ -125,7 +125,6 @@ module.exports = {
 
 
   about: function(ctx, api) {
-    this.set_fullscreen(true);
     this.set_title("atob/about");
 
     var slogan = SLOGANS[_.random(SLOGANS.length)];
@@ -144,7 +143,6 @@ module.exports = {
   },
 
   archives: function(ctx, api) {
-    this.set_fullscreen(true);
     this.set_title("atob/archives");
     api.template.add_stylesheet("archive");
 
@@ -186,7 +184,6 @@ module.exports = {
   },
 
   chat: function(ctx, api) {
-    this.set_fullscreen(true);
     this.set_title("atob");
 
     api.template.add_stylesheet("links");
@@ -235,7 +232,6 @@ module.exports = {
   },
 
   recent: function(ctx, api) {
-    this.set_fullscreen(true);
     this.set_title("atob");
 
     var summarize = require_app("client/summarize");
@@ -310,7 +306,6 @@ module.exports = {
   },
 
   index: function(ctx, api) {
-    this.set_fullscreen(true);
     this.set_title("atob");
 
     var summarize = require_app("client/summarize");
@@ -450,7 +445,6 @@ module.exports = {
     api.page.render({ content: template_str, socket: true});
   },
   rules: function(ctx, api) {
-    this.set_fullscreen(true);
     var template_str = api.template.partial("home/rules.html.erb", {} );
 
     api.page.render({ content: template_str});
@@ -497,7 +491,6 @@ module.exports = {
 
   },
   render_links: function(ctx, api, images_only) {
-    this.set_fullscreen(true);
     this.set_title("atob/links");
     if (images_only) {
       this.set_title("atob/gifs");
@@ -557,9 +550,11 @@ module.exports = {
   links: function(ctx, api) {
     this.render_links(ctx, api);
   },
+  burtles: function(ctx, api) {
+
+  },
   colors: function(ctx, api) {
     var hashes = [];
-    this.set_fullscreen(true);
     api.template.add_stylesheet("home");
     Post.findAll({ 
       group: ["tripcode", "author"],
