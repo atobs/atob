@@ -28,3 +28,9 @@
   border-top: 0px;
   border-bottom: 0px;
 }
+
+.tripcode .tripcolor {
+  width: 20px;
+  height: 20px;
+  float: left;
+}

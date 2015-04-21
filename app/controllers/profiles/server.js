@@ -38,8 +38,6 @@ function make_trips(flush, icon) {
           });
 
 
-          console.log("TRIP CODE EL", el.html());
-
         });
       }
 

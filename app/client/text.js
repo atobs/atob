@@ -131,8 +131,13 @@ function add_board_links($el) {
 function add_replies($el) {
   var escaped = $el.html();
   if (escaped) {
-    var reply_str = "<a href='/p/NAME' class='replylink' data-parent-id='NAME'>&gt;&gt;NAME</a>";
-    var replaced = escaped.replace(/&gt;&gt;#?([\d]+)/g, function(x, post_id) {
+    var reply_str = "<div class='tripcode oplink desaturate' data-parent-id='NAME' data-tripcode='' ></div>";
+    var replaced = escaped.replace(/&gt;&gt;#?([\d]+)\s*\*/ig, function(x, post_id) {
+      return reply_str.replace(/NAME/g, post_id.toLowerCase());
+    });
+
+    reply_str = "<a href='/p/NAME' class='replylink' data-parent-id='NAME'>&gt;&gt;NAME</a>";
+    replaced = replaced.replace(/&gt;&gt;#?([\d]+)/g, function(x, post_id) {
       return reply_str.replace(/NAME/g, post_id.toLowerCase());
     });
 

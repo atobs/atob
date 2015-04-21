@@ -29,6 +29,25 @@ function async_loop(items, func, timeout) {
 
 }
 
+function replace_oplinks(el) {
+  el.find(".tripcode.oplink").each(function() {
+    var child = $(this);
+    var opid = child.attr("data-parent-id");
+    var parentEl = $("#reply" + opid);
+
+    if (parentEl.length) {
+      $(this).data("tripcode", parentEl.find(".tripcode").data("tripcode"));
+    }
+
+    $(this).removeClass("desaturate");
+    window.gen_tripcode($(this));
+
+
+
+  });
+
+}
+
 var REPLY_TEXT = {};
 module.exports = {
   tagName: "div",
@@ -139,6 +158,8 @@ module.exports = {
         SF.socket().emit("join", options.board_id);
       }
     });
+
+    replace_oplinks(this.$el);
   },
 
   bumped: function(animate) {
@@ -241,6 +262,8 @@ module.exports = {
       this.$el.find(".downs_count").text(downs + 1);
       this.$el.find(".downs").removeClass("hidden");
     }
+
+    replace_oplinks(replyEl);
   },
   burtle: function(burtles) {
     this.$el.find(".burtles_count").text(burtles);
