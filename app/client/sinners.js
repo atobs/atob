@@ -1,20 +1,6 @@
 
 var SINNERS;
 module.exports = {
-  shipcode: function(el) {
-    var tripcodeEl = $(el);
-    tripcodeEl.css("height", "20px");
-    tripcodeEl.addClass("poop");
-    tripcodeEl.children().each(function() {
-      $(this).html("<i class='icon icon-ship' > </i>");
-      var color = $(this).css("backgroundColor");
-      $(this).css({
-        "color" : color,
-        "backgroundColor" : "inherit"
-      });
-    });
-
-  },
   poopcode: function(el) {
     var tripcodeEl = $(el);
     tripcodeEl.css("height", "20px");
