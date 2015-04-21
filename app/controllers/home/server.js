@@ -6,6 +6,7 @@ var Sequelize = require("sequelize");
 var $ = require("cheerio");
 var ArchivedPost = require_app("models/archived_post");
 var Post = require_app("models/post");
+var Action = require_app("models/action");
 var Link = require_app("models/link");
 var gen_md5 = require_app("server/md5");
 var posting = require_app("server/posting");
@@ -63,6 +64,7 @@ module.exports = {
     "rules" : "rules",
     "recent" : "recent",
     "anon" : "colors",
+    "burtles" : "burtles",
     "chat" : "chat",
     "links" : "links",
     "boards" : "boards",
@@ -551,6 +553,52 @@ module.exports = {
     this.render_links(ctx, api);
   },
   burtles: function(ctx, api) {
+    Action.findAll({
+      where: {
+        action: [ "sunkship", "burtled" ]
+      },
+      order: "count DESC",
+      limit: 50
+    }).success(function(actions) {
+      var count = 0;
+      var content = $("<div class='container mtl' />");
+      var tripcode_gen = require_app("server/tripcode");
+      _.each(actions, function(action) {
+        var hashEl = $("<div class='col-xs-4 col-md-2 tripcode'>");
+        hashEl.attr("data-tripcode", action.actor);
+
+        var action_icon;
+
+        if (action.action === "burtled") {
+          action_icon = "icon-ghost";
+        } else {
+          action_icon = "icon-pacman";
+        }
+
+        tripcode_gen.gen_tripcode(hashEl);
+        hashEl.children().each(function() {
+          var child = $(this);
+          child.addClass(action_icon);
+          var bgColor = child.css("background-color");
+
+          child.css({
+            "background-color": "inherit",
+            color: bgColor
+          });
+
+        });
+
+        api.template.add_stylesheet("profile");
+
+
+        content.append(hashEl);
+      });
+
+      api.page.render({content: content.toString() });
+
+
+
+    });
 
   },
   colors: function(ctx, api) {
