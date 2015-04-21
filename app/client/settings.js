@@ -20,7 +20,7 @@ SIDEBARS = JSON.parse(get_from_storage("use_sidebars") || "false");
 module.exports = {
   gen_tripcode: tripcode_gen,
   update_trip_colors: _.throttle(function() {
-    var tripcodeHash = this.$el.find(".identity_tripcode");
+    var tripcodeHash = this.$page.find(".identity_tripcode");
     // this could be cleaner? not sure how to, yet...
     tripcodeHash.data("tripcode", this.get_trip_identity());
     tripcode_gen(tripcodeHash);
@@ -32,7 +32,7 @@ module.exports = {
   },
   save_tripcode: function() {
     var tripcodeEl = this.$page.find("input.tripcode");
-    var tripcode = tripcodeEl.val();
+    var tripcode = tripcodeEl.last().val();
     this.save_newtrip();
     this.update_trip_colors();
     set_in_storage("tripcode", tripcode);
@@ -58,29 +58,24 @@ module.exports = {
     set_in_storage("tripcodes", JSON.stringify(TRIPCODES));
   },
   save_handle: function() {
-    var handleEl = this.$page.find("input.handle");
+    var handleEl = this.$page.find("input.handle").last();
     var handle = handleEl.val();
     this.save_newtrip();
     this.update_trip_colors();
     set_in_storage("handle", handle);
   },
   get_triphash: function() {
-    return md5($("input.tripcode").val() || get_from_storage("tripcode"));
+    return md5($("input.tripcode").last().val() || get_from_storage("tripcode"));
   },
   get_tripcode: function() {
-    return $("input.tripcode").val();
+    return $("input.tripcode").last().val();
 
   },
   get_trip_identity: function() {
-    try {
-      return md5(this.get_handle() + ":" + this.get_triphash());
-    } catch(e) {
-      var tripcode = TRIPCODES[0];
-      return md5(md5(tripode.identity) + ":" + tripcode.tripcode);
-    }
+    return md5(this.get_handle() + ":" + this.get_triphash());
   },
   get_handle: function() {
-    return $("input.handle").val() || get_from_storage("handle") || "anon";
+    return $("input.handle").last().val() || get_from_storage("handle") || "anon";
   },
   regen_tripcode: function() {
     var tripcodeEl = this.$page.find("input.tripcode");

@@ -6,9 +6,16 @@ function make_sidebar(toggle_selector, content_selector, side) {
   var events = _.clone(Backbone.Events);
 
   var sidebar_el = $("<div />");
-  sidebar_el.append($(content_selector).html());
+  var oldArea = $(content_selector);
+  oldArea.find("input").each(function() {
+    $(this).attr("value", $(this).val());
+  });
+
+  sidebar_el.append(oldArea.html());
+
   sidebars.push(sidebar_el);
   sidebar_el.addClass("sidr " + side);
+
   $("body").append(sidebar_el);
 
   var logobarEl = $("#logobar");
