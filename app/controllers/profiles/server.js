@@ -41,8 +41,6 @@ function make_trips(flush, icon) {
         });
       }
 
-      console.log(container.html());
-
       flush(container.html());
   };
 }

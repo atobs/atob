@@ -74,6 +74,10 @@
   width: 100%;
 }
 
+.cover_photo .profile_code {
+  clear: both;
+}
+
 .cover_photo .profile_code div {
   height: 300px !important; 
 

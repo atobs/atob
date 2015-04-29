@@ -7,6 +7,10 @@ var drawing = require("app/client/drawing");
 
 require("app/client/cordova");
 
+function hide_popovers() {
+  $(".popover").popover("destroy").remove();
+}
+
 function convert_post_text(post, cb) {
   require("app/client/text", function(format_text) {
     var postEl = $("<span />");
@@ -68,7 +72,7 @@ module.exports = {
   handle_mouseenter_ruleslink: function(e) {
     e.preventDefault();
     e.stopPropagation();
-    $(e.target).popover("destroy");
+    hide_popovers();
 
     var html = "" + "  <li>do not post anything that violates local or US law </li>" + "  <li>spamming, advertising and flooding is bad times</li>" + "  <li>posting or aksing for dox is is ban times</li>" + "  <li>any and all <a href='http://www.urbandictionary.com/define.php?term=shitposting'>shitposting</a> belongs in /b</li>"; 
 
@@ -91,13 +95,13 @@ module.exports = {
   },
   handle_mouseleave_ruleslink: function(e) {
     e.preventDefault();
-    $(e.target).popover("destroy");
+    hide_popovers();
 
   },
   handle_mouseenter_imglink: function(e) {
     e.stopPropagation();
     e.preventDefault();
-    $(e.target).popover("destroy");
+    hide_popovers();
     var responseEl = $("<div />");
     var img_link = $(e.target).closest(".imglink").attr("href");
 
@@ -118,7 +122,7 @@ module.exports = {
 
   },
   handle_mouseleave_imglink: function(e) {
-    $(e.target).popover("destroy");
+    hide_popovers();
   },
 
   format_text: function() {
