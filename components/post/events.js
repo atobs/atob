@@ -13,6 +13,17 @@ var CLIENT_COMMANDS = {
   }
 };
 
+function hide_popovers(e) {
+  $(e.target).popover("destroy");
+  $(".popover").each(function() {
+    if ($(this).hasClass("in")) {
+      return;
+    }
+
+    $(this).remove();
+  });
+}
+
 module.exports = {
   // Component event handling goes here
   // This is purposefully kept separate from
@@ -121,7 +132,7 @@ module.exports = {
   handle_mouseenter_imglink: function(e) {
     e.stopPropagation();
 
-    $(e.target).popover("destroy");
+    hide_popovers(e);
 
     var responseEl = $("<div />");
     var img_link = $(e.target).closest(".imglink").attr("href");
@@ -140,7 +151,7 @@ module.exports = {
 
   },
   handle_mouseleave_imglink: function(e) {
-    $(e.target).popover("destroy");
+    hide_popovers(e);
   },
 
   handle_mouseenter_replylink: function(e) {
@@ -220,8 +231,7 @@ module.exports = {
   },
 
   handle_mouseleave_replylink: function(e) {
-    $(e.target).popover("destroy");
-    $(".popover").remove();
+    hide_popovers(e);
   },
 
   handle_addglyph: function(e) {

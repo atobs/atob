@@ -7,8 +7,15 @@ var drawing = require("app/client/drawing");
 
 require("app/client/cordova");
 
-function hide_popovers() {
-  $(".popover").popover("destroy").remove();
+function hide_popovers(e) {
+  $(e.target).popover("destroy");
+  $(".popover").each(function() {
+    if ($(this).hasClass("in")) {
+      return;
+    }
+    
+    $(this).popover("destroy").remove();
+  });
 }
 
 function convert_post_text(post, cb) {
@@ -72,20 +79,20 @@ module.exports = {
   handle_mouseenter_ruleslink: function(e) {
     e.preventDefault();
     e.stopPropagation();
-    hide_popovers();
+    hide_popovers(e);
 
     var html = "" + "  <li>do not post anything that violates local or US law </li>" + "  <li>spamming, advertising and flooding is bad times</li>" + "  <li>posting or aksing for dox is is ban times</li>" + "  <li>any and all <a href='http://www.urbandictionary.com/define.php?term=shitposting'>shitposting</a> belongs in /b</li>"; 
 
     var div = $("<div />");
     div.html(html);
 
-    $(e.target).popover({
-      html: true,
-      content: div.html(),
-      placement: "bottom",
-      container: this.$el });
-
     _.defer(function() { 
+      $(e.target).popover({
+        html: true,
+        content: div.html(),
+        placement: "bottom",
+        container: this.$el });
+
       $(e.target).popover("show");
 
     });
@@ -95,26 +102,26 @@ module.exports = {
   },
   handle_mouseleave_ruleslink: function(e) {
     e.preventDefault();
-    hide_popovers();
+    hide_popovers(e);
 
   },
   handle_mouseenter_imglink: function(e) {
     e.stopPropagation();
     e.preventDefault();
-    hide_popovers();
+    hide_popovers(e);
     var responseEl = $("<div />");
     var img_link = $(e.target).closest(".imglink").attr("href");
 
     require("app/client/text", function(format_text) {
       var img_tag = format_text.format_image_link(img_link);
       responseEl.append(img_tag);
-      $(e.target).popover({
-        html: true,
-        content: responseEl.html(),
-        placement: "bottom",
-        container: this.$el });
-
       _.defer(function() { 
+        $(e.target).popover({
+          html: true,
+          content: responseEl.html(),
+          placement: "bottom",
+          container: this.$el });
+
         $(e.target).popover("show");
       });
 
@@ -122,7 +129,7 @@ module.exports = {
 
   },
   handle_mouseleave_imglink: function(e) {
-    hide_popovers();
+    hide_popovers(e);
   },
 
   format_text: function() {
