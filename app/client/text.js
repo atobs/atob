@@ -9,6 +9,11 @@ function is_youtube_url(url) {
   return (matches && matches[1]) || (httpsmatches && httpsmatches[1]) || (nosmatches && nosmatches[1]);
 }
 
+function is_webm_url(url) {
+  var matches = url.match(/webm$/);
+  return matches;
+}
+
 var renderer = new marked.Renderer();
 renderer.blockquote = function(quote) {
   var quote_text = "";
@@ -218,6 +223,8 @@ function format_text($el) {
 
 function format_image_link(img_link) {
   var match = is_youtube_url(img_link);
+  var webm = is_webm_url(img_link);
+
   if (match) {
     var proto = document.location.protocol;
     var youtube_url = "www.youtube.com/embed/";
@@ -230,6 +237,17 @@ function format_image_link(img_link) {
     img_tag.attr("width", "100%");
     img_tag.attr("height", "200px");
     return img_tag;
+  } else if (webm) {
+
+    var img_tag = $("<video muted=1 autoplay=1 />");
+    img_tag.append(
+      $("<source />").attr("src", img_link)
+    );
+    img_tag.attr("width", "100%");
+    img_tag.attr("height", "200px");
+
+    return img_tag;
+
   } else {
     if (img_link.indexOf("://") == -1) {
       img_link = "http://" + img_link;
