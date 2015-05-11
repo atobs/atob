@@ -383,6 +383,7 @@ module.exports = {
         t: "icon-keyboardalt",
         f: "icon-glassesalt",
         u: "icon-glassesalt",
+        b: "icon-comedy",
         s: "icon-ghost"
       };
 
