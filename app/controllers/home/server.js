@@ -304,6 +304,7 @@ module.exports = {
     });
 
     api.bridge.controller("home", "init_tripcodes");
+    api.bridge.controller("home", "show_recent_posts");
 
     api.page.render({ content: template_str, socket: false});
 
