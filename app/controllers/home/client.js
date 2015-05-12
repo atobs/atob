@@ -190,6 +190,9 @@ module.exports = {
   socket: function(s) {
 
     notif.subscribe_to_socket(s);
+    s.on("notif", function(msg, type, options) {
+      notif.handle_notif(msg, type, options);
+    });
 
     s.on("new_chat", function(reply) {
       var only_post = _.keys(_POSTS)[0];
