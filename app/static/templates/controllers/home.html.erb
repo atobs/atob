@@ -5,11 +5,11 @@
 <% add_stylesheet("home.css") %>
 <div class="container" style="margin: auto; margin-top: 10px">
 
+  <%= render_partial("home/header.html.erb", { slogan: slogan}) %>
+
   <div id="fullpage">
 
     <div class="section clearfix">
-      <%= render_partial("home/header.html.erb", { slogan: slogan}) %>
-
       <div id="anons" class="rfloat">
         <%= render_anons() %>
       </div>

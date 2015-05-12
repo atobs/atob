@@ -50,9 +50,12 @@ module.exports = {
       bootloader.css("jquery.fullPage", function() {
         bootloader.require("app/static/vendor/jquery.fullPage", function() {
           $("#fullpage .section.hidden").removeClass("hidden");
+          $(".header").addClass("stayput");
           $("#fullpage").fullpage({
             normalScrollElements: ".chat .replies",
-            verticalCentered: false
+            verticalCentered: false,
+            paddingTop: "132px",
+            scrollBar: true
           });
         });
       });

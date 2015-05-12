@@ -125,7 +125,7 @@ function render_even_more_recent(api, cb, use_header) {
   var template_str = api.template.render("controllers/recent.html.erb", {
     render_recent_posts: render_recent_posts,
     render_recent_threads: render_recent_threads,
-    use_header: true,
+    use_header: use_header,
     slogan: slogan
   });
 
@@ -292,6 +292,7 @@ module.exports = {
         });
 
         api.bridge.controller("home", "format_text");
+        api.bridge.controller("home", "show_recent_posts");
         flush(template_str);
       });
 
@@ -304,7 +305,6 @@ module.exports = {
     });
 
     api.bridge.controller("home", "init_tripcodes");
-    api.bridge.controller("home", "show_recent_posts");
 
     api.page.render({ content: template_str, socket: false});
 
@@ -514,7 +514,6 @@ module.exports = {
     var async_render_about = api.page.async(function(flush) {
       // bring the slogans in over here
       var template_str = api.template.render("controllers/about.html.erb", {
-        use_header: true,
         slogan: SLOGANS[_.random(SLOGANS.length)]
       });
 

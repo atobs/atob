@@ -65,7 +65,7 @@ module.exports = {
     set_in_storage("handle", handle);
   },
   get_triphash: function() {
-    return md5($("input.tripcode").last().val() || get_from_storage("tripcode"));
+    return md5($("input.tripcode").last().val() || get_from_storage("tripcode") || "fuun");
   },
   get_tripcode: function() {
     return $("input.tripcode").last().val();
