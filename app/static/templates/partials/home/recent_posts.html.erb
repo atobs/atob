@@ -1,8 +1,9 @@
 <% set_default("posts", []) %>
 <% set_default("archive", "p") %>
 <% set_default("title_only", false) %>
+<% set_default("class_", "posts") %>
 
-<div>
+<div class="recent hidden <%= class_ %>">
   <% _.each(posts, function(post) { %>
     <%= summarize(post.dataValues, archive, title_only) %>
   <% }) %>

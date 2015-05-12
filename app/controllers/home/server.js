@@ -57,6 +57,128 @@ var SLOGANS = [
 
 var UPBOAT_TIMEOUT = 60 * 1000;
 
+function render_even_more_recent(api, cb, use_header) {
+  var summarize = require_app("client/summarize");
+
+  api.template.add_stylesheet("links");
+  var render_recent_posts = api.page.async(function(flush) {
+    Post.findAll({
+      where: {
+        parent_id: {
+          ne: null
+        },
+      },
+      order: "id DESC",
+      limit: 50
+    }).success(function(posts) {
+      posts = _.filter(posts, function(p) {
+        var is_hidden = false;
+        _.each(HIDDEN_BOARDS, function(board) {
+          is_hidden = is_hidden || board === p.board_id;
+        });
+
+        return !is_hidden;
+      });
+      var template_str = api.template.partial("home/recent_posts.html.erb", {
+        posts: posts.slice(0, 15),
+        class_: "posts",
+        summarize: summarize
+      });
+      api.bridge.controller("home", "show_recent_posts");
+      api.bridge.controller("home", "format_text");
+      flush(template_str);
+    });
+  });
+
+  var render_recent_threads = api.page.async(function(flush) {
+    Post.findAll({
+      where: [
+        "Posts.thread_id is NULL AND Posts.board_id != 'ban'"
+      ],
+      order: "id DESC",
+      limit: 30
+    }).success(function(posts) {
+      posts = _.filter(posts, function(p) {
+        var is_hidden = false;
+        _.each(HIDDEN_BOARDS, function(board) {
+          is_hidden = is_hidden || board === p.board_id;
+        });
+
+        return !is_hidden;
+      });
+
+      posts = _.first(posts, 10);
+
+      var template_str = api.template.partial("home/recent_posts.html.erb", {
+        posts: posts,
+        class_: "threads",
+        summarize: summarize
+      });
+
+      api.bridge.controller("home", "show_recent_threads");
+      api.bridge.controller("home", "format_text");
+      flush(template_str);
+    });
+  });
+
+  var slogan = SLOGANS[_.random(SLOGANS.length)];
+  var template_str = api.template.render("controllers/recent.html.erb", {
+    render_recent_posts: render_recent_posts,
+    render_recent_threads: render_recent_threads,
+    use_header: true,
+    slogan: slogan
+  });
+
+  cb(template_str);
+}
+
+function render_burtles(cb) {
+  Action.findAll({
+    where: {
+      action: [ "sunkship", "burtled" ]
+    },
+    order: "count DESC",
+    limit: 1000
+  }).success(function(actions) {
+    var count = 0;
+    var content = $("<div class='profile_container container mtl' />");
+    var tripcode_gen = require_app("server/tripcode");
+    _.each(actions, function(action) {
+      var hashEl = $("<div class='col-xs-4 col-md-2 tripcode'>");
+      hashEl.attr("data-tripcode", action.actor);
+
+      var action_icon;
+
+      if (action.action === "burtled") {
+        action_icon = "icon-ghost";
+      } else {
+        action_icon = "icon-pacman";
+      }
+
+      tripcode_gen.gen_tripcode(hashEl);
+      hashEl.children().each(function() {
+        var child = $(this);
+        child.addClass(action_icon);
+        var bgColor = child.css("background-color");
+
+        child.css({
+          "background-color": "inherit",
+          color: bgColor
+        });
+
+      });
+
+      var template = require_core("server/template");
+      template.add_stylesheet("profile");
+
+
+      content.append(hashEl);
+    });
+
+  cb(content);
+
+  });
+}
 
 module.exports = {
   routes: {
@@ -133,7 +255,8 @@ module.exports = {
 
     // bring the slogans in over here
     var template_str = api.template.render("controllers/about.html.erb", {
-      slogan: slogan
+      slogan: slogan,
+      use_header: true
 
     });
 
@@ -162,6 +285,7 @@ module.exports = {
         posts = _.unique(posts, function(p) { return p.id; } );
         var template_str = api.template.partial("home/recent_posts.html.erb", {
           posts: posts,
+          class_: "posts",
           title_only: true,
           summarize: summarize,
           archive: "a"
@@ -235,74 +359,13 @@ module.exports = {
 
   recent: function(ctx, api) {
     this.set_title("atob");
+    var use_header = true;
 
-    var summarize = require_app("client/summarize");
+    render_even_more_recent(api, function(template_str) {
 
-    api.template.add_stylesheet("links");
-    var render_recent_posts = api.page.async(function(flush) {
-      Post.findAll({
-        where: {
-          parent_id: {
-            ne: null
-          },
-        },
-        order: "id DESC",
-        limit: 50
-      }).success(function(posts) {
-        posts = _.filter(posts, function(p) {
-          var is_hidden = false;
-          _.each(HIDDEN_BOARDS, function(board) {
-            is_hidden = is_hidden || board === p.board_id;
-          });
+      api.page.render({ content: template_str, socket: true});
 
-          return !is_hidden;
-        });
-        var template_str = api.template.partial("home/recent_posts.html.erb", {
-          posts: posts.slice(0, 15),
-          summarize: summarize
-        });
-        api.bridge.controller("home", "show_recent_posts");
-        flush(template_str);
-      });
-    });
-
-    var render_recent_threads = api.page.async(function(flush) {
-      Post.findAll({
-        where: [
-          "Posts.thread_id is NULL AND Posts.board_id != 'ban'"
-        ],
-        order: "id DESC",
-        limit: 30
-      }).success(function(posts) {
-        posts = _.filter(posts, function(p) {
-          var is_hidden = false;
-          _.each(HIDDEN_BOARDS, function(board) {
-            is_hidden = is_hidden || board === p.board_id;
-          });
-
-          return !is_hidden;
-        });
-
-        posts = _.first(posts, 10);
-
-        var template_str = api.template.partial("home/recent_posts.html.erb", {
-          posts: posts,
-          summarize: summarize
-        });
-
-        api.bridge.controller("home", "show_recent_threads");
-        flush(template_str);
-      });
-    });
-
-    var slogan = SLOGANS[_.random(SLOGANS.length)];
-    var template_str = api.template.render("controllers/recent.html.erb", {
-      render_recent_posts: render_recent_posts,
-      render_recent_threads: render_recent_threads,
-      slogan: slogan
-    });
-
-    api.page.render({ content: template_str, socket: true});
+    }, use_header);
 
 
   },
@@ -332,6 +395,7 @@ module.exports = {
           return !is_hidden;
         });
         var template_str = api.template.partial("home/recent_posts.html.erb", {
+          class_: "posts",
           posts: posts.slice(0, 5),
           summarize: summarize
         });
@@ -361,7 +425,8 @@ module.exports = {
 
         var template_str = api.template.partial("home/recent_posts.html.erb", {
           posts: posts,
-          summarize: summarize
+          summarize: summarize,
+          class_: "threads",
         });
 
         api.bridge.controller("home", "show_recent_threads");
@@ -433,6 +498,28 @@ module.exports = {
       });
     });
 
+    var async_render_burtles = api.page.async(function(flush) {
+      render_burtles(function(content) {
+        flush(content.toString());
+      });
+    });
+
+    var async_render_recent = api.page.async(function(flush) {
+      render_even_more_recent(api, function(template_str) {
+        flush(template_str);
+      });
+    });
+
+    var async_render_about = api.page.async(function(flush) {
+      // bring the slogans in over here
+      var template_str = api.template.render("controllers/about.html.erb", {
+        use_header: true,
+        slogan: SLOGANS[_.random(SLOGANS.length)]
+      });
+
+      flush(template_str);
+    });
+
 
     var board_utils = require_app("server/board_utils");
     var render_boards = board_utils.render_boards();
@@ -441,9 +528,15 @@ module.exports = {
       render_anons: render_anons,
       render_recent_posts: render_recent_posts,
       render_recent_threads: render_recent_threads,
+      render_burtles: async_render_burtles,
+      slogan: SLOGANS[_.random(SLOGANS.length)],
+
+      render_about: async_render_about,
       render_recent_chats: render_recent_chats,
-      slogan: SLOGANS[_.random(SLOGANS.length)]
+      render_even_more_recent: async_render_recent,
     });
+
+    api.bridge.controller("home", "fullpage");
 
     api.page.render({ content: template_str, socket: true});
   },
@@ -554,51 +647,8 @@ module.exports = {
     this.render_links(ctx, api);
   },
   burtles: function(ctx, api) {
-    Action.findAll({
-      where: {
-        action: [ "sunkship", "burtled" ]
-      },
-      order: "count DESC",
-      limit: 1000
-    }).success(function(actions) {
-      var count = 0;
-      var content = $("<div class='container mtl' />");
-      var tripcode_gen = require_app("server/tripcode");
-      _.each(actions, function(action) {
-        var hashEl = $("<div class='col-xs-4 col-md-2 tripcode'>");
-        hashEl.attr("data-tripcode", action.actor);
-
-        var action_icon;
-
-        if (action.action === "burtled") {
-          action_icon = "icon-ghost";
-        } else {
-          action_icon = "icon-pacman";
-        }
-
-        tripcode_gen.gen_tripcode(hashEl);
-        hashEl.children().each(function() {
-          var child = $(this);
-          child.addClass(action_icon);
-          var bgColor = child.css("background-color");
-
-          child.css({
-            "background-color": "inherit",
-            color: bgColor
-          });
-
-        });
-
-        api.template.add_stylesheet("profile");
-
-
-        content.append(hashEl);
-      });
-
+    render_burtles(function(content) {
       api.page.render({content: content.toString() });
-
-
-
     });
 
   },

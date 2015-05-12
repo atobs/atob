@@ -1,5 +1,11 @@
+<% set_default("use_header", false) %>
+<% set_default("slogan", "") %>
+
 <div class="container" style="margin: auto; margin-top: 10px">
-  <%= render_partial("home/header.html.erb", { slogan: slogan}) %>
+  <% if (use_header) { %>
+    <%= render_partial("home/header.html.erb", { slogan: slogan, show_search: false}) %>
+  <% } %>
+
   <div class="col-md-6">
     <div>
       <h2>overview</h2>

@@ -1,144 +1,146 @@
-.tripcontainer {
-  padding: 20px;
-}
+.profile_container {
 
-.tripcode {
-  width: 100px;
-  float: left;
-  padding-right: 15px;
-  padding-left: 15px;
-  zoom: 1.5;
-
-  @media @device {
-    margin-top: 10px;
-    margin-right: 5px;
+  .tripcontainer {
+    padding: 20px;
   }
 
-
-}
-
-.tripcolor {
-  width: 25%;
-  height: 100%;
-  display: inline-block;
-}
-
-.profile_photo {
-  border-radius: 100px;
-  background-color: #fff;
-  border: 4px solid #ddd;
-  display: block;
-  height: 200px;
-  width: 200px;
-  position: absolute;
-  bottom: -50px;
-  left: 25px;
-  overflow: hidden;
-  z-index: 2;
-
-  @media @mobile {
-    height: 100px;
+  .tripcode {
     width: 100px;
-    border-radius: 50px;
-    bottom: -25px;
+    float: left;
+    padding-right: 15px;
+    padding-left: 15px;
+
+    @media @device {
+      margin-top: 10px;
+      margin-right: 5px;
+    }
+
 
   }
-}
 
-.profile_photo.noob {
-  border: 40px solid #ddd;
-
-  @media @mobile {
-    border: 20px solid #ddd;
+  .tripcolor {
+    width: 25%;
+    height: 100%;
+    display: inline-block;
   }
-}
 
-.profile_photo_right {
-  right: 25px;
-  left: inherit;
-}
+  .profile_photo {
+    border-radius: 100px;
+    background-color: #fff;
+    border: 4px solid #ddd;
+    display: block;
+    height: 200px;
+    width: 200px;
+    position: absolute;
+    bottom: -50px;
+    left: 25px;
+    overflow: hidden;
+    z-index: 2;
 
-.anoninfo {
-  font-size: 200%;
-  vertical-align: bottom;
-  height: 30px;
-}
+    @media @mobile {
+      height: 100px;
+      width: 100px;
+      border-radius: 50px;
+      bottom: -25px;
 
-.profile_about {
-  vertical-align: bottom;
-  height: 30px;
-  margin-top: 1em;
-  margin-left: 1em;
-}
+    }
+  }
 
-.cover_photo img {
-  width: 100%;
-}
+  .profile_photo.noob {
+    border: 40px solid #ddd;
 
-.cover_photo .profile_code {
-  clear: both;
-}
+    @media @mobile {
+      border: 20px solid #ddd;
+    }
+  }
 
-.cover_photo .profile_code div {
-  height: 300px !important; 
+  .profile_photo_right {
+    right: 25px;
+    left: inherit;
+  }
 
-  @media @mobile {
+  .anoninfo {
+    font-size: 200%;
+    vertical-align: bottom;
+    height: 30px;
+  }
+
+  .profile_about {
+    vertical-align: bottom;
+    height: 30px;
+    margin-top: 1em;
+    margin-left: 1em;
+  }
+
+  .cover_photo img {
+    width: 100%;
+  }
+
+  .cover_photo .profile_code {
+    clear: both;
+  }
+
+  .cover_photo .profile_code div {
+    height: 300px !important; 
+
+    @media @mobile {
+      height: 200px !important; 
+
+    }
+  }
+
+  .cover_photo_bottom .profile_code div {
     height: 200px !important; 
+    @media @mobile {
+      height: 100px !important; 
 
+    }
   }
-}
 
-.cover_photo_bottom .profile_code div {
-  height: 200px !important; 
-  @media @mobile {
-    height: 100px !important; 
-
+  .cover {
+    position: relative;
+    margin-bottom: 50px;
   }
-}
 
-.cover {
-  position: relative;
-  margin-bottom: 50px;
-}
+  .profile_photo .profile_code div {
+    width: 50% !important;
+    height: 50% !important;
+    float: left !important;
+  }
 
-.profile_photo .profile_code div {
-  width: 50% !important;
-  height: 50% !important;
-  float: left !important;
-}
+  .profile_photo_block {
+    width: 50%;
+    height: 50%;
+    float: left;
+  }
 
-.profile_photo_block {
-  width: 50%;
-  height: 50%;
-  float: left;
-}
-
-.cover_bg {
-  background-color: #000;
-  width: 100%;
-  display: block;
-  height: 300px;
-}
+  .cover_bg {
+    background-color: #000;
+    width: 100%;
+    display: block;
+    height: 300px;
+  }
 
 
-// spinning from http://stackoverflow.com/questions/14859322/css3-spin-animation
-// and http://jsfiddle.net/gionaf/Ugc5g/
-.spin {
-  -webkit-animation:spin 3s linear infinite;
-  -moz-animation:spin 3s linear infinite;
-  animation:spin 3s linear infinite;
-}
+  // spinning from http://stackoverflow.com/questions/14859322/css3-spin-animation
+  // and http://jsfiddle.net/gionaf/Ugc5g/
+  .spin {
+    -webkit-animation:spin 3s linear infinite;
+    -moz-animation:spin 3s linear infinite;
+    animation:spin 3s linear infinite;
+  }
 
 
-@-moz-keyframes spin { 
-  80% { -moz-transform: rotate(0deg); }
-  100% { -moz-transform: rotate(360deg); } 
-}
-@-webkit-keyframes spin { 
-  80% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); } 
-}
-@keyframes spin { 
-  80% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } 
+  @-moz-keyframes spin { 
+    80% { -moz-transform: rotate(0deg); }
+    100% { -moz-transform: rotate(360deg); } 
+  }
+  @-webkit-keyframes spin { 
+    80% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); } 
+  }
+  @keyframes spin { 
+    80% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } 
+  }
 }

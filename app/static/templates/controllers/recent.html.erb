@@ -1,15 +1,18 @@
 <%= add_stylesheet("home") %>
+<% set_default("use_header", false) %>
 
 <div class="container mtl mbl recent_container">
 
-  <%= render_partial("home/header.html.erb", { slogan: slogan }) %>
+  <% if (use_header) { %>
+    <%= render_partial("home/header.html.erb", { slogan: slogan, show_search: false }) %>
+  <% } %>
 
-  <div class="col-md-12">
-    <div class="recent hidden threads">
+  <div class="clearfix">
+    <div class="col-md-6">
       <h2>recent posts</h2>
       <%= render_recent_threads() %>
     </div>
-    <div class="recent hidden posts">
+    <div class="col-md-6">
       <h2>recent replies</h2>
       <%= render_recent_posts() %>
     </div>

@@ -44,6 +44,20 @@ function format_and_show($el) {
 }
 
 module.exports = {
+  fullpage: function() {
+    if ($("body").width() > 1280) {
+      $(".front.recent").fadeOut();
+      bootloader.css("jquery.fullPage", function() {
+        bootloader.require("app/static/vendor/jquery.fullPage", function() {
+          $("#fullpage .section.hidden").removeClass("hidden");
+          $("#fullpage").fullpage({
+            normalScrollElements: ".chat .replies",
+            verticalCentered: false
+          });
+        });
+      });
+    }
+  },
   events: {
     "click .imglink" : "handle_mouseenter_imglink",
     "click .identity_tripcode" : "regen_tripcode",
@@ -193,12 +207,11 @@ module.exports = {
       convert_post_text(reply, function(reply) {
         reply.text = reply.formatted_text;
         var summarize = require("app/client/summarize");
-        var summary = $(summarize(reply));
 
+        var summary = $(summarize(reply)).addClass("new_summary");
         summary.hide();
         postParent.prepend(summary);
-        summary.fadeIn();
-        postParent.find(".post").last().fadeOut().remove();
+        $(".new_summary").fadeIn().removeClass("new_summary");
       });
 
 
@@ -215,10 +228,10 @@ module.exports = {
         var postParent = $(".threads .post").parent();
         post.id = post.post_id || post.id;
         var summarize = require("app/client/summarize");
-        var summary = $(summarize(post));
+        var summary = $(summarize(post)).addClass("new_summary");
         summary.hide();
         postParent.prepend(summary);
-        summary.fadeIn();
+        $(".new_summary").fadeIn().removeClass("new_summary");
 
         postParent.find(".post").last().fadeOut().remove();
 
