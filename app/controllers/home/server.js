@@ -559,7 +559,7 @@ module.exports = {
         action: [ "sunkship", "burtled" ]
       },
       order: "count DESC",
-      limit: 50
+      limit: 1000
     }).success(function(actions) {
       var count = 0;
       var content = $("<div class='container mtl' />");

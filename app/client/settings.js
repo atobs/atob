@@ -344,14 +344,15 @@ module.exports = {
     } 
 
     logo.on("click", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
       SF.socket().emit("isdoing", {
         what: "battleship", 
         mytrip: module.exports.get_trip_identity()
       });
 
       SF.socket().emit("restalked", data);
-      e.preventDefault();
-      e.stopPropagation();
     });
 
     $("body").append(logo);
