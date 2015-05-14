@@ -2,6 +2,9 @@
 var storage = require("app/client/storage");
 
 var sidebars = [];
+var contentHandler;
+
+var sidebarOffset = "-102%";
 function make_sidebar(toggle_selector, content_selector, side) {
   var events = _.clone(Backbone.Events);
 
@@ -24,61 +27,96 @@ function make_sidebar(toggle_selector, content_selector, side) {
     logobarLeft = parseInt(logobarEl.css("left").replace(/px/, ""), 10);
   }
 
+  var nav_selector = ".navbar_helper .logo";
+
   $(toggle_selector).on("click", function(e) {
     e.stopPropagation();
     e.preventDefault();
 
     var was_opened = sidebar_el.data("opened");
 
-    _.each(sidebars, function(sidebar) {
-      sidebar.hide();
-      sidebar.data("opened", false);
-    });
-
     var side_name = side;
     var other_side_name = side === "right" ? "left" : "right";
     var options = {};
     if (!was_opened) {
-      events.trigger("opened");
-
-      if (side === "right") {
-        sidebar_el.css({
-          right: 0,
-          left: "auto"
-        });
-      } else {
-        sidebar_el.css({
-          left: 0,
-          right: "auto"
-        });
-      }
-
-      sidebar_el.fadeIn();
-      options[side_name] = "250px";
-      options[other_side_name] = "auto";
-      options.position = "relative";
-      $("#page_content").css(options);
-
-      $("#logobar").css(side_name, logobarLeft + 250 + "px");
-
-      $(".content").one("click", function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        sidebar_el.data("opened", true);
-
-        $(toggle_selector).click();
+      _.each(sidebars, function(sidebar) {
+        sidebar.hide();
+        sidebar.data("opened", false);
       });
 
+      bootloader.require("app/static/vendor/jquery.transit.min", function() { 
+        if (side === "right") {
+          sidebar_el.css({
+            right: sidebarOffset
+          });
+
+          sidebar_el.show();
+          sidebar_el.animate({
+            right: 0,
+            left: "auto"
+          });
+        } else {
+          sidebar_el.css({
+            left: sidebarOffset
+          });
+
+          sidebar_el.show();
+          sidebar_el.animate({
+            left: 0,
+            right: "auto"
+          });
+        }
+
+
+
+        if (!contentHandler) {
+          contentHandler = true;
+
+          $(".content").one("click", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            sidebar_el.data("opened", true);
+
+            $(toggle_selector).click();
+            contentHandler = false;
+          });
+
+        }
+
+        $(".navbar_helper .logo img").animate({
+          rotate: "220deg"
+        }).animate({
+          rotate: "360deg",
+          easing: "in-out"
+        });
+
+
+
+      });
+
+      events.trigger("opened");
+
+
     } else {
-      sidebar_el.fadeOut(function() { });
+      $(".navbar_helper .logo img").animate({
+        rotate: "180deg"
+      }).animate({
+        rotate: "360deg",
+        easing: "in-out"
+      });
+
+      var anim_options = {};
+      anim_options[side_name] = sidebarOffset;
+      sidebar_el.animate(anim_options, function() { });
       options[side_name] = "0px";
       options[other_side_name] = "auto";
-      $("#page_content").css(options);
+      $(nav_selector).animate(options);
 
       $("#logobar").css(side_name, logobarLeft + "px");
       options.position = "auto";
       events.trigger("closed");
+
 
     }
 
@@ -102,6 +140,16 @@ function add_sidebars() {
   var sidebarEl = $("input.use_sidebars");
   sidebarEl.attr("checked", true);
   sidebarEl.prop("checked", true);
+
+  var unclickable = true;
+  $(".navbar .navlinks a").click(function(e) {
+    if (unclickable) { 
+      e.preventDefault();
+      e.stopPropagation();
+      return true;
+    }
+
+  });
 
   bootloader.css("jquery.sidr.light", function() {
     if (window._addedSidebars) {
@@ -135,7 +183,9 @@ function add_sidebars() {
     // make the up top links animate a bit...
     $(".navbar .navlinks a").animate({
       "margin-left": "-2000px"
-    }).fadeOut();
+    }).fadeOut(function() {
+      unclickable = false; 
+    });
 
 
     // append a /home link to the navlinks, too

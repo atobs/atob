@@ -10,11 +10,7 @@
   width: 260px;
   overflow-x: none;
   overflow-y: auto;
-  /* Theme Settings */
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-  font-size: 15px;
-  background: #666;
-  color: #e8e8e8;
+  background: #fafafa;
 }
 
 .sidr {
@@ -28,13 +24,11 @@
     border-bottom: 2px dotted #e8e8e8;
 
     a {
-      color: #e8e8e8;
       display: block;
       text-align: left;
       padding-left: 15px;
 
       &:hover {
-        color: #888;
         text-decoration: none;
 
       }
