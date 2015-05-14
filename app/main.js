@@ -45,6 +45,11 @@ module.exports = {
     }
     res.charset = "utf-8";
 
+    var ua = req.headers['user-agent'];
+    if (/mobile/i.test(ua)) {
+      req.is_mobile = true;
+    }
+
   },
   setup_context: function(ctx) {
     ctx.use_fullscreen = true;
