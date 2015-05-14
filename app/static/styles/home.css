@@ -28,6 +28,13 @@
   margin-top: -50px;
   position: relative;
   z-index: 1090;
+
+  @media @device {
+    float: right;
+    position: absolute;
+    right: 5px;
+  }
+
 }
 
 body {
@@ -102,7 +109,15 @@ h1, h2, h3 {
 }
 
 #fullpage .section {
-  overflow: hidden;
+
+  @media @desktop {
+    overflow: hidden;
+    display: inline-block;
+  }
+}
+
+#fullpage .section.active {
+  overflow: visible;
 }
 
 .stayput.header {
