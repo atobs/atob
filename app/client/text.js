@@ -78,6 +78,12 @@ renderer.link = function(href, title, text) {
 
   link.addClass("linklink");
 
+  var webm = is_webm_url(href);
+
+  if (webm) {
+    link.addClass("imglink");
+  }
+
   var unsafe;
   if (href.match("^\s*javascript:")) {
     unsafe = true;
