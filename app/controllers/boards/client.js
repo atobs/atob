@@ -37,11 +37,17 @@ module.exports = {
 
     var post_id = target.data("post-id");
     if (post_id) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      var url = window.location.pathname.match(post_id);
+      if (url) {
+        return;
+      }
+
       SF.go("/p/" + post_id);
       SF.inform("popstate");
 
-      e.preventDefault();
-      e.stopPropagation();
     }
   },
   show_board_tiles: function() {

@@ -8,6 +8,15 @@ var drawing = require("app/client/drawing");
 window._POSTS = window._POSTS || {};
 module.exports = {
   events: {
+    "click .post .title h4" : "post_title_click"
+
+  },
+  post_title_click: function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    return;
+
   },
   init: function() {
     this.init_tripcodes();
