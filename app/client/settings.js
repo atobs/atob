@@ -428,7 +428,7 @@ module.exports = {
   add_sidebars: function() {
     var self = this;
     window.bootloader.js("app/client/sidebar", function() {
-      require("app/client/sidebar").add_sidebars();
+      bootloader.require("app/client/sidebar").add_sidebars();
       $(".settings").fadeOut();
 
     });

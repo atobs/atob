@@ -4,6 +4,13 @@ var storage = require("app/client/storage");
 var sidebars = [];
 var contentHandler;
 
+function hide_sidebars() {
+  _.each(sidebars, function(sidebar) {
+    sidebar.hide();
+    sidebar.data("opened", false);
+  });
+}
+
 var sidebarOffset = "-102%";
 function make_sidebar(toggle_selector, content_selector, side) {
   var events = _.clone(Backbone.Events);
@@ -35,14 +42,13 @@ function make_sidebar(toggle_selector, content_selector, side) {
 
     var was_opened = sidebar_el.data("opened");
 
+
     var side_name = side;
     var other_side_name = side === "right" ? "left" : "right";
     var options = {};
     if (!was_opened) {
-      _.each(sidebars, function(sidebar) {
-        sidebar.hide();
-        sidebar.data("opened", false);
-      });
+      hide_sidebars();
+
 
       bootloader.require("app/static/vendor/jquery.transit.min", function() { 
         if (side === "right") {
@@ -53,6 +59,7 @@ function make_sidebar(toggle_selector, content_selector, side) {
           sidebar_el.show();
           sidebar_el.animate({
             right: 0,
+            display: "block",
             left: "auto"
           });
         } else {
@@ -63,6 +70,7 @@ function make_sidebar(toggle_selector, content_selector, side) {
           sidebar_el.show();
           sidebar_el.animate({
             left: 0,
+            display: "block",
             right: "auto"
           });
         }
@@ -72,14 +80,16 @@ function make_sidebar(toggle_selector, content_selector, side) {
         if (!contentHandler) {
           contentHandler = true;
 
-          $(".content").one("click", function(e) {
+          $(".content").one("click.sidebar", function(e) {
+
+            if ($(e.target).closest(".logo").length) {
+              return;
+            }
             e.preventDefault();
             e.stopPropagation();
-
-            sidebar_el.data("opened", true);
-
-            $(toggle_selector).click();
             contentHandler = false;
+
+            hide_sidebars();
           });
 
         }
@@ -116,6 +126,9 @@ function make_sidebar(toggle_selector, content_selector, side) {
       $("#logobar").css(side_name, logobarLeft + "px");
       options.position = "auto";
       events.trigger("closed");
+
+      $(".content").off("click.sidebar");
+      contentHandler = false;
 
 
     }
