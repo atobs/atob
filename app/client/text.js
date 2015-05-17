@@ -80,29 +80,32 @@ renderer.link = function(href, title, text) {
 
   var webm = is_webm_url(href);
 
-  if (webm) {
-    link.addClass("imglink");
-  }
-
   var unsafe;
-  if (href.match("^\s*javascript:")) {
-    unsafe = true;
-    link.addClass("unsafelink");
-    outer.addClass("unsafelink");
-    var textEl = $("<span />");
-    textEl.addClass("unsafelink");
-    textEl.html("[<b>UNSAFE</b>] " + text + " ");
-    outer.append(textEl);
-    text = "[click here at your own risk!]";
+  if (webm) {
+    outer.append($("<a>[link]</a>").attr("href", href).attr("target", "_blank"));
+    link = $("<span />");
+    link.addClass("imglink");
+    link.removeClass("linklink");
   } else {
-    text += " [link]";
+    if (href.match("^\s*javascript:")) {
+      unsafe = true;
+      link.addClass("unsafelink");
+      outer.addClass("unsafelink");
+      var textEl = $("<span />");
+      textEl.addClass("unsafelink");
+      textEl.html("[<b>UNSAFE</b>] " + text + " ");
+      outer.append(textEl);
+      text = "[click here at your own risk!]";
+    } else {
+      text += " [link]";
+    }
   }
 
   link.html(text);
   link.attr("href", escaped_href);
   link.attr("target", "_blank");
 
-  outer.append(link);
+  outer.prepend(link);
 
   add_upboat(link, href, orig_text);
 
