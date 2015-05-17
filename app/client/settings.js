@@ -155,7 +155,7 @@ module.exports = {
   },
   tripcode_history: function(buttonEl) {
     _.each(TRIPCODES, function(code) {
-      var tripcodeContainer = $("<div class='clearfix col-md-4'/>");
+      var tripcodeContainer = $("<div class='clearfix col-md-4 col-xs-4 '/>");
       tripcodeContainer.css("position", "relative");
 
       var tripcodeEl = $("<div class='tripcode_button lfloat'/>");
