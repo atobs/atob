@@ -31,7 +31,7 @@ function collect_garbage() {
       if (val.length > MAX_POSTS) {
         console.log("BOARD HAS TOO MANY POSTS", key, val.length);
         var sorted = _.sortBy(val, function(v) {
-          return -v.bumped_at;
+          return -v.bumped_at || -v.updated_at;
         });
 
         var keep_posts = sorted.slice(0, MAX_POSTS);

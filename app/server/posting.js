@@ -242,7 +242,8 @@ function check_for_blasphemy(s, parentish, post, cb) {
         title: "i am a sinner and a blasphemer",
         tripcode: gen_md5(author + ":" + post.tripcode),
         author: escape_html(author),
-        board_id: "heretics"
+        board_id: "heretics",
+        bumped_at: Date.now()
       }).success(function() {
       
       });
