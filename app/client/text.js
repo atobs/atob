@@ -76,6 +76,17 @@ renderer.image = function(href, title, text) {
   return tag;
 };
 
+function is_image_link(href) {
+  var webm = is_webm_url(href);
+  var vimeo = is_vimeo_url(href);
+  var youtube = is_youtube_url(href);
+  var gif = null;
+
+
+  return webm || vimeo || youtube || gif;
+
+}
+
 renderer.link = function(href, title, text) {
   var outer = $("<div/>");
   var link = $("<a />");
@@ -84,10 +95,11 @@ renderer.link = function(href, title, text) {
 
   link.addClass("linklink");
 
-  var webm = is_webm_url(href);
-
   var unsafe;
-  if (webm) {
+
+  var image_link = is_image_link(href);
+
+  if (image_link) {
     outer.append($("<a>[link]</a>").attr("href", href).attr("target", "_blank"));
     link = $("<span />");
     link.addClass("imglink");
@@ -312,6 +324,7 @@ module.exports = {
   add_newlines: add_newlines,
   add_replies: add_replies,
   add_markdown: add_markdown,
+  is_image_link: is_image_link,
   format_image_link: format_image_link,
   add_upboats: function(val) {
     USE_UPBOATS = val;

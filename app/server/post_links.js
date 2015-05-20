@@ -7,6 +7,8 @@ var UPBOAT_TIMEOUT = 60 * 1000;
 var Link = require_app("models/link");
 var bridge = require_core("server/bridge");
 
+var text_formatter = require_app("client/text");
+
 function find_and_create_links(post) {
   if (post.dataValues) {
     post = post.dataValues;
@@ -28,6 +30,12 @@ var renderer = new marked.Renderer();
 
 function add_link(href, title, string, is_image) {
   var this_post = CUR_POST;
+
+  if (!is_image) {
+    is_image = text_formatter.is_image_link(href);
+  }
+
+
   Link.findAll( { where: {
     href: href
     }
