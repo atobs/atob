@@ -9,6 +9,12 @@ function is_youtube_url(url) {
   return (matches && matches[1]) || (httpsmatches && httpsmatches[1]) || (nosmatches && nosmatches[1]);
 }
 
+function is_vimeo_url(url) {
+  var matches = url.match(/vimeo.com\/([0-9]+)/);
+
+  return matches && matches[1];
+}
+
 function is_webm_url(url) {
   var matches = url.match(/webm$/);
   return matches;
@@ -230,34 +236,64 @@ function format_text($el) {
   shorten_text($el);
 }
 
-function format_image_link(img_link) {
+function make_webm_url(img_link) {
+
+  var img_tag = $("<video muted=1 autoplay=1 />");
+  img_tag.append(
+    $("<source />").attr("src", img_link)
+  );
+  img_tag.attr("width", "100%");
+  img_tag.attr("height", "200px");
+  return img_tag;
+}
+
+function make_youtube_tag(img_link) {
   var match = is_youtube_url(img_link);
-  var webm = is_webm_url(img_link);
-
-  if (match) {
-    var proto = document.location.protocol;
-    var youtube_url = "www.youtube.com/embed/";
-    if (proto === "https:") {
-      youtube_url = "https://" + youtube_url;
-    } else {
-      youtube_url = "http://" + youtube_url;
-    }
-    var img_tag = $("<iframe frameborder=0 />").attr("src", youtube_url + match + "?autoplay=1");
-    img_tag.attr("width", "100%");
-    img_tag.attr("height", "200px");
-    return img_tag;
-  } else if (webm) {
-
-    var img_tag = $("<video muted=1 autoplay=1 />");
-    img_tag.append(
-      $("<source />").attr("src", img_link)
-    );
-    img_tag.attr("width", "100%");
-    img_tag.attr("height", "200px");
-
-    return img_tag;
-
+  var proto = document.location.protocol;
+  var youtube_url = "www.youtube.com/embed/";
+  if (proto === "https:") {
+    youtube_url = "https://" + youtube_url;
   } else {
+    youtube_url = "http://" + youtube_url;
+  }
+  var img_tag = $("<iframe frameborder=0 />").attr("src", youtube_url + match + "?autoplay=1");
+  img_tag.attr("width", "100%");
+  img_tag.attr("height", "200px");
+  return img_tag;
+
+}
+
+function make_vimeo_url(img_link) {
+  var match = is_vimeo_url(img_link);
+  console.log("MATCH IS", match);
+  var proto = document.location.protocol;
+  var youtube_url = "player.vimeo.com/video/";
+  if (proto === "https:") {
+    youtube_url = "https://" + youtube_url;
+  } else {
+    youtube_url = "http://" + youtube_url;
+  }
+  var img_tag = $("<iframe frameborder=0 />").attr("src", youtube_url + match + "?autoplay=1");
+  img_tag.attr("width", "100%");
+  img_tag.attr("height", "200px");
+  return img_tag;
+
+}
+
+function format_image_link(img_link) {
+  var youtube = is_youtube_url(img_link);
+  var webm = is_webm_url(img_link);
+  var vimeo = is_vimeo_url(img_link);
+
+  if (youtube) {
+    return make_youtube_tag(img_link);
+  } else if (webm) {
+    return make_webm_url(img_link);
+  } else if (vimeo) {
+
+    return make_vimeo_url(img_link);
+  } else {
+
     if (img_link.indexOf("://") == -1) {
       img_link = "http://" + img_link;
     }
