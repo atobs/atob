@@ -18,6 +18,22 @@ var DEFAULT_TTL = 1; // 1 minute
 var Post = require_app("models/post");
 var Action = require_app("models/action");
 
+var METER_TOTAL = 1;
+var METER_MAX = 9000;
+var METER_CLAUSE = {
+  actor: "anon",
+  object: "anon",
+  action: "meter",
+};
+Action.find({ 
+  where: METER_CLAUSE
+}).success(function(action) {
+
+  METER_TOTAL = action.dataValues.count ;
+
+  console.log("RESTORED METER TOTAL TO", METER_TOTAL);
+});
+
 
 // TODO: have it prioritize the doings and set up the TTLs
 function add_doing(sid, doing) {
@@ -124,6 +140,7 @@ function maybe_stalk(sid, doing, s) {
 
     var burtle_post = function(post) {
       post.dataValues.burtles += 1;
+      METER_TOTAL += 2;
       post.save();
 
       var load_controller = require_core("server/controller").load;
@@ -241,6 +258,8 @@ function subscribe_to_updates(s) {
         action: "sunkship",
       };
 
+      METER_TOTAL += 5;
+
 
       s.emit("notif", "you sunk anon's battleship", "success");
       _.each(stalked_socket, function(s) {
@@ -313,6 +332,52 @@ module.exports = {
     home_controller.get_socket().emit("anons", DOING_ONS, last_seen);
     boards_controller.get_socket().emit("anons", DOING_ONS, last_seen);
     posts_controller.get_socket().emit("anons", DOING_ONS, last_seen);
+
+    module.exports.update_meters();
+  }, 2000),
+
+  update_meters: _.throttle(function() {
+    var load_controller = require_core("server/controller").load;
+    var home_controller = load_controller("home");
+    var boards_controller = load_controller("boards");
+    var posts_controller = load_controller("posts");
+
+    METER_TOTAL += 1;
+    METER_TOTAL %= METER_MAX;
+
+    if (METER_TOTAL == 0) {
+      // TIME TO DO STUFF HERE?
+      console.log("METER MAXED OUT");
+
+    }
+
+    var meter_opts = {
+      percent: METER_TOTAL,
+      max: METER_MAX
+    };
+
+    METER_TOTAL += 5;
+
+
+    Action.find({ 
+      where: METER_CLAUSE
+    }).success(function(action) {
+      if (!action) {
+        Action.create(METER_CLAUSE);
+      } else {
+        action.set("count", METER_TOTAL );
+        action.save();
+      }
+
+
+    });
+
+
+    home_controller.get_socket().emit("meter", meter_opts);
+    boards_controller.get_socket().emit("meter", meter_opts);
+    posts_controller.get_socket().emit("meter", meter_opts);
+
+
   }, 2000),
 
   lurk: function(s, board_id) {

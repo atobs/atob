@@ -2,6 +2,8 @@ var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var notif = require("app/client/notif");
 var storage = require("app/client/storage");
 
+require("app/static/vendor/velocity");
+
 var cookie_opts = {
   path: '/',
   expires: 365
@@ -244,6 +246,39 @@ module.exports = {
 
     
   },
+
+  handle_meter: function(meter) {
+    var percent = meter.percent;
+    var meterEl = $("#apexmeter");
+    if (!meterEl.length) {
+      meterEl = $("<div id='apexmeter' />");
+      meterEl.css({
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        width: "0",
+        height: "10px",
+        backgroundColor: "#000",
+        opacity: 0.6
+      });
+
+      $("body").append(meterEl);
+
+    }
+
+    console.log("METER IS", meter);
+    var window_width = $(window).width();
+    var bar_width = ((meter.percent || 0) / meter.max) * window_width;
+
+    console.log("BAR WIDTH IS", bar_width);
+
+    meterEl.velocity({
+      width: bar_width + "px"
+    });
+
+
+  },
+
   handle_anonicators: function(doings, last_seen) {
 
     var counts = {};
@@ -389,6 +424,7 @@ module.exports = {
   }, 3000),
   add_socket_subscriptions: function(s) {
     s.on("anons", this.handle_anonicators);
+    s.on("meter", this.handle_meter);
     s.on("bestalked", this.be_stalked);
     s.on("restalked", this.restalk);
     s.on("stalking", this.be_stalker);
