@@ -257,7 +257,7 @@ module.exports = {
         bottom: 0,
         left: 0,
         width: "0",
-        height: "10px",
+        height: "5px",
         backgroundColor: "#000",
         opacity: 0.6
       });
@@ -278,7 +278,12 @@ module.exports = {
 
   burtle_storm: function() {
     bootloader.require("app/client/burtle_storm", function() {
-      require("app/client/burtle_storm").storm();
+      var mod = require("app/client/burtle_storm");
+      var storms = _.random(1, 3);
+      for (var i = 0; i < storms; i++) {
+        mod.storm();
+      }
+
 
     });
   },
@@ -428,6 +433,7 @@ module.exports = {
   }, 3000),
   add_socket_subscriptions: function(s) {
     s.on("anons", this.handle_anonicators);
+    s.on("burtledance", this.burtle_storm);
     s.on("meter", this.handle_meter);
     s.on("bestalked", this.be_stalked);
     s.on("restalked", this.restalk);

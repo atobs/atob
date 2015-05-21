@@ -1,9 +1,45 @@
+function do_line(delay) {
+
+    var burtle = $(".logo img");
+    var w = $(window).width(), h = $(window).height();
+    var burtles = [];
+    var num_burtles = 20;
+    var zoom = 1;
+    var cur_x = 0;
+    var step_x = w / num_burtles;
+    for (var i = 0; i < num_burtles; i++) {
+      cur_x += step_x;
+
+      (function() {
+        var logo = burtle.clone();
+        logo.hide();
+        var start_x = cur_x;
+        var start_y = 0;
+
+        logo.css({ position: "fixed", left: start_x, top: 0, zoom: zoom });
+
+        $("body").append(logo);
+        burtles.push(logo);
+        logo.fadeIn();
+
+        logo.velocity({ top: h }, { loop: 3, delay: i * delay, complete: function() {
+          console.log("FINISHED REMOVE");
+          logo.remove();
+        }});
+      })();
+
+    }
+
+}
+
 module.exports = {
 
   storm: function() {
-  
+
     var types = {
       swarm: 50,
+      line: 50,
+      cascade: 50,
       bounce: 50
     };
 
@@ -11,11 +47,10 @@ module.exports = {
     var total = 0;
 
     _.each(types, function(val) {
-      total += val; 
+      total += val;
     });
 
     var choice = _.random(0, total-1);
-    console.log("CHOICE IS", choice);
     _.each(types, function(val, key) {
       if (choice >= 0) {
         choice -= val;
@@ -31,10 +66,10 @@ module.exports = {
     var burtle = $(".logo img").clone();
     $("body").append(burtle);
 
-    var w = $(window).width(), h = $(window).height(); 
+    var w = $(window).width(), h = $(window).height();
     burtle.css({ position: "fixed", left: w / 2, top: h / 2});
     for (var i = 0; i < 10; i++) {
-      var options = [ 
+      var options = [
         [_.random(0, w - 100), h - 100],
         [_.random(0, w - 100), 0],
         [0, _.random(0, h - 100)],
@@ -43,12 +78,10 @@ module.exports = {
 
       var edge = options[_.random(0, 3)];
 
-      console.log("GOING TO", edge);
-
       burtle.velocity({
         left: edge[0],
         top: edge[1]
-      }, { 
+      }, {
         easing: "easeOutElastic"
       });
     }
@@ -58,26 +91,30 @@ module.exports = {
       top: h / 2
     });
 
-    burtle.velocity({
-      scaleY: 20,
-      scaleX: 20,
-      opacity: 0
-    }, function() {
-      burtle.remove();
-    
-    });
+    (function() {
+      var thisb = burtle;
+      burtle.velocity({
+        scaleY: 20,
+        scaleX: 20,
+        opacity: 0,
+      }, {
+        complete: function() {
+          thisb.remove();
+        }
+      });
+    })();
 
 
 
   },
 
   swarm: function() {
-    var burtle = $(".logo img"); 
-    var w = $(window).width(), h = $(window).height(); 
+    var burtle = $(".logo img");
+    var w = $(window).width(), h = $(window).height();
     var burtles = [];
     var num_burtles = 20;
     var zoom = 1;
-    for (var i = 0; i < num_burtles; i++) { 
+    for (var i = 0; i < num_burtles; i++) {
       var logo = burtle.clone();
       logo.hide();
       var start_x = w / zoom / 2;
@@ -98,14 +135,18 @@ module.exports = {
             left: w / zoom / 2,
             top: h / zoom / 2
           });
-          burtle.velocity({
-            scaleX: 20,
-            scaleY: 20,
-            opacity: 0
-          }, function() {
-            burtle.remove();
-          
-          });
+          (function() {
+            var thisb = burtle;
+            burtle.velocity({
+              scaleY: 20,
+              scaleX: 20,
+              opacity: 0,
+            }, {
+              complete: function() {
+                thisb.remove();
+              }
+            });
+          })();
         });
         return;
       }
@@ -124,6 +165,14 @@ module.exports = {
     }
 
     do_storm();
+  },
+
+  cascade: function() {
+    do_line(50);
+  },
+
+  line: function() {
+    do_line(20);
   }
-      
+
 };

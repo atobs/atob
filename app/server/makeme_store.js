@@ -29,7 +29,9 @@ Action.find({
   where: METER_CLAUSE
 }).success(function(action) {
 
-  METER_TOTAL = action.dataValues.count ;
+  if (action && action.dataValues) {
+    METER_TOTAL = action.dataValues.count ;
+  }
 
   console.log("RESTORED METER TOTAL TO", METER_TOTAL);
 });
@@ -342,13 +344,15 @@ module.exports = {
     var boards_controller = load_controller("boards");
     var posts_controller = load_controller("posts");
 
-    METER_TOTAL += 1;
     METER_TOTAL %= METER_MAX;
 
     if (METER_TOTAL == 0) {
       // TIME TO DO STUFF HERE?
-      console.log("METER MAXED OUT");
+      home_controller.get_socket().emit("burtledance");
+      boards_controller.get_socket().emit("burtledance");
+      posts_controller.get_socket().emit("burtledance");
 
+      console.log("METER MAXED OUT!");
     }
 
     var meter_opts = {
