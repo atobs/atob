@@ -266,17 +266,21 @@ module.exports = {
 
     }
 
-    console.log("METER IS", meter);
     var window_width = $(window).width();
     var bar_width = ((meter.percent || 0) / meter.max) * window_width;
-
-    console.log("BAR WIDTH IS", bar_width);
 
     meterEl.velocity({
       width: bar_width + "px"
     });
 
 
+  },
+
+  burtle_storm: function() {
+    bootloader.require("app/client/burtle_storm", function() {
+      require("app/client/burtle_storm").storm();
+
+    });
   },
 
   handle_anonicators: function(doings, last_seen) {
