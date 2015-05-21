@@ -50,28 +50,28 @@ function make_sidebar(toggle_selector, content_selector, side) {
       hide_sidebars();
 
 
-      bootloader.require("app/static/vendor/jquery.transit.min", function() { 
+      bootloader.require("app/static/vendor/velocity", function() { 
         if (side === "right") {
           sidebar_el.css({
-            right: sidebarOffset
-          });
-
-          sidebar_el.show();
-          sidebar_el.animate({
-            right: 0,
+            right: sidebarOffset,
             display: "block",
             left: "auto"
           });
+
+          sidebar_el.show();
+          sidebar_el.velocity({
+            right: 0
+          });
         } else {
           sidebar_el.css({
-            left: sidebarOffset
+            left: sidebarOffset,
+            display: "block",
+            right: "auto"
           });
 
           sidebar_el.show();
-          sidebar_el.animate({
-            left: 0,
-            display: "block",
-            right: "auto"
+          sidebar_el.velocity({
+            left: 0
           });
         }
 
@@ -94,10 +94,10 @@ function make_sidebar(toggle_selector, content_selector, side) {
 
         }
 
-        $(".navbar_helper .logo img").animate({
-          rotate: "220deg"
-        }).animate({
-          rotate: "360deg",
+        $(".navbar_helper .logo img").velocity({
+          rotateZ: "220deg"
+        }).velocity({
+          rotateZ: "360deg",
           easing: "in-out"
         });
 
@@ -109,19 +109,19 @@ function make_sidebar(toggle_selector, content_selector, side) {
 
 
     } else {
-      $(".navbar_helper .logo img").animate({
-        rotate: "180deg"
-      }).animate({
-        rotate: "360deg",
+      $(".navbar_helper .logo img").velocity({
+        rotateZ: "220deg"
+      }).velocity({
+        rotateZ: "360deg",
         easing: "in-out"
       });
 
       var anim_options = {};
       anim_options[side_name] = sidebarOffset;
-      sidebar_el.animate(anim_options, function() { });
+      sidebar_el.velocity(anim_options, function() { });
       options[side_name] = "0px";
       options[other_side_name] = "auto";
-      $(nav_selector).animate(options);
+      $(nav_selector).velocity(options);
 
       $("#logobar").css(side_name, logobarLeft + "px");
       options.position = "auto";
