@@ -5,3 +5,6 @@ $(document).on("click", "a[href^='#']", function(event) {
     event.preventDefault();
   }
 });
+
+window.bootloader.modules.jquery = $;
+window.bootloader.defs.jquery = $;

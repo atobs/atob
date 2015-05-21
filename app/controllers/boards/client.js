@@ -1,6 +1,5 @@
 "use strict";
 
-require("core/client/component");
 var post_utils = require("app/client/post_utils");
 var settings = require("app/client/settings");
 var notif = require("app/client/notif");

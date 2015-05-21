@@ -1,7 +1,4 @@
 function summarize_post(post, archive, title_only) {
-  if (typeof $ === "undefined") {
-    $ = require("cheerio");
-  }
   archive = archive || "p";
 
   var div = $("<div class='post' />");
