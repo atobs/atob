@@ -372,6 +372,7 @@ module.exports = {
   // have the server send over multiple people that might be stalking
   be_stalked: _.throttle(function(data) {
     var logo = $($(".logo")[0]).clone();
+    logo.css("zIndex", 2000);
     logo.removeClass("lfloat");
 
     // self stalking...
