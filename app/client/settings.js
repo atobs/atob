@@ -339,7 +339,7 @@ module.exports = {
     var anon_id = target.data("anon");
 
     if (post_id) {
-      SF.socket().emit("isdoing", { 
+      SF.socket().emit("stalking", { 
         what: "stalking", 
         post_id: post_id, 
         anon: anon_id, 

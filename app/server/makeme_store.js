@@ -19,7 +19,7 @@ var Post = require_app("models/post");
 var Action = require_app("models/action");
 
 var METER_TOTAL = 1;
-var METER_MAX = 9000;
+var METER_MAX = 200;
 var METER_CLAUSE = {
   actor: "anon",
   object: "anon",
@@ -187,7 +187,7 @@ function maybe_stalk(sid, doing, s) {
 
 
     if (!bytrip || !actortrip) {
-      return;
+      return true;
     }
 
 
@@ -202,6 +202,9 @@ function maybe_stalk(sid, doing, s) {
 
 
     });
+
+
+    return true;
 
   }
 
@@ -289,12 +292,10 @@ function subscribe_to_updates(s) {
     }
   });
 
-  // TODO: make a better schema for how this works
-  s.on("isdoing", function(doing, cb) {
+  function do_doing(doing) {
     var olddoing = s.isdoing || DOINGS[sid];
     DOINGS[sid] = s.isdoing = doing;
 
-    maybe_stalk(sid, doing, s);
     add_doing(sid, doing);
 
     update_post_status(doing.post_id);
@@ -302,6 +303,23 @@ function subscribe_to_updates(s) {
       update_post_status(olddoing.post_id);
     }
 
+  }
+
+  // TODO: make a better schema for how this works
+  s.on("isdoing", function(doing, cb) {
+    do_doing(doing, cb);
+    if (cb) { cb(); }
+
+
+  });
+
+  s.on("stalking", function(doing, cb) {
+    var stalked = maybe_stalk(sid, doing, s);
+    if (!stalked) {
+      return;
+    }
+
+    do_doing(doing, cb);
     if (cb) { cb(); }
   });
 
@@ -344,9 +362,8 @@ module.exports = {
     var boards_controller = load_controller("boards");
     var posts_controller = load_controller("posts");
 
-    METER_TOTAL %= METER_MAX;
 
-    if (METER_TOTAL == 0) {
+    if (METER_TOTAL >= METER_MAX) {
       // TIME TO DO STUFF HERE?
       home_controller.get_socket().emit("burtledance");
       boards_controller.get_socket().emit("burtledance");
@@ -354,13 +371,12 @@ module.exports = {
 
       console.log("METER MAXED OUT!");
     }
+    METER_TOTAL %= METER_MAX;
 
     var meter_opts = {
       percent: METER_TOTAL,
       max: METER_MAX
     };
-
-    METER_TOTAL += 5;
 
 
     Action.find({ 
