@@ -12,6 +12,7 @@ var cookie_opts = {
 var TRIPCODES = [];
 var LOOKUP = {};
 var SIDEBARS = false;
+var MAX_TRIPS = 20;
 
 var get_from_storage = storage.get;
 var set_in_storage = storage.set;
@@ -46,17 +47,21 @@ module.exports = {
     var trips = _.filter(TRIPCODES, function(f) {
       return f.tripname !== code.tripname || f.tripcode !== code.tripcode;
     });
-    TRIPCODES = trips.slice(0, 10);
+    TRIPCODES = trips.slice(0, MAX_TRIPS);
     set_in_storage("tripcodes", JSON.stringify(TRIPCODES));
   },
   remember_tripcode: function(tripname, tripcode) {
     // Saves to history
+    if (!tripcode) {
+      return;
+    }
+
     var code = { tripname: tripname, tripcode: tripcode };
     var trips = _.filter(TRIPCODES, function(f) {
       return f.tripname !== code.tripname || f.tripcode !== code.tripcode;
     });
     trips.unshift(code);
-    TRIPCODES = trips.slice(0, 10);
+    TRIPCODES = trips.slice(0, MAX_TRIPS);
     set_in_storage("tripcodes", JSON.stringify(TRIPCODES));
   },
   save_handle: function() {
@@ -67,7 +72,7 @@ module.exports = {
     set_in_storage("handle", handle);
   },
   get_triphash: function() {
-    return md5($("input.tripcode").last().val() || get_from_storage("tripcode") || "fuun");
+    return md5($("input.tripcode").last().val() || get_from_storage("tripcode") || "");
   },
   get_tripcode: function() {
     return $("input.tripcode").last().val();
