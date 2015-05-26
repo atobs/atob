@@ -9,15 +9,16 @@
   <div class="col-md-12 clearfix">
     <%= render_partial("shared/logo_and_links.html.erb", { render_boards: render_boards, tripcode: tripcode }) %>
 
-    <div class="clearfix boardheader">
+    <div class="clearfix">
       <h1>/<%= board %> 
         <% if (board_slogan) { %>
             <small class='board_slogan'><%= board_slogan %></small>
         <% } %>
-
         <a class="rfloat" href="#" data-toggle="collapse" data-target=".new_post">new thread</a>
+
+    
       </h1>
-      <div class="rfloat boardview">
+      <div class="rfloat boardview boardheader">
         <a class="icon-squarestop boardfull" href="#"> </a>
         <a class="mll icon-list boardlist" href="#"> </a>
         <a class="mll icon-th boardtiles" href="#"> </a>
@@ -30,34 +31,8 @@
   </div>
 
 
-  <div class="col-md-12">
-    <form class="form-inline new_post collapse">
-      <div>
-        <hr />
-        <label for="title">Title</label>
-        <input name="title" class="form-control" type="text"> </input>
-      </div>
-      <div>
-        <label for="text">Text</label>
-        <textarea name="text" class="form-control col-md-4"> </textarea>
-      </div>
-
-      <div class="clearfix">
-        <button type="submit" class="lfloat mtl btn btn-default"><i class='icon-pencil'> </i>write it</button>
-        <div class="upload_photo lfloat mll mtl btn btn-info"><i class='icon-picture'> </i>imgur</div>
-
-        <input type="file" class="photoupload" 
-           style="visibility: collapse; width: 0px;">
-        </input>
-        <a href="#" class="submit mtl rfloat" display: "inline-block">i kno wut im doing</a>
-      </div>
-
-      <div>
-        <div class="post_preview">
-      </div>
-
-      </div>
-    </form>
+  <div class="col-md-12">   
+    <%= render_partial("shared/new_post.html.erb") %>
 
   </div>
 

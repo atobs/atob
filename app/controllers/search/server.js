@@ -7,7 +7,7 @@ var value_of = controller.value_of,
 
 var escape_html = require("escape-html");
 var Post = require_app("models/post");
-var HIDDEN_BOARDS = [ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test", "chat"];
+var HIDDEN_BOARDS = require_app("server/hidden_boards");
 
 function find_posts(q, cb) {
   // turn query into escaped query...

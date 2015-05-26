@@ -377,11 +377,11 @@ module.exports = {
 
     // self stalking...
     if (!data) {
-      $(".logo, .logo img").animate({
+      $(".logo, .logo img").velocity({
         opacity: 0
       }, {
         complete: function() {
-          $(".logo, .logo img").animate({ opacity: 1 });
+          $(".logo, .logo img").velocity({ opacity: 1 });
         }
       });
 
@@ -409,14 +409,14 @@ module.exports = {
       zIndex: 1050
     });
 
-    logo.animate({
+    logo.velocity({
       right: "0%"
     }, 1000, function() {
       logo.css({ top: "inherit" });
-      logo.animate({
+      logo.velocity({
         bottom: "100%"
       }, function() {
-        logo.animate({
+        logo.velocity({
           bottom: "0%"
         });
 

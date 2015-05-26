@@ -23,3 +23,36 @@ body {
     font-size: 32px;
   }
 }
+
+.atobd {
+  padding-top: 5px;
+  padding-left: 0px;
+
+  font-size: 14px !important;
+  width: 80%;
+  max-height: 80px;
+  overflow: hidden;
+  max-width: 600px;
+
+  @media @mobile {
+    width: 100%;
+    background-color: #fafaee;
+    padding: 5px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    max-height: 120px;
+  }
+
+  .upboat { 
+    display: none;
+  }
+
+  .imglink {
+    color: #f4ca3a;
+  }
+}
+
+.atobsps a {
+  position: relative;
+  color: #999;
+}

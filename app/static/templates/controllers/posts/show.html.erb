@@ -7,14 +7,36 @@
   </div>
 
   <div class="col-md-12">
+    <div class="clearfix">
+      <div class='atobd lfloat mtl'> 
+        <small class='atobsps'>
+          <a href="/b/ads" title="post in /ads for your own PSA">sponsored content</a>
+        </small>
+        <div class='pbl mbl'>
+          <%= render_sponsored_content() %>
+        </div>
+      </div>
 
+      <h1 class="clearfix" style="">
+        <div style="text-align: right">
+          <a class="newthread " href="#" data-toggle="collapse" data-target=".new_post">new thread</a>
+        </div>
+      </h1>
 
-
+    </div>
     <div class="loading clearfix row fade-in">
       <h4 class='mtl'>Loading </h4>
       <div class="mtl"><%= render_partial("shared/loading.html.erb") %></div>
     </div>
-    <%= render_post() %>
+
+    <div class="col-md-12 clearfix">   
+      <%= render_partial("shared/new_post.html.erb") %>
+    </div>
+
+
+    <div class="clearfix">
+      <%= render_post() %>
+    </div>
   </div>
 
 </div>

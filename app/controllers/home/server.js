@@ -20,7 +20,7 @@ var ICON_GROUPS = _.groupBy(ICONS, function(icon, index) {
   return parseInt(index / 50, 10);
 });
 
-var HIDDEN_BOARDS = [ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test", "chat"];
+var HIDDEN_BOARDS = require_app("server/hidden_boards");
 var SLOGANS = [
   "Eting your children since february",
   "Establishing hippy communes since 2014",
@@ -80,7 +80,7 @@ function render_even_more_recent(api, cb, use_header) {
         return !is_hidden;
       });
       var template_str = api.template.partial("home/recent_posts.html.erb", {
-        posts: posts.slice(0, 15),
+        posts: posts.slice(5, 20),
         class_: "posts",
         summarize: summarize
       });
@@ -107,7 +107,7 @@ function render_even_more_recent(api, cb, use_header) {
         return !is_hidden;
       });
 
-      posts = _.first(posts, 10);
+      posts = posts.slice(5, 15);
 
       var template_str = api.template.partial("home/recent_posts.html.erb", {
         posts: posts,

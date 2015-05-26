@@ -24,7 +24,7 @@ var IP = require_app("models/ip");
 var model = require_app("models/model");
 var post_links = require_app("server/post_links");
 
-var HIDDEN_BOARDS = [ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test", "chat"];
+var HIDDEN_BOARDS = require_app("server/hidden_boards");
 
 var MAX_ANONS = 200;
 
@@ -58,6 +58,7 @@ function post_text(result) {
 
 var escape_html = require("escape-html");
 function handle_new_post(s, board, post, cb) {
+  console.log("HANDLING NEW POST", board, post);
   var last_post = s.last_post || 0;
   var post_timeout = POST_TIMEOUTS[board] || POST_TIMEOUT;
   var post_time = Date.now() - last_post ;
@@ -150,12 +151,10 @@ function handle_new_post(s, board, post, cb) {
         }
 
 
-        if (!moved) {
-          s.emit("new_post", data);
-        }
+        s.emit("goto_post", p.dataValues.id);
         
         if (cb) {
-          cb();
+          cb(p.dataValues.id);
         }
       });
   });

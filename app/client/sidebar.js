@@ -194,12 +194,16 @@ function add_sidebars() {
     });
 
     // make the up top links animate a bit...
-    $(".navbar .navlinks a").animate({
+    $(".navbar .navlinks .boardlink").animate({
       "margin-left": "-2000px"
     }).fadeOut(function() {
       unclickable = false; 
     });
 
+
+    $(".sidr .boardlink").on("click", function() {
+      hide_sidebars();
+    });
 
     // append a /home link to the navlinks, too
     var link_sidebar = $(".sidr .boardlink")[0];

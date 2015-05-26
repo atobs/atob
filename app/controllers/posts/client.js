@@ -3,7 +3,9 @@
 var settings = require("app/client/settings");
 var post_utils = require("app/client/post_utils");
 var notif = require("app/client/notif");
-var drawing = require("app/client/drawing");
+require("app/client/drawing");
+
+var newthread = require("app/client/newthread");
 
 window._POSTS = window._POSTS || {};
 module.exports = {
@@ -67,6 +69,12 @@ module.exports = {
 
     });
 
+    s.on("goto_post", function(id) {
+      if (id) {
+        window.location.href = "/p/" + id;
+      }
+    });
+
     s.on("new_reply", function(data) {
       var post = window._POSTS[data.parent_id];
       if (post) {
@@ -112,3 +120,6 @@ module.exports = {
 
 _.extend(module.exports, settings);
 _.extend(module.exports.events, settings.controller_events);
+
+_.extend(module.exports, newthread);
+_.extend(module.exports.events, newthread.controller_events);

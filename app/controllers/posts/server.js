@@ -6,6 +6,7 @@ var value_of = controller.value_of,
     array_of = controller.array_of;
     
 
+var config = require_core("server/config");
 var posting = require_app("server/posting");
 var render_posting = posting.render_posting;
 var makeme_store = require_app("server/makeme_store");
@@ -37,6 +38,37 @@ module.exports = {
 
     var board_utils = require_app("server/board_utils");
     var render_boards = board_utils.render_boards();
+
+    var render_sponsored_content = api.page.async(function(flush) {
+      Post.findAll({
+        where: { board_id: "ads", parent_id: null },
+      }).success(function(results) {
+        if (!results || !results.length || !_.random(7)) {
+          flush("post in <a href='/b/ads'>/ads</a> to put your own message here");
+        } else {
+          // Pick a random ad...
+          //
+          var ad = results[_.random(0, results.length - 1)];
+
+          var postCmp = $C("post", ad.dataValues);
+          var text_formatter = require_root("app/client/text");
+          postCmp.add_markdown(text_formatter);
+
+          var container = $("<div />");
+          container.append(postCmp.$el.find(".title .text").html());
+          container.append(postCmp.$el.find(".op.text").html());
+
+
+          flush(container.html());
+
+        }
+
+      });
+
+
+    });
+
+
     var render_post = api.page.async(function(flush) {
 
       Post.find({
@@ -100,6 +132,7 @@ module.exports = {
             }
             render_posting(api, flush, result);
           }
+
         });
 
     });
@@ -116,8 +149,15 @@ module.exports = {
       });
     });
     render_sinners();
+
+    api.bridge.controller("posts", "set_api_key", config.imgur_key);
     var template_str = api.template.render("controllers/posts/show.html.erb", 
-      { render_post: render_post, render_boards: render_boards, tripcode: gen_md5(Math.random()) });
+      { 
+        render_post: render_post, 
+        render_boards: render_boards, 
+        tripcode: gen_md5(Math.random()),
+        render_sponsored_content: render_sponsored_content
+      });
     api.page.render({ content: template_str, socket: true });
   },
 
@@ -139,7 +179,7 @@ module.exports = {
     });
 
     s.on("new_post", function(post, cb) {
-      posting.handle_new_post(s, _board, post, cb);
+      posting.handle_new_post(s, _board || post.board, post, cb);
     });
 
     s.on("delete_post", function(post) {
