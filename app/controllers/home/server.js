@@ -69,7 +69,7 @@ function render_even_more_recent(api, cb, use_header) {
         },
       },
       order: "id DESC",
-      limit: 50
+      limit: 100
     }).success(function(posts) {
       posts = _.filter(posts, function(p) {
         var is_hidden = false;
@@ -96,7 +96,7 @@ function render_even_more_recent(api, cb, use_header) {
         "Posts.thread_id is NULL AND Posts.board_id != 'ban'"
       ],
       order: "id DESC",
-      limit: 30
+      limit: 100
     }).success(function(posts) {
       posts = _.filter(posts, function(p) {
         var is_hidden = false;
@@ -385,7 +385,7 @@ module.exports = {
           },
         },
         order: "id DESC",
-        limit: 50
+        limit: 100
       }).success(function(posts) {
         posts = _.filter(posts, function(p) {
           var is_hidden = false;
@@ -411,7 +411,7 @@ module.exports = {
           "Posts.thread_id is NULL AND Posts.board_id != 'ban'"
         ],
         order: "id DESC",
-        limit: 30
+        limit: 100
       }).success(function(posts) {
         posts = _.filter(posts, function(p) {
           var is_hidden = false;
