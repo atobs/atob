@@ -272,10 +272,21 @@ module.exports = {
     }
 
     var window_width = $(window).width();
-    var bar_width = ((meter.percent || 0) / meter.max) * window_width;
+    var bar_percent = ((meter.percent || 0) / meter.max);
+    var bar_width =  bar_percent * window_width;
+    var bgColor = "#00f";
+
+    if (bar_percent > 0.9) { 
+      bgColor = "#f00";
+    } else if (bar_percent > 0.8) {
+      bgColor = "#ff0";
+    } else if (bar_percent > 0.7) {
+      bgColor = "#0a0";
+    }
 
     meterEl.velocity({
-      width: bar_width + "px"
+      width: bar_width + "px",
+      backgroundColor: bgColor
     });
 
 
@@ -406,6 +417,12 @@ module.exports = {
     });
 
     $("body").append(logo);
+
+    if (data.tripcode) {
+      var tripcodeHash = logo.find(".identity_tripcode");
+      tripcodeHash.data("tripcode", data.tripcode);
+      tripcode_gen(tripcodeHash);
+    }
     logo.css({
       position: "fixed",
       right: "100%",

@@ -165,10 +165,12 @@ function maybe_stalk(sid, doing, s) {
       }
     });
 
+    var actortrip = SID_TO_TRIP[sid];
+    var bytrip = SID_TO_TRIP[doing.anon];
     var stalked_socket = SOCKETS[doing.anon];
     if (stalked_socket) {
       _.each(stalked_socket, function(s) {
-        s.emit("bestalked", { by: sid, sid: doing.anon });
+        s.emit("bestalked", { by: sid, sid: doing.anon, tripcode: actortrip });
         s.emit("burtled", doing.post_id);
 
       });
@@ -177,8 +179,6 @@ function maybe_stalk(sid, doing, s) {
     }
 
 
-    var actortrip = SID_TO_TRIP[sid];
-    var bytrip = SID_TO_TRIP[doing.anon];
     var where_clause = {
       actor: actortrip,
       object: bytrip,
