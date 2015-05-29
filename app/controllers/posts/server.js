@@ -15,6 +15,8 @@ var Post = require_app("models/post");
 var ArchivedPost = require_app("models/archived_post");
 var Board = require_app("models/board");
 
+var sponsored_content = require_app("server/sponsored_content");
+
 var crypto = require("crypto");
 var gen_md5 = function(h) {
   var hash = crypto.Hash("md5");
@@ -39,36 +41,7 @@ module.exports = {
     var board_utils = require_app("server/board_utils");
     var render_boards = board_utils.render_boards();
 
-    var render_sponsored_content = api.page.async(function(flush) {
-      Post.findAll({
-        where: { board_id: "ads", parent_id: null },
-      }).success(function(results) {
-        if (!results || !results.length || !_.random(7)) {
-          flush("post in <a href='/b/ads'>/ads</a> to put your own message here");
-        } else {
-          // Pick a random ad...
-          //
-          var ad = results[_.random(0, results.length - 1)];
-
-          var postCmp = $C("post", ad.dataValues);
-          var text_formatter = require_root("app/client/text");
-          postCmp.add_markdown(text_formatter);
-
-          var container = $("<div />");
-          container.append(postCmp.$el.find(".title .text").html());
-          container.append(postCmp.$el.find(".op.text").html());
-
-
-          flush(container.html());
-
-        }
-
-      });
-
-
-    });
-
-
+    var render_sponsored_content = sponsored_content.render(api);
     var render_post = api.page.async(function(flush) {
 
       Post.find({

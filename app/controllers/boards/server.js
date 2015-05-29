@@ -11,6 +11,7 @@ var posting = require_app("server/posting");
 var post_links = require_app("server/post_links");
 var mod = require_app("server/mod");
 var config = require_core("server/config");
+var sponsored_content = require_app("server/sponsored_content");
 
 var makeme_store = require_app("server/makeme_store");
 
@@ -158,12 +159,15 @@ module.exports = {
     });
     render_sinners();
 
+    var render_sponsored_content = sponsored_content.render(api);
+
     var template_str = api.template.render("controllers/boards/show.html.erb", {
       board: board_id,
       tripcode: gen_md5(Math.random()),
       render_posts: render_posts,
       render_boards: render_boards,
       board_slogan: board_slogan,
+      render_sponsored_content: render_sponsored_content,
       new_thread: board_id !== "to"
     });
 

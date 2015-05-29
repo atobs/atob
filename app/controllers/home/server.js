@@ -11,7 +11,7 @@ var Link = require_app("models/link");
 var gen_md5 = require_app("server/md5");
 var posting = require_app("server/posting");
 var render_posting = posting.render_posting;
-
+var sponsored_content = require_app("server/sponsored_content");
 
 var ICONS = require_app("client/emojies");
 var makeme_store = require_app("server/makeme_store");
@@ -499,6 +499,8 @@ module.exports = {
       });
     });
 
+    var render_sponsored_content = sponsored_content.render(api);
+
 
 
     var async_render_burtles = function() { };
@@ -538,6 +540,7 @@ module.exports = {
       render_recent_posts: render_recent_posts,
       render_recent_threads: render_recent_threads,
       render_burtles: async_render_burtles,
+      render_sponsored_content: render_sponsored_content,
       slogan: SLOGANS[_.random(SLOGANS.length)],
 
       render_about: async_render_about,
