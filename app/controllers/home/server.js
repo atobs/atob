@@ -138,7 +138,7 @@ function render_burtles(cb) {
       action: [ "sunkship", "burtled" ]
     },
     order: "count DESC",
-    limit: 1000
+    limit: 500
   }).success(function(actions) {
     var count = 0;
     var content = $("<div class='profile_container container mtl' />");
