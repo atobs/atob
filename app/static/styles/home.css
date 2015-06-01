@@ -37,6 +37,12 @@
 
 }
 
+body {
+  @media @device {
+    padding-bottom: 200px;
+  }
+}
+
 .boardlink {
   font-size: 125%;
   min-width: 50px;
