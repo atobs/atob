@@ -37,10 +37,6 @@
 
 }
 
-body {
-  padding-bottom: 200px;
-}
-
 .boardlink {
   font-size: 125%;
   min-width: 50px;
@@ -113,6 +109,7 @@ h1, h2, h3 {
   @media @desktop {
     overflow: hidden;
     display: inline-block;
+    padding-bottom: 200px;
   }
 }
 
