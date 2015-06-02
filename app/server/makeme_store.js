@@ -313,7 +313,7 @@ function subscribe_to_updates(s) {
 
   });
 
-  s.on("stalking", function(doing, cb) {
+  s.on("stalking", _.throttle(function(doing, cb) {
     var stalked = maybe_stalk(sid, doing, s);
     if (!stalked) {
       return;
@@ -321,7 +321,7 @@ function subscribe_to_updates(s) {
 
     do_doing(doing, cb);
     if (cb) { cb(); }
-  });
+  }, 200));
 
 }
 
