@@ -33,7 +33,7 @@ Action.find({
     METER_TOTAL = action.dataValues.count ;
   }
 
-  console.log("RESTORED METER TOTAL TO", METER_TOTAL);
+  console.log("Restored burtle meter to", METER_TOTAL);
 });
 
 

@@ -281,7 +281,6 @@ function make_youtube_tag(img_link) {
 
 function make_vimeo_url(img_link) {
   var match = is_vimeo_url(img_link);
-  console.log("MATCH IS", match);
   var proto = document.location.protocol;
   var youtube_url = "player.vimeo.com/video/";
   if (proto === "https:") {

@@ -58,7 +58,7 @@ function post_text(result) {
 
 var escape_html = require("escape-html");
 function handle_new_post(s, board, post, cb) {
-  console.log("HANDLING NEW POST", board, post);
+  console.log("Handling new post", board, post);
   var last_post = s.last_post || 0;
   var post_timeout = POST_TIMEOUTS[board] || POST_TIMEOUT;
   var post_time = Date.now() - last_post ;
@@ -292,6 +292,7 @@ function check_for_blasphemy(s, parentish, post, cb) {
 }
 
 function handle_new_reply(s, board, post, cb) {
+  console.log("Handling reply to", post.post_id);
   var last_reply = s.last_reply || 0;
   var reply_timeout = REPLY_TIMEOUTS[board] || REPLY_TIMEOUT;
   var reply_time = Date.now() - last_reply ;
@@ -518,7 +519,7 @@ function handle_update_post(socket, board, post, cb) {
 
 
 function handle_delete_post(socket, board, post) {
-  console.log("DELETING POST", post);
+  console.log("Deleting post", post);
   Post.find({
     where: {
       id: post.id
