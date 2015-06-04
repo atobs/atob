@@ -21,6 +21,10 @@ function is_webm_url(url) {
 }
 
 var renderer = new marked.Renderer();
+renderer.em = function(quote) {
+  return "*" + quote + "*";
+}
+
 renderer.blockquote = function(quote) {
   var quote_text = "";
   if (quote) {
