@@ -178,18 +178,22 @@ function add_sidebars() {
     // add benjamin button directly into the sidebar
     var sidebar_events = make_sidebar("a.settingslink", ".navbar .settings", "right");
     sidebar_events.on("opened", function() {
-      var tripcodes_button = $("a.tripcode_history");
+      var tripcodes_button = $("a.tripcode_done");
       tripcodes_button.hide();
-      var tripcodeContainer = $(".tripcode_holder");
 
-      if (!tripcodeContainer.length) {
-        tripcodeContainer = $("<div class='lfloat clearfix tripcode_holder' style='width: 100%' />");
-        tripcodeContainer.appendTo(tripcodes_button.parent());
-      } else {
-        tripcodeContainer.empty();
+      tripcodes_button = $("a.tripcode_history");
+      tripcodes_button.hide();
+
+      var benjamin_buttons = $(".benjamin_button");
+      benjamin_buttons.show();
+
+      if (!benjamin_buttons.closest(".sidr").length) {
+        tripcodes_button.closest(".sidr").append(benjamin_buttons);
       }
 
-      require("app/client/settings").tripcode_history(tripcodeContainer);
+
+      benjamin_buttons.removeClass("collapse");
+      require("app/client/settings").regen_tripcode_history();
 
     });
 

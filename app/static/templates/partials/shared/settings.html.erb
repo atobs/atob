@@ -1,35 +1,45 @@
 <% add_stylesheet("settings.css") %>
 
-<div class="col-sm-12 col-md-12 collapse settings clearfix mtl mbl" style="background-color: #eaeaea">
-  <h2 class="identity">identity </h2>
-  <div class="beeper lfloat mbl">
-    beep me
+<div class="col-sm-12 col-md-12 collapse settings clearfix mtl mbl " style="background-color: #eaeaea">
+
+  <div class="ptl pbl">
+    <div class="buttons">
+      <div class="btn btn-primary regen_tripcode rfloat mtl mbl">
+        randomize me
+      </div>
+
+      <a class="btn btn-warning tripcode_history rfloat mtl mbl mrl" href="#benjamin_button" data-target=".benjamin_button">
+        benjamin button
+      </a>
+
+      <a class="btn btn-info lfloat mtl mbl tripcode_done" href="#settings" data-target=".settings" data-toggle="collapse">
+        done
+      </a>
+    </div>
+
+    <div id="identity_container" style="width: 100%; padding-bottom: 20px" class="clearfix pbl ">
+      <input name="handle" class="form-control handle" type="text" placeholder="handle" value="anon" />
+      <div class="mtl"> </div>
+      <input name="tripcode" class="tripcode form-control" type="text" placeholder="tripcode" value=" <%= tripcode %>" />
+
+      <div class="checkbox lfloat mtl ptl">
+        <label>
+          <input type="checkbox" name="newtrip" class="newtrip">new page new trip</input>
+        </label>
+      </div>
+
+      <div class="checkbox lfloat mtl ptl">
+        <label>
+          <input type="checkbox" name="use_sidebars" class="use_sidebars">use sidebars</input>
+        </label>
+      </div>
+
+    </div>
+
+
+    <div class="clearfix benjamin_button collapse" style="width: 100%;" >
+      <%= render_partial("shared/benjamin_buttons.html.erb") %>
+    </div>
+
   </div>
-
-  <input name="handle" class="form-control handle" type="text" placeholder="handle" value="anon" />
-  <div class="mtl"> </div>
-  <input name="tripcode" class="tripcode form-control" type="text" placeholder="tripcode" value=" <%= tripcode %>" />
-
-  <div class="checkbox lfloat mtl ptl">
-    <label>
-      <input type="checkbox" name="newtrip" class="newtrip">new page new trip</input>
-    </label>
-  </div>
-
-  <div class="checkbox lfloat mtl ptl">
-    <label>
-      <input type="checkbox" name="use_sidebars" class="use_sidebars">use sidebars</input>
-    </label>
-  </div>
-
-  <div class="btn btn-primary regen_tripcode rfloat mtl mbl">
-    randomize me
-  </div>
-
-  <a class="btn btn-warning tripcode_history rfloat mtl mbl mrl" href="#" data-toggle="modal"
-      data-target="#benjamin_button">
-    benjamin button
-  </a>
-
 </div>
-

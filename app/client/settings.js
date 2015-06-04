@@ -10,6 +10,7 @@ var cookie_opts = {
 };
 
 var TRIPCODES = [];
+var FOURCODES = [];
 var LOOKUP = {};
 var SIDEBARS = false;
 var MAX_TRIPS = 20;
@@ -17,6 +18,7 @@ var MAX_TRIPS = 20;
 var get_from_storage = storage.get;
 var set_in_storage = storage.set;
 TRIPCODES = JSON.parse(get_from_storage("tripcodes") || "[]");
+FOURCODES = JSON.parse(get_from_storage("fourcodes") || "[]");
 
 SIDEBARS = JSON.parse(get_from_storage("use_sidebars") || "false");
 
@@ -49,6 +51,26 @@ module.exports = {
     });
     TRIPCODES = trips.slice(0, MAX_TRIPS);
     set_in_storage("tripcodes", JSON.stringify(TRIPCODES));
+
+    trips = _.filter(FOURCODES, function(f) {
+      return f.tripname !== code.tripname || f.tripcode !== code.tripcode;
+    });
+    FOURCODES = trips.slice(0, MAX_TRIPS);
+    set_in_storage("fourcodes", JSON.stringify(FOURCODES));
+  },
+  remember_tripcode_forever: function(tripname, tripcode) {
+    // Saves to history
+    if (!tripcode) {
+      return;
+    }
+
+    var code = { tripname: tripname, tripcode: tripcode };
+    var trips = _.filter(FOURCODES, function(f) {
+      return f.tripname !== code.tripname || f.tripcode !== code.tripcode;
+    });
+    trips.unshift(code);
+    FOURCODES = trips.slice(0, MAX_TRIPS);
+    set_in_storage("fourcodes", JSON.stringify(FOURCODES));
   },
   remember_tripcode: function(tripname, tripcode) {
     // Saves to history
@@ -124,8 +146,6 @@ module.exports = {
       this.save_tripcode();
       this.update_trip_colors();
 
-      $("#benjamin_button").modal("hide");
-
     }
   },
   delete_old_code: function(el) {
@@ -139,7 +159,7 @@ module.exports = {
       var appended;
       var children = parent.children().fadeOut(function() {
         if (!appended) {
-          var restoreLink = $("<a href='#'>reremember</a>");
+          var restoreLink = $("<a href='#'>undo</a>");
           parent.append(restoreLink);
 
           restoreLink.on("click", function() {
@@ -155,17 +175,27 @@ module.exports = {
     }
   },
 
-  click_tripcode_history: function() {
-    var buttonEl = $("#benjamin_button .buttons");
+  regen_tripcode_history: function() {
+    var buttonEl = $(".benjamin_button .buttons");
     buttonEl.empty();
     this.tripcode_history(buttonEl);
+
+  },
+
+  click_tripcode_history: function() {
+    var buttonsContainer = $(".benjamin_button");
+    this.regen_tripcode_history();
+    var identityContainer = $("#identity_container");
+
+    buttonsContainer.slideToggle();
   },
   tripcode_history: function(buttonEl) {
-    _.each(TRIPCODES, function(code) {
-      var tripcodeContainer = $("<div class='clearfix col-md-4 col-xs-4 '/>");
+    var self = this;
+    function append_tripcode(code, is_four_code) {
+      var tripcodeContainer = $("<div class='clearfix col-md-4 col-xs-4 tripcode_wrapper'/>");
       tripcodeContainer.css("position", "relative");
 
-      var tripcodeEl = $("<div class='tripcode_button lfloat'/>");
+      var tripcodeEl = $("<div class='tripcode_button mtl lfloat'/>");
       tripcodeEl.css("width", "95%");
       tripcodeEl.css("cursor", "pointer");
       var triphash = window.md5(code.tripname + ":" + window.md5(code.tripcode || ""));
@@ -175,19 +205,65 @@ module.exports = {
 
       tripcode_gen(tripcodeEl);
       tripcodeContainer.append(tripcodeEl);
-      var deleteEl = $("<a href='#' class='tripcode_delete icon-remove' />");
-      tripcodeContainer.append(deleteEl);
-      deleteEl.css("position", "absolute");
-      deleteEl.css("right", "0px");
+      if (!is_four_code) {
+        var deleteEl = $("<a href='#' class='ptm mtl tripcode_delete tripcode_control icon-remove' />");
+        tripcodeContainer.append(deleteEl);
+        // deleteEl handling is in this class handler for click tripcode_delete
+        deleteEl.css("position", "absolute");
+        deleteEl.css("right", "13px");
+
+        var pinEl = $("<a href='#' class='ptm mtl tripcode_pin tripcode_control icon-pin' />");
+        tripcodeContainer.append(pinEl);
+        pinEl.css("position", "absolute");
+        pinEl.css("left", "4px");
+        pinEl.on("click", function() {
+          self.unremember_tripcode(code.tripname, code.tripcode);
+          self.remember_tripcode_forever(code.tripname, code.tripcode);
+          self.regen_tripcode_history();
+
+          // TODO: move to pinned without regenerating history
+        });
+      } else {
+        var deleteEl = $("<a href='#' class='ptm mtl tripcode_control icon-remove' />");
+        deleteEl.on("click", function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+
+          self.unremember_tripcode(code.tripname, code.tripcode);
+          self.remember_tripcode(code.tripname, code.tripcode);
+          self.regen_tripcode_history();
+
+          // TODO: move from pinned without regenerating history
+        });
+        tripcodeContainer.append(deleteEl);
+        deleteEl.css("position", "absolute");
+        deleteEl.css("right", "13px");
+
+      }
+
+
 
 
       buttonEl.append(tripcodeContainer);
 
-    });
+    }
 
+    buttonEl.append("<div style='clear: both' class='clearfix'><hr class='clearfix lfloat'/></div>");
+    _.each(TRIPCODES, function(code) {
+      append_tripcode(code);
+    });
     if (!TRIPCODES.length) {
       buttonEl.append("Sorry - you don't have any saved tripcodes.");
     }
+
+    if (FOURCODES.length) {
+      buttonEl.append("<div style='clear: both' class='clearfix'><hr class='clearfix lfloat'/><h2>frozen</h2></div>");
+
+      _.each(FOURCODES, function(code) {
+        append_tripcode(code, true);
+      });
+    }
+
   },
   init_tripcodes: function() {
     var tripcodeEl = this.$page.find("input.tripcode");

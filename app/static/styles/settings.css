@@ -30,3 +30,40 @@
 .checkbox {
   clear: both;
 }
+
+.tripcode_wrapper {
+
+  .tripcode_control {
+    opacity: 0;
+    color: #aaa;
+  }
+
+  &:hover {
+    .tripcode_control {
+      opacity: 1;
+      color: blue;
+
+      color: #428bca;
+      background-color: #fafafa;
+      opacity: 0.9;
+      border-radius: 100%;
+      zoom: 1.5;
+      padding: 2px;
+      margin-top: 0px;
+
+      @media @device {
+        margin-top: 6px;
+        padding: 2px;
+        zoom: 1;
+      }
+
+    }
+  }
+}
+
+
+.benjamin_button {
+  @media @device {
+    padding-bottom: 100px;
+  }
+}
