@@ -182,12 +182,24 @@ module.exports = {
 
   },
 
-  click_tripcode_history: function() {
+  click_tripcode_history: function(e) {
     var buttonsContainer = $(".benjamin_button");
     this.regen_tripcode_history();
     var identityContainer = $("#identity_container");
 
-    buttonsContainer.slideToggle();
+    var el = $(e.target);
+
+    if (buttonsContainer.is(":visible")) {
+      identityContainer.slideToggle(function() {
+        buttonsContainer.slideToggle();
+      });
+      el.html("benjamin button");
+    } else {
+      buttonsContainer.slideToggle(function() {
+        identityContainer.slideToggle();
+      });
+      el.html("back to settings");
+    }
   },
   tripcode_history: function(buttonEl) {
     var self = this;

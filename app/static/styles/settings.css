@@ -27,6 +27,12 @@
   }
 }
 
+.tripcode_done {
+  @media @mobile {
+    display: none;
+  }
+}
+
 .checkbox {
   clear: both;
 }
@@ -48,12 +54,11 @@
       opacity: 0.9;
       border-radius: 100%;
       zoom: 1.5;
-      padding: 2px;
+      padding: 4px;
       margin-top: 0px;
 
       @media @device {
         margin-top: 6px;
-        padding: 2px;
         zoom: 1;
       }
 
