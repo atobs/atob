@@ -204,7 +204,7 @@ module.exports = {
   tripcode_history: function(buttonEl) {
     var self = this;
     function append_tripcode(code, is_four_code) {
-      var tripcodeContainer = $("<div class='clearfix col-md-4 col-xs-4 tripcode_wrapper'/>");
+      var tripcodeContainer = $("<div class='clearfix col-md-4 col-xs-6 tripcode_wrapper'/>");
       tripcodeContainer.css("position", "relative");
 
       var tripcodeEl = $("<div class='tripcode_button mtl lfloat'/>");
@@ -222,7 +222,7 @@ module.exports = {
         tripcodeContainer.append(deleteEl);
         // deleteEl handling is in this class handler for click tripcode_delete
         deleteEl.css("position", "absolute");
-        deleteEl.css("right", "13px");
+        deleteEl.css("right", "9px");
 
         var pinEl = $("<a href='#' class='ptm mtl tripcode_pin tripcode_control icon-pin' />");
         tripcodeContainer.append(pinEl);
@@ -249,7 +249,7 @@ module.exports = {
         });
         tripcodeContainer.append(deleteEl);
         deleteEl.css("position", "absolute");
-        deleteEl.css("right", "13px");
+        deleteEl.css("right", "9px");
 
       }
 
