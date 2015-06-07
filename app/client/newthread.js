@@ -1,9 +1,90 @@
 var storage = require("app/client/storage");
+
+function handle_imgur_upload(textareaEl, file, cb) {
+  // add feedback to indiciate its uploading
+
+  function set_upload_state() {
+    textareaEl.attr("disabled", true);
+
+  }
+
+  function end_upload_state() {
+    textareaEl.attr("disabled", false);
+    setTimeout(function() {
+      textareaEl.focus();
+      moveCaretToEnd(textareaEl[0]);
+      setTimeout(function() {
+        moveCaretToEnd(textareaEl[0]);
+        textareaEl.focus();
+      });
+    });
+  }
+
+  // from http://stackoverflow.com/questions/4715762/javascript-move-caret-to-last-character
+  function moveCaretToEnd(el) {
+    if (typeof el.selectionStart == "number") {
+      el.selectionStart = el.selectionEnd = el.value.length;
+    } else if (typeof el.createTextRange != "undefined") {
+      el.focus();
+      var range = el.createTextRange();
+      range.collapse(false);
+      range.select();
+    }
+  }
+
+
+  function set_textarea_val(stub) {
+    var val = textareaEl.val();
+    textareaEl.val('').focus().val(val + stub);
+  }
+
+  function stub_imgur_request() {
+    setTimeout(function() {
+      var link = "/images/atobi.png";
+
+      set_textarea_val(" ![my dumb photo](" + link + ") ");
+      end_upload_state();
+
+      if (cb) {
+        cb();
+      }
+
+    }, 1000);
+  }
+
+  function real_imgur_request() {
+    /* Lets build a FormData object*/
+    var fd = new FormData(); // I wrote about it: https://hacks.mozilla.org/2011/01/how-to-develop-a-html5-image-uploader/
+    fd.append("image", file); // Append the file
+    var xhr = new XMLHttpRequest(); // Create the XHR (Cross-Domain XHR FTW!!!) Thank you sooooo much imgur.com
+    xhr.open("POST", "https://api.imgur.com/3/image.json"); // Boooom!
+    xhr.onload = function() {
+      var response = JSON.parse(xhr.responseText);
+      var link = response.data.link;
+
+      set_textarea_val(" ![my dumb photo](" + link + ") ");
+      end_upload_state();
+
+      if (cb) {
+        cb();
+      }
+    };
+    xhr.setRequestHeader('Authorization', "Client-ID " + IMGUR_KEY); // Get your own key http://api.imgur.com/
+    xhr.send(fd);
+  }
+
+  set_upload_state();
+  real_imgur_request();
+//  stub_imgur_request();
+
+
+}
+
 module.exports = {
   controller_events: {
     "submit form.new_post" : "add_post",
     "click form.new_post .submit" : "add_post_force",
-    "change input.photoupload" : "handle_upload_image",
+    "change .new_post input.photoupload" : "handle_upload_image",
     "click .upload_photo": "click_upload_image",
     "blur .new_post input" : "remove_post_preview",
     "blur .new_post textarea" : "remove_post_preview",
@@ -147,92 +228,38 @@ module.exports = {
     }
 
   },
-  // FROM: https://github.com/paulrouget/miniuploader/blob/gh-pages/index.html
-  handle_upload_image: function(e) {
-    var self = this;
+  is_file_upload: function(e) {
     /* Is the file an image? */
     var files = e.target.files;
     var file = files[0];
-    if (!file || !file.type.match(/image.*/)) return;
+    if (!file || !file.type.match(/image.*/)) return false;
+
+    return true;
+
+
+  },
+  // FROM: https://github.com/paulrouget/miniuploader/blob/gh-pages/index.html
+  handle_upload_image: function(e) {
+    
+    var self = this;
+    if (!self.is_file_upload(e)) {
+      return;
+    }
 
     e.preventDefault();
 
     // now do we add the image to the post?
     var textareaEl = this.$el.find(".new_post textarea");
-    // add feedback to indiciate its uploading
 
-    function set_upload_state() {
-      textareaEl.attr("disabled", true);
-
-    }
-
-    function end_upload_state() {
-      textareaEl.attr("disabled", false);
-      setTimeout(function() {
-        textareaEl.focus();
-        moveCaretToEnd(textareaEl[0]);
-        setTimeout(function() {
-          moveCaretToEnd(textareaEl[0]);
-          textareaEl.focus();
-        });
-      });
-    }
-
-    // from http://stackoverflow.com/questions/4715762/javascript-move-caret-to-last-character
-    function moveCaretToEnd(el) {
-      if (typeof el.selectionStart == "number") {
-        el.selectionStart = el.selectionEnd = el.value.length;
-      } else if (typeof el.createTextRange != "undefined") {
-        el.focus();
-        var range = el.createTextRange();
-        range.collapse(false);
-        range.select();
-      }
-    }
-
-
-    function set_textarea_val(stub) {
-      var val = textareaEl.val();
-      textareaEl.val('').focus().val(val + stub);
-    }
-
-    function stub_imgur_request() {
-      setTimeout(function() {
-        var link = "/images/atobi.png";
-
-        set_textarea_val(" ![my dumb photo](" + link + ") ");
-        end_upload_state();
-        self.update_post_preview();
-      }, 1000);
-    }
-
-    function real_imgur_request() {
-      /* Lets build a FormData object*/
-      var fd = new FormData(); // I wrote about it: https://hacks.mozilla.org/2011/01/how-to-develop-a-html5-image-uploader/
-      fd.append("image", file); // Append the file
-      var xhr = new XMLHttpRequest(); // Create the XHR (Cross-Domain XHR FTW!!!) Thank you sooooo much imgur.com
-      xhr.open("POST", "https://api.imgur.com/3/image.json"); // Boooom!
-      xhr.onload = function() {
-        var response = JSON.parse(xhr.responseText);
-        var link = response.data.link;
-
-        set_textarea_val(" ![my dumb photo](" + link + ") ");
-        end_upload_state();
-        self.update_post_preview();
-      };
-      xhr.setRequestHeader('Authorization', "Client-ID " + IMGUR_KEY); // Get your own key http://api.imgur.com/
-      xhr.send(fd);
-    }
-
-    set_upload_state();
-    real_imgur_request();
-
+    handle_imgur_upload(textareaEl, e.target.files[0], function() {
+      self.update_post_preview();
+    });
   },
   set_api_key: function(key) {
     IMGUR_KEY = key;
   },
   click_upload_image: function() {
-    this.$el.find(".photoupload").click();
+    this.$el.find(".new_post .photoupload").click();
   },
   click_post_title: function(e) {
     var target = $(e.target).closest(".post");
@@ -256,6 +283,7 @@ module.exports = {
 
     }
   },
+  handle_imgur_upload: handle_imgur_upload
 
 
 

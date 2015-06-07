@@ -12,6 +12,7 @@ var gen_md5 = require_app("server/md5");
 var posting = require_app("server/posting");
 var render_posting = posting.render_posting;
 var sponsored_content = require_app("server/sponsored_content");
+var config = require_core("server/config");
 
 var ICONS = require_app("client/emojies");
 var makeme_store = require_app("server/makeme_store");
@@ -534,6 +535,9 @@ module.exports = {
 
     var board_utils = require_app("server/board_utils");
     var render_boards = board_utils.render_boards();
+
+    api.bridge.controller("home", "set_api_key", config.imgur_key);
+
     var template_str = api.template.render("controllers/home.html.erb", {
       render_boards: render_boards,
       render_anons: render_anons,

@@ -55,7 +55,25 @@ module.exports = {
     "mouseenter .replylink" : "handle_mouseenter_replylink",
     "mouseleave .replylink" : "handle_mouseleave_replylink",
     "mouseenter .reply" : "handle_mouseenter_reply",
-    "mouseleave .reply" : "handle_mouseleave_reply"
+    "mouseleave .reply" : "handle_mouseleave_reply",
+    "click .upload_image" : "click_upload_image",
+    "change .reply input.photoupload" : "handle_upload_image"
+  },
+  handle_upload_image: function(e) {
+    var self = this;
+    if (!SF.controller().is_file_upload(e)) {
+      return;
+    }
+
+    e.preventDefault();
+
+    // now do we add the image to the post?
+    var textareaEl = this.$el.find(".reply textarea");
+
+    SF.controller().handle_imgur_upload(textareaEl, e.target.files[0]);
+  },
+  click_upload_image: function() {
+    this.$el.find(".reply .photoupload").click();
   },
 
   handle_mouseenter_reply: function(e) {

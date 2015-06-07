@@ -250,3 +250,8 @@ module.exports = {
 
 _.extend(module.exports, settings);
 _.extend(module.exports.events, settings.controller_events);
+
+var newthread = require("app/client/newthread");
+
+_.extend(module.exports, newthread);
+_.extend(module.exports.events, newthread.controller_events);
