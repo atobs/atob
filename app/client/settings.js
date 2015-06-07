@@ -13,7 +13,8 @@ var TRIPCODES = [];
 var FOURCODES = [];
 var LOOKUP = {};
 var SIDEBARS = false;
-var MAX_TRIPS = 20;
+var MAX_TRIPS = 10;
+var MAX_FOURS = 20;
 
 var get_from_storage = storage.get;
 var set_in_storage = storage.set;
@@ -55,7 +56,7 @@ module.exports = {
     trips = _.filter(FOURCODES, function(f) {
       return f.tripname !== code.tripname || f.tripcode !== code.tripcode;
     });
-    FOURCODES = trips.slice(0, MAX_TRIPS);
+    FOURCODES = trips.slice(0, MAX_FOURS);
     set_in_storage("fourcodes", JSON.stringify(FOURCODES));
   },
   remember_tripcode_forever: function(tripname, tripcode) {
@@ -69,7 +70,7 @@ module.exports = {
       return f.tripname !== code.tripname || f.tripcode !== code.tripcode;
     });
     trips.unshift(code);
-    FOURCODES = trips.slice(0, MAX_TRIPS);
+    FOURCODES = trips.slice(0, MAX_FOURS);
     set_in_storage("fourcodes", JSON.stringify(FOURCODES));
   },
   remember_tripcode: function(tripname, tripcode) {
