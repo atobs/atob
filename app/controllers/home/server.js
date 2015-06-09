@@ -58,6 +58,33 @@ var SLOGANS = [
 
 var UPBOAT_TIMEOUT = 60 * 1000;
 
+function find_top_anons(cb) {
+  var hashes = [];
+  Post.findAll({ 
+    group: ["tripcode", "author"],
+    order: "count DESC",
+    where: {
+      board_id: ["a", "b"]
+    },
+    attributes: [
+      [Sequelize.fn('COUNT', Sequelize.col('*')), 'count'],
+      "tripcode",
+      "author"
+      ],
+    }).success(function(groups) {
+      var count = 0;
+      _.each(groups, function(group) {
+        if (group.dataValues.count) {
+          hashes.push(group.dataValues);
+          count += 1;
+        }
+
+      });
+
+      cb(hashes, count);
+    });
+}
+
 function render_even_more_recent(api, cb, use_header) {
   var summarize = require_app("client/summarize");
 
@@ -436,6 +463,18 @@ module.exports = {
       });
     });
 
+    api.page.async(function(flush) {
+      find_top_anons(function(hashes) {
+        var hash = "abcdef";
+        if (hashes.length) {
+          hash = hashes[_.random(0, Math.min(hashes.length-1, 10))];
+        }
+
+        api.bridge.controller("home", "set_burtle_trip", hash.tripcode);
+        flush();
+      });
+    })();
+
     var render_anons = function() {
       var counts = {};
       makeme_store.digest_doings();
@@ -669,43 +708,26 @@ module.exports = {
 
   },
   colors: function(ctx, api) {
-    var hashes = [];
     api.template.add_stylesheet("home");
-    Post.findAll({ 
-      group: ["tripcode", "author"],
-      order: "count DESC",
-      where: {
-        board_id: ["a", "b"]
-      },
-      attributes: [
-        [Sequelize.fn('COUNT', Sequelize.col('*')), 'count'],
-        "tripcode",
-        "author"
-        ],
-      }).success(function(groups) {
-        var count = 0;
-        _.each(groups, function(group) {
-          if (group.dataValues.count) {
-            hashes.push(group.dataValues);
-            count += 1;
-          }
 
-        });
+    find_top_anons(function(hashes, count) {
 
-        var content = $("<div class='container mtl' />");
-        _.each(hashes, function(hash) {
-          var hashEl = $("<div class='col-xs-4 col-md-2 tripcode'>");
-          hashEl.attr("data-tripcode", hash.tripcode);
-          var opacity = Math.max(parseFloat(hash.count * 20) / count);
-          hashEl.css("opacity", opacity);
-          content.append(hashEl);
-        });
-
-        api.bridge.controller("home", "gen_tripcodes");
-        api.page.render({content: content.toString() });
-
-
+      var content = $("<div class='container mtl' />");
+      _.each(hashes, function(hash) {
+        var hashEl = $("<div class='col-xs-4 col-md-2 tripcode'>");
+        hashEl.attr("data-tripcode", hash.tripcode);
+        var opacity = Math.max(parseFloat(hash.count * 20) / count);
+        hashEl.css("opacity", opacity);
+        content.append(hashEl);
       });
+
+      api.bridge.controller("home", "gen_tripcodes");
+      api.page.render({content: content.toString() });
+
+
+    });
+
+
   },
   robots: function(ctx) {
     ctx.res.end("User-agent: *\nDisallow: /");
