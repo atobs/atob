@@ -21,6 +21,14 @@ var ICON_GROUPS = _.groupBy(ICONS, function(icon, index) {
   return parseInt(index / 50, 10);
 });
 
+var ANON_OF_THE_NOW = "abcdefabcdef";
+var update_anon_of_the_now = _.throttle(function() {
+  // This is kind of unrelated...
+  find_top_anons(function(hashes) {
+    ANON_OF_THE_NOW = hashes[_.random(0, Math.min(hashes.length - 1, 10))].tripcode;
+  });
+}, 15 * 60 * 1000 ); /* every1 gets their 15 mins of fame */
+
 var HIDDEN_BOARDS = require_app("server/hidden_boards");
 var SLOGANS = [
   "Eting your children since february",
@@ -463,18 +471,6 @@ module.exports = {
       });
     });
 
-    api.page.async(function(flush) {
-      find_top_anons(function(hashes) {
-        var hash = "abcdef";
-        if (hashes.length) {
-          hash = hashes[_.random(0, Math.min(hashes.length-1, 10))];
-        }
-
-        api.bridge.controller("home", "set_burtle_trip", hash.tripcode);
-        flush();
-      });
-    })();
-
     var render_anons = function() {
       var counts = {};
       makeme_store.digest_doings();
@@ -578,10 +574,12 @@ module.exports = {
     api.bridge.controller("home", "set_api_key", config.imgur_key);
 
     var render_tripcode = function() {
+      update_anon_of_the_now();
       var tripcode_gen = require_app("server/tripcode");
       var hashEl = $("<div>");
-      hashEl.attr("tripcode", "untripcode");
+      hashEl.attr("data-tripcode", ANON_OF_THE_NOW);
       tripcode_gen.gen_tripcode(hashEl);
+
 
       return hashEl.html();
 

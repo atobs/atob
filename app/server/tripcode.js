@@ -29,6 +29,7 @@ function get_colors_for_hash(hashed) {
 function gen_tripcode(el) {
   // Now that we have our tripcodes, do other things...
   var colors = get_colors_for_hash($(el).attr("data-tripcode"));
+
   var div = $(el);
   _.each(colors, function(color) {
     var colorDiv = $("<div class='tripcolor' />").css({
