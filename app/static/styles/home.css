@@ -24,15 +24,17 @@
 }
 
 #anons {
-  margin-right: 15px;
-  margin-top: -50px;
-  position: relative;
+  position: absolute;
   z-index: 1090;
+  margin-right: 10px;
+  right: 5px;
+  top: 85px;
 
   @media @device {
     float: right;
     position: absolute;
     right: 5px;
+    margin-right: 10px;
   }
 
 }
@@ -134,34 +136,16 @@ h1, h2, h3 {
 
 }
 
-.burtle_tripcode {
-  width: 80px;
-  height: 10px;
-  overflow: hidden;
-  position: relative;
-  bottom: 0px;
-  left: 15px;
-  zoom: 1 !important;
-
-  @media @desktop {
-    bottom: 45px;
-  }
-}
-
 .logo .burtle_tripcode {
   max-height: 7px;
   height: 8px;
   width: 80px;
   position: absolute !important;
-  top: 58px;
-  left: 15px;
+  bottom: 5px;
+  left: 0px;
   overflow: hidden;
   zoom: 1 !important;
 
-  @media @desktop {
-    top: 0px;
-    left: 0px;
-  }
 }
 
 .logo.burtled {
