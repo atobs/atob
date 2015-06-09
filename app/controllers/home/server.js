@@ -577,8 +577,19 @@ module.exports = {
 
     api.bridge.controller("home", "set_api_key", config.imgur_key);
 
+    var render_tripcode = function() {
+      var tripcode_gen = require_app("server/tripcode");
+      var hashEl = $("<div>");
+      hashEl.attr("tripcode", "untripcode");
+      tripcode_gen.gen_tripcode(hashEl);
+
+      return hashEl.html();
+
+    };
+
     var template_str = api.template.render("controllers/home.html.erb", {
       render_boards: render_boards,
+      render_tripcode: render_tripcode,
       render_anons: render_anons,
       render_recent_posts: render_recent_posts,
       render_recent_threads: render_recent_threads,

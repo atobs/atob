@@ -137,14 +137,20 @@ h1, h2, h3 {
 }
 
 .logo .burtle_tripcode {
-  max-height: 7px;
-  height: 8px;
-  width: 80px;
+  max-height: 5px;
+  height: 5px;
+  width: 68px;
   position: absolute !important;
-  bottom: 5px;
-  left: 0px;
+  bottom: 10px;
+  left: 2px !important;
   overflow: hidden;
   zoom: 1 !important;
+
+  div {
+    height: 10px;
+    width: 25%;
+    float: left;
+  }
 
 }
 

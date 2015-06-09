@@ -248,11 +248,8 @@ module.exports = {
   },
   set_burtle_trip: function(trip) {
     var burtleEl = $(".burtle_tripcode");
-    burtleEl.hide();
     burtleEl.data("tripcode", trip);
     tripcode_gen(burtleEl);
-    burtleEl.hide();
-    burtleEl.css("position", "absolute");
     burtleEl.fadeIn();
 
   }

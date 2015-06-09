@@ -3,13 +3,18 @@
 <% set_default("show_hr", true) %>
 <% set_default("show_search", true) %>
 
+
+<% set_default("render_tripcode", function() { return ""; }) %>
+
 <div class="col-md-12 mtl noselect header">
   <div class="clearfix">
     <div class="logo lfloat">
       <div class="clearfix" style="position: relative;">
         <a href="/" class="">
           <img src="/images/atobn.png" style="width: 100px; height: 100px; margin-top: -20px; margin-left: -10px; border-style: none" class="lfloat" />
-          <div class='burtle_tripcode tripcode' data-tripcode=<%= tripcode %>> </div>
+          <div class='burtle_tripcode tripcode'>
+            <%= render_tripcode() %>
+          </div>
 
         </a>
 
