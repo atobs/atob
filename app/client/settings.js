@@ -479,6 +479,7 @@ module.exports = {
     var logo = $($(".logo")[0]).clone();
     logo.css("zIndex", 2000);
     logo.removeClass("lfloat");
+    logo.addClass("burtled");
 
     // self stalking...
     if (!data) {
@@ -508,7 +509,7 @@ module.exports = {
     $("body").append(logo);
 
     if (data.tripcode) {
-      var tripcodeHash = logo.find(".identity_tripcode");
+      var tripcodeHash = logo.find(".identity_tripcode, .burtle_tripcode");
       tripcodeHash.data("tripcode", data.tripcode);
       tripcode_gen(tripcodeHash);
     }

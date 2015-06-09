@@ -135,15 +135,37 @@ h1, h2, h3 {
 }
 
 .burtle_tripcode {
-  position: absolute;
   width: 80px;
   height: 10px;
   overflow: hidden;
-  bottom: 25px;
+  position: relative;
+  bottom: 0px;
   left: 15px;
   zoom: 1 !important;
 
   @media @desktop {
     bottom: 45px;
+  }
+}
+
+.logo .burtle_tripcode {
+  max-height: 7px;
+  height: 8px;
+  width: 80px;
+  position: absolute !important;
+  top: 58px;
+  left: 15px;
+  overflow: hidden;
+  zoom: 1 !important;
+
+  @media @desktop {
+    top: 0px;
+    left: 0px;
+  }
+}
+
+.logo.burtled {
+  .burtle_tripcode {
+    left: 0px;
   }
 }

@@ -5,12 +5,14 @@
 
 <div class="col-md-12 mtl noselect header">
   <div class="clearfix">
-    <a href="/" class="logo">
-      <img src="/images/atobn.png" style="width: 100px; height: 100px; margin-top: -20px; margin-left: -10px; border-style: none" class="lfloat" />
+    <div class="logo lfloat">
+      <a href="/" class="">
+        <img src="/images/atobn.png" style="width: 100px; height: 100px; margin-top: -20px; margin-left: -10px; border-style: none" class="lfloat" />
+        <div class='burtle_tripcode tripcode' data-tripcode=<%= tripcode %>> </div>
 
-      <div class='burtle_tripcode tripcode' data-tripcode=<%= tripcode %>> 
-      </div>
-    </a>
+      </a>
+
+    </div>
     <h1 class="lfloat">a to b</h1>
     <% if (show_search) { %>
       <%= render_partial("shared/search.html.erb") %>

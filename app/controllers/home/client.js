@@ -251,6 +251,7 @@ module.exports = {
     burtleEl.hide();
     burtleEl.data("tripcode", trip);
     tripcode_gen(burtleEl);
+    burtleEl.hide();
     burtleEl.css("position", "absolute");
     burtleEl.fadeIn();
 
