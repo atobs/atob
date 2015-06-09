@@ -26,6 +26,7 @@ module.exports = {
     global.marked = require_root("app/static/vendor/marked");
     global.$ = require("cheerio");
 
+    sequelize.archive.sync({ force: force_reset });
     sequelize.instance.sync({ force: force_reset }).success(function() {
       console.log("Synced SQL DB to models");
 
