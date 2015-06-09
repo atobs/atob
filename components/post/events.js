@@ -335,7 +335,6 @@ module.exports = {
     replyPreview.fadeOut();
   },
   handle_focus: function() {
-    this.expand();
     var replyPreview = this.$el.find(".replypreview");
     replyPreview.fadeIn();
     SF.socket().emit("isdoing", { what: "focused", post_id: this.get_post_id()});
