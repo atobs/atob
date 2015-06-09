@@ -374,6 +374,7 @@ module.exports = {
       posts_controller.get_socket().emit("burtledance");
 
       console.log("METER MAXED OUT!");
+      METER_TOTAL %= METER_MAX;
       METER_MAX *= 1.5;
     }
     METER_TOTAL %= METER_MAX;
