@@ -25,17 +25,21 @@ var METER_CLAUSE = {
   object: "anon",
   action: "meter",
 };
-Action.find({ 
-  where: METER_CLAUSE
-}).success(function(action) {
 
-  if (action && action.dataValues) {
-    METER_TOTAL = action.dataValues.count ;
-  }
+var main = require_app("main");
+main.db_emitter.on("synced", function() {
+  // This can only happen after the DB is sync'd...
+  Action.find({ 
+    where: METER_CLAUSE
+  }).success(function(action) {
 
-  console.log("Restored burtle meter to", METER_TOTAL);
+    if (action && action.dataValues) {
+      METER_TOTAL = action.dataValues.count ;
+    }
+
+    console.log("Restored burtle meter to", METER_TOTAL);
+  });
 });
-
 
 // TODO: have it prioritize the doings and set up the TTLs
 function add_doing(sid, doing) {

@@ -29,3 +29,26 @@ module.exports.archive = archive;
 require_app("models/post");
 require_app("models/user");
 require_app("models/board");
+require_app("models/action");
+
+// If we are in RESET mode, we should load all models off the disk before finishing loading this file...
+if (process.env.RESET) {
+  // assume we are in root dir
+  var cwd = process.cwd();
+  var fs = require("fs");
+  var paths = fs.readdirSync(cwd + "/app/models");
+
+  console.log("LOADING ALL MODELS BECAUSE OF FIRST RUN");
+
+  _.each(paths, function(path) {
+    try {
+      require_app("models/" + path.replace(/\.js/g, ''));
+
+    } catch(e) {
+      console.log(e);
+
+    }
+
+  });
+
+}

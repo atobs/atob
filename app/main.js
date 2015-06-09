@@ -15,6 +15,9 @@ var DEFAULT_BOARDS = [
     code: "b"
   }
 ];
+var EventEmitter = require("events").EventEmitter;
+var db_emitter = new EventEmitter();
+
 module.exports = {
   setup_app: function(app) {
     var force_reset = process.env.RESET;
@@ -36,6 +39,8 @@ module.exports = {
           });
         });
       }
+
+      db_emitter.emit("synced");
     });
 
   },
@@ -92,5 +97,6 @@ module.exports = {
   },
   setup_template_context: function(ret) {
     ret.$ = require("cheerio");
-  }
+  },
+  db_emitter: db_emitter
 };
