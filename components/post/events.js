@@ -70,7 +70,10 @@ module.exports = {
     // now do we add the image to the post?
     var textareaEl = this.$el.find(".reply textarea");
 
-    SF.controller().handle_imgur_upload(textareaEl, e.target.files[0]);
+    bootloader.require("app/client/imgur", function(handle_imgur_upload) {
+      console.log(e.target.files);
+      handle_imgur_upload(textareaEl, e.target.files[0]);
+    });
   },
   click_upload_image: function() {
     this.$el.find(".reply .photoupload").click();
