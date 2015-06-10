@@ -593,13 +593,6 @@ module.exports = {
     });
 
   },
-
-  handle_click_sponsored: function(e) {
-    var adid = $(e.target).closest(".atobd").attr("data-adid");
-    if (adid) {
-      window.location.href = "/p/" + adid;
-    }
-  },
   controller_events: {
     "change input.newtrip" : "save_newtrip",
     "click .beeper" : "request_notifs",
@@ -614,7 +607,6 @@ module.exports = {
     "change input.handle" : "save_handle",
     "keyup input.tripcode" : "update_trip_colors",
     "keyup input.handle" : "update_trip_colors",
-    "submit .searchform" : "handle_search",
-    "click .atobd" : "handle_click_sponsored"
+    "submit .searchform" : "handle_search"
   }
 };

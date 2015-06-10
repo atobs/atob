@@ -14,9 +14,10 @@ module.exports = {
           outer.addClass("atobd mtl");
           if (ad) {
             outer.attr("data-adid", ad.dataValues.id);
+            outer.append($("<small><a href='/p/" + ad.dataValues.id + "' title='post in /ads for your own PSA' >sponsored content</a></small>"));
+          } else {
+            outer.append($("<small><a href='/b/ads' title='post in /ads for your own PSA' >sponsored content</a></small>"));
           }
-
-          outer.append($("<small><a href='/b/ads' title='post in /ads for your own PSA' >sponsored content</a></small>"));
 
 
           outer.append($("<div />").append(inner));

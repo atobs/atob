@@ -6,10 +6,9 @@
 
   font-size: 14px !important;
   width: 80%;
-  max-height: 80px;
+  max-height: 6em;
   overflow: hidden;
   max-width: 600px;
-  cursor: pointer;
 
   @media @mobile {
     width: 100%;
