@@ -25,7 +25,11 @@ var ANON_OF_THE_NOW = "abcdefabcdef";
 var update_anon_of_the_now = _.throttle(function() {
   // This is kind of unrelated...
   find_top_anons(function(hashes) {
-    ANON_OF_THE_NOW = hashes[_.random(0, Math.min(hashes.length - 1, 10))].tripcode;
+    try {
+      ANON_OF_THE_NOW = hashes[_.random(0, Math.min(hashes.length - 1, 10))].tripcode;
+    } catch(e) {
+
+    }
   });
 }, 15 * 60 * 1000 ); /* every1 gets their 15 mins of fame */
 

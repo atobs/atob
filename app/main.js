@@ -30,6 +30,11 @@ module.exports = {
     sequelize.instance.sync({ force: force_reset }).success(function() {
       console.log("Synced SQL DB to models");
 
+      if (force_reset) {
+        var Post = require_app("models/post");
+        Post.create({ board_id: "chat", title: "welcome to atob",  }).success(function() { });
+      }
+
       if (process.env.FAKEDATA) {
         fakedata.generate();
       } else {
@@ -39,6 +44,7 @@ module.exports = {
             title: board.title
           });
         });
+
       }
 
       db_emitter.emit("synced");
