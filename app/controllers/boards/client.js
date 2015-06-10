@@ -42,10 +42,12 @@ module.exports = {
   show_board_header: function() {
     this.$el.find(".boardheader").show();
     var boardstyle = storage.get("boardstyle") || "";
+    this.$el.find(".newthread").removeClass("btn");
     SF.trigger("set_boardstyle", boardstyle);
   },
   hide_board_header: function() {
     this.$el.find(".boardheader").hide();
+    this.$el.find(".newthread").addClass("btn");
   },
   init: function() {
     this.init_tripcodes();

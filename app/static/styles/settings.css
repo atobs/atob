@@ -80,3 +80,16 @@
     padding-bottom: 100px;
   }
 }
+
+.btn.newthread {
+  width: 100%;
+  border: 3px dashed #ddd;
+  margin-top: 10px;
+  margin-bottom: 0px;
+  color: #428bca;
+  font-size: 0.8em;
+
+  &:hover {
+    background-color: #eaeaea;
+  }
+}
