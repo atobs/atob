@@ -88,7 +88,8 @@ function digest_doings() {
   DOING_NOW = {};
   module.exports.DOING_ONS = DOING_ONS;
 
-  // So... we figure out
+  // So... we figure out what to do?
+  var idle_count = 0;
   _.each(DOING_QUEUES, function(queue, sid) {
     var next_queue = [];
     var max_doing = null;
@@ -120,13 +121,21 @@ function digest_doings() {
     });
 
     DOING_NOW[sid] = max_doing;
+    DOING_QUEUES[sid] = next_queue;
 
     if (max_doing) {
+      if (max_doing.what.match(/cup|tea|mug|square|circle|coffee/) || !max_doing.post_id) {
+        idle_count++;
+        if (idle_count >= 10) {
+          delete DOING_NOW[sid];
+          return;
+        }
+      }
+
       DOING_ONS[max_doing.post_id] = DOING_ONS[max_doing.post_id] || {};
       DOING_ONS[max_doing.post_id][sid] = max_doing.what;
     }
 
-    DOING_QUEUES[sid] = next_queue;
 
   });
 }
@@ -406,10 +415,7 @@ module.exports = {
 
   }, 2000),
 
-  lurk: function(s, board_id) {
-    var sid = s.spark.headers.sid;
-
-
+  add_lurker: function(sid, board_id) {
     var doing_word = "";
     LAST_SEEN[sid] = Date.now();
     if (board_id && board_id.length === 1) {
@@ -429,7 +435,11 @@ module.exports = {
       pri: -5,
       ttl: 60 // 60 minutes
     });
+  },
 
+  lurk: function(s, board_id) {
+    var sid = s.spark.headers.sid;
+    module.exports.add_lurker(sid, board_id);
 
   },
 
@@ -437,3 +447,4 @@ module.exports = {
 
 
 };
+

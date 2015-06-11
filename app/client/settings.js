@@ -413,8 +413,10 @@ module.exports = {
       s: "icon-ghost"
     };
 
+
     var str = _.map(counts, function(c, id) {
       var el = $("<i class='anonicator " + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' />");
+
       el.attr("data-post", anon_to_post[id] || 0);
       el.attr("data-anon", id || 0);
       var idle_ms = last_seen[id];
