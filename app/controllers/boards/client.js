@@ -49,6 +49,66 @@ module.exports = {
     this.$el.find(".boardheader").hide();
     this.$el.find(".newthread").addClass("btn");
   },
+  click_post_title: function(e) {
+    var target = $(e.target).closest(".post");
+    var linklink = $(e.target).closest(".linklink, .titlelink");
+    if (linklink.length) {
+      return;
+    }
+
+    var post_id = target.data("post-id");
+    if (post_id) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      var url = window.location.pathname.match(post_id);
+      if (url) {
+        return;
+      }
+
+      SF.go("/p/" + post_id);
+      SF.inform("popstate");
+
+    }
+  },
+  no_posts: function() {
+    $(".loading").html("<h2>there are no posts on this board, plz make some</h2>");
+  },
+  popstate: function() {
+    var pathname = window.location.pathname;
+    var boardstyle = storage.get("boardstyle") || "";
+    if (pathname.indexOf("/b/") === 0) { // we are showing a board
+      this.show_board_header();
+      $(".post").show().removeClass("tile tilerow").addClass(boardstyle);
+      _.each(window._POSTS, function(post) {
+        post.collapse();
+      });
+    } else if (pathname.indexOf("/p/") === 0) { // we are showing a post
+      var postId = pathname.slice(3);
+      postId = parseInt(postId, 10);
+      var post = window._POSTS[postId];
+      if (post) {
+        $(".post").hide();
+        this.hide_board_header();
+        post.expand();
+        post.$el.find(".post")
+          .removeClass("tile tilerow")
+          .fadeIn(function() { 
+            _.defer(function() { post.bumped(); });
+            SF.controller().emit("isdoing", { what: "focused", post_id: postId });
+        
+          });
+
+      } else {
+        window.location.reload();
+      }
+
+    } else {
+      // dunno what to do
+      console.log("POPPED STATE TO WHERE?");
+    }
+
+  },
   init: function() {
     this.init_tripcodes();
     SF.trigger("board_ready");
