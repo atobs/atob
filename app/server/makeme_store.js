@@ -12,6 +12,8 @@ var LAST_SEEN = {
 var DOING_QUEUES = {};
 var DOING_NOW = {};
 var DOING_ONS = {};
+var IDLE_ICONS = [ ":coffee:", ":cup-coffeealt:", ":mug:", ":coffeecupalt:", ":tea:", ":teapot:" ];
+var IDLE_RE = IDLE_ICONS.join("|") + "|circle|square";
 
 var DEFAULT_TTL = 1; // 1 minute
 
@@ -127,7 +129,7 @@ function digest_doings() {
     DOING_QUEUES[sid] = next_queue;
 
     if (max_doing) {
-      if (max_doing.what.match(/cup|tea|mug|square|circle|coffee/) || !max_doing.post_id) {
+      if (max_doing.what.match(IDLE_RE)) {
         idle_count++;
         if (idle_count >= 10) {
           delete DOING_NOW[sid];
@@ -429,8 +431,7 @@ module.exports = {
       }
     } else {
       // pick a random lurk icon?
-      var icons = [ ":coffee:", ":cup-coffeealt:", ":mug:", ":coffeecupalt:", ":tea:", ":teapot:" ];
-      doing_word = icons[_.random(icons.length-1)];
+      doing_word = IDLE_ICONS[_.random(IDLE_ICONS.length-1)];
     }
 
     add_doing(sid, {
