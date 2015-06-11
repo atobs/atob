@@ -173,6 +173,16 @@ function render_even_more_recent(api, cb, use_header) {
 }
 
 function render_burtles(cb) {
+  var template = require_core("server/template");
+  template.add_stylesheet("profile");
+
+  if (render_burtles.last_rendering && Date.now() - render_burtles.last_rendering < 30 * 1000) {
+    // give old results...
+
+    cb(render_burtles.cached_burtle_html);
+    return;
+  }
+
   Action.findAll({
     where: {
       action: [ "sunkship", "burtled" ]
@@ -208,13 +218,11 @@ function render_burtles(cb) {
 
       });
 
-      var template = require_core("server/template");
-      template.add_stylesheet("profile");
-
-
       content.append(hashEl);
     });
 
+  render_burtles.cached_burtle_html = $("<div />").append(content).html();
+  render_burtles.last_rendering = Date.now();
   cb(content);
 
   });
