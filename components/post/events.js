@@ -71,7 +71,6 @@ module.exports = {
     var textareaEl = this.$el.find(".reply textarea");
 
     bootloader.require("app/client/imgur", function(handle_imgur_upload) {
-      console.log(e.target.files);
       handle_imgur_upload(textareaEl, e.target.files[0]);
     });
   },
@@ -152,7 +151,6 @@ module.exports = {
 
   handle_mouseenter_imglink: function(e) {
     e.stopPropagation();
-
     hide_popovers(e);
 
     var responseEl = $("<div />");

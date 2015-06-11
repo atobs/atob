@@ -185,7 +185,7 @@ module.exports = {
   },
   click_post_title: function(e) {
     var target = $(e.target).closest(".post");
-    var linklink = $(e.target).closest(".linklink");
+    var linklink = $(e.target).closest(".linklink, .titlelink");
     if (linklink.length) {
       return;
     }

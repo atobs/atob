@@ -14,6 +14,11 @@ module.exports = {
 
   },
   post_title_click: function(e) {
+    var linklink = $(e.target).closest(".linklink, .titlelink");
+    if (linklink.length) {
+      return;
+    }
+
     e.preventDefault();
     e.stopPropagation();
 
