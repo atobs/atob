@@ -90,7 +90,10 @@ function digest_doings() {
 
   // So... we figure out what to do?
   var idle_count = 0;
-  _.each(DOING_QUEUES, function(queue, sid) {
+
+  var doing_queue_keys = _.keys(DOING_QUEUES).reverse();
+  _.each(doing_queue_keys, function(sid) {
+    var queue = DOING_QUEUES[sid];
     var next_queue = [];
     var max_doing = null;
 
