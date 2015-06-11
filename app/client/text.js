@@ -187,10 +187,9 @@ function add_replies($el) {
   }
 }
 
-// Hmmm...
-function add_markdown($el) {
-  var escaped = $el.text().trim();
-  $el.attr("data-text", escaped);
+var cached_data = {};
+
+function translate_markdown($el, escaped) {
   escaped = marked(escaped, { renderer: renderer, breaks: true});
 
   // need to add icons here before data-text is added to the element
@@ -232,6 +231,28 @@ function add_markdown($el) {
     }
   });
 
+
+
+}
+
+var cached = {};
+// Hmmm...
+function add_markdown($el) {
+  var escaped = $el.text().trim();
+  var escapedmd5 = md5(escaped);
+
+  if (!cached[escapedmd5]) {
+    translate_markdown($el, escaped);
+    cached[escapedmd5] = $el.html();
+  } else {
+    $el.html(cached[escapedmd5]);
+  }
+
+
+
+  $el.attr("data-text", escaped);
+
+  
 }
 
 function shorten_text($el) {

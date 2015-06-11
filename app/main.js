@@ -25,6 +25,7 @@ module.exports = {
     // add in marked and cheerio to our globals
     global.marked = require_root("app/static/vendor/marked");
     global.$ = require("cheerio");
+    global.md5 = require_app("server/md5");
 
     sequelize.archive.sync({ force: force_reset });
     sequelize.instance.sync({ force: force_reset }).success(function() {
@@ -62,6 +63,13 @@ module.exports = {
       req.is_mobile = true;
     }
 
+    req.start = Date.now();
+
+  },
+  end_request: function(req) {
+    var end = Date.now();
+    var diff = end - req.start;
+    console.log("Finished request", req.path, "(" +  diff +  "ms)");
   },
   setup_context: function(ctx) {
     ctx.use_fullscreen = true;
