@@ -112,9 +112,12 @@ module.exports = {
         }
 
         _.each(results, function(result) {
+          var now = Date.now();
           var async_work = api.page.async(function(flush_post) {
+            var dataValues = result.dataValues;
+
             result.getChildren().success(function(children) {
-              var post_data = result.dataValues;
+              var post_data = dataValues;
               post_data.post_id = post_data.id;
               delete post_data.id;
               post_data.replies = _.map(children, function(c) { return c.dataValues; } );
@@ -129,8 +132,9 @@ module.exports = {
               post_links.freshen_client(post_data.post_id, children, function() {
                 var postCmp = $C("post", post_data);
                 var text_formatter = require_root("app/client/text");
-                postCmp.add_markdown(text_formatter);
                 var tripcode_gen = require_app("server/tripcode");
+
+                postCmp.add_markdown(text_formatter);
                 postCmp.gen_tripcodes(tripcode_gen.gen_tripcode);
 
                 flush_post(postCmp.toString());

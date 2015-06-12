@@ -26,21 +26,30 @@ function get_colors_for_hash(hashed) {
   return hexes;
 }
 
+
+var cached = {};
 function gen_tripcode(el) {
   // Now that we have our tripcodes, do other things...
-  var colors = get_colors_for_hash($(el).attr("data-tripcode"));
+  var tripcode = $(el).attr("data-tripcode");
+  if (cached[tripcode]) {
+    $(el).html(cached[tripcode]);
+  } else {
+    var colors = get_colors_for_hash(tripcode);
 
-  var div = $(el);
-  _.each(colors, function(color) {
-    var colorDiv = $("<div class='tripcolor' />").css({
-      "background-color": "#" + color,
-    });
-    div.append(colorDiv);
+    var div = $(el);
+    _.each(colors, function(color) {
+      var colorDiv = $("<div class='tripcolor' />").css({
+        "background-color": "#" + color,
+      });
+      div.append(colorDiv);
 
-    $(el).css({
-      position: "relative"
+      $(el).css({
+        position: "relative"
+      });
     });
-  });
+
+    cached[tripcode] = div.html();
+  }
 }
 
 

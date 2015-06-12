@@ -68,22 +68,30 @@ module.exports = {
       text_formatter = this.helpers["app/client/text"];
     }
     var textEl = this.$el.find(".text");
+    var cache = module.exports.add_markdown.cache = module.exports.add_markdown.cache || {};
     _.each(textEl, function(el) {
-      text_formatter.format_text($(el));
+      var cache_key = md5($(el).html());
 
-      // this is where we should verify its a title?
-      var titleParent = $(el).closest(".title");
-      if (titleParent.length) {
-        var link = $(el).find("a");
+      if (cache[cache_key]) { 
+        $(el).html(cache[cache_key]);
+      } else {
+        text_formatter.format_text($(el));
 
-        _.each(link, function(link) {
-          var linkEl = $(link);
-          var text = linkEl.text();
-          linkEl.text("[link]");
-          linkEl.addClass("titlelink");
-          linkEl.before(text.replace(/\[link\]/g, ' '));
-        });
+        // this is where we should verify its a title?
+        var titleParent = $(el).closest(".title");
+        if (titleParent.length) {
+          var link = $(el).find("a");
 
+          _.each(link, function(link) {
+            var linkEl = $(link);
+            var text = linkEl.text();
+            linkEl.text("[link]");
+            linkEl.addClass("titlelink");
+            linkEl.before(text.replace(/\[link\]/g, ' '));
+          });
+
+        }
+        cache[cache_key] = $(el).html();
       }
     });
   },
