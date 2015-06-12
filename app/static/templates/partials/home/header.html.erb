@@ -4,7 +4,17 @@
 <% set_default("show_search", true) %>
 
 
-<% set_default("render_tripcode", function() { return ""; }) %>
+<% 
+set_default("render_tripcode", function() { 
+  var tripcode_gen = require_app("server/tripcode");
+  var hashEl = $("<div>");
+  hashEl.attr("data-tripcode", ANON_OF_THE_NOW);
+  tripcode_gen.gen_tripcode(hashEl);
+
+
+  return hashEl.html();
+}) 
+%>
 
 <div class="col-md-12 mtl noselect header">
   <div class="clearfix">

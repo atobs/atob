@@ -83,6 +83,15 @@ module.exports = {
     var trips = _.filter(TRIPCODES, function(f) {
       return f.tripname !== code.tripname || f.tripcode !== code.tripcode;
     });
+
+    var foureva = _.filter(FOURCODES, function(f) {
+      return f.tripname === code.tripname && f.tripcode === code.tripcode;
+    });
+
+    if (foureva.length) {
+      return;
+    }
+
     trips.unshift(code);
     TRIPCODES = trips.slice(0, MAX_TRIPS);
     set_in_storage("tripcodes", JSON.stringify(TRIPCODES));
@@ -585,7 +594,10 @@ module.exports = {
     }
 
   },
-
+  set_board: function(board) {
+    this.board = board;
+    this.trigger("set_board");
+  },
   add_sidebars: function() {
     var self = this;
     window.bootloader.js("app/client/sidebar", function() {

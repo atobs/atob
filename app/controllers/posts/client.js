@@ -36,10 +36,6 @@ module.exports = {
       }
     });
   },
-  set_board: function(board) {
-    this.board = board;
-    this.trigger("set_board");
-  },
   goto_chat: function() {
     window.location = "/chat";
   },

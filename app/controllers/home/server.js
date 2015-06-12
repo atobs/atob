@@ -22,13 +22,15 @@ var ICON_GROUPS = _.groupBy(ICONS, function(icon, index) {
 });
 
 var ANON_OF_THE_NOW = "abcdefabcdef";
+global.ANON_OF_THE_NOW = ANON_OF_THE_NOW;
+
 var update_anon_of_the_now = _.throttle(function() {
   // This is kind of unrelated...
   find_top_anons(function(hashes) {
     try {
       ANON_OF_THE_NOW = hashes[_.random(0, Math.min(hashes.length - 1, 10))].tripcode;
+      global.ANON_OF_THE_NOW = ANON_OF_THE_NOW;
     } catch(e) {
-
     }
   });
 }, 15 * 60 * 1000 ); /* every1 gets their 15 mins of fame */
@@ -252,7 +254,7 @@ module.exports = {
       Sequelize.instance.query("select board_id, count(*) as count from posts group by board_id order by count desc")
       .success(function(results) {
         if (results && results.length) {
-          api.bridge.controller("home", "set_boards", results);
+          api.bridge.controller("home", "set_board", results);
           results = _.shuffle(_.filter(results, function(r) {
             var is_hidden = false;
             _.each(HIDDEN_BOARDS, function(board) {
@@ -285,8 +287,6 @@ module.exports = {
     var template_str = api.template.render("controllers/boards/list.html.erb", {
       render_boards: render_boards,
     });
-
-    api.bridge.controller("home", "init_tripcodes");
 
     api.page.render({
       content: template_str
@@ -423,6 +423,7 @@ module.exports = {
     this.set_title("atob");
 
     var summarize = require_app("client/summarize");
+    update_anon_of_the_now();
 
     api.template.add_stylesheet("links");
     var render_recent_posts = api.page.async(function(flush) {
@@ -585,21 +586,8 @@ module.exports = {
 
     api.bridge.controller("home", "set_api_key", config.imgur_key);
 
-    var render_tripcode = function() {
-      update_anon_of_the_now();
-      var tripcode_gen = require_app("server/tripcode");
-      var hashEl = $("<div>");
-      hashEl.attr("data-tripcode", ANON_OF_THE_NOW);
-      tripcode_gen.gen_tripcode(hashEl);
-
-
-      return hashEl.html();
-
-    };
-
     var template_str = api.template.render("controllers/home.html.erb", {
       render_boards: render_boards,
-      render_tripcode: render_tripcode,
       render_anons: render_anons,
       render_recent_posts: render_recent_posts,
       render_recent_threads: render_recent_threads,

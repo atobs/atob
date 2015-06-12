@@ -5,7 +5,7 @@
 <% add_stylesheet("home.css") %>
 <div class="container" style="margin: auto; margin-top: 10px; position: relative">
 
-  <%= render_partial("home/header.html.erb", { slogan: slogan, render_tripcode: render_tripcode}) %>
+  <%= render_partial("home/header.html.erb", { slogan: slogan }) %>
   <div id="anons" class="rfloat">
     <%= render_anons() %>
   </div>
