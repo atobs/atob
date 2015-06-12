@@ -233,18 +233,11 @@ function translate_markdown($el, escaped) {
 
 }
 
-var cached = {};
 // Hmmm...
 function add_markdown($el) {
   var escaped = $el.text().trim();
-  var escapedmd5 = md5(escaped);
 
-  if (!cached[escapedmd5]) {
-    translate_markdown($el, escaped);
-    cached[escapedmd5] = $el.html();
-  } else {
-    $el.html(cached[escapedmd5]);
-  }
+  translate_markdown($el, escaped);
 
 
 
