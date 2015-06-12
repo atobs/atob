@@ -187,8 +187,6 @@ function add_replies($el) {
   }
 }
 
-var cached_data = {};
-
 function translate_markdown($el, escaped) {
   escaped = marked(escaped, { renderer: renderer, breaks: true});
 

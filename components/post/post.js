@@ -73,7 +73,9 @@ module.exports = {
       var cache_key = md5($(el).html());
 
       if (cache[cache_key]) { 
-        $(el).html(cache[cache_key]);
+        $(el).attr("data-text", $(el).text());
+        $(el).html(cache[cache_key].html);
+        $(el).addClass(cache[cache_key].classes);
       } else {
         text_formatter.format_text($(el));
 
@@ -89,9 +91,13 @@ module.exports = {
             linkEl.addClass("titlelink");
             linkEl.before(text.replace(/\[link\]/g, ' '));
           });
-
         }
-        cache[cache_key] = $(el).html();
+
+        // annoyingly, we have to cache multiple parts...
+        cache[cache_key] = { 
+          html: $(el).html(), 
+          classes: $(el).attr("class")
+        };
       }
     });
   },
