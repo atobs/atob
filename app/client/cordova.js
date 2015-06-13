@@ -10,11 +10,11 @@
 
 
 function try_cordova_backgrounding() {
-  setTimeout(function() { 
+  setTimeout(function() {
     // now we setup background notifications, too
     try {
       console.log("backgrounding app");
-      window.plugin.backgroundMode.setDefaults({ 
+      window.plugin.backgroundMode.setDefaults({
           text: 'listening for new truths',
           title: 'atob',
           ticker: 'atob is with you'
@@ -25,6 +25,13 @@ function try_cordova_backgrounding() {
       };
       window.plugin.backgroundMode.ondeactivate = function() {
         notif_count = 0;
+      };
+
+      window.plugin.notification.local.onclick = function(id) {
+        if (id) {
+          window.location.replace("/p/" + id);
+        }
+
       };
 
     } catch(e) {
@@ -70,11 +77,12 @@ function add_in_app_browser() {
 
 
 var notif_count = 0;
+
 function handle_notif(title, options, post) {
   if (window.plugin && window.plugin.notification) {
     setTimeout(function() {
       window.plugin.notification.local.add({
-          id:      1,
+          id:      post.id,
           title:   title,
           message: options.body,
           autoCancel: true
@@ -86,12 +94,12 @@ function handle_notif(title, options, post) {
     if (window.plugin.backgroundMode.isActive()) {
       console.log("BG MODE IS ACTIVE");
       notif_count += 1;
-      window.plugin.backgroundMode.configure({ 
+      window.plugin.backgroundMode.configure({
         text: notif_count + " new truths"
       });
     } else {
       notif_count = 0;
-      window.plugin.backgroundMode.configure({ 
+      window.plugin.backgroundMode.configure({
         text: "listening for new truths"
       });
     }
@@ -130,7 +138,7 @@ function setup_back_button() {
 
 
 if (window._cordovaNative && !window._initCordova) {
-  
+
   insert_cordova();
 
   add_notifications();
