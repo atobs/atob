@@ -27,9 +27,9 @@ function try_cordova_backgrounding() {
         notif_count = 0;
       };
 
-      window.plugin.notification.local.onclick = function(id) {
-        if (id) {
-          window.location.replace("/p/" + id);
+      window.plugin.notification.local.onclick = function(id, state, json) {
+        if (json) {
+          window.location.replace("/p/" + json);
         }
 
       };
@@ -82,7 +82,8 @@ function handle_notif(title, options, post) {
   if (window.plugin && window.plugin.notification) {
     setTimeout(function() {
       window.plugin.notification.local.add({
-          id:      post.id,
+          id:      1,
+          json:      post.id,
           title:   title,
           message: options.body,
           autoCancel: true
