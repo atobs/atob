@@ -137,7 +137,7 @@ module.exports = {
           html: true,
           content: responseEl.html(),
           placement: "auto",
-          container: this.$el });
+          container: $("body") });
 
         $(e.target).popover("show");
       });
