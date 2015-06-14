@@ -42,6 +42,6 @@ body.modal-open {
 
 
 .popover {
-  max-width: 550px;
   min-width: 250px;
+  max-width: 100%;
 }

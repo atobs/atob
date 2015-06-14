@@ -161,7 +161,7 @@ module.exports = {
     $(e.target).popover({
       html: true,
       content: responseEl.html(),
-      placement: "bottom",
+      placement: "auto",
       container: this.$el });
 
     _.defer(function() { 

@@ -136,7 +136,7 @@ module.exports = {
         $(e.target).popover({
           html: true,
           content: responseEl.html(),
-          placement: "bottom",
+          placement: "auto",
           container: this.$el });
 
         $(e.target).popover("show");

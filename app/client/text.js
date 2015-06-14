@@ -2,6 +2,40 @@
 
 var USE_UPBOATS = true;
 
+function size_tag_for_viewport(img_tag, aspect) {
+  var width = "100%";
+  var height = "200px";
+
+  // aspect ratio is width / height. so... 16/9 = what it sounds like.
+  // to untranslate, multiply by it or divide by it
+  aspect = aspect || (16.0 / 9.0);
+
+  var viewportWidth = $(window).width();
+  var viewportHeight = $(window).height();
+
+  if (viewportWidth > 600) {
+    width = 300;
+    height = width / aspect;
+  }
+
+  if (viewportWidth > 900) {
+    width = 500;
+    height = width / aspect;
+
+  }
+
+  if (viewportWidth > 1200) {
+    width = 600;
+    height = width / aspect;
+  }
+
+  img_tag.css("width", width + "px");
+  img_tag.css("max-height", height + "px");
+  img_tag.attr("width", width + "px");
+  img_tag.attr("height", height + "px");
+
+}
+
 function is_youtube_url(url) {
   var matches = url.match(/http:\/\/(?:www\.)?youtube.*watch\?v=([a-zA-Z0-9\-_]+)/);
   var httpsmatches = url.match(/https:\/\/(?:www\.)?youtube.*watch\?v=([a-zA-Z0-9\-_]+)/);
@@ -270,8 +304,8 @@ function make_webm_url(img_link) {
   img_tag.append(
     $("<source />").attr("src", img_link)
   );
-  img_tag.attr("width", "100%");
-  img_tag.attr("height", "200px");
+
+  size_tag_for_viewport(img_tag);
   return img_tag;
 }
 
@@ -285,8 +319,7 @@ function make_youtube_tag(img_link) {
     youtube_url = "http://" + youtube_url;
   }
   var img_tag = $("<iframe frameborder=0 />").attr("src", youtube_url + match + "?autoplay=1");
-  img_tag.attr("width", "100%");
-  img_tag.attr("height", "200px");
+  size_tag_for_viewport(img_tag);
   return img_tag;
 
 }
@@ -301,8 +334,7 @@ function make_vimeo_url(img_link) {
     youtube_url = "http://" + youtube_url;
   }
   var img_tag = $("<iframe frameborder=0 />").attr("src", youtube_url + match + "?autoplay=1");
-  img_tag.attr("width", "100%");
-  img_tag.attr("height", "200px");
+  size_tag_for_viewport(img_tag);
   return img_tag;
 
 }
@@ -326,8 +358,7 @@ function format_image_link(img_link) {
     }
 
     var img_tag = $("<img />") .attr("src", img_link);
-    img_tag.css("max-height", "200px");
-    img_tag.css("max-width", "100%");
+    size_tag_for_viewport(img_tag);
     img_tag.css("display", "block");
     return img_tag;
   }
