@@ -241,7 +241,14 @@ module.exports = {
     var div = buildreply_popup(e.target);
     var el = e.target;
     expand_replies(div);
-    $(el).popover({ html: true, content: div.html(), placement: "top", container: container });
+
+    // reach in and modify
+    $(el)
+      .popover({ html: true, content: div.html(), placement: "top", container: container })
+      .data("bs.popover")
+      .tip()
+      .addClass("reply");
+
     _.defer(function() { 
       $(el).popover("show");
     });

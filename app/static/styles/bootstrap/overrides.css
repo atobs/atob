@@ -55,3 +55,7 @@ body.modal-open {
   max-width: 100%;
   z-index: 1070;
 }
+
+.popover.reply {
+  max-width: 550px;
+}
