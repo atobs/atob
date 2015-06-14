@@ -74,25 +74,27 @@ module.exports = {
   save_filter: function() {
 
     var filterEl = this.$page.find("input.filtercontent");
-    var filter = !filterEl.prop('checked');
+    _.defer(function() {
+      var filter = filterEl.prop('checked');
 
-    set_in_storage("filtercontent", filter);
-    if (!filter) {
-      window.location.reload();
-    } else {
-      console.log("FILTERING CONTENT?");
-      filter_content();
-    }
+      set_in_storage("filtercontent", filter);
+      if (!filter) {
+        window.location.reload();
+      } else {
+        filter_content();
+      }
+    });
 
   },
   save_privtrip: function() {
 
     var privtripEl = this.$page.find("input.privtrip");
-    var privtrip = !privtripEl.prop('checked');
-
-    $(".identity_tripcode").toggleClass("desaturate");
-
-    set_in_storage("privtrip", privtrip);
+    _.defer(function() {
+      var privtrip = !privtripEl.prop('checked');
+      set_in_storage("privtrip", privtrip);
+      $(".identity_tripcode").toggleClass("desaturate");
+      console.log("SETTING IN STORAGE", privtrip);
+    });
   },
   save_newtrip: function() {
     var newtripEl = this.$page.find("input.newtrip");

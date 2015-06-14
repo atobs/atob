@@ -273,7 +273,13 @@ function add_markdown($el) {
 
   translate_markdown($el, escaped);
 
-
+  if (typeof window !== "undefined") {
+    var storage = require("app/client/storage");
+    var filtercontent = storage.get("filtercontent");
+    if (filtercontent === "true") {
+      require("app/client/profanity")($el);
+    }
+  }
 
   $el.attr("data-text", escaped);
 
@@ -296,6 +302,8 @@ function format_text($el) {
   add_replies($el);
   add_board_links($el);
   shorten_text($el);
+
+
 }
 
 function make_webm_url(img_link) {
