@@ -59,6 +59,7 @@ module.exports = {
     }, 50);
   },
   socket: function(s) {
+    var self = this;
     notif.subscribe(s);
 
     settings.add_socket_subscriptions(s);
@@ -68,12 +69,6 @@ module.exports = {
         post.update_counts(data.counts);
       }
 
-    });
-
-    s.on("goto_post", function(id) {
-      if (id) {
-        window.location.href = "/p/" + id;
-      }
     });
 
     s.on("new_reply", function(data) {

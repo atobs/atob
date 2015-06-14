@@ -56,6 +56,7 @@ module.exports = {
       return;
     }
 
+    // to pretend like we went to a URL
     var post_id = target.data("post-id");
     if (post_id) {
       e.preventDefault();
@@ -207,13 +208,6 @@ module.exports = {
     s.on("notif", function(msg, type, options) {
       notif.handle_notif(msg, type, options);
     });
-
-    s.on("goto_post", function(id) {
-      if (id) {
-        window.location.href = "/p/" + id;
-      }
-    });
-
 
     var self = this;
     self.do_when(self.board, "set_board", function() {

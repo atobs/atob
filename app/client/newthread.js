@@ -102,11 +102,10 @@ module.exports = {
       $(this).empty();
     });
 
+   
+    var self = this;
     SF.socket().emit("new_post", datas, function(id) {
-      if (id) {
-        window.location.href = "/p/" + id;
-      }
-    
+        self.goto_post(id);
     });
     this.remember_tripcode(handle, tripcode);
     window.bootloader.storage.delete("newpost_title_" + this.board);

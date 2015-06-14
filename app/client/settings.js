@@ -449,10 +449,31 @@ module.exports = {
   request_notifs: function() {
     notif.notify_user("you've been beeped", { force: true });
   },
+  goto_post: function(post_id, end) {
+    console.log("GOING TO POST", post_id, end);
+    var current_url = window.location.pathname;
+    var next_url = "/p/" + post_id;
+    if (current_url.indexOf(next_url) === -1) {
+      // now we move there...
+      if (end) {
+        next_url += "?e=1";
+      }
+      window.location = next_url;
+
+    }
+
+  },
   follow_anonicator: function(e) {
     var target = $(e.target);
     var post_id = target.data("post");
     var anon_id = target.data("anon");
+
+    function pulse_logo() {
+      $(".logo").addClass("pulse");
+      setTimeout(function() {
+        $(".logo").removeClass("pulse");
+      }, 2000);
+    }
 
     if (post_id) {
       SF.socket().emit("stalking", { 
@@ -467,15 +488,14 @@ module.exports = {
           if (window.location.href.match("/chat")) {
             // no stalking from chat?
             console.log("NO STALKING FROM CHAT!");
+            pulse_logo();
             return;
           }
 
-          window.location = next_ref + "?e=1";
+          module.exports.goto_post(post_id, true);
+
         } else {
-          $(".logo").addClass("pulse");
-          setTimeout(function() {
-            $(".logo").removeClass("pulse");
-          }, 2000);
+          pulse_logo();
         }
       });
     } else {
@@ -564,6 +584,7 @@ module.exports = {
     s.on("stalking", this.be_stalker);
 
     s.on("burtled", this.burtled);
+    s.on("goto_post", this.goto_post);
 
   },
 
