@@ -8,10 +8,6 @@ var swears = [ "2g1c",
   "ass",
   "asshole",
   "assmunch",
-  "auto erotic",
-  "autoerotic",
-  "babeland",
-  "baby batter",
   "ball gag",
   "ball gravy",
   "ball kicking",
@@ -20,7 +16,6 @@ var swears = [ "2g1c",
   "ball sucking",
   "bangbros",
   "bareback",
-  "barely legal",
   "barenaked",
   "bastardo",
   "bastinado",
@@ -29,7 +24,6 @@ var swears = [ "2g1c",
   "beaver cleaver",
   "beaver lips",
   "bestiality",
-  "bi curious",
   "big black",
   "big breasts",
   "big knockers",
@@ -57,8 +51,6 @@ var swears = [ "2g1c",
   "bullet vibe",
   "bung hole",
   "bunghole",
-  "busty",
-  "butt",
   "buttcheeks",
   "butthole",
   "camel toe",
@@ -299,7 +291,6 @@ var swears = [ "2g1c",
   "tied up",
   "tight white",
   "tit",
-  "tits",
   "titties",
   "titty",
   "tongue in a",
@@ -315,27 +306,13 @@ var swears = [ "2g1c",
   "twink",
   "twinkie",
   "two girls one cup",
-  "undressing",
-  "upskirt",
   "urethra play",
   "urophilia",
   "vagina",
-  "venus mound",
   "vibrator",
-  "violet blue",
   "violet wand",
-  "vorarephilia",
-  "voyeur",
-  "vulva",
-  "wank",
-  "wet dream",
   "wetback",
-  "white power",
-  "women rapping",
-  "wrapping men",
   "wrinkled starfish",
-  "xx",
-  "xxx",
   "yaoi",
   "yellow showers",
   "yiffy",
@@ -345,14 +322,16 @@ var swears = [ "2g1c",
 var SWEAR_REs = [];
 
 _.each(swears, function(sw) {
-  SWEAR_REs.push(new RegExp("\\b" + sw + "\\b", "gi"));
+  var re = new RegExp("\\b" + sw + "\(ed|ing|s|er\)?\\b", "gi");
+  re.inner_length = sw.length;
+  SWEAR_REs.push(re);
 });
 
 function sweep_text(el) {
   var context = el.nodeValue;
   _.each(SWEAR_REs, function(swr) {
     if (swr.test(context)) {
-      context = context.replace(swr, "####");
+      context = context.replace(swr, "butt$1");
     }
   });
 

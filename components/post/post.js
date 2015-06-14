@@ -151,6 +151,10 @@ module.exports = {
       self.$el.find(".post").addClass(boardstyle);
       SF.trigger("set_boardstyle", boardstyle);
 
+      require("app/client/profanity", function(clean_element) {
+        clean_element(self.$el);
+      });
+
     });
 
     
