@@ -2,37 +2,52 @@
 
 var USE_UPBOATS = true;
 
+// aspect ratio is width / height. so... 16/9 = what it sounds like.
+// to untranslate, multiply by it or divide by it
 function size_tag_for_viewport(img_tag, aspect) {
-  var width = "100%";
-  var height = "200px";
+  var width = "300px";
+  var height = "auto";
 
-  // aspect ratio is width / height. so... 16/9 = what it sounds like.
-  // to untranslate, multiply by it or divide by it
-  aspect = aspect || (16.0 / 9.0);
 
   var viewportWidth = $(window).width();
   var viewportHeight = $(window).height();
 
   if (viewportWidth > 600) {
     width = 300;
-    height = width / aspect;
+    if (aspect) {
+      height = width / aspect;
+    }
   }
 
   if (viewportWidth > 900) {
     width = 500;
-    height = width / aspect;
+
+    if (aspect) {
+      height = width / aspect;
+    }
 
   }
 
   if (viewportWidth > 1200) {
     width = 600;
-    height = width / aspect;
+
+    if (aspect) {
+      height = width / aspect;
+    }
   }
 
-  img_tag.css("width", width + "px");
-  img_tag.css("max-height", height + "px");
-  img_tag.attr("width", width + "px");
-  img_tag.attr("height", height + "px");
+  img_tag.css("max-width", viewportWidth * 2.0 / 3.0 + "px");
+  img_tag.css("max-height", viewportHeight / 2 + "px");
+
+  if (aspect) {
+    img_tag.attr("width", width + "px");
+    img_tag.attr("height", height + "px");
+  } else {
+    img_tag.css({
+      width: width + "px",
+      height: "auto"
+    });
+  }
 
 }
 
@@ -327,7 +342,7 @@ function make_youtube_tag(img_link) {
     youtube_url = "http://" + youtube_url;
   }
   var img_tag = $("<iframe frameborder=0 />").attr("src", youtube_url + match + "?autoplay=1");
-  size_tag_for_viewport(img_tag);
+  size_tag_for_viewport(img_tag, 16.0 / 9.0);
   return img_tag;
 
 }
@@ -342,7 +357,7 @@ function make_vimeo_url(img_link) {
     youtube_url = "http://" + youtube_url;
   }
   var img_tag = $("<iframe frameborder=0 />").attr("src", youtube_url + match + "?autoplay=1");
-  size_tag_for_viewport(img_tag);
+  size_tag_for_viewport(img_tag, 16.0 / 9.0);
   return img_tag;
 
 }
