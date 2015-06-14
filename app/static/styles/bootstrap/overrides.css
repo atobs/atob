@@ -53,4 +53,5 @@ body.modal-open {
 .popover {
   min-width: 250px;
   max-width: 100%;
+  z-index: 1070;
 }
