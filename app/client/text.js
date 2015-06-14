@@ -341,7 +341,7 @@ function make_youtube_tag(img_link) {
   } else {
     youtube_url = "http://" + youtube_url;
   }
-  var img_tag = $("<iframe frameborder=0 />").attr("src", youtube_url + match + "?autoplay=1");
+  var img_tag = $("<iframe frameborder=0 />").attr("src", youtube_url + match + "?autoplay=1&html5=1");
   size_tag_for_viewport(img_tag, 16.0 / 9.0);
   return img_tag;
 
