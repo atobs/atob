@@ -141,6 +141,8 @@ if (window._cordovaNative && !window._initCordova) {
 
   insert_cordova();
 
+  $(".use_sidebars").closest(".checkbox").hide();
+
   add_notifications();
   add_in_app_browser();
 //  add_pull_to_refresh();
