@@ -123,6 +123,7 @@ module.exports = {
     });
     render_sinners();
 
+    api.bridge.controller("posts", "resaturate_tripbar");
     api.bridge.controller("posts", "set_api_key", config.imgur_key);
     var template_str = api.template.render("controllers/posts/show.html.erb", 
       { 

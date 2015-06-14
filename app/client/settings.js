@@ -694,6 +694,11 @@ module.exports = {
     });
 
   },
+  resaturate_tripbar: function() {
+    if (get_from_storage("privtrip") !== "true") {
+      this.$el.find(".tripbar").removeClass("desaturate");
+    }
+  },
   controller_events: {
     "change input.newtrip" : "save_newtrip",
     "change input.privtrip" : "save_privtrip",

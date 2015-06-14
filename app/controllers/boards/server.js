@@ -175,6 +175,7 @@ module.exports = {
       new_thread: board_id !== "to"
     });
 
+    api.bridge.controller("boards", "resaturate_tripbar");
     api.bridge.controller("boards", "set_board", board_id);
     api.bridge.controller("boards", "set_api_key", config.imgur_key);
     var rss_str = api.template.partial("rss.html.erb", { board: board_id });
