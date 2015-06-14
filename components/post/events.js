@@ -242,6 +242,8 @@ module.exports = {
     var el = e.target;
     expand_replies(div);
 
+    div.find(".tripcode").addClass("mtm");
+
     // reach in and modify
     $(el)
       .popover({ html: true, content: div.html(), placement: "top", container: container })
