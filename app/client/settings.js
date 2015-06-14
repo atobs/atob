@@ -73,11 +73,12 @@ module.exports = {
 
   save_filter: function() {
 
-    var filterEl = this.$page.find("input.filtercontent");
+    var filterEl = this.$page.find("input.filtercontent").last();
     _.defer(function() {
-      var filter = filterEl.prop('checked');
+      var filter = !!filterEl.prop('checked');
 
       set_in_storage("filtercontent", filter);
+
       if (!filter) {
         window.location.reload();
       } else {
@@ -88,7 +89,7 @@ module.exports = {
   },
   save_privtrip: function() {
 
-    var privtripEl = this.$page.find("input.privtrip");
+    var privtripEl = this.$page.find("input.privtrip").last();
     _.defer(function() {
       var privtrip = !!privtripEl.prop('checked');
       set_in_storage("privtrip", privtrip);
@@ -96,7 +97,7 @@ module.exports = {
     });
   },
   save_newtrip: function() {
-    var newtripEl = this.$page.find("input.newtrip");
+    var newtripEl = this.$page.find("input.newtrip").last();
     var newtrip = !!newtripEl.prop('checked');
     set_in_storage("newtrip", newtrip);
   },
@@ -366,10 +367,12 @@ module.exports = {
     var newtrip = this.load_checkbox_value("newtrip", "input.newtrip");
 
     this.load_value("handle", "input.handle", function(el, val) {
-      el.val(val);
+      if (val) {
+        el.val(val);
+      }
     });
 
-    this.load_value("tripcode", "input.trip", function(el, val) {
+    this.load_value("tripcode", "input.tripcode", function(el, val) {
       if (val && !newtrip) {
         el.val(val);
       }
