@@ -90,10 +90,9 @@ module.exports = {
 
     var privtripEl = this.$page.find("input.privtrip");
     _.defer(function() {
-      var privtrip = !privtripEl.prop('checked');
+      var privtrip = !!privtripEl.prop('checked');
       set_in_storage("privtrip", privtrip);
-      $(".identity_tripcode").toggleClass("desaturate");
-      console.log("SETTING IN STORAGE", privtrip);
+      $(".tripbar").toggleClass("desaturate");
     });
   },
   save_newtrip: function() {
@@ -335,7 +334,7 @@ module.exports = {
 
     }
 
-    buttonEl.append("<div style='clear: both' class='clearfix'><hr class='clearfix lfloat'/></div>");
+    buttonEl.append("<div style='clear: both' class='clearfix'></div>");
     _.each(TRIPCODES, function(code) {
       append_tripcode(code);
     });
@@ -355,7 +354,7 @@ module.exports = {
   init_tripcodes: function() {
     this.load_checkbox_value("privtrip", "input.privtrip", function(el, val) {
       if (val) {
-        $(".identity_tripcode").addClass("desaturate");
+        $(".tripbar").addClass("desaturate");
       }
     });
     this.load_checkbox_value("filtercontent", "input.filtercontent", function(el, val) {
@@ -515,7 +514,6 @@ module.exports = {
     notif.notify_user("you've been beeped", { force: true });
   },
   goto_post: function(post_id, end) {
-    console.log("GOING TO POST", post_id, end);
     var current_url = window.location.pathname;
     var next_url = "/p/" + post_id;
     if (current_url.indexOf(next_url) === -1) {

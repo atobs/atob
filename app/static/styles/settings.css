@@ -33,8 +33,11 @@
   }
 }
 
-.checkbox {
-  clear: both;
+#identity_container {
+  .checkbox {
+    margin-top: 5px;
+    clear: both;
+  }
 }
 
 .tripcode_wrapper {
