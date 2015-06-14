@@ -31,6 +31,15 @@ module.exports = {
     tripcodeHash.data("tripcode", this.get_trip_identity());
     tripcode_gen(tripcodeHash);
   }, 100),
+  save_privtrip: function() {
+
+    var privtripEl = this.$page.find("input.privtrip");
+    var privtrip = !privtripEl.prop('checked');
+
+    $(".identity_tripcode").toggleClass("desaturate");
+
+    set_in_storage("privtrip", privtrip);
+  },
   save_newtrip: function() {
     var newtripEl = this.$page.find("input.newtrip");
     var newtrip = !!newtripEl.prop('checked');
@@ -291,6 +300,9 @@ module.exports = {
     var tripcodeEl = this.$page.find("input.tripcode");
     var handleEl = this.$page.find("input.handle");
     var newtripEl = this.$page.find("input.newtrip");
+    var privtripEl = this.$page.find("input.privtrip");
+
+    var privtrip = get_from_storage("privtrip") === "true";
     var newtrip = get_from_storage("newtrip") === "true";
     var tripcode = get_from_storage("tripcode");
     var handle = get_from_storage("handle");
@@ -302,6 +314,13 @@ module.exports = {
     if (newtrip) {
       newtripEl.attr('checked', true);
       newtripEl.prop('checked', true);
+    }
+
+    if (privtrip) {
+      privtripEl.attr('checked', true);
+      privtripEl.prop('checked', true);
+
+      $(".identity_tripcode").addClass("desaturate");
     }
 
     if (tripcode && !newtrip) {
@@ -630,6 +649,7 @@ module.exports = {
   },
   controller_events: {
     "change input.newtrip" : "save_newtrip",
+    "change input.privtrip" : "save_privtrip",
     "click .beeper" : "request_notifs",
     "click .identity_tripcode" : "regen_tripcode",
     "click .regen_tripcode" : "regen_tripcode",
