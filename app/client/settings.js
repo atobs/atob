@@ -23,6 +23,14 @@ FOURCODES = JSON.parse(get_from_storage("fourcodes") || "[]");
 
 SIDEBARS = JSON.parse(get_from_storage("use_sidebars") || "false");
 
+function filter_content() {
+  bootloader.js("app/client/profanity", function(mods) {
+    var clean_element = require("app/client/profanity");
+    clean_element($("html"));
+  });
+
+}
+
 module.exports = {
   gen_tripcode: tripcode_gen,
   update_trip_colors: _.throttle(function() {
@@ -31,6 +39,52 @@ module.exports = {
     tripcodeHash.data("tripcode", this.get_trip_identity());
     tripcode_gen(tripcodeHash);
   }, 100),
+  load_value: function(name, selector, cb) {
+    var el = this.$page.find(selector);
+    var val = get_from_storage(name);
+    $.removeCookie(name);
+
+
+    if (cb) {
+      cb(el, val);
+    }
+
+    return val;
+
+  },
+
+  load_checkbox_value: function(name, selector, cb) {
+    var el = this.$page.find(selector);
+    var val = get_from_storage(name) === "true";
+
+    if (val) {
+      el.attr("checked", true);
+      el.prop("checked", true);
+    }
+
+    if (cb) {
+      cb(el, val);
+    }
+
+
+    return val;
+
+  },
+
+  save_filter: function() {
+
+    var filterEl = this.$page.find("input.filtercontent");
+    var filter = !filterEl.prop('checked');
+
+    set_in_storage("filtercontent", filter);
+    if (!filter) {
+      window.location.reload();
+    } else {
+      console.log("FILTERING CONTENT?");
+      filter_content();
+    }
+
+  },
   save_privtrip: function() {
 
     var privtripEl = this.$page.find("input.privtrip");
@@ -297,45 +351,35 @@ module.exports = {
 
   },
   init_tripcodes: function() {
-    var tripcodeEl = this.$page.find("input.tripcode");
-    var handleEl = this.$page.find("input.handle");
-    var newtripEl = this.$page.find("input.newtrip");
-    var privtripEl = this.$page.find("input.privtrip");
+    this.load_checkbox_value("privtrip", "input.privtrip", function(el, val) {
+      if (val) {
+        $(".identity_tripcode").addClass("desaturate");
+      }
+    });
+    this.load_checkbox_value("filtercontent", "input.filtercontent", function(el, val) {
+      if (val) {
+        filter_content();
+      }
+    });
 
-    var privtrip = get_from_storage("privtrip") === "true";
-    var newtrip = get_from_storage("newtrip") === "true";
-    var tripcode = get_from_storage("tripcode");
-    var handle = get_from_storage("handle");
+    var newtrip = this.load_checkbox_value("newtrip", "input.newtrip");
 
-    $.removeCookie("newtrip");
-    $.removeCookie("tripcode");
-    $.removeCookie("handle");
+    this.load_value("handle", "input.handle", function(el, val) {
+      el.val(val);
+    });
 
-    if (newtrip) {
-      newtripEl.attr('checked', true);
-      newtripEl.prop('checked', true);
-    }
-
-    if (privtrip) {
-      privtripEl.attr('checked', true);
-      privtripEl.prop('checked', true);
-
-      $(".identity_tripcode").addClass("desaturate");
-    }
-
-    if (tripcode && !newtrip) {
-      tripcodeEl.val(tripcode);
-    }
-    if (handle) {
-      handleEl.val(handle);
-    }
+    this.load_value("tripcode", "input.trip", function(el, val) {
+      if (val && !newtrip) {
+        el.val(val);
+      }
+    });
 
     this.save_tripcode();
     this.update_trip_colors();
   },
-  
+
   // when someone hits their moving burtle, you get smashed
-  restalk: function() { 
+  restalk: function() {
     var s = document.createElement('script');
     $.getScript( 'http://fontbomb.ilex.ca/js/main.js', function() {
       var scrollTop = document.body.scrollTop;
@@ -344,7 +388,7 @@ module.exports = {
       var hits = _.random(3, 10);
       var locations = [];
       for (var i = 0; i < hits; i++) {
-        
+
         locations.push({
           x: _.random(width),
           y: _.random(height) + scrollTop
@@ -352,7 +396,7 @@ module.exports = {
       }
 
       _.each(locations, function(data) {
-        setTimeout(function() { 
+        setTimeout(function() {
           $("body").trigger({
             type: "click",
             pageX: data.x,
@@ -366,7 +410,7 @@ module.exports = {
     document.body.appendChild(s);
 
 
-    
+
   },
 
   handle_meter: function(meter) {
@@ -393,7 +437,7 @@ module.exports = {
     var bar_width =  bar_percent * window_width;
     var bgColor = "#00f";
 
-    if (bar_percent > 0.9) { 
+    if (bar_percent > 0.9) {
       bgColor = "#f00";
     } else if (bar_percent > 0.8) {
       bgColor = "#ff0";
@@ -495,10 +539,10 @@ module.exports = {
     }
 
     if (post_id) {
-      SF.socket().emit("stalking", { 
-        what: "stalking", 
-        post_id: post_id, 
-        anon: anon_id, 
+      SF.socket().emit("stalking", {
+        what: "stalking",
+        post_id: post_id,
+        anon: anon_id,
         mytrip: module.exports.get_trip_identity()
       }, function() {
         // so we start the stalking game...
@@ -542,14 +586,14 @@ module.exports = {
       });
 
       return;
-    } 
+    }
 
     logo.on("click", function(e) {
       e.preventDefault();
       e.stopPropagation();
 
       SF.socket().emit("isdoing", {
-        what: "battleship", 
+        what: "battleship",
         mytrip: module.exports.get_trip_identity()
       });
 
@@ -650,6 +694,7 @@ module.exports = {
   controller_events: {
     "change input.newtrip" : "save_newtrip",
     "change input.privtrip" : "save_privtrip",
+    "change input.filtercontent" : "save_filter",
     "click .beeper" : "request_notifs",
     "click .identity_tripcode" : "regen_tripcode",
     "click .regen_tripcode" : "regen_tripcode",
