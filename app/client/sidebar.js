@@ -146,6 +146,10 @@ function make_sidebar(toggle_selector, content_selector, side) {
 function add_sidebars() {
   var use_sidebars = storage.get("use_sidebars") === "true";
   if (!window._cordovaNative && !use_sidebars) {
+    // Just unhide the boardlinks, then
+    _.delay(function() {
+      $(".boardlinks").fadeIn();
+    }, 200);
     return;
   }
 
@@ -198,10 +202,12 @@ function add_sidebars() {
     });
 
     // make the up top links animate a bit...
-    $(".navbar .navlinks .boardlink").animate({
-      "margin-left": "-2000px"
-    }).fadeOut(function() {
-      unclickable = false; 
+    bootloader.require("app/static/vendor/velocity", function() {
+      $(".navbar .navlinks .boardlink").velocity({
+        "margin-left": "-2000px"
+      }).fadeOut(function() {
+        unclickable = false; 
+      });
     });
 
 

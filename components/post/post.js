@@ -125,9 +125,11 @@ module.exports = {
     });
 
 
-    require("app/client/profanity", function(clean_element) {
-      clean_element(self.$el);
-    });
+    if (window.bootloader.storage.get("filtercontent") === "true") {
+      require("app/client/profanity", function(clean_element) {
+        clean_element(self.$el);
+      });
+    }
 
     var replyInput = this.$el.find(".reply textarea");
     var text = window.bootloader.storage.get("reply" + this.get_post_id());

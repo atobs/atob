@@ -132,5 +132,6 @@ window.roll_em_black = function(iterations, interval) {
 window.find_lower_hash = find_lower_hash;
 window.gen_tripcode = gen_tripcode;
 module.exports = {
-  gen_tripcode: gen_tripcode
+  gen_tripcode: gen_tripcode,
+  get_colors_for_hash: get_colors_for_hash
 };

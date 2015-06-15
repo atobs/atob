@@ -1,8 +1,11 @@
 var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var notif = require("app/client/notif");
 var storage = require("app/client/storage");
+var favorites = require("app/client/favorite_boards");
 
 require("app/static/vendor/velocity");
+
+
 
 var cookie_opts = {
   path: '/',
@@ -353,6 +356,8 @@ module.exports = {
 
   },
   init_tripcodes: function() {
+    favorites.render_favorites();
+
     this.load_checkbox_value("privtrip", "input.privtrip", function(el, val) {
       if (val) {
         $(".tripbar").addClass("desaturate");
@@ -718,3 +723,4 @@ module.exports = {
     "submit .searchform" : "handle_search"
   }
 };
+

@@ -10,7 +10,9 @@
     <%= render_partial("shared/logo_and_links.html.erb", { render_boards: render_boards, tripcode: tripcode }) %>
 
     <div class="clearfix">
-      <h1><span class='boardheader'>/<%= board %> </span>
+      <h1>
+        <small class='boardheader'><span class='toggle_favorite icon-star-empty' /></small>
+        <span class='boardheader'> /<%= board %> </span>
         <% if (board_slogan) { %>
             <small class='board_slogan boardheader'><%= board_slogan %></small>
         <% } %>

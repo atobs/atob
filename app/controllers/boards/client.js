@@ -5,6 +5,7 @@ var settings = require("app/client/settings");
 var notif = require("app/client/notif");
 var emojies = require("app/client/emojies");
 var storage = require("app/client/storage");
+var favorites = require("app/client/favorite_boards");
 
 var newthread = require("app/client/newthread");
 
@@ -17,6 +18,30 @@ module.exports = {
     "click .boardview .boardfull" : "show_board_full",
     "click .boardview .boardlist" : "show_board_list",
     "click .post .title h4" : "click_post_title",
+    "click .toggle_favorite" : "toggle_fav"
+  },
+  star_board: function() {
+    favorites.add_favorite(this.board);
+    this.$el.find(".toggle_favorite").removeClass("icon-star-empty").addClass("icon-star");
+  },
+  unstar_board: function() {
+    favorites.del_favorite(this.board);
+    this.$el.find(".toggle_favorite").addClass("icon-star-empty").removeClass("icon-star");
+  },
+  is_favorite: function() {
+    var board = this.board;
+    var favs = favorites.get();
+    return _.contains(favs, board);
+
+  },
+  toggle_fav: function() {
+    if (this.is_favorite()) {
+      this.unstar_board();
+    } else {
+      this.star_board();
+
+    }
+
   },
 
   show_board_tiles: function() {
@@ -146,18 +171,6 @@ module.exports = {
     }, 2000);
 
   },
-  set_board: function(b) {
-    console.log("Seeing whats up for board", "/" + b);
-    this.board = b;
-    this.trigger("set_board");
-
-    var title = window.bootloader.storage.get("newpost_title_" + b);
-    var text = window.bootloader.storage.get("newpost_text_" + b);
-
-    this.$el.find(".new_post input[name='title']").val(title);
-    this.$el.find(".new_post textarea").val(text);
-
-  },
   socket: function(s) {
     var added = {};
     notif.subscribe();
@@ -226,3 +239,21 @@ _.extend(module.exports.events, settings.controller_events);
 
 _.extend(module.exports, newthread);
 _.extend(module.exports.events, newthread.controller_events);
+
+module.exports.set_board = function(b) {
+
+  console.log("Seeing whats up for board", "/" + b);
+  this.board = b;
+
+  var title = window.bootloader.storage.get("newpost_title_" + b);
+  var text = window.bootloader.storage.get("newpost_text_" + b);
+
+  this.$el.find(".new_post input[name='title']").val(title);
+  this.$el.find(".new_post textarea").val(text);
+
+  if (this.is_favorite()) {
+    this.star_board();
+  }
+  this.trigger("set_board");
+
+};

@@ -96,3 +96,47 @@
     background-color: #eaeaea;
   }
 }
+
+.favorite_board {
+  height: 100px;
+  line-height: 80px;
+  cursor: pointer;
+  vertical-align: center;
+  text-align: center;
+  padding: 10px 0px;
+  font-size: 1.5em;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  position: relative;
+
+  .del, .add {
+    color: #fafafa;
+  }
+
+  @media @desktop {
+    .del, .add {
+      opacity: 0;
+    }
+
+    &:hover {
+      background-color: #fafaee;
+      .del, .add {
+        opacity: 0.5;
+
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+
+  :last-child {
+    margin-right: 0px;
+  }
+
+}
+
+.brighten {
+  filter: brightness(1.5) grayscale(80%);
+  -webkit-filter: brightness(1.2) grayscale(80%);
+}

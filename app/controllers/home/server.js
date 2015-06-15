@@ -401,6 +401,7 @@ module.exports = {
 
     api.bridge.controller("home", "join_chat");
     api.bridge.controller("home", "init_tripcodes");
+    api.bridge.controller("home", "set_board", "chat");
 
     api.page.render({ content: template_str, socket: true});
 
