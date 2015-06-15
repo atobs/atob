@@ -237,7 +237,7 @@ function add_replies($el) {
 }
 
 function translate_markdown($el, escaped) {
-  escaped = marked(escaped, { renderer: renderer, breaks: true});
+  escaped = marked(escaped, { renderer: renderer, breaks: true, sanitize: true});
 
   // need to add icons here before data-text is added to the element
   var icon_str = "<i class='icon icon-NAME' title=':NAME:'> </i>";
