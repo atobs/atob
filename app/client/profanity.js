@@ -29,6 +29,7 @@ var swears = [
   "cleveland steamer",
   "clit",
   "cock",
+  "cocksuck",
   "cum",
   "cumming",
   "cunnilingus",
