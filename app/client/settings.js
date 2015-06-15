@@ -24,7 +24,7 @@ FOURCODES = JSON.parse(get_from_storage("fourcodes") || "[]");
 SIDEBARS = JSON.parse(get_from_storage("use_sidebars") || "false");
 
 function filter_content() {
-  bootloader.js("app/client/profanity", function(mods) {
+  bootloader.require("app/client/profanity", function(mods) {
     var clean_element = require("app/client/profanity");
     clean_element($("html"));
   });
@@ -687,8 +687,8 @@ module.exports = {
   },
   add_sidebars: function() {
     var self = this;
-    window.bootloader.js("app/client/sidebar", function() {
-      bootloader.require("app/client/sidebar").add_sidebars();
+    window.bootloader.require("app/client/sidebar", function(mod) {
+      mod.add_sidebars();
       $(".settings").fadeOut();
 
     });
