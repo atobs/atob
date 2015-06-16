@@ -1,7 +1,6 @@
 var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var notif = require("app/client/notif");
 var storage = require("app/client/storage");
-var favorites = require("app/client/favorite_boards");
 
 require("app/static/vendor/velocity");
 
@@ -356,7 +355,10 @@ module.exports = {
 
   },
   init_tripcodes: function() {
-    favorites.render_favorites();
+    bootloader.require("app/client/favorite_boards", function(favorites) {
+      favorites.render_favorites();
+    
+    });
 
     this.load_checkbox_value("privtrip", "input.privtrip", function(el, val) {
       if (val) {
