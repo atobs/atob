@@ -96,7 +96,7 @@ module.exports = {
     _.defer(function() {
       var privtrip = !!privtripEl.prop('checked');
       set_in_storage("privtrip", privtrip);
-      $(".tripbar").toggleClass("desaturate");
+      $(".tripbar, .identity_tripcode").toggleClass("desaturate");
     });
   },
   save_newtrip: function() {
@@ -360,7 +360,7 @@ module.exports = {
 
     this.load_checkbox_value("privtrip", "input.privtrip", function(el, val) {
       if (val) {
-        $(".tripbar").addClass("desaturate");
+        $(".tripbar, .identity_tripcode").addClass("desaturate");
       }
     });
     this.load_checkbox_value("filtercontent", "input.filtercontent", function(el, val) {
@@ -702,6 +702,7 @@ module.exports = {
   resaturate_tripbar: function() {
     if (get_from_storage("privtrip") !== "true") {
       this.$el.find(".tripbar").removeClass("desaturate");
+      this.$el.find(".identity_tripcode").removeClass("desaturate");
     }
   },
   controller_events: {
