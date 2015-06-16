@@ -140,3 +140,9 @@
   filter: brightness(1.5) grayscale(80%);
   -webkit-filter: brightness(1.2) grayscale(80%);
 }
+
+.drag-handle {
+  cursor: move;
+  cursor: -webkit-grabbing;
+}
+

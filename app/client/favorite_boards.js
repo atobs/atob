@@ -9,7 +9,7 @@ load_favorites();
 var TEMP_FAVORITES = [];
 var board_id_set = false;
 
-var COLORS = [ 
+var COLORS = [
   "rgb(224, 144, 192)",
   "rgb(0, 160, 224)",
   "rgb(112, 176, 48)",
@@ -18,7 +18,45 @@ var COLORS = [
 ];
 COLORS = _.shuffle(COLORS);
 
+var EDITING = false;
+var SORTABLE = null;
 module.exports = {
+  edit_favorites: function(el) {
+    var div = $("#favorite_boards .col-md-12");
+    if (!EDITING) {
+      EDITING = true;
+      div.find(".favorite_board").prepend('<span class="drag-handle">☰</span>');
+
+      bootloader.require("app/static/vendor/Sortable", function() {
+        SORTABLE = Sortable.create(div[0], {
+          onUpdate: function() {
+            var favs = _.map(div.find("li"), function(f) {
+              return $(f).data("board_id");
+            });
+
+            favs = _.intersection(favs, FAVORITES);
+
+            storage.set("favorite_boards", JSON.stringify(favs));
+            FAVORITES = favs;
+          }
+        });
+      });
+
+      el.html("Done");
+    } else {
+      div.find(".drag-handle").remove();
+      EDITING = false;
+      if (SORTABLE) {
+        SORTABLE.destroy();
+      }
+      SORTABLE = null;
+      el.html("<h2 class='icon-handdrag' />");
+
+      module.exports.render_favorites();
+    }
+
+
+  },
   add_favorite: function(board) {
     load_favorites();
     if (_.contains(FAVORITES, board)) {
@@ -56,12 +94,14 @@ module.exports = {
       index += 1;
       index %= COLORS.length;
 
-      var favEl = $("<li class='col-md-4 col-xs-4 favorite_board'> </li>");
+      var favEl = $("<li class='col-md-4 col-xs-4 favorite_board noselect'> </li>");
       favEl.addClass("desaturate brighten");
 
       favEl.css({
         backgroundColor: COLORS[index]
       });
+
+
 
       var spanEl = $("<span>/" + f + "</span>");
       favEl.append(spanEl);
@@ -73,7 +113,7 @@ module.exports = {
       if (f == board_id) {
         board_on_list = true;
       }
-      
+
       var delFavEl = $("<small title='Remove board from favs' class='del icon-star'> </small>");
       if (temp) {
         var delFavEl = $("<small title='Add board to favs' class='add icon-star-empty'> </small>");
@@ -101,7 +141,7 @@ module.exports = {
           opacity: 0.2
         }, {
           complete: function() {
-            window.location = "/b/" + f; 
+            window.location = "/b/" + f;
           }
         });
       });
@@ -127,6 +167,18 @@ module.exports = {
       }
     }
 
+    // add re-arrange tile
+    var arrangeWrapper = $("<div class='col-md-12' />");
+    var rearrangeEl = $("<span class='col-xs-4 col-md-4 favorite_board edit_favorite_boards'><h2 class='icon-handdrag' /></span>");
+    arrangeWrapper.append(rearrangeEl);
+    div.parent().append(arrangeWrapper);
+
+    rearrangeEl.on("click", function() {
+      module.exports.edit_favorites(rearrangeEl);
+
+    });
+
+
 
   },
   render_favorites: function() {
@@ -138,7 +190,6 @@ module.exports = {
     });
     var div = $("<div class='col-md-12 ptl mtl'/>");
     div.css('list-style', 'none');
-
     wrapper.append(div);
 
     if (!board_id_set) {
@@ -146,7 +197,7 @@ module.exports = {
         module.exports.really_render_favorites(div);
       });
       board_id_set = true;
-      
+
     } else {
       module.exports.really_render_favorites(div);
 
@@ -154,11 +205,12 @@ module.exports = {
 
     $(".content").append(wrapper);
 
+
   },
   get: function() {
     load_favorites();
     return FAVORITES;
   }
-  
+
 
 };
