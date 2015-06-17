@@ -150,7 +150,15 @@ module.exports = {
   }, 200),
 
   handle_mouseenter_imglink: function(e) {
-    e.stopPropagation();
+
+    // if we are inside a post title ... we stop its propagation
+    // because we need to prevent the link from being clicked
+    if (!$(e.target).closest(".postlink").length) {
+      e.stopPropagation();
+
+    }
+
+
     hide_popovers(e);
 
     var responseEl = $("<div />");
