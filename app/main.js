@@ -7,6 +7,9 @@ var config = require_core("server/config");
 var zlib = require("zlib");
 
 
+var heapdump = require("heapdump");
+
+
 var DEFAULT_BOARDS = [
   {
     code: "a"
@@ -51,6 +54,7 @@ module.exports = {
       db_emitter.emit("synced");
     });
 
+
   },
   setup_request: function(req, res) {
     if (req.path.indexOf("/pkg") !== 0) {
@@ -70,6 +74,7 @@ module.exports = {
     var end = Date.now();
     var diff = end - req.start;
     console.log("Finished request", req.path, "(" +  diff +  "ms)");
+
   },
   setup_context: function(ctx) {
     ctx.use_fullscreen = true;
