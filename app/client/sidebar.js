@@ -1,4 +1,5 @@
 
+var favorites = require("app/client/favorite_boards");
 var storage = require("app/client/storage");
 
 var sidebars = [];
@@ -16,12 +17,16 @@ function make_sidebar(toggle_selector, content_selector, side) {
   var events = _.clone(Backbone.Events);
 
   var sidebar_el = $("<div />");
-  var oldArea = $(content_selector);
-  oldArea.find("input").each(function() {
-    $(this).attr("value", $(this).val());
-  });
+  events.el = sidebar_el;
 
-  sidebar_el.append(oldArea.html());
+  if (content_selector) {
+    var oldArea = $(content_selector);
+    oldArea.find("input").each(function() {
+      $(this).attr("value", $(this).val());
+    });
+
+    sidebar_el.append(oldArea.html());
+  }
 
   sidebars.push(sidebar_el);
   sidebar_el.addClass("sidr " + side);
@@ -37,6 +42,7 @@ function make_sidebar(toggle_selector, content_selector, side) {
   var nav_selector = ".navbar_helper .logo";
 
   $(toggle_selector).on("click", function(e) {
+    console.log("TOGGLE SELECTOR CLICKED");
     e.stopPropagation();
     e.preventDefault();
 
@@ -50,7 +56,7 @@ function make_sidebar(toggle_selector, content_selector, side) {
       hide_sidebars();
 
 
-      bootloader.require("app/static/vendor/velocity", function() { 
+      bootloader.require("app/static/vendor/velocity", function() {
         if (side === "right") {
           sidebar_el.css({
             right: sidebarOffset,
@@ -81,6 +87,7 @@ function make_sidebar(toggle_selector, content_selector, side) {
           contentHandler = true;
 
           $(".content").one("click.sidebar", function(e) {
+            console.log("ONE CLICK SIDEBAR");
 
             if ($(e.target).closest(".logo").length) {
               return;
@@ -150,23 +157,19 @@ function add_sidebars() {
     _.delay(function() {
       $(".boardlinks").fadeIn();
     }, 200);
+
+    // Just put the favorites into the page
+    favorites.render_favorites();
     return;
   }
+
 
 
   var sidebarEl = $("input.use_sidebars");
   sidebarEl.attr("checked", true);
   sidebarEl.prop("checked", true);
 
-  var unclickable = true;
-  $(".navbar .navlinks a").click(function(e) {
-    if (unclickable) { 
-      e.preventDefault();
-      e.stopPropagation();
-      return true;
-    }
-
-  });
+  $(".toptop").fadeOut();
 
   bootloader.css("jquery.sidr.light", function() {
     if (window._addedSidebars) {
@@ -175,12 +178,21 @@ function add_sidebars() {
     window._addedSidebars = true;
 
 
-    make_sidebar("#logobar .logo", ".navbar .navlinks", "left");
+    var sidebar_events = make_sidebar("#logobar .logo", "", "left");
+    console.log("SETTING CONTAINER", sidebar_events.el);
+    favorites.set_container(sidebar_events.el);
+    favorites.render_favorites();
+
+    sidebar_events.on("opened", function() {
+      console.log("RENDERING FAVORITES?");
+      favorites.render_favorites();
+    });
+
     // end home link
 
 
     // add benjamin button directly into the sidebar
-    var sidebar_events = make_sidebar("a.settingslink", ".navbar .settings", "right");
+    sidebar_events = make_sidebar("a.settingslink", ".navbar .settings", "right");
     sidebar_events.on("opened", function() {
       var tripcodes_button = $("a.tripcode_done");
       tripcodes_button.hide();
@@ -199,15 +211,6 @@ function add_sidebars() {
       benjamin_buttons.removeClass("collapse");
       require("app/client/settings").regen_tripcode_history();
 
-    });
-
-    // make the up top links animate a bit...
-    bootloader.require("app/static/vendor/velocity", function() {
-      $(".navbar .navlinks .boardlink").velocity({
-        "margin-left": "-2000px"
-      }).fadeOut(function() {
-        unclickable = false; 
-      });
     });
 
 

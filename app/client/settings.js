@@ -355,11 +355,6 @@ module.exports = {
 
   },
   init_tripcodes: function() {
-    bootloader.require("app/client/favorite_boards", function(favorites) {
-      favorites.render_favorites();
-    
-    });
-
     this.load_checkbox_value("privtrip", "input.privtrip", function(el, val) {
       if (val) {
         $(".tripbar, .identity_tripcode").addClass("desaturate");
@@ -690,7 +685,7 @@ module.exports = {
   },
   set_board: function(board) {
     this.board = board;
-    this.trigger("set_board");
+    SF.trigger("set_board");
   },
   add_sidebars: function() {
     var self = this;

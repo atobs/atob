@@ -1,14 +1,3 @@
-
-var storage = require("app/client/storage");
-var FAVORITES;
-function load_favorites() {
-  FAVORITES = JSON.parse(storage.get("favorite_boards") || '["a", "to", "b", "links", "gifs", "chat" ]');
-}
-load_favorites();
-
-var TEMP_FAVORITES = [];
-var board_id_set = false;
-
 var COLORS = [
   "rgb(224, 144, 192)",
   "rgb(0, 160, 224)",
@@ -20,7 +9,24 @@ COLORS = _.shuffle(COLORS);
 
 var EDITING = false;
 var SORTABLE = null;
+var CONTAINER;
+
+
+var storage = require("app/client/storage");
+var FAVORITES;
+function load_favorites() {
+  FAVORITES = JSON.parse(storage.get("favorite_boards") || '["a", "to", "b", "links", "gifs", "chat" ]');
+}
+load_favorites();
+
+var TEMP_FAVORITES = [];
+var board_id_set = false;
+
+
 module.exports = {
+  set_container: function(el) {
+    CONTAINER = el;
+  },
   edit_favorites: function(el) {
     var div = $("#favorite_boards .col-md-12");
     if (!EDITING) {
@@ -57,7 +63,11 @@ module.exports = {
 
 
   },
-  add_favorite: function(board) {
+  add_favorite: function(board, starEl) {
+    if (starEl) {
+      starEl.removeClass("icon-star-empty").addClass("icon-star");
+    }
+
     load_favorites();
     if (_.contains(FAVORITES, board)) {
       return;
@@ -70,9 +80,11 @@ module.exports = {
     $.notify("anon starred /" + board, "success");
 
     storage.set("favorite_boards", JSON.stringify(FAVORITES));
-    module.exports.render_favorites();
   },
-  del_favorite: function(board) {
+  del_favorite: function(board, starEl) {
+    if (starEl) {
+      starEl.removeClass("icon-star").addClass("icon-star-empty");
+    }
     load_favorites();
     FAVORITES = _.without(FAVORITES, board);
     TEMP_FAVORITES = _.without(TEMP_FAVORITES, board);
@@ -80,10 +92,10 @@ module.exports = {
 
     $.notify("anon unstarred /" + board);
     storage.set("favorite_boards", JSON.stringify(FAVORITES));
-    module.exports.render_favorites();
 
   },
   really_render_favorites: function(div) {
+    div.addClass("clearfix");
 
     var board_id = SF.controller().board;
     var board_on_list = false;
@@ -125,13 +137,16 @@ module.exports = {
         top: 5,
         right: 5
       });
-      delFavEl.on("click", function() {
+      delFavEl.on("click", function(e) {
         if (temp) {
-          module.exports.add_favorite(f);
+          module.exports.add_favorite(f, delFavEl);
 
         } else {
-          module.exports.del_favorite(f);
+          module.exports.del_favorite(f, delFavEl);
         }
+        temp = !temp;
+
+        e.stopPropagation();
       });
 
       favEl.data("board_id", f);
@@ -169,9 +184,19 @@ module.exports = {
 
     // add re-arrange tile
     var arrangeWrapper = $("<div class='col-md-12' />");
-    var rearrangeEl = $("<span class='col-xs-4 col-md-4 favorite_board edit_favorite_boards'><h2 class='icon-handdrag' /></span>");
+    var rearrangeEl = $("<span class='col-xs-4 col-md-4 favorite_board edit_favorite_boards'><h2 class='icon-move'  style='margin-top: 20px;' /></span>");
+    var homeEl = $("<div class='clearfix' style='clear: both'><h2 style='text-align: center; margin-top: 30px'><a style='display: block' href='/' class='icon-home ptl pbl' /></h2></div>");
+
+    homeEl.find("a").css({
+      backgroundColor: COLORS[index],
+      color: "#fff",
+      padding: "20px"
+    });
     arrangeWrapper.append(rearrangeEl);
+
+    div.parent().prepend($("<div class='col-md-12' />").append(homeEl));
     div.parent().append(arrangeWrapper);
+    
 
     rearrangeEl.on("click", function() {
       module.exports.edit_favorites(rearrangeEl);
@@ -184,16 +209,13 @@ module.exports = {
   render_favorites: function() {
     $("#favorite_boards").remove();
 
-    var wrapper = $("<div id='favorite_boards' class='container mbl mtl ptl'> </div>");
-    wrapper.css({
-      marginBottom: "100px"
-    });
+    var wrapper = $("<div id='favorite_boards' class='mbl mtl ptl'> </div>");
     var div = $("<div class='col-md-12 ptl mtl'/>");
     div.css('list-style', 'none');
     wrapper.append(div);
 
     if (!board_id_set) {
-      SF.controller().on("set_board", function() {
+      SF.on("set_board", function() {
         module.exports.really_render_favorites(div);
       });
       board_id_set = true;
@@ -203,7 +225,12 @@ module.exports = {
 
     }
 
-    $(".content").append(wrapper);
+    if (!CONTAINER || !CONTAINER.length) {
+      $(".favorites_wrapper").append(wrapper);
+    } else {
+      wrapper.addClass("container");
+      CONTAINER.append(wrapper);
+    }
 
 
   },

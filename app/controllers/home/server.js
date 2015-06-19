@@ -362,6 +362,7 @@ module.exports = {
     this.set_title("atob");
 
     api.template.add_stylesheet("links");
+    api.bridge.call("app/client/sidebar", "add_sidebars");
     var render_recent_chats = api.page.async(function(flush) {
       Post.findAll({
         where: {
@@ -684,19 +685,20 @@ module.exports = {
           });
 
           api.bridge.controller("home", "gen_tripcodes");
+          api.bridge.call("app/client/sidebar", "add_sidebars");
+          var board = images_only ? "gifs" : "links";
+          api.bridge.controller("home", "set_board", board);
           flush(content);
         });
       });
 
       var board_utils = require_app("server/board_utils");
-      var render_boards = board_utils.render_boards();
       var board_slogan = "and lists";
       if (images_only) {
         board_slogan = "and other pics";
       }
       var template_str = api.template.render("controllers/links.html.erb", {
         render_links: render_links,
-        render_boards: render_boards,
         tripcode: "",
         images: images_only,
         board_slogan: board_slogan

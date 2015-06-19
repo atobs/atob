@@ -15,8 +15,6 @@ module.exports = {
 
       flush(template_str);
 
-      bridge.call("app/client/sidebar", "add_sidebars");
-
     });
 
     return render_boards;

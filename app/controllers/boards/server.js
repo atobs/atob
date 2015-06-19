@@ -57,7 +57,8 @@ module.exports = {
     $C("delete_post_modal", {}).marshall();
 
     api.template.add_stylesheet("board.css");
-    var render_boards = board_utils.render_boards();
+    api.bridge.call("app/client/sidebar", "add_sidebars");
+
 
     var board_id_clause = board_id;
     var board_slogan = BOARD_SLOGANS[board_id] || "";
@@ -169,7 +170,6 @@ module.exports = {
       board: board_id,
       tripcode: gen_md5(Math.random()),
       render_posts: render_posts,
-      render_boards: render_boards,
       board_slogan: board_slogan,
       render_sponsored_content: render_sponsored_content,
       new_thread: board_id !== "to"

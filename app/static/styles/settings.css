@@ -146,3 +146,16 @@
   cursor: -webkit-grabbing;
 }
 
+.toptop {
+  cursor: pointer;
+}
+
+#settings_dropdown .panel {
+  border: 0px;
+  box-shadow: 0px;
+  -webkit-box-shadow: 0px;
+  margin-top: 0px;
+  max-height: 500px;
+  overflow-y: auto;
+  margin: 0px;
+}

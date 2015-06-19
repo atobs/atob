@@ -38,9 +38,7 @@ module.exports = {
     api.template.add_stylesheet("post");
     $C("delete_post_modal", {}).marshall();
 
-    var board_utils = require_app("server/board_utils");
-    var render_boards = board_utils.render_boards();
-
+    api.bridge.call("app/client/sidebar", "add_sidebars");
     var render_sponsored_content = sponsored_content.render(api);
     var render_post = api.page.async(function(flush) {
 
@@ -128,7 +126,6 @@ module.exports = {
     var template_str = api.template.render("controllers/posts/show.html.erb", 
       { 
         render_post: render_post, 
-        render_boards: render_boards, 
         tripcode: gen_md5(Math.random()),
         render_sponsored_content: render_sponsored_content
       });

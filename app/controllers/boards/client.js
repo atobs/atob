@@ -254,6 +254,6 @@ module.exports.set_board = function(b) {
   if (this.is_favorite()) {
     this.star_board();
   }
-  this.trigger("set_board");
+  SF.trigger("set_board");
 
 };

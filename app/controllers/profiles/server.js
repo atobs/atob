@@ -56,7 +56,7 @@ module.exports = {
   show: function(ctx, api) {
     api.template.add_stylesheet("profile");
 
-    var render_boards = board_utils.render_boards();
+    api.bridge.call("app/client/sidebar", "add_sidebars");
     var tripcode = ctx.req.params.id;
 
     var render_about = api.page.async(function(flush) {
@@ -109,7 +109,6 @@ module.exports = {
 
     var template_str = api.template.render("controllers/profiles/profiles.html.erb", { 
       tripcode: tripcode,
-      render_boards: render_boards,
       render_about: render_about,
       render_ships: render_ships,
       render_burtles: render_burtles

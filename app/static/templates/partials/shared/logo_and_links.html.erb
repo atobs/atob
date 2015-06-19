@@ -8,7 +8,7 @@
   <div class="clearfix container">
 
     <div class="mtl col-md-12 navbar_helper noselect">
-      <div class="clearfix" >
+      <div class="clearfix" style="text-align: center" >
         <div class="lfloat mrl logo">
         
           <strong><a href="/">
@@ -22,14 +22,14 @@
         
         </div>
         <% if (!hide_settings) { %>
-          <a class="rfloat settingslink" href="#" data-toggle="collapse" data-target=".settings">
+          <a class="rfloat settingslink mll" href="#" data-toggle="collapse" data-parent="#settings_dropdown" data-target=".settings">
             <span class='icon-squaresettings'></span>
           </a>
         <% } %>
 
-        <div class="navlinks">
-          <%= render_boards() %>
-        </div>
+        <a class="toptop rfloat" href="#" data-toggle="collapse" data-parent="#settings_dropdown" data-target=".favorites_wrapper">
+          <span href="#" class='linklink icon-bookmark'></span>
+        </a>
       </div>
 
       <div id="anons">
@@ -39,8 +39,13 @@
 
       <div class="clearfix identity_tripcode tripbar desaturate" style="height: 20px; width: 100%" ></div>
 
-      <div class='<%= hide_settings ? "hidden" : ""  %>'>
-        <%= render_partial("shared/settings.html.erb", { tripcode: tripcode }) %>
+      <div id='settings_dropdown'>
+        <div class='<%= hide_settings ? "hidden" : ""  %> panel'>
+          <%= render_partial("shared/settings.html.erb", { tripcode: tripcode }) %>
+        </div>
+        <div class='panel'>
+          <%= render_partial("shared/favorites.html.erb", { tripcode: tripcode }) %>
+        </div>
       </div>
 
     </div>

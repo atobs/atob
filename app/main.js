@@ -7,7 +7,9 @@ var config = require_core("server/config");
 var zlib = require("zlib");
 
 
-var heapdump = require("heapdump");
+if (process.env.DEBUG) {
+  var heapdump = require("heapdump");
+}
 
 
 var DEFAULT_BOARDS = [

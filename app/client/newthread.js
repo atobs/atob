@@ -1,6 +1,7 @@
 var storage = require("app/client/storage");
 
 var handle_imgur_upload = require("app/client/imgur");
+var favorites = require("app/client/favorite_boards");
 
 module.exports = {
   controller_events: {
@@ -14,12 +15,12 @@ module.exports = {
     "focus .new_post textarea" : "update_post_preview",
     "keyup .new_post input" : "update_post_preview",
     "keyup .new_post textarea" : "update_post_preview",
-    "click .newthread" : "handle_click_newthread"
+    "click .toptop" : "handle_click_toptop"
   },
-  handle_click_newthread: function() {
-    $("html, body").animate({scrollTop: 0});
+  handle_click_toptop: function() {
+    
+    favorites.render_favorites();
   },
-
   update_post_preview: _.throttle(function(e) {
     var title = this.$el.find(".new_post input[name='title']").val();
     var text = this.$el.find(".new_post textarea").val();
