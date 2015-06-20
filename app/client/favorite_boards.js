@@ -106,7 +106,7 @@ module.exports = {
       index += 1;
       index %= COLORS.length;
 
-      var favEl = $("<li class='col-md-4 col-xs-4 favorite_board noselect'> </li>");
+      var favEl = $("<li class='col-md-3 col-xs-4 favorite_board noselect'> </li>");
       favEl.addClass("desaturate brighten");
 
       favEl.css({
@@ -184,8 +184,9 @@ module.exports = {
 
     // add re-arrange tile
     var arrangeWrapper = $("<div class='col-md-12' />");
-    var rearrangeEl = $("<span class='col-xs-4 col-md-4 favorite_board edit_favorite_boards'><h2 class='icon-move'  style='margin-top: 20px;' /></span>");
-    var homeEl = $("<div class='clearfix' style='clear: both'><h2 style='text-align: center; margin-top: 30px'><a style='display: block' href='/' class='icon-home ptl pbl' /></h2></div>");
+    var rearrangeEl = $("<span class='col-xs-4 col-md-3 favorite_board edit_favorite_boards'><h2 class='icon-move'  style='margin-top: 20px;' /></span>");
+    rearrangeEl.css("marginBottom", "50px");
+    var homeEl = $("<div class='clearfix' style='clear: both'><h2 style='text-align: center;'><a style='display: block' href='/' class='icon-home ptl pbl' /></h2></div>");
 
     homeEl.find("a").css({
       backgroundColor: COLORS[index],
@@ -209,7 +210,7 @@ module.exports = {
   render_favorites: function() {
     $("#favorite_boards").remove();
 
-    var wrapper = $("<div id='favorite_boards' class='mbl mtl ptl'> </div>");
+    var wrapper = $("<div id='favorite_boards' class='ptl'> </div>");
     var div = $("<div class='col-md-12 ptl mtl'/>");
     div.css('list-style', 'none');
     wrapper.append(div);
