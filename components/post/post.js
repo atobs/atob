@@ -35,8 +35,15 @@ function replace_oplinks(el) {
     var opid = child.attr("data-parent-id");
     var parentEl = $("#reply" + opid);
 
+
     if (parentEl.length) {
-      $(this).data("tripcode", parentEl.find(".tripcode").data("tripcode"));
+      var tripcode = parentEl.find(".tripcode").data("tripcode");
+      if (!tripcode) {
+        parentEl = parentEl.siblings(".title");
+        tripcode = parentEl.find(".tripcode").data("tripcode");
+      }
+
+      $(this).data("tripcode", tripcode);
     }
 
     $(this).removeClass("desaturate");
