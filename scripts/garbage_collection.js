@@ -41,7 +41,7 @@ function collect_garbage() {
 
         _.each(delete_posts, function(post) {
           var archive = false;
-          if (post.replies > 50 || post.ups > 10) {
+          if ((post.replies - post.downs) > 50 || post.ups > 10) {
             console.log(post.replies, post.ups);
             archive = true;
             ArchivedPost.findOrCreate({ id: post.id }, post.dataValues);
