@@ -146,7 +146,7 @@ module.exports = {
   },
 
   handle_removepulse: _.throttle(function() {
-    this.$el.find(".post").removeClass("pulse");
+    this.$el.find(".post").removeClass("pulsepost");
   }, 200),
 
   handle_mouseenter_imglink: function(e) {

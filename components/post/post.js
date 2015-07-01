@@ -214,7 +214,7 @@ module.exports = {
   add_reply: function(data, dontpulse) {
    
     if (!dontpulse) {
-      this.$el.find(".post").addClass("pulse");
+      this.$el.find(".post").addClass("pulsepost");
     }
 
     var replyId = "reply" + data.post_id;

@@ -266,15 +266,12 @@
 }
 
 @-webkit-keyframes pulse_animation {
-  0% { -webkit-transform: scale(1); }
-  5% { -webkit-transform: scale(1.01); }
-  10% { -webkit-transform: scale(1); }
-  15% { -webkit-transform: scale(1.01); }
-  20% { -webkit-transform: scale(1); }
-  100% { -webkit-transform: scale(1); }
+  0%   { border-color: rgba(240, 65, 195, 0); }
+  50%  { border-color: rgba(240, 65, 195, 1); }
+  100% { border-color: rgba(240, 65, 195, 0); }
 }
 
-.pulse {
+.pulsepost {
   -webkit-animation-name: 'pulse_animation';
   -webkit-animation-duration: 6000ms;
   -webkit-transform-origin:70% 70%;
