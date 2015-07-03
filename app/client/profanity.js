@@ -270,7 +270,4 @@ function recurse(element)
   }
 }
 
-var html = document.getElementsByTagName('html')[0];
-recurse(html);
-
 module.exports = clean_element;

@@ -31,6 +31,11 @@ module.exports = {
           module.exports.poopcode(this);
         }
       });
+
     });
-  }
+
+    bootloader.require("app/client/john", function(john) {
+      john(replyEl);
+    });
+  },
 };
