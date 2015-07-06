@@ -1,5 +1,6 @@
 module.exports = {
   sockets: true,
+  primus_transformer: "sockjs",
   ssl: {
     key: "config/certs/server.key",
     certificate: "config/certs/server.crt"
