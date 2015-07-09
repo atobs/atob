@@ -382,7 +382,7 @@ function process_vote(replyEl) {
     voted[replyId] = {};
   }
 
-  var matches = text.match(/:?vote-?\d+:?/g);
+  var matches = text.match(/:?vote[- ]?\d+:?/g);
 
   _.each(matches, function(match) {
     var vote = match.replace(/vote-?/, "").replace(/:/g, "");
