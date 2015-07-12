@@ -375,7 +375,7 @@ module.exports = {
     var test_words = [ "test", "hi", "testing", "what is this place" ];
     var tested = false;
     _.each(test_words, function(test_word) {
-      if (test_word.replace(/\(\W|\d\)/g, '') === stripped_reply) {
+      if (test_word.replace(/\(\W|\d\)/g, '').toLowerCase() === stripped_reply.toLowerCase()) {
         $.notify("THOU SHALT NOT TEST JAMES!", { className: "error"} );
         tested = true;
       }
