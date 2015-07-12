@@ -547,6 +547,8 @@ module.exports = {
 
         parent.children = posts;
         render_posting(api, flush, parent);
+
+        api.bridge.controller("home", "show_chat");
       });
     });
 

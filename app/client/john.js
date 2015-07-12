@@ -10,7 +10,6 @@ function sweep_text(el) {
 
   // test for john...
   _.each(SWEAR_REs, function(swr, rep) {
-    console.log(swr, rep);
     if (swr.test(context)) {
       var replaced =  Luni.tools.creepify.encode(rep);
       context = context.replace(swr, replaced);

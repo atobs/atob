@@ -161,6 +161,24 @@ module.exports = {
   join_chat: function() {
     console.log("JOINING CHAT?");
   },
+  show_chat: function() {
+    var storage = require("app/client/storage");
+    var tripcode_str = storage.get("tripcodes");
+    var tripcodes = [];
+    try {
+      tripcodes = JSON.parse(tripcode_str);
+    } catch (e) {
+
+    }
+
+    if (tripcodes.length) {
+      // This is where we can show and hide chat?
+      $(".chat").removeClass("hidden");
+      var repliesEl = $(".chat .replies");
+      repliesEl.scrollTop(repliesEl[0].scrollHeight);
+
+    }
+  },
   show_recent_threads: function() {
     format_and_show($(".threads.recent.hidden"));
   },
