@@ -1,14 +1,18 @@
 
-var SWEAR_REs = [
-  /\bjohn\b/ig
-];
+var SWEAR_REs = {
+  "JOHN" : /\bjohn\b/ig,
+  "SARAH" : /\bsarah\b/ig
+};
 
 var Luni;
 function sweep_text(el) {
   var context = el.nodeValue;
-  _.each(SWEAR_REs, function(swr) {
+
+  // test for john...
+  _.each(SWEAR_REs, function(swr, rep) {
+    console.log(swr, rep);
     if (swr.test(context)) {
-      var replaced =  Luni.tools.creepify.encode("JOHN");
+      var replaced =  Luni.tools.creepify.encode(rep);
       context = context.replace(swr, replaced);
     }
   });
