@@ -365,9 +365,28 @@ module.exports = {
     var replyPreview = this.$el.find(".replypreview");
     var reply = replyInput.val();
 
+
     if (reply.trim() === "") {
       return;
     }
+
+    // REGEX OF TESTING
+    var stripped_reply = reply.replace(/\W/g, '');
+    var test_words = [ "test", "hi", "testing", "what is this place" ];
+    var tested = false;
+    _.each(test_words, function(test_word) {
+      if (test_word.replace(/\(\W|\d\)/g, '') === stripped_reply) {
+        $.notify("THOU SHALT NOT TEST JAMES!", { className: "error"} );
+        tested = true;
+      }
+    });
+
+    if (tested) {
+      replyInput.val("");
+      return;
+    }
+    
+
 
     var tokens = reply.split(" ");
     var first_word = tokens[0];
