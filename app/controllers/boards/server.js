@@ -12,6 +12,7 @@ var post_links = require_app("server/post_links");
 var mod = require_app("server/mod");
 var config = require_core("server/config");
 var sponsored_content = require_app("server/sponsored_content");
+var client_api = require_app("server/client_api");
 
 var makeme_store = require_app("server/makeme_store");
 
@@ -235,8 +236,7 @@ module.exports = {
       post_links.upvote_link(link, cb);
     });
 
-
-
+    client_api.add_to_socket(s);
     makeme_store.subscribe_to_updates(s);
 
   },
