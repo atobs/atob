@@ -36,7 +36,6 @@ module.exports = {
           cb(result);
         }
 
-        cb(result);
       });
       
 
