@@ -4,6 +4,30 @@ var HIDDEN_BOARDS = require_app("server/hidden_boards");
 module.exports = {
   add_to_socket: function(s) {
 
+    s.on("since", function(delta, cb) {
+      // Find all posts older than delta ms
+      var now = Date.now();
+      now -= delta;
+
+      console.log("Handling API since", delta);
+
+      Post.findAll({
+        order: "id DESC",
+        limit: 100
+      }).success(function(posts) {
+        posts = _.filter(posts, function(p) {
+          var is_hidden = false;
+          _.each(HIDDEN_BOARDS, function(board) {
+            is_hidden = is_hidden || board === p.board_id;
+          });
+
+          return !is_hidden && p.created_at > now;
+        });
+
+        cb(posts);
+      });
+    });
+
     s.on("recent_posts", function(cb) {
       var after = _.after(2, function() {
         cb(ret); 
