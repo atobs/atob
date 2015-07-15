@@ -1,7 +1,60 @@
 var Post = require_app("models/post");
 var posting = require_app("server/posting");
+var HIDDEN_BOARDS = require_app("server/hidden_boards");
 module.exports = {
   add_to_socket: function(s) {
+
+    s.on("recent_posts", function(cb) {
+      var after = _.after(2, function() {
+        cb(ret); 
+      });
+
+      var ret = {};
+      Post.findAll({
+        where: {
+          parent_id: {
+            ne: null
+          },
+        },
+        order: "id DESC",
+        limit: 100
+      }).success(function(posts) {
+        posts = _.filter(posts, function(p) {
+          var is_hidden = false;
+          _.each(HIDDEN_BOARDS, function(board) {
+            is_hidden = is_hidden || board === p.board_id;
+          });
+
+          return !is_hidden;
+        });
+
+        ret.replies = posts;
+
+        after();
+      });
+
+      Post.findAll({
+        where: [
+          "Posts.thread_id is NULL AND Posts.board_id != 'ban'"
+        ],
+        order: "id DESC",
+        limit: 100
+      }).success(function(posts) {
+        posts = _.filter(posts, function(p) {
+          var is_hidden = false;
+          _.each(HIDDEN_BOARDS, function(board) {
+            is_hidden = is_hidden || board === p.board_id;
+          });
+
+          return !is_hidden;
+        });
+
+        ret.posts = posts;
+        after();
+      });
+
+
+    });
 
     s.on("get_post", function(post_id, cb) {   
       console.log("Handling API get_post on", post_id);
@@ -64,8 +117,7 @@ module.exports = {
             limit: limit
         }).success(function(results) {
           if (!results || !results.length) {
-            api.bridge.controller("boards", "no_posts");
-            return flush();
+            return cb();
           }
 
           if (board_id === "to") {
