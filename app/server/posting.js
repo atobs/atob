@@ -40,6 +40,8 @@ var DOWNCONS = [
 var UPCONS = [
   ":thumbs-up:",
   ":batman:",
+  ":heart:",
+  ":happy:",
   ":ironman:",
   ":age:"
 ];
