@@ -33,8 +33,11 @@
   @media @device {
     float: right;
     position: absolute;
-    right: 5px;
+    left: 10px;
     margin-right: 10px;
+
+    zoom: 1.4;
+    top: 82px;
   }
 
 }

@@ -29,7 +29,7 @@
     <div class="mbm">
       <div class="tripcode lfloat mtm" title="<%- "anon" %>" data-tripcode="<%= tripcode %>"> </div>
 
-      <div class="post_id lfloat mrl">
+      <div class="post_id lfloat" style='margin-right: 5px;'>
         <a
           href="/p/<%= post_id %>" class="addreply"
           title="<%= created_at %>"
@@ -39,8 +39,7 @@
 
 
       <div class="clearfix timebox">
-        <div class="created">
-          <small>posted to <a href="/b/<%= board_id %>">/<%= board_id %></a> 
+        <div class="created"><small><a href="/b/<%= board_id %>">posted to /<%= board_id %></a> 
             <span class="timeago" title="<%= new Date(created_at).toISOString() %>"> </span>
           </small>
         </div>

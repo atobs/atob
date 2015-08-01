@@ -491,8 +491,15 @@ module.exports = {
       s: "icon-ghost"
     };
 
+    var anon_order = _.keys(counts);
+    anon_order = _.sortBy(anon_order, function(c) {
+      return last_seen[c];
 
-    var str = _.map(counts, function(c, id) {
+    });
+
+    var str = _.map(anon_order, function(id) {
+      var c = counts[id];
+      console.log(c, id);
       var el = $("<i class='anonicator " + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' />");
 
       el.attr("data-post", anon_to_post[id] || 0);

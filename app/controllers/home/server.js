@@ -74,7 +74,7 @@ var UPBOAT_TIMEOUT = 60 * 1000;
 
 function find_top_anons(cb) {
   var hashes = [];
-  Post.findAll({ 
+  Post.findAll({
     group: ["tripcode", "author"],
     order: "count DESC",
     where: {
@@ -248,7 +248,7 @@ module.exports = {
     "robots.txt" : "robots"
   },
 
-  
+
   boards: function(ctx, api) {
     var render_boards = api.page.async(function(flush) {
       Sequelize.instance.query("select board_id, count(*) as count from posts group by board_id order by count desc")
@@ -489,7 +489,7 @@ module.exports = {
     var render_anons = function() {
       var counts = {};
       makeme_store.digest_doings();
-      
+
       _.each(makeme_store.DOING_ONS, function(anons) {
         _.each(anons, function(emote, id) {
           counts[id] = emote;
@@ -504,7 +504,14 @@ module.exports = {
         s: "icon-ghost"
       };
 
-      var str = _.map(counts, function(c, id) {
+      var anon_order = _.keys(counts);
+      var order = _.sortBy(anon_order, function(c) {
+        return -makeme_store.LAST_SEEN[c];
+
+      });
+
+      var str = _.map(order, function(id) {
+        var c = counts[id];
         var opacity = 1;
         var last_seen = makeme_store.LAST_SEEN[id];
         if (last_seen) {
@@ -641,7 +648,7 @@ module.exports = {
 
     };
 
-    var template_str = api.template.partial("home/icons.html.erb", { 
+    var template_str = api.template.partial("home/icons.html.erb", {
       render_icons: render_icons
     });
 
@@ -747,8 +754,8 @@ module.exports = {
     ctx.res.end("User-agent: *\nDisallow: /");
   },
 
-  socket: function(s) { 
-    makeme_store.lurk(s); 
+  socket: function(s) {
+    makeme_store.lurk(s);
     makeme_store.subscribe_to_updates(s);
 
     s.on("new_reply", function(post, cb) {

@@ -31,6 +31,26 @@
   @media only screen and (min-width: 767px) {
     right: 36px;
   }
+
+  @media @device {
+    zoom: 1.3;
+    top: 0px;
+    left: 40px;
+    direction: rtl;
+    margin-right: 20px;
+    overflow: hidden;
+    max-height: 20px;
+    right: inherit;
+
+  }
+}
+
+.navbar_helper {
+  @media @device {
+    .settingslink, .toptop {
+      zoom: 1.5;
+    }
+  }
 }
 
 body:not(:-moz-handler-blocked) #anons { 
