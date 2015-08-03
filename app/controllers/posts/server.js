@@ -111,7 +111,7 @@ module.exports = {
     var render_sinners = api.page.async(function(flush) {
       Post.findAll({
         where: {
-          board_id: "heretics"
+          board_id: ["heretics", "cleretics", "apostles"]
         }
       }).success(function(results) {
         var sinners = _.map(results, function(r) { return r.dataValues; });

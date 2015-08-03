@@ -154,7 +154,7 @@ function handle_new_post(s, board, post, cb) {
 
 
         s.emit("goto_post", p.dataValues.id);
-        
+
         if (cb) {
           cb(p.dataValues.id);
         }
@@ -194,7 +194,7 @@ function is_user_banned(s, board, done) {
         }
       });
     }
-  
+
     // if anon is in Ban table, finish them
     //
     if (banned) {
@@ -230,11 +230,16 @@ function check_for_blasphemy(s, parentish, post, cb) {
   var title = post.title;
   var author = post.author;
 
-  var regex = /\s?james\s?/i;
+  var james_regex = /\s?james\s?/i;
+  var sarah_regex = /\s?sarah\s?/i;
+  var john_regex = /\s?john\s?/i;
   var poopex = /\s?:poop(alt)?:\s?/i;
 
   function is_blasphemy(parent) {
-    var has_james = parent.title.match(regex);
+    var has_james = parent.title.match(james_regex);
+    var has_sarah = parent.title.match(sarah_regex);
+    var has_john = parent.title.match(john_regex);
+
     var has_poop = title.toString().match(poopex) || text.toString().match(poopex);
 
     if (has_james && has_poop) {
@@ -246,7 +251,7 @@ function check_for_blasphemy(s, parentish, post, cb) {
         board_id: "heretics",
         bumped_at: Date.now()
       }).success(function() {
-      
+
       });
 
       s.emit("notif", "your blasphemy will not go unpunished", "error");
@@ -270,6 +275,62 @@ function check_for_blasphemy(s, parentish, post, cb) {
 
       title = JAMES_TITLES[_.random(0, JAMES_TITLES.length - 1)];
       text = JAMES_TEXTS[_.random(0, JAMES_TEXTS.length - 1)];
+
+      cb({ title: title, text: text });
+    } else if (has_sarah && has_poop) {
+      Post.create({
+        text: text,
+        title: "i am a sinner and a blasphemer",
+        tripcode: gen_md5(author + ":" + post.tripcode),
+        author: escape_html(author),
+        board_id: "cleretics",
+        bumped_at: Date.now()
+      }).success(function() {
+
+      });
+
+      s.emit("notif", "your blasphemy will not go unpunished", "error");
+      var SARAH_TITLES = [
+       "SARAH sees where JAMES does not",
+       "SARAH is true and righteous",
+      ];
+
+      var SARAH_TEXTS = [
+       "SARAH's way is my way",
+       "may SARAH shield us",
+      ];
+
+      title = SARAH_TITLES[_.random(0, SARAH_TITLES.length - 1)];
+      text = SARAH_TEXTS[_.random(0, SARAH_TEXTS.length - 1)];
+
+      cb({ title: title, text: text });
+    } else if (has_john && has_poop) {
+      Post.create({
+        text: text,
+        title: "i am a sinner and a blasphemer",
+        tripcode: gen_md5(author + ":" + post.tripcode),
+        author: escape_html(author),
+        board_id: "apostles",
+        bumped_at: Date.now()
+      }).success(function() {
+
+      });
+
+      s.emit("notif", "you worship JOHN!?", "error");
+      var JOHN_TITLES = [
+       "JOHN JOHN JOHN",
+       "JOHN JOHN",
+       "JOHN"
+      ];
+
+      var JOHN_TEXTS = [
+        "JOHN",
+        "JOHN JOHN JOHN",
+        "JOHN JOHN JOHN JOHN JOHN"
+      ];
+
+      title = JOHN_TITLES[_.random(0, JOHN_TITLES.length - 1)];
+      text = JOHN_TEXTS[_.random(0, JOHN_TEXTS.length - 1)];
 
       cb({ title: title, text: text });
     } else {
@@ -475,7 +536,7 @@ function handle_update_post(socket, board, post, cb) {
       if (result.tripcode === delete_code) {
         var action_name = "OP Updated post #";
 
-        check_for_blasphemy(socket, result.parent_id, { text: post.text, title: "", author: post.author, tripcode: post.tripcode }, 
+        check_for_blasphemy(socket, result.parent_id, { text: post.text, title: "", author: post.author, tripcode: post.tripcode },
           function(blasphemy) {
 
           if (blasphemy) {
@@ -530,7 +591,8 @@ function handle_delete_post(socket, board, post) {
     var delete_code = gen_md5(post.author + ':' + post.tripcode);
     if (result) {
 
-      if (result.board_id === "heretics" || result.board_id === "log") {
+      if (result.board_id === "heretics" ||
+          result.board_id === "log" || result.board_id === "cleretics") {
         socket.emit("notif", "nice try, but badanon.", "warn");
         return;
       }
@@ -556,7 +618,7 @@ function handle_delete_post(socket, board, post) {
       } else {
         User.find({
           where: {
-            tripname: post.author || "BOO", 
+            tripname: post.author || "BOO",
             tripcode: [post.tripcode || gen_md5("URNS"), gen_md5(post.tripcode)]
           }
         }).success(function(user) {
@@ -573,7 +635,7 @@ function handle_delete_post(socket, board, post) {
               text: text,
               bumped_at: Date.now()
             };
-            
+
             Post.create(post_data);
             socket.emit("update_post", post.id);
             socket.broadcast.to(result.board_id).emit("update_post", post.id);
@@ -594,7 +656,7 @@ function handle_delete_post(socket, board, post) {
 
       }
 
-    } 
+    }
 
   });
 }
@@ -651,14 +713,14 @@ module.exports = {
     // from replies:
     // ups, downs, bumped_at, author
     //
-    var post_delete = [ 
+    var post_delete = [
       "ip",
     ];
 
     _.each(post_delete, function(key) {
       delete post[key];
     });
-    
+
   }
 };
 

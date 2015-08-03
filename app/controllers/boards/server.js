@@ -69,7 +69,7 @@ module.exports = {
       board_id_clause = null;
       order_clause = "created_at DESC";
       limit = 300;
-    } else if (board_id === "heretics") {
+    } else if (board_id === "heretics" || board_id === "cleretics" || board_id === "apostles") {
       order_clause = "created_at DESC";
     }
 
@@ -91,10 +91,11 @@ module.exports = {
         }
 
         if (board_id === "to") {
-          
+         
+          var hidden_boards = require_app("server/hidden_boards");
           results = _.filter(results, function(r) { 
             var is_hidden = false;
-            _.each([ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test"], function(board) {
+            _.each(hidden_boards, function(board) {
               is_hidden = is_hidden || board === r.board_id;
             });
 
@@ -155,7 +156,7 @@ module.exports = {
     var render_sinners = api.page.async(function(flush) {
       Post.findAll({
         where: {
-          board_id: "heretics"
+          board_id: ["heretics", "cleretics", "apostles"]
         }
       }).success(function(results) {
         var sinners = _.map(results, function(r) { return r.dataValues; });

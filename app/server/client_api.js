@@ -148,7 +148,7 @@ module.exports = {
         board_id_clause = null;
         order_clause = "created_at DESC";
         limit = 300;
-      } else if (board_id === "heretics") {
+      } else if (board_id === "heretics" || board_id === "apostles" || board_id === "cleretics") {
         order_clause = "created_at DESC";
       }
 

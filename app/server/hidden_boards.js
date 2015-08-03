@@ -1,4 +1,6 @@
 module.exports = [
+ "cleretics",
+ "apostles",
  "heretics",
  "faq",
  "bugs",
