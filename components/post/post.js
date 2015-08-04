@@ -36,8 +36,10 @@ function replace_oplinks(el) {
     var parentEl = $("#reply" + opid);
 
 
+
+    var tripcode;
     if (parentEl.length) {
-      var tripcode = parentEl.find(".tripcode").data("tripcode");
+      tripcode = parentEl.find(".tripcode").data("tripcode");
       if (!tripcode) {
         parentEl = parentEl.siblings(".title");
         tripcode = parentEl.find(".tripcode").data("tripcode");
@@ -49,7 +51,14 @@ function replace_oplinks(el) {
     $(this).removeClass("desaturate");
     window.gen_tripcode($(this));
 
+    if (tripcode) {
+      $(this).data("tripcode", tripcode);
+      $(this).attr("data-tripcode", tripcode);
+      require("app/client/sinners", function(sinners) {
+        sinners.check_reply(child, tripcode);
+      });
 
+    }
 
   });
 
