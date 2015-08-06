@@ -387,7 +387,7 @@ module.exports = {
   // when someone hits their moving burtle, you get smashed
   restalk: function() {
     var s = document.createElement('script');
-    $.getScript( 'http://fontbomb.ilex.ca/js/main.js', function() {
+    $.getScript( window.location.protocol + '//fontbomb.ilex.ca/js/main.js', function() {
       var scrollTop = document.body.scrollTop;
       var width = window.innerWidth;
       var height = window.innerHeight;
