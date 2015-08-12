@@ -486,6 +486,7 @@ module.exports = {
       t: "icon-keyboardalt",
       f: "icon-glassesalt",
       u: "icon-glassesalt",
+      d: "icon-ducky",
       b: "icon-comedy",
       n: "icon-toast",
       s: "icon-ghost"
@@ -547,6 +548,16 @@ module.exports = {
       setTimeout(function() {
         $(".logo").removeClass("pulse");
       }, 2000);
+    }
+
+    if (target.hasClass("icon-comedy")) {
+      SF.socket().emit("stalking", {
+        what: "ducking",
+        anon: anon_id,
+        mytrip: module.exports.get_trip_identity()
+      });
+
+      return;
     }
 
     if (post_id) {
@@ -654,11 +665,35 @@ module.exports = {
     s.on("burtledance", this.burtle_storm);
     s.on("meter", this.handle_meter);
     s.on("bestalked", this.be_stalked);
+    s.on("duckened", this.get_ducked);
     s.on("restalked", this.restalk);
     s.on("stalking", this.be_stalker);
 
     s.on("burtled", this.burtled);
     s.on("goto_post", this.goto_post);
+
+  },
+  get_ducked: function(data) {
+    console.log(data.tripcode);
+    $(".container").fadeOut();
+    $("body").velocity({
+      backgroundColor: "#333",
+      color: "#ddd"
+    });
+
+    var ducked = $(".ducked");
+    
+    var tripcodeEl = $("<div />");
+    tripcodeEl.data("tripcode", data.tripcode);
+    $("body").append(tripcodeEl);
+    tripcode_gen(tripcodeEl);
+
+    if (!ducked.length)  {
+      $("body").prepend("<h1 class='ducked' style='text-align: center; zoom: 1.5'>get ducked</h1>");
+      $("body").scrollTop(0);
+    }
+
+
 
   },
 

@@ -152,6 +152,25 @@ function maybe_stalk(sid, doing, s) {
     SID_TO_TRIP[sid] = doing.mytrip;
   }
 
+  var actortrip = SID_TO_TRIP[sid];
+  var bytrip = SID_TO_TRIP[doing.anon];
+  var stalked_socket = SOCKETS[doing.anon];
+  if (doing.what === "ducking") {
+    if (doing.anon === sid) {
+      s.emit("bestalked");
+      return;
+    }
+
+    if (stalked_socket) {
+      _.each(stalked_socket, function(s) {
+        s.emit("duckened", { by: sid, sid: doing.anon, tripcode: actortrip });
+      });
+    }
+
+    return true;
+    
+  }
+
   if (doing.what === "stalking") {
     if (doing.anon === sid) {
       s.emit("bestalked");
@@ -183,9 +202,6 @@ function maybe_stalk(sid, doing, s) {
       }
     });
 
-    var actortrip = SID_TO_TRIP[sid];
-    var bytrip = SID_TO_TRIP[doing.anon];
-    var stalked_socket = SOCKETS[doing.anon];
     if (stalked_socket) {
       _.each(stalked_socket, function(s) {
         s.emit("bestalked", { by: sid, sid: doing.anon, tripcode: actortrip });
