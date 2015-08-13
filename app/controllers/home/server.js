@@ -16,6 +16,7 @@ var config = require_core("server/config");
 
 var ICONS = require_app("client/emojies");
 var makeme_store = require_app("server/makeme_store");
+var client_api = require_app("server/client_api");
 
 var ICON_GROUPS = _.groupBy(ICONS, function(icon, index) {
   return parseInt(index / 50, 10);
@@ -757,6 +758,7 @@ module.exports = {
   socket: function(s) {
     makeme_store.lurk(s);
     makeme_store.subscribe_to_updates(s);
+    client_api.add_to_socket(s);
 
     s.on("new_reply", function(post, cb) {
       post.tripcode = Math.random() + "";

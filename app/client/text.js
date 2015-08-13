@@ -184,7 +184,7 @@ function add_newlines($el) {
   var escaped = $el.html();
   if (escaped) {
     escaped = escaped.trim();
-    var replaced = escaped.replace(/\n\s*\n*/g, 
+    var replaced = escaped.replace(/\n\s*\n*/g,
       "<br class='mtl mbl' /> <span class='placeholder' >&nbsp;</span>");
     $el.html(replaced);
   }
@@ -300,7 +300,7 @@ function add_markdown($el) {
 
   $el.attr("data-text", escaped);
 
-  
+
 }
 
 function shorten_text($el) {

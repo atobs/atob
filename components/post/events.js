@@ -1,12 +1,13 @@
 "use strict";
 
+var POST_CACHE = {};
 var CLIENT_COMMANDS = {
   "/makeme" : function(cmd, icon) {
     var postId = this.get_post_id();
 
     icon = $("<div />").html(icon).text();
 
-    SF.socket().emit("isdoing", { 
+    SF.socket().emit("isdoing", {
       post_id: postId,
       what: icon
     });
@@ -23,6 +24,22 @@ function hide_popovers(e) {
     $(this).remove();
   });
 }
+
+function display_post(post_data, clone_id, retEl, replaceId) {
+  $C("post", post_data, function(cmp) {
+    post_data.post_id = clone_id;
+    var replyEl = cmp.make_reply_el(post_data);
+    var replacedEl = $("#" + replaceId);
+
+    if (replacedEl.length) {
+      $("#" + replaceId).html(replyEl.html());
+    } else {
+      retEl.append(replyEl);
+    }
+  });
+
+}
+
 
 module.exports = {
   // Component event handling goes here
@@ -172,7 +189,7 @@ module.exports = {
       placement: "auto",
       container: this.$el });
 
-    _.defer(function() { 
+    _.defer(function() {
       $(e.target).popover("show");
     });
 
@@ -205,9 +222,36 @@ module.exports = {
         return retEl;
       }
 
+      if (!responseEl.length) {
+        var retEl = $("<div></div>");
+        var replaceEl = $("<div  style='min-width: 300px; min-height: 40px' />");
+        var replaceId = _.uniqueId("replyId");
+        retEl.append(replaceEl);
+        replaceEl.attr("id", replaceId);
+
+
+        var post_data = POST_CACHE[clone_id];
+        if (!post_data) {
+          SF.socket().emit("get_post_only", clone_id, function(post_data) {
+            POST_CACHE[clone_id] = post_data;
+            if (!post_data) {
+              $("#" + replaceId).html("<b>Oops. Burtle Couldn't find post #" + clone_id + " </b>");
+            } else {
+              display_post(post_data, clone_id, retEl, replaceId);
+            }
+          });
+        } else {
+          _.defer(function() {
+            display_post(post_data, clone_id, retEl, replaceId);
+          });
+        }
+
+        return retEl;
+      }
+
       return responseEl.clone();
     }
-    
+
     function buildreply_popup(el, anchor) {
       var responseEl = get_reply_content(el);
       var titleEl = responseEl.siblings(".title");
@@ -222,7 +266,7 @@ module.exports = {
       }
       var div = $("<div />");
       div.append(responseEl.children());
-      
+
       return div;
     }
 
@@ -259,7 +303,7 @@ module.exports = {
       .tip()
       .addClass("reply");
 
-    _.defer(function() { 
+    _.defer(function() {
       $(el).popover("show");
     });
 
@@ -385,7 +429,7 @@ module.exports = {
       replyInput.val("");
       return;
     }
-    
+
 
 
     var tokens = reply.split(" ");
@@ -474,7 +518,7 @@ module.exports = {
       post_id = post.data("post-id");
     }
 
-      
+
 
     SF.socket().emit("upboat", {
       href: href,

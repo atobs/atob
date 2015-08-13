@@ -15,6 +15,7 @@ var Post = require_app("models/post");
 var ArchivedPost = require_app("models/archived_post");
 var Board = require_app("models/board");
 
+var client_api = require_app("server/client_api");
 var sponsored_content = require_app("server/sponsored_content");
 
 var crypto = require("crypto");
@@ -135,6 +136,7 @@ module.exports = {
   socket: function(s) {
     var _board;
 
+    client_api.add_to_socket(s);
     makeme_store.subscribe_to_updates(s);
 
     s.on("join", function(board) {

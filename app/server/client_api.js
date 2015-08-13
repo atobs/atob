@@ -102,6 +102,22 @@ module.exports = {
 
     });
 
+    s.on("get_post_only", function(post_id, cb) {
+      Post.find({
+          where: { id: post_id }
+      }).success(function(result) {
+        if (result) {
+          posting.trim_post(result);
+        }
+
+        cb(result);
+
+      });
+      
+
+
+    });
+
     s.on("get_post", function(post_id, cb) {   
       console.log("Handling API get_post on", post_id);
       Post.find({

@@ -1,5 +1,6 @@
 "use strict";
 
+var JOINED = {};
 function async_loop(items, func, timeout) {
   var index = 0;
   var start = Date.now();
@@ -38,6 +39,23 @@ function replace_oplinks(el) {
 
 
     var tripcode;
+
+    function gen_tripcode() {
+      child.removeClass("desaturate");
+      window.gen_tripcode(child);
+
+      if (tripcode) {
+        child.data("tripcode", tripcode);
+        child.attr("data-tripcode", tripcode);
+        require("app/client/sinners", function(sinners) {
+          sinners.check_reply(child, tripcode);
+        });
+
+      }
+
+
+    }
+
     if (parentEl.length) {
       tripcode = parentEl.find(".tripcode").data("tripcode");
       if (!tripcode) {
@@ -45,20 +63,20 @@ function replace_oplinks(el) {
         tripcode = parentEl.find(".tripcode").data("tripcode");
       }
 
-      $(this).data("tripcode", tripcode);
-    }
+      child.data("tripcode", tripcode);
+      gen_tripcode();
+    } else {
+      SF.socket().emit("get_post_only", opid, function(post_data) {
+        if (!post_data) {
+          return gen_tripcode();
+        }
 
-    $(this).removeClass("desaturate");
-    window.gen_tripcode($(this));
-
-    if (tripcode) {
-      $(this).data("tripcode", tripcode);
-      $(this).attr("data-tripcode", tripcode);
-      require("app/client/sinners", function(sinners) {
-        sinners.check_reply(child, tripcode);
+        tripcode = post_data.tripcode;
+        child.data("tripcode", tripcode);
+        gen_tripcode();
       });
-
     }
+
 
   });
 
@@ -88,7 +106,7 @@ module.exports = {
     _.each(textEl, function(el) {
       var cache_key = md5($(el).html());
 
-      if (cache[cache_key]) { 
+      if (cache[cache_key]) {
         $(el).attr("data-text", $(el).text());
         $(el).html(cache[cache_key].html);
         $(el).addClass(cache[cache_key].classes);
@@ -110,8 +128,8 @@ module.exports = {
         }
 
         // annoyingly, we have to cache multiple parts...
-        cache[cache_key] = { 
-          html: $(el).html(), 
+        cache[cache_key] = {
+          html: $(el).html(),
           classes: $(el).attr("class")
         };
       }
@@ -175,23 +193,27 @@ module.exports = {
 
     });
 
-    
+
     // TODO: better queueing
     _.defer(function() {
       $(".loading").remove();
       self.$el.find(".post").show();
-      self.bumped(); 
+      self.bumped();
       SF.trigger("post" + options.post_id);
     });
 
     _.defer(function() {
-      var socket = SF.socket();
-      if (!socket) {
-        SF.once("bridge/socket", function(socket) {
-          socket.emit("join", options.board_id);
-        });
-      } else {
-        SF.socket().emit("join", options.board_id);
+      if (!JOINED[options.board_id]) {
+        var socket = SF.socket();
+        if (!socket) {
+          SF.once("bridge/socket", function(socket) {
+            socket.emit("join", options.board_id);
+          });
+        } else {
+          SF.socket().emit("join", options.board_id);
+        }
+
+        JOINED[options.board_id] = true;
       }
     });
 
@@ -220,11 +242,7 @@ module.exports = {
     return replyEl;
   },
 
-  add_reply: function(data, dontpulse) {
-   
-    if (!dontpulse) {
-      this.$el.find(".post").addClass("pulsepost");
-    }
+  make_reply_el: function(data) {
 
     var replyId = "reply" + data.post_id;
     if ($("#" + replyId).length) {
@@ -269,6 +287,18 @@ module.exports = {
       sinners.check_reply(replyEl, data.tripcode);
     });
     replyEl.fadeIn();
+
+    return replyEl;
+  },
+
+  add_reply: function(data, dontpulse) {
+
+    if (!dontpulse) {
+      this.$el.find(".post").addClass("pulsepost");
+    }
+
+    var replyEl = this.make_reply_el(data);
+
 
 
     var repliesEl = this.$el.find(".replies");
@@ -353,7 +383,7 @@ module.exports = {
           replyId = (parentReply.attr("id") || "").replace(/reply/, '');
         }
 
-        if (!replyId){ 
+        if (!replyId){
           return;
         }
 
