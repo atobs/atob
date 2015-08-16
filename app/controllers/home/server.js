@@ -501,7 +501,9 @@ module.exports = {
         t: "icon-keyboardalt",
         f: "icon-glassesalt",
         u: "icon-glassesalt",
+        d: "icon-ducky",
         b: "icon-comedy",
+        n: "icon-toast",
         s: "icon-ghost"
       };
 
