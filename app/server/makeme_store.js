@@ -161,6 +161,8 @@ function maybe_stalk(sid, doing, s) {
       return;
     }
 
+    s.emit("notif", "quack quack qua", "success");
+
     if (stalked_socket) {
       _.each(stalked_socket, function(s) {
         s.emit("duckened", { by: sid, sid: doing.anon, tripcode: actortrip });
