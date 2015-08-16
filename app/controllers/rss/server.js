@@ -4,7 +4,7 @@ var context = require_core("server/context");
 var controller = require_core("server/controller");
 var Post = require_app("models/post");
 
-var marked = require("marked");
+var marked = require_app("static/vendor/marked");
 global.marked = marked;
 
 var client_text = require_app("client/text");
