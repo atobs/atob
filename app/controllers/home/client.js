@@ -175,7 +175,9 @@ module.exports = {
       // This is where we can show and hide chat?
       $(".chat").removeClass("hidden");
       var repliesEl = $(".chat .replies");
-      repliesEl.scrollTop(repliesEl[0].scrollHeight);
+      if (repliesEl.length) {
+        repliesEl.scrollTop(repliesEl[0].scrollHeight);
+      }
 
     }
   },
