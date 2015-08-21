@@ -275,6 +275,16 @@ function translate_markdown($el, escaped) {
           $(textEl).remove();
 
           $br.before($(text));
+        } else {
+          // regex for ">>reply >" (in case someone tries to blockquote with a reply in front)
+          match = textEl.data.toString().match(/^((&gt;&gt;|>>)\d+\s*)+(&gt;|>)((?!(&gt;|>)))/);
+          if (match) {
+            var text = textEl.data;
+            text = "<span class='blockquote'>" + text + "</span>";
+            $(textEl).remove();
+
+            $br.before($(text));
+          }
         }
       }
     }
