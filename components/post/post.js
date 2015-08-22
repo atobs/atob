@@ -65,8 +65,13 @@ function replace_oplinks(el) {
 
       child.data("tripcode", tripcode);
       gen_tripcode();
-    } else {
-      SF.socket().emit("get_post_only", opid, function(post_data) {
+
+      return;
+    }
+
+    // if we couldn't find the tripcode, we have to go to the server and look it up
+    function replace_tripcode(socket) {
+      socket.emit("get_post_only", opid, function(post_data) {
         if (!post_data) {
           return gen_tripcode();
         }
@@ -77,6 +82,12 @@ function replace_oplinks(el) {
       });
     }
 
+    var socket = SF.socket();
+    if (!socket) {
+      SF.once("bridge/socket", function(socket) { replace_tripcode(socket); });
+    } else {
+      replace_tripcode(socket);
+    }
 
   });
 
