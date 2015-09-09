@@ -71,6 +71,28 @@ module.exports = {
 
     req.start = Date.now();
 
+    if (req.headers.referer && req.sessionID) { 
+      var makeme_store = require_app("server/makeme_store");
+      if (req.headers.referer.match('reddit')) {
+
+        makeme_store.add_doing(req.sessionID, {
+          what: "reddit",
+          ttl: 30,
+          pri: 30
+        });
+      } 
+      if (req.headers.referer.match('google')) {
+
+        makeme_store.add_doing(req.sessionID, {
+          what: "google",
+          ttl: 5,
+          pri: 30
+        });
+      } 
+
+
+    }
+
   },
   end_request: function(req) {
     var end = Date.now();

@@ -465,7 +465,8 @@ module.exports = {
 
   },
 
-  digest_doings: digest_doings
+  digest_doings: digest_doings,
+  add_doing: add_doing
 
 
 };
