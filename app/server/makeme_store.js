@@ -155,6 +155,23 @@ function maybe_stalk(sid, doing, s) {
   var actortrip = SID_TO_TRIP[sid];
   var bytrip = SID_TO_TRIP[doing.anon];
   var stalked_socket = SOCKETS[doing.anon];
+  if (doing.what === "snooing") {
+    if (doing.anon === sid) {
+      s.emit("bestalked");
+      return;
+    }
+
+    s.emit("notif", "snoo meets burtle", "success");
+
+    if (stalked_socket) {
+      _.each(stalked_socket, function(s) {
+        s.emit("snooed", { by: sid, sid: doing.anon, tripcode: actortrip });
+      });
+    }
+
+    return true;
+    
+  }
   if (doing.what === "ducking") {
     if (doing.anon === sid) {
       s.emit("bestalked");

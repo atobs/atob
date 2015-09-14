@@ -550,6 +550,15 @@ module.exports = {
       }, 2000);
     }
 
+    if (target.hasClass("icon-reddit")) {
+      SF.socket().emit("stalking", {
+        what: "snooing",
+        anon: anon_id,
+        mytrip: module.exports.get_trip_identity()
+      });
+
+      return;
+    }
     if (target.hasClass("icon-comedy")) {
       SF.socket().emit("stalking", {
         what: "ducking",
@@ -666,6 +675,7 @@ module.exports = {
     s.on("meter", this.handle_meter);
     s.on("bestalked", this.be_stalked);
     s.on("duckened", this.get_ducked);
+    s.on("snooed", this.get_snooed);
     s.on("restalked", this.restalk);
     s.on("stalking", this.be_stalker);
 
@@ -673,8 +683,12 @@ module.exports = {
     s.on("goto_post", this.goto_post);
 
   },
+  // only get snooed once per 15 seconds
+  get_snooed: _.throttle(function(data) {
+     module.exports.burtle_storm();
+  }, 15000),
+
   get_ducked: function(data) {
-    console.log(data.tripcode);
     $(".container").fadeOut();
     $("body").velocity({
       backgroundColor: "#333",
