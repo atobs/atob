@@ -2,6 +2,7 @@ var superfluous = require("superfluous");
 
 var Post = require_app("models/post");
 var ArchivedPost = require_app("models/archived_post");
+var Action = require_app("models/action");
 var Board = require_app("models/board");
 var IP = require_app("models/ip");
 
@@ -10,12 +11,32 @@ var ONE_WEEK = (1000 * 60 * 60 * 24 * 7);
 
 function collect_garbage() {
   var one_week_ago = new Date(+new Date() - ONE_WEEK);
+  var one_month_ago = new Date(+new Date() - ONE_WEEK * 4);
   IP.destroy({
     created_at: {
       lt: one_week_ago.toISOString()
     }
   });
 
+  // For now, we keep actions in the DB until they get to be too much
+  //  Action.destroy({
+  //    updated_at: {
+  //      lt: one_month_ago.toISOString()
+  //    }
+  //  });
+
+  // Destroy all posts on chat board older than one month
+  Post.destroy({
+    created_at: {
+      lt: one_month_ago.toISOString()
+    },
+    board_id: {
+      eq: "chat"
+    }
+  });
+
+
+  // Destroy all posts past the board limits
   Post.findAll({
     where: {
       thread_id: null,
