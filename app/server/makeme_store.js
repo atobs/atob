@@ -145,6 +145,8 @@ function digest_doings() {
   });
 }
 
+var DUCKENINGS = {};
+var MAX_DUCKS = 10;
 function maybe_stalk(sid, doing, s) {
 
   if (doing.mytrip) {
@@ -176,6 +178,23 @@ function maybe_stalk(sid, doing, s) {
     if (doing.anon === sid) {
       s.emit("bestalked");
       return;
+    }
+
+    if (!DUCKENINGS[sid]) {
+      DUCKENINGS[sid] = 0;
+    }
+
+    DUCKENINGS[sid] += 1;
+    _.delay(function() {
+      DUCKENINGS[sid] -= 1;
+    }, 30000); 
+
+    if (DUCKENINGS[sid] >= MAX_DUCKS) {
+      s.emit("notif", "getting a bit greedy, anon?");
+      for (var i = 0; i < _.random(2, 10); i++) {
+        s.emit("duckened", { by: sid, sid: sid, tripcode: actortrip} );
+      }
+      return true;
     }
 
     s.emit("notif", "quack quack qua", "success");

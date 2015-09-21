@@ -550,6 +550,7 @@ module.exports = {
       }, 2000);
     }
 
+    // TODO: ADD BETTER LOGIC
     if (target.hasClass("icon-reddit")) {
       SF.socket().emit("stalking", {
         what: "snooing",
@@ -559,6 +560,8 @@ module.exports = {
 
       return;
     }
+
+
     if (target.hasClass("icon-comedy")) {
       SF.socket().emit("stalking", {
         what: "ducking",
@@ -568,6 +571,7 @@ module.exports = {
 
       return;
     }
+    // END BETTER LOGIC
 
     if (post_id) {
       SF.socket().emit("stalking", {
