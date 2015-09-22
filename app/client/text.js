@@ -129,10 +129,11 @@ function is_image_link(href) {
   var webm = is_webm_url(href);
   var vimeo = is_vimeo_url(href);
   var youtube = is_youtube_url(href);
+  var gfy = is_gfycat_url(href);
   var gif = null;
 
 
-  return webm || vimeo || youtube || gif;
+  return webm || vimeo || youtube || gfy || gif;
 
 }
 
@@ -374,18 +375,49 @@ function make_vimeo_url(img_link) {
 
 }
 
+function is_gfycat_url(img_link) {
+  var matches = img_link.match(/:\/\/(?:www\.)?gfycat.com\/([a-zA-Z0-9\-_]+)/);
+  return (matches && matches[1]);
+
+}
+
+function make_gfycat_url(img_link) {
+  var match = is_gfycat_url(img_link);
+  console.log("MATCH IS", match);
+
+  if (!match) {
+    return;
+  }
+
+  var img_tag = $("<video muted=1 autoplay=1 />");
+  img_tag.append(
+    $("<source />").attr("src", "//zippy.gfycat.com/" + match + ".webm")
+  );
+  img_tag.append(
+    $("<source />").attr("src", "//fat.gfycat.com/" + match + ".webm")
+  );
+  img_tag.append(
+    $("<source />").attr("src", "//giant.gfycat.com/" + match + ".mp4")
+  );
+
+  size_tag_for_viewport(img_tag, 16.0 / 9.0);
+  return img_tag;
+}
+
 function format_image_link(img_link) {
   var youtube = is_youtube_url(img_link);
   var webm = is_webm_url(img_link);
   var vimeo = is_vimeo_url(img_link);
+  var gfycat = is_gfycat_url(img_link);
 
   if (youtube) {
     return make_youtube_tag(img_link);
   } else if (webm) {
     return make_webm_url(img_link);
   } else if (vimeo) {
-
     return make_vimeo_url(img_link);
+  } else if (gfycat) {
+    return make_gfycat_url(img_link);
   } else {
 
     if (img_link.indexOf("://") == -1) {
