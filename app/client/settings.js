@@ -1,6 +1,7 @@
 var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var notif = require("app/client/notif");
 var storage = require("app/client/storage");
+var anonications = require("app/client/anonications")
 
 require("app/static/vendor/velocity");
 
@@ -550,28 +551,9 @@ module.exports = {
       }, 2000);
     }
 
-    // TODO: ADD BETTER LOGIC
-    if (target.hasClass("icon-reddit")) {
-      SF.socket().emit("stalking", {
-        what: "snooing",
-        anon: anon_id,
-        mytrip: module.exports.get_trip_identity()
-      });
-
+    if (anonications.check(target, anon_id, module.exports.get_trip_identity())) {
       return;
     }
-
-
-    if (target.hasClass("icon-comedy")) {
-      SF.socket().emit("stalking", {
-        what: "ducking",
-        anon: anon_id,
-        mytrip: module.exports.get_trip_identity()
-      });
-
-      return;
-    }
-    // END BETTER LOGIC
 
     if (post_id) {
       SF.socket().emit("stalking", {
@@ -679,6 +661,7 @@ module.exports = {
     s.on("meter", this.handle_meter);
     s.on("bestalked", this.be_stalked);
     s.on("duckened", this.get_ducked);
+    s.on("kited", this.get_kited);
     s.on("snooed", this.get_snooed);
     s.on("restalked", this.restalk);
     s.on("stalking", this.be_stalker);
@@ -692,12 +675,52 @@ module.exports = {
      module.exports.burtle_storm();
   }, 15000),
 
+  get_kited: function(data) {
+    var logoEl = $(".logo img").clone();
+    $(".container").empty();
+
+    for (var i = 0; i < 200; i++) {
+      function jitter_el(el) {
+        if (Math.random() < 0.2) {
+          el.velocity({
+            rotateX: _.random(-100, 100) + "deg",
+            rotateY: _.random(-100, 100) + "deg"
+          }, {
+            duration: 3000,
+            complete: function() { jitter_el(el) }
+          });
+        } else {
+          _.delay(function() { jitter_el(el) }, 3000);
+        }
+
+      }
+
+      var el = logoEl.clone();
+      el.css({"width" : "100", "height" : "100" });
+      $("body").prepend(el);
+      jitter_el(el);
+    }
+
+  },
+  get_unducked: function() {
+    $(".container").fadeIn();
+    $("body").velocity({
+      backgroundColor: "#fefefe",
+      color: "#000"
+    });
+    $(".ducked").fadeOut();
+
+  },
   get_ducked: function(data) {
     $(".container").fadeOut();
     $("body").velocity({
       backgroundColor: "#333",
       color: "#ddd"
     });
+
+    _.delay(function() {
+      module.exports.get_unducked();
+    }, 3000);
 
     var ducked = $(".ducked");
     
@@ -709,6 +732,8 @@ module.exports = {
     if (!ducked.length)  {
       $("body").prepend("<h1 class='ducked' style='text-align: center; zoom: 1.5'>get ducked</h1>");
       $("body").scrollTop(0);
+    } else {
+      ducked.fadeIn();
     }
 
 
