@@ -74,12 +74,20 @@ function handle_new_post(s, board, post, cb) {
     return;
   }
 
-  s.last_post = Date.now();
-
   var title = post.title;
   var text = post.text;
   var tripcode = post.tripcode || "";
   var author = post.author || "anon";
+
+  var colons = text && text.toString().match(/:/g);
+  if (colons && colons.length) {
+    var colon_msg = "Getting a little colon happy, anon?";
+    s.emit("notif", colon_msg, "error");
+    return;
+  }
+
+  s.last_post = Date.now();
+
 
   var moved = false;
 
@@ -371,8 +379,6 @@ function handle_new_reply(s, board, post, cb) {
     return;
   }
 
-  s.last_reply = Date.now();
-
   var author = post.author || "anon";
   var text = post.text.split("||");
   var title = "";
@@ -381,12 +387,23 @@ function handle_new_reply(s, board, post, cb) {
     text = text.join("|");
   }
 
+  var colons = text && text.toString().match(/:/g);
+  if (colons && colons.length) {
+    var colon_msg = "Getting a little colon happy, anon?";
+    s.emit("notif", colon_msg, "error");
+    return;
+  }
+
+
   var no_reply_text = post.text.toString().replace(/>>\d+/g, '').trim();
   if (no_reply_text === "") {
     s.emit("notif", "Please contribute something more than replycodes in this thread", "warn");
     s.emit("shake_post", post.post_id, 3000);
     return;
   }
+
+  s.last_reply = Date.now();
+
 
   // Do things to the parent, now...
   var down = false, up = false;
@@ -518,6 +535,14 @@ function handle_update_post(socket, board, post, cb) {
 
   if (!post.text || !post.text.trim()) {
     socket.emit("notif", "if you want to remove a post, use delete", "error");
+    return;
+  }
+
+  var text = post.text;
+  var colons = text && text.toString().match(/:/g);
+  if (colons && colons.length) {
+    var colon_msg = "Getting a little colon happy, anon?";
+    socket.emit("notif", colon_msg, "error");
     return;
   }
 
