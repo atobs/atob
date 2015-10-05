@@ -27,15 +27,28 @@ module.exports = {
     var author = SF.controller().get_handle();
 
     var tripdone = window.md5(author + ":" + tripcode);
+    var self = this;
     if (reply) {
       if (reply.tripcode === tripdone) {
-        this.$el.find(".reportable").fadeOut();
-        this.$el.find(".editable").fadeIn().css("display", "inline-block");
+        self.$el.find(".reportable").fadeOut();
+        self.$el.find(".editable").fadeIn().css("display", "inline-block");
       } else {
-        this.$el.find(".reportable").fadeIn().css("display", "inline-block");
-        this.$el.find(".editable").fadeOut();
+        self.$el.find(".editable").fadeOut();
+        self.$el.find(".reportable").fadeIn().css("display", "inline-block");
       }
     }
+
+    var board = SF.controller().board;
+
+    SF.controller().emit("adminme", board, author, tripcode, function(isclaimed, isowner) {
+      console.log("AM I THE OWNER?", isclaimed, isowner);
+      if (isowner) {
+        self.$el.find(".reportable, .editable").hide();
+        self.$el.find(".deletable").css("display", "inline-block").show();
+
+      }
+
+    });
 
     $(document.body).append(this.$el);
   }

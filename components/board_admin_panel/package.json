@@ -1,0 +1,9 @@
+{
+  "main" : "board_admin_panel",
+  "style": "board_admin_panel.css",
+  "styles": [],
+
+  "template": "board_admin_panel.html.erb",
+  "helpers": [],
+  "no_redefine" : false
+}

@@ -221,7 +221,7 @@ module.exports = {
     s.on("notif", function(msg, type, options) {
       notif.handle_notif(msg, type, options);
     });
-
+    
     var self = this;
     self.do_when(self.board, "set_board", function() {
       if (self.board === "to") {

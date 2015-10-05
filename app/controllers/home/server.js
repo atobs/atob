@@ -234,6 +234,7 @@ function render_burtles(cb) {
 module.exports = {
   routes: {
     "" : "index",
+    "mods" : "mods",
     "rules" : "rules",
     "recent" : "recent",
     "anon" : "colors",
@@ -729,6 +730,56 @@ module.exports = {
     render_burtles(function(content) {
       api.page.render({content: content.toString() });
     });
+
+  },
+  mods: function(ctx, api) { 
+    api.template.add_stylesheet("home");
+    var BoardClaim = require_app("models/board_claim");
+
+    var accepted = true;
+    if (ctx.req.query.a) {
+      accepted = null;
+    }
+
+    BoardClaim.findAll({
+      where: {
+        accepted: accepted
+      }
+    }).success(function(claims) {
+      var content = $("<div class='container mtl' />");
+
+      var groups = _.groupBy(claims, function(c) {
+        return c.board_id;
+      });
+
+
+      _.each(groups, function(group_claims, board_id) {
+        content.append($("<h3 class='col-md-12'/>").text("/" + board_id));
+        _.each(group_claims, function(claim) {
+          var boardEl = $("<span class='pal clearfix' />");
+          var hashEl = $("<div class='col-xs-4 col-md-2 tripcode'>");
+          hashEl.attr("data-tripcode", claim.tripcode);
+          boardEl.append(hashEl);
+          content.append(boardEl);
+        });
+      });
+
+
+      api.bridge.controller("home", "gen_tripcodes");
+      // bring the slogans in over here
+      var slogan = SLOGANS[_.random(SLOGANS.length)];
+      var template_str = api.template.render("controllers/mods.html.erb", {
+        slogan: slogan,
+        mods: content,
+        use_header: true
+
+      });
+
+
+      api.page.render({ content: template_str, socket: false});
+
+    });
+
 
   },
   colors: function(ctx, api) {

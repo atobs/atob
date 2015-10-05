@@ -1,0 +1,9 @@
+{
+  "main" : "board_claim_panel",
+  "style": "board_claim_panel.css",
+  "styles": [],
+
+  "template": "board_claim_panel.html.erb",
+  "helpers": [],
+  "no_redefine" : false
+}

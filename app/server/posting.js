@@ -19,6 +19,7 @@ var load_controller = require_core("server/controller").load;
 var gen_md5 = require_app("server/md5");
 
 var Ban = require_app("models/ban");
+var BoardClaim = require_app("models/board_claim");
 var Post = require_app("models/post");
 var User = require_app("models/user");
 var IP = require_app("models/ip");
@@ -669,13 +670,47 @@ function handle_delete_post(socket, board, post) {
 
 
           } else {
-            socket.emit("notif", action_name + post.id, "success");
-            Post.create({
-              board_id: "log",
-              tripcode: delete_code,
-              title: "report " + post.id,
-              author: post.author,
-              bumped_at: Date.now()
+
+            // That last nested attempt to look for the board admin...
+            BoardClaim.findAll({
+              where:{
+                author: post.author,
+                tripcode: delete_code,
+                accepted: true,
+                board_id: result.board_id
+              }
+            }).success(function(claim) {
+              if (claim.length) {
+                socket.emit("notif", "Board Mod Deleted #" + post.id, "success");
+                result.destroy();
+
+                var text = post_text(result);
+                var post_data = {
+                  board_id: "mod",
+                  tripcode: delete_code,
+                  title: "delete " + post.id,
+                  author: post.author,
+                  text: text,
+                  bumped_at: Date.now()
+                };
+
+                Post.create(post_data);
+                socket.emit("update_post", post.id);
+                socket.broadcast.to(result.board_id).emit("update_post", post.id);
+                post_links.erase_links(result, function() { });
+              } else {
+
+                socket.emit("notif", action_name + post.id, "success");
+                Post.create({
+                  board_id: "log",
+                  tripcode: delete_code,
+                  title: "report " + post.id,
+                  author: post.author,
+                  bumped_at: Date.now()
+                });
+
+              }
+            
             });
           }
         });

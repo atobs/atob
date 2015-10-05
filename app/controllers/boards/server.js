@@ -2,6 +2,7 @@
 
 var Post = require_app("models/post");
 var Board = require_app("models/board");
+var BoardClaim = require_app("models/board_claim");
 var Link = require_app("models/link");
 
 var $ = require("cheerio");
@@ -91,9 +92,9 @@ module.exports = {
         }
 
         if (board_id === "to") {
-         
+
           var hidden_boards = require_app("server/hidden_boards");
-          results = _.filter(results, function(r) { 
+          results = _.filter(results, function(r) {
             var is_hidden = false;
             _.each(hidden_boards, function(board) {
               is_hidden = is_hidden || board === r.board_id;
@@ -223,20 +224,26 @@ module.exports = {
       var board = post.board || _board;
       // Special case mod postings
       if (board === "mod") {
-        mod.handle_new_post(s, post);  
+        mod.handle_new_post(s, post);
       } else {
         posting.handle_new_post(s, board, post, cb);
       }
     });
 
     s.on("new_reply", function(post, cb) {
-      posting.handle_new_reply(s, _board, post, cb);
+      var board = post.board || _board;
+      if (board === "mod") {
+        post.parent_id = post.id || post.post_id;
+        post.thread_id = post.id || post.post_id;
+        mod.handle_new_post(s, post);
+      } else {
+        posting.handle_new_reply(s, board, post, cb);
+      }
     });
 
     s.on("upboat", function(link, cb) {
       post_links.upvote_link(link, cb);
     });
-
     client_api.add_to_socket(s);
     makeme_store.subscribe_to_updates(s);
 

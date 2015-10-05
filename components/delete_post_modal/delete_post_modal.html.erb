@@ -10,12 +10,14 @@
 
         <h3 class="reportable">report post?</h3>
         <h3 class="editable">edit or delete post?</h3>
+        <h3 class="deletable">mod delete post?</h3>
       </div>
       <div class="modal-body">
         <p class="small pbl">
           <span class="reportable">
             this post will be reported to <a href="/b/log">/log</a> for review.
           </span>
+
         </p>
     
         <div class="form-horizontal">
@@ -43,10 +45,13 @@
     </div>
 
     <div class="modal-footer mtl">
+      <a class="lfloat btn btn-default modme" href="#" >
+        <s class='icon-flag'></s>
+      </a>
       <a href="#" class="lfloat btn btn-success edit editable">edit</a>
 
       <a href="#" class="btn btn-primary delete mll reportable">report</a>
-      <a href="#" class="btn btn-primary delete mll editable">delete</a>
+      <a href="#" class="btn btn-primary delete mll deletable">delete</a>
       <a href="#" data-dismiss="modal" class="btn btn-info">nvm</a>
     </div>
     </div>

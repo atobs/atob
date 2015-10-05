@@ -668,7 +668,26 @@ module.exports = {
 
     s.on("burtled", this.burtled);
     s.on("goto_post", this.goto_post);
+  },
 
+  click_adminme: function() {
+    SF.socket().emit("adminme", 
+      this.board, this.get_handle(), this.get_triphash(), 
+      function(isclaimed, isowner, error_msg) {
+        if (error_msg) {
+          notif.handle_notif(error_msg, "error"); 
+          return;
+        }
+
+          
+        var board = SF.controller().board;
+        console.log("AM I OWNER?", isclaimed, isowner);
+        if (isowner) {
+          $C("board_admin_panel", { board: board}, function(cmp) { });
+        } else {
+          $C("board_claim_panel", { moderated: isclaimed, board: board }, function(cmp) { });
+        }
+      });
   },
   // only get snooed once per 15 seconds
   get_snooed: _.throttle(function(data) {
@@ -723,7 +742,7 @@ module.exports = {
     }, 3000);
 
     var ducked = $(".ducked");
-    
+
     var tripcodeEl = $("<div />");
     tripcodeEl.data("tripcode", data.tripcode);
     $("body").append(tripcodeEl);
@@ -796,6 +815,7 @@ module.exports = {
     "click .tripcode_button" : "restore_old_code",
     "click .tripcode_delete" : "delete_old_code",
     "click .tripcode_history" : "click_tripcode_history",
+    "click .modme" : "click_adminme",
     "click .anonicator" : "follow_anonicator",
     "click .use_sidebars" : "toggle_sidebars",
     "change input.tripcode" : "save_tripcode",

@@ -29,6 +29,7 @@ module.exports.archive = archive;
 require_app("models/post");
 require_app("models/user");
 require_app("models/board");
+require_app("models/board_config");
 require_app("models/action");
 
 // If we are in RESET mode, we should load all models off the disk before finishing loading this file...

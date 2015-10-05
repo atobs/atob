@@ -10,6 +10,8 @@ var gen_md5 = require_app("server/md5");
 var config = require_core("server/config");
 var post_links = require_app("server/post_links");
 
+var BoardClaim = require_app("models/board_claim");
+
 var OPS = {
   ban: function(post, hours) {
     hours = parseInt(hours, 10) || 1;
@@ -19,7 +21,7 @@ var OPS = {
         if (!ip) {
           console.log("COULDNT FIND USER TO BAN FOR POST", post.id);
           return;
-        } 
+        }
 
         post.title = "[banned from " + post.board_id + "] " + post.title;
         var old_board_id = post.board_id;
@@ -27,7 +29,7 @@ var OPS = {
         post.board_id = "ban";
         post.parent_id = null;
         post.thread_id = null;
-        
+
         post.save();
         Ban.create({
           ip: ip.ip,
@@ -43,15 +45,41 @@ var OPS = {
     post_links.erase_links(post);
     post.destroy();
     return true;
+  },
+  accept: function(post) {
+    // accept an anon's mod request to become a moderator for a board
+    var board_claim = "Anon claims /";
+    var board = post.title.replace(board_claim, "");
+
+    BoardClaim.find({
+      where: {
+        board_id: board,
+        author: post.author,
+        tripcode: post.tripcode,
+        accepted: null
+      }
+    }).success(function(claim) {
+      if (claim) {
+        claim.accepted = true;
+        claim.save();
+      }
+    });
+
+
+    return true;
   }
 };
 
-function post_text(result) {
+function post_text(result, op) {
   var text = "";
-  if (result.title) {
+  if (op && op.trim()) {
+    text += "**ACTION** " + op + "\n";
+  }
+
+  if (result.title.trim()) {
     text += "**TITLE** " + result.title + "\n";
   }
-  if (result.text) {
+  if (result.text.trim()) {
     text += "**TEXT** " + result.text + "\n";
   }
   return text;
@@ -65,23 +93,24 @@ module.exports = {
 
     console.log("Handling new post", post);
 
-    User.find({ 
+    User.find({
       where: {
         tripcode: post.tripcode,
         tripname: post.author
       }
     }).success(function(user) {
       // Parse response to figure out what to do.
-      // Format should be: 
+      // Format should be:
       //
       // If the response goes unhandled, it should go to a different board
       // and do nothing here.
-      var tokens = post.title.split(" ");
+      var text = post.title || post.text;
+      var tokens = text.split(" ");
 
       var op = tokens.shift();
       var post_id = tokens.shift();
 
-      Post.find({ 
+      Post.find({
         where: {
           id: post_id
         }}).success(function(p) {
@@ -95,21 +124,21 @@ module.exports = {
 
           // all authors are renamed to "atob". no reason.
           post.text = escape_html(post.text || p.dataValues.text);
-          post.title = escape_html(post.title);
+          post.title = escape_html(post.title || "");
           if (user) {
             post.author = "atob";
           }
           var secret = config.mod_secret || "mod_secret";
 
-          post.tripcode = gen_md5(post.tripcode + secret + post.author);
+          post.tripcode = gen_md5(post.author + secret + post.tripcode);
           post.bumped_at = Date.now();
-          post.text = post_text(p);
+          post.text = post_text(p, op);
 
           var success = false;
           if (OPS[op] && p && user) {
             success = OPS[op].apply(null, args);
           }
-      
+
           var board;
           if (success && user) {
             board = config.mod_board || 'mod';

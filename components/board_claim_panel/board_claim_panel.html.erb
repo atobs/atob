@@ -1,0 +1,73 @@
+<%= set_default("author", "") %>
+<%= set_default("tripcode", "") %>
+<%= set_default("moderated", false) %>
+
+<div class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        Board Claim Form 1341xQ
+
+      </div>
+      <div class="modal-body">
+        <p class="small pbl">
+          <% if (moderated) { %>
+            This board (<a href="/<%= board %>">/<%=board%></a>) is currently
+            <b>moderated</b>, but <b>you</b> can also moderate this board
+            and make it all it can be. To become a janitor, you submit your
+            claim for it with this dialog. All claims go through the admin
+            before being approved.
+          <% } else { %>
+            This board (<a href="/<%= board %>">/<%=board%></a>) is currently
+            <b>unmoderated</b>, meaning that <b>you</b> can moderate this board
+            and make it all it can be. To become a moderator, you submit your
+            claim for it with this dialog. All claims go through the admin
+            before being approved.
+          <% } %>
+
+          <br />
+          <br />
+          Thanks for being a responsible janitor, burtle loves you!
+
+          <br />
+          <br />
+          <b>NOTE: SAVE YOUR TRIPCODE AND TRIPNAME OR YOU WONT BE ABLE TO ADMIN YOUR BOARD!</b>
+        </p>
+
+        <div class="form-horizontal">
+          <div class="control-group">
+            <label class="control-label">Anon</label>
+            <div class="controls">
+              <input type="text" class="mtm " name="author" style='width: 100%; padding: 5px' value="<%= author %>"/>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label">Tripcode</label>
+            <div class="controls">
+              <input type="text" class="mtm " name="tripcode" style='width: 100%; padding: 5px' value="<%= tripcode %>"/>
+            </div>
+            <div class="hidden">
+              <input type="text" class="mtm " name="triphash" value=""/>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">Reason why you want to become a mod</label>
+            <div class="controls">
+              <textarea class="mtm " name="reason" style='width: 100%; padding: 5px'> </textarea>
+            </div>
+          </div>
+
+
+        </div>
+    </div>
+
+    <div class="modal-footer mtl">
+      <a href="#" class="rfloat btn btn-success save mll">claim</a>
+
+      <a href="#" class="btn btn-primary cancel mll">cancel</a>
+    </div>
+    </div>
+  </div>
+</div>
