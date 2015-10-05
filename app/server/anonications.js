@@ -1,5 +1,6 @@
 var DUCKENINGS = {};
 var MAX_DUCKS = 10;
+var Action = require_app("models/action");
 
 
 var Post = require_app("models/post");
