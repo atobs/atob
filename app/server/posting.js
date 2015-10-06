@@ -623,7 +623,7 @@ function anon_is_board_mod(author, tripcode, board, cb) {
       BoardClaim.findAll({
         where:{
           author: author,
-          tripcode: delete_code,
+          tripcode: [delete_code, tripcode, gen_md5(tripcode)],
           accepted: true,
           board_id: board
         }
@@ -639,6 +639,67 @@ function anon_is_board_mod(author, tripcode, board, cb) {
 
 
   });
+}
+
+function handle_star_post(socket, board, post) {
+  console.log("Starring post", post);
+  if (!board) {
+    return;
+  }
+  var delete_code = gen_md5(post.author + ':' + post.tripcode);
+  Post.find({
+    where: {
+      id: post.id
+    }
+  }).success(function(result) {
+    anon_is_board_mod(post.author, post.tripcode, board, function(is_mod) {
+      if (is_mod) {
+        var BoardConfig = require_app("models/board_config");
+        BoardConfig.find({ where: { 
+          board_id: board,
+        }}).success(function(config) {
+          function save_config(config) {
+            if (config.getSetting("starred") === post.id) {
+              config.setSetting("starred", null);
+              socket.emit("notif", "Board Mod unstickied #" + post.id, "warn");
+              socket.emit("unstar_post", post.id);
+            } else {
+              config.setSetting("starred", post.id);
+              socket.emit("notif", "Board Mod stickied #" + post.id, "success");
+              socket.emit("star_post", post.id);
+            }
+            config.save();
+          }
+
+
+          if (!config) {
+            BoardConfig.create({board_id: board, author: post.author, tripcode: post.tripcode })
+              .success(function(c) {
+
+                save_config(c);
+              });
+          } else {
+            save_config(config);
+          }
+
+          var text = post_text(result);
+          var post_data = {
+            board_id: "mod",
+            tripcode: delete_code,
+            title: "star " + post.id,
+            author: post.author,
+            text: text,
+            bumped_at: Date.now()
+          };
+
+          Post.create(post_data);
+        });
+        
+        
+      }
+    });
+  });
+
 }
 
 
@@ -677,7 +738,7 @@ function handle_delete_post(socket, board, post) {
         socket.broadcast.to(result.board_id).emit("update_post", post.id);
         post_links.erase_links(result, function() { });
       } else {
-        anon_is_board_mod(post.author, post.tripcode, post.board_id, function(is_mod) {
+        anon_is_board_mod(post.author, post.tripcode, board, function(is_mod) {
           if (is_mod) {
             socket.emit("notif", "Board Mod Deleted #" + post.id, "success");
             result.destroy();
@@ -736,15 +797,28 @@ function render_posting(api, flush, result, highlight_id) {
 
   post_data.client_options = _.clone(post_data);
   module.exports.trim_post(post_data.client_options);
-  post_links.freshen_client(post_data.post_id, result.children, function() {
-    var postCmp = $C("post", post_data);
-    var text_formatter = require_root("app/client/text");
-    var tripcode_gen = require_app("server/tripcode");
-    postCmp.add_markdown(text_formatter);
-    postCmp.gen_tripcodes(tripcode_gen.gen_tripcode);
 
-    api.bridge.controller("posts", "set_board", post_data.board_id);
-    flush(postCmp.toString());
+
+  var BoardConfig = require_app("models/board_config");
+  BoardConfig.find({ where: { board_id: post_data.board_id }}).success(function(board_config) {
+    if (board_config) {
+      var starred = board_config.getSetting("starred");
+
+      api.bridge.call("app/client/sticky_post", "set_starred", starred, true /* dont load if not exist */);
+    }
+
+
+  
+    post_links.freshen_client(post_data.post_id, result.children, function() {
+      var postCmp = $C("post", post_data);
+      var text_formatter = require_root("app/client/text");
+      var tripcode_gen = require_app("server/tripcode");
+      postCmp.add_markdown(text_formatter);
+      postCmp.gen_tripcodes(tripcode_gen.gen_tripcode);
+
+      api.bridge.controller("posts", "set_board", post_data.board_id);
+      flush(postCmp.toString());
+    });
   });
 }
 
@@ -764,8 +838,12 @@ module.exports = {
 
     s.on("delete_post", function(post) {
       var board = post.board || _board;
-      // Special case mod postings
       handle_delete_post(s, board, post);
+    });
+
+    s.on("star_post", function(post) {
+      var board = post.board || _board;
+      handle_star_post(s, board, post);
     });
 
     s.on("new_post", function(post, cb) {
@@ -779,14 +857,23 @@ module.exports = {
     });
 
     s.on("new_reply", function(post, cb) {
-      var board = post.board || _board;
-      if (board === "mod") {
-        post.parent_id = post.id || post.post_id;
-        post.thread_id = post.id || post.post_id;
-        mod.handle_new_post(s, post);
-      } else {
-        handle_new_reply(s, board, post, cb);
-      }
+      var board = post.board_id || post.board || _board;
+      Post.find({ where: { id: post.post_id }}).success(function(result) {
+        if (result) {
+          if (result.board_id === "mod") {
+
+            post.parent_id = post.id || post.post_id;
+            post.thread_id = post.id || post.post_id;
+            mod.handle_new_post(s, post);
+          } else {
+            handle_new_reply(s, board, post, cb);
+          }
+        } else {
+          s.emit("notif", "Couldn't reply to post because it doesn't exist", "error");
+        }
+
+      });
+
     });
 
     s.on("upboat", function(link, cb) {

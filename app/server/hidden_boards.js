@@ -18,7 +18,6 @@ module.exports = [
 
 BoardConfig.findAll().success(function(results) {
   _.each(results, function(config) {
-    console.log("CONFIG IS", config);
 
   });
 });

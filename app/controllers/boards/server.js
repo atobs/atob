@@ -81,6 +81,17 @@ module.exports = {
     where.thread_id = null;
 
     var render_posts = api.page.async(function(flush) {
+      var BoardConfig = require_app("models/board_config");
+      BoardConfig.find({ where: { board_id: board_id }}).success(function(board_config) {
+        if (!board_config) {
+          return;
+        }
+
+        var starred = board_config.getSetting("starred");
+        api.bridge.call("app/client/sticky_post", "set_starred", starred);
+      
+      });
+
       Post.findAll({
           where: where,
           order: order_clause,
@@ -149,6 +160,8 @@ module.exports = {
 
           div.append(async_work());
         });
+
+        api.bridge.controller("boards", "sent_posts");
 
         flush(div);
       });

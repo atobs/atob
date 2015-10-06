@@ -161,6 +161,11 @@ module.exports = {
     var self = this;
     window._POSTS = POSTS;
     window._REPLIES = REPLY_TEXT;
+
+    if (POSTS[options.post_id]) {
+      return;
+    }
+
     POSTS[options.post_id] = this;
 
     REPLY_TEXT[options.post_id] = options;
@@ -341,6 +346,30 @@ module.exports = {
     }
 
     replace_oplinks(replyEl);
+  },
+  is_starred: function() {
+    return this.starred;
+
+  },
+  unstar: function() {
+    this.starred = false;
+    this.$el.find(".post")
+    .css("border-color", this.old_border_color);
+  },
+  star: function() {
+    this.starred = true;
+
+    if (!this.old_border_color) {
+      this.old_border_color = this.$el.find(".post").css("border-color");
+      this.old_border_width = this.$el.find(".post").css("border-width");
+    }
+    var post = this.$el.find(".post");
+
+    post.css("border-color", "gold");
+    
+    this.bumped();
+    var parent = this.$el.closest(".posts");
+    parent.prepend(this.$el);
   },
   burtle: function(burtles) {
     this.$el.find(".burtles_count").text(burtles);

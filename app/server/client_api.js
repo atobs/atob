@@ -240,11 +240,14 @@ module.exports = {
             { model: Post, as: "Children" }
           ]
       }).success(function(result) {
+        var post_data = result.dataValues;
         if (result) {
           posting.trim_post(result);
+          result.replies = _.map(result.children, function(c) { return c.dataValues; } );
+          result.replies = _.sortBy(result.replies, function(d) {
+            return new Date(d.created_at);
+          });
         }
-
-        var post_data = result.dataValues;
 
         if (post_data.parent_id) {
           Post.find({
@@ -256,6 +259,11 @@ module.exports = {
             if (!parent) {
               cb(result);
             } else {
+              parent.replies = _.map(parent.children, function(c) { return c.dataValues; } );
+              parent.replies = _.sortBy(parent.replies, function(d) {
+                return new Date(d.created_at);
+              });
+
               posting.trim_post(parent);
               cb(parent);
             }

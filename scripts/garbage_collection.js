@@ -4,6 +4,7 @@ var Post = require_app("models/post");
 var ArchivedPost = require_app("models/archived_post");
 var Action = require_app("models/action");
 var Board = require_app("models/board");
+var BoardConfig = require_app("models/board_config");
 var IP = require_app("models/ip");
 
 var MAX_POSTS = 30;
@@ -48,44 +49,50 @@ function collect_garbage() {
     });
 
     _.each(by_board, function(val, key) {
-
-      if (val.length > MAX_POSTS) {
-        console.log("BOARD HAS TOO MANY POSTS", key, val.length);
-        var sorted = _.sortBy(val, function(v) {
-          return -v.bumped_at || -v.updated_at;
-        });
-
-        var keep_posts = sorted.slice(0, MAX_POSTS);
-        var delete_posts = sorted.slice(MAX_POSTS, sorted.length);
-
-        console.log("TO KEEP POSTS", keep_posts.length);
-
-        _.each(delete_posts, function(post) {
-          var archive = false;
-          if ((post.replies - post.downs) > 50 || post.ups > 10) {
-            console.log(post.replies, post.ups);
-            archive = true;
-            ArchivedPost.findOrCreate({ id: post.id }, post.dataValues);
-          }
-
-          post.destroy();
-          post.getChildren().success(function(children) {
-            console.log("CHILDREN IDS ARE", _.map(children, function(p) { return p.id; }));
-
-            if (archive) {
-              _.each(children, function(p) {
-                ArchivedPost.findOrCreate({ id: p.id }, p.dataValues);
-              });
-            }
-
-            Post.destroy({
-              parent_id: post.id
-            });
+      BoardConfig.find({where: {board_id: key }}).success(function(board_config) {
+        if (val.length > MAX_POSTS) {
+          console.log("BOARD HAS TOO MANY POSTS", key, val.length);
+          var sorted = _.sortBy(val, function(v) {
+            return -v.bumped_at || -v.updated_at;
           });
 
-        });
+          var keep_posts = sorted.slice(0, MAX_POSTS);
+          var delete_posts = sorted.slice(MAX_POSTS, sorted.length);
 
-      }
+          console.log("TO KEEP POSTS", keep_posts.length);
+
+          _.each(delete_posts, function(post) {
+            if (board_config && board_config.getSetting("starred") === post.id) {
+              console.log("SAVING STARRED POST", post);
+              return;
+            }
+            var archive = false;
+            if ((post.replies - post.downs) > 50 || post.ups > 10) {
+              console.log(post.replies, post.ups);
+              archive = true;
+              ArchivedPost.findOrCreate({ id: post.id }, post.dataValues);
+            }
+
+            post.destroy();
+            post.getChildren().success(function(children) {
+              console.log("CHILDREN IDS ARE", _.map(children, function(p) { return p.id; }));
+
+              if (archive) {
+                _.each(children, function(p) {
+                  ArchivedPost.findOrCreate({ id: p.id }, p.dataValues);
+                });
+              }
+
+              Post.destroy({
+                parent_id: post.id
+              });
+            });
+
+          });
+
+        }
+
+      });
 
     });
   });

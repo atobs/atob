@@ -41,10 +41,19 @@ module.exports = {
     var board = SF.controller().board;
 
     SF.controller().emit("adminme", board, author, tripcode, function(isclaimed, isowner) {
-      console.log("AM I THE OWNER?", isclaimed, isowner);
       if (isowner) {
         self.$el.find(".reportable, .editable").hide();
         self.$el.find(".deletable").css("display", "inline-block").show();
+
+        if (window._POSTS[self.reply_id]) {
+          self.$el.find(".starrable").css("display", "inline-block").show();
+          var post = window._POSTS[self.reply_id];
+          if (post.is_starred()) {
+            self.$el.find(".starrable").text("unstick");
+          } else {
+            self.$el.find(".starrable").text("sticky");
+          }
+        }
 
       }
 

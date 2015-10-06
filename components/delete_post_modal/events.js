@@ -18,6 +18,7 @@ module.exports = {
     SF.socket().emit(msg, _.extend({
       id: post_id,
       tripcode: tripcode,
+      board: SF.controller().board,
       author: author
     }, options));
 

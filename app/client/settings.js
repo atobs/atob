@@ -665,9 +665,21 @@ module.exports = {
     s.on("snooed", this.get_snooed);
     s.on("restalked", this.restalk);
     s.on("stalking", this.be_stalker);
+    s.on("star_post", this.star_post);
+    s.on("unstar_post", this.unstar_post);
 
     s.on("burtled", this.burtled);
     s.on("goto_post", this.goto_post);
+  },
+
+  star_post: function(post_id) {
+    var post = window._POSTS[post_id];
+    post && post.star();
+
+  },
+  unstar_post: function(post_id) {
+    var post = window._POSTS[post_id];
+    post && post.unstar();
   },
 
   click_adminme: function() {
@@ -681,7 +693,6 @@ module.exports = {
 
           
         var board = SF.controller().board;
-        console.log("AM I OWNER?", isclaimed, isowner);
         if (isowner) {
           $C("board_admin_panel", { board: board}, function(cmp) { });
         } else {

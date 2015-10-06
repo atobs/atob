@@ -43,6 +43,10 @@ module.exports = {
     }
 
   },
+  sent_posts: function() {
+    this.loaded_posts = true;
+    SF.trigger("board_loaded_posts");
+  },
 
   show_board_tiles: function() {
     $(".post").addClass("tile");

@@ -19,7 +19,6 @@ var OPS = {
     IP.find({where: { post_id: post.id} })
       .success(function(ip) {
         if (!ip) {
-          console.log("COULDNT FIND USER TO BAN FOR POST", post.id);
           return;
         }
 
@@ -109,6 +108,11 @@ module.exports = {
 
       var op = tokens.shift();
       var post_id = tokens.shift();
+
+      if (!post_id) {
+        socket.emit("notif", "No POST_ID specified, can't post to board");
+        return;
+      }
 
       Post.find({
         where: {
