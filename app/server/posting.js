@@ -24,6 +24,7 @@ var Post = require_app("models/post");
 var User = require_app("models/user");
 var IP = require_app("models/ip");
 var model = require_app("models/model");
+var mod = require_app("server/mod");
 var post_links = require_app("server/post_links");
 
 var HIDDEN_BOARDS = require_app("server/hidden_boards");
@@ -607,6 +608,39 @@ function handle_update_post(socket, board, post, cb) {
   });
 }
 
+function anon_is_board_mod(author, tripcode, board, cb) {
+  var delete_code = gen_md5(author + ':' + tripcode);
+  User.find({
+    where: {
+      tripname: author || "BOO",
+      tripcode: [tripcode || gen_md5("URNS"), gen_md5(tripcode)]
+    }
+  }).success(function(user) {
+    if (user) {
+      cb(true);
+    } else {
+      // That last nested attempt to look for the board admin...
+      BoardClaim.findAll({
+        where:{
+          author: author,
+          tripcode: delete_code,
+          accepted: true,
+          board_id: board
+        }
+      }).success(function(claim) {
+        if (claim.length) {
+          cb(true);
+        } else {
+          cb(false);
+        }
+
+      });
+    }
+
+
+  });
+}
+
 
 function handle_delete_post(socket, board, post) {
   console.log("Deleting post", post);
@@ -643,14 +677,9 @@ function handle_delete_post(socket, board, post) {
         socket.broadcast.to(result.board_id).emit("update_post", post.id);
         post_links.erase_links(result, function() { });
       } else {
-        User.find({
-          where: {
-            tripname: post.author || "BOO",
-            tripcode: [post.tripcode || gen_md5("URNS"), gen_md5(post.tripcode)]
-          }
-        }).success(function(user) {
-          if (user) {
-            socket.emit("notif", "Mod Deleted #" + post.id, "success");
+        anon_is_board_mod(post.author, post.tripcode, post.board_id, function(is_mod) {
+          if (is_mod) {
+            socket.emit("notif", "Board Mod Deleted #" + post.id, "success");
             result.destroy();
 
             var text = post_text(result);
@@ -667,54 +696,22 @@ function handle_delete_post(socket, board, post) {
             socket.emit("update_post", post.id);
             socket.broadcast.to(result.board_id).emit("update_post", post.id);
             post_links.erase_links(result, function() { });
-
-
           } else {
 
-            // That last nested attempt to look for the board admin...
-            BoardClaim.findAll({
-              where:{
-                author: post.author,
-                tripcode: delete_code,
-                accepted: true,
-                board_id: result.board_id
-              }
-            }).success(function(claim) {
-              if (claim.length) {
-                socket.emit("notif", "Board Mod Deleted #" + post.id, "success");
-                result.destroy();
-
-                var text = post_text(result);
-                var post_data = {
-                  board_id: "mod",
-                  tripcode: delete_code,
-                  title: "delete " + post.id,
-                  author: post.author,
-                  text: text,
-                  bumped_at: Date.now()
-                };
-
-                Post.create(post_data);
-                socket.emit("update_post", post.id);
-                socket.broadcast.to(result.board_id).emit("update_post", post.id);
-                post_links.erase_links(result, function() { });
-              } else {
-
-                socket.emit("notif", action_name + post.id, "success");
-                Post.create({
-                  board_id: "log",
-                  tripcode: delete_code,
-                  title: "report " + post.id,
-                  author: post.author,
-                  bumped_at: Date.now()
-                });
-
-              }
-            
+            socket.emit("notif", action_name + post.id, "success");
+            Post.create({
+              board_id: "log",
+              tripcode: delete_code,
+              title: "report " + post.id,
+              author: post.author,
+              bumped_at: Date.now()
             });
-          }
-        });
 
+          }
+      
+
+
+        });
       }
 
     }
@@ -757,6 +754,45 @@ module.exports = {
   handle_delete_post: handle_delete_post,
   handle_update_post: handle_update_post,
   render_posting: render_posting,
+  add_socket_subscriptions: function(s) {
+    var _board;
+
+    s.on("update_post", function(post, cb) {
+      var board = post.board || _board;
+      handle_update_post(s, board, post, cb);
+    });
+
+    s.on("delete_post", function(post) {
+      var board = post.board || _board;
+      // Special case mod postings
+      handle_delete_post(s, board, post);
+    });
+
+    s.on("new_post", function(post, cb) {
+      var board = post.board || _board;
+      // Special case mod postings
+      if (board === "mod") {
+        mod.handle_new_post(s, post);
+      } else {
+        handle_new_post(s, board, post, cb);
+      }
+    });
+
+    s.on("new_reply", function(post, cb) {
+      var board = post.board || _board;
+      if (board === "mod") {
+        post.parent_id = post.id || post.post_id;
+        post.thread_id = post.id || post.post_id;
+        mod.handle_new_post(s, post);
+      } else {
+        handle_new_reply(s, board, post, cb);
+      }
+    });
+
+    s.on("upboat", function(link, cb) {
+      post_links.upvote_link(link, cb);
+    });
+  },
   trim_post: function(post) {
     var replies = post.replies;
     post.replies = [];

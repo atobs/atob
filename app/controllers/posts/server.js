@@ -147,26 +147,7 @@ module.exports = {
       s.emit("joined", board);
     });
 
-    s.on("new_reply", function(post, cb) {
-      posting.handle_new_reply(s, _board, post, cb);
-    });
-
-    s.on("new_post", function(post, cb) {
-      posting.handle_new_post(s, _board || post.board, post, cb);
-    });
-
-    s.on("delete_post", function(post) {
-      posting.handle_delete_post(s, _board, post);
-    });
-
-    s.on("update_post", function(post, cb) {
-      posting.handle_update_post(s, _board, post, cb);
-    });
-
-    s.on("upboat", function(link, cb) {
-      post_links.upvote_link(link, cb);
-    });
-
+    posting.add_socket_subscriptions(s);
 
   }
 };

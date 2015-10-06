@@ -209,41 +209,8 @@ module.exports = {
       s.emit("joined", board);
     });
 
-    s.on("update_post", function(post, cb) {
-      var board = post.board || _board;
-      posting.handle_update_post(s, board, post, cb);
-    });
+    posting.add_socket_subscriptions(s);
 
-    s.on("delete_post", function(post) {
-      var board = post.board || _board;
-      // Special case mod postings
-      posting.handle_delete_post(s, board, post);
-    });
-
-    s.on("new_post", function(post, cb) {
-      var board = post.board || _board;
-      // Special case mod postings
-      if (board === "mod") {
-        mod.handle_new_post(s, post);
-      } else {
-        posting.handle_new_post(s, board, post, cb);
-      }
-    });
-
-    s.on("new_reply", function(post, cb) {
-      var board = post.board || _board;
-      if (board === "mod") {
-        post.parent_id = post.id || post.post_id;
-        post.thread_id = post.id || post.post_id;
-        mod.handle_new_post(s, post);
-      } else {
-        posting.handle_new_reply(s, board, post, cb);
-      }
-    });
-
-    s.on("upboat", function(link, cb) {
-      post_links.upvote_link(link, cb);
-    });
     client_api.add_to_socket(s);
     makeme_store.subscribe_to_updates(s);
 
