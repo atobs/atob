@@ -13,6 +13,7 @@ var POST_TIMEOUTS = {
 };
 
 var UPDATE_LIMIT = 60 * 60 * 1000; // 1 hour editing timeout
+var MAX_COLONS = 100;
 
 var load_controller = require_core("server/controller").load;
 var gen_md5 = require_app("server/md5");
@@ -80,7 +81,7 @@ function handle_new_post(s, board, post, cb) {
   var author = post.author || "anon";
 
   var colons = text && text.toString().match(/:/g);
-  if (colons && colons.length) {
+  if (colons && colons.length > MAX_COLONS) {
     var colon_msg = "Getting a little colon happy, anon?";
     s.emit("notif", colon_msg, "error");
     return;
@@ -388,7 +389,7 @@ function handle_new_reply(s, board, post, cb) {
   }
 
   var colons = text && text.toString().match(/:/g);
-  if (colons && colons.length) {
+  if (colons && colons.length > MAX_COLONS) {
     var colon_msg = "Getting a little colon happy, anon?";
     s.emit("notif", colon_msg, "error");
     return;
@@ -540,7 +541,7 @@ function handle_update_post(socket, board, post, cb) {
 
   var text = post.text;
   var colons = text && text.toString().match(/:/g);
-  if (colons && colons.length) {
+  if (colons && colons.length > MAX_COLONS) {
     var colon_msg = "Getting a little colon happy, anon?";
     socket.emit("notif", colon_msg, "error");
     return;
