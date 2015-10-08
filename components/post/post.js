@@ -162,10 +162,6 @@ module.exports = {
     window._POSTS = POSTS;
     window._REPLIES = REPLY_TEXT;
 
-    if (POSTS[options.post_id]) {
-      return;
-    }
-
     POSTS[options.post_id] = this;
 
     REPLY_TEXT[options.post_id] = options;
