@@ -6,6 +6,7 @@ var Action = require_app("models/action");
 var Board = require_app("models/board");
 var BoardConfig = require_app("models/board_config");
 var IP = require_app("models/ip");
+var HIDDEN_BOARDS = require_app("server/hidden_boards");
 
 var MAX_POSTS = 30;
 var ONE_WEEK = (1000 * 60 * 60 * 24 * 7);
@@ -49,6 +50,13 @@ function collect_garbage() {
     });
 
     _.each(by_board, function(val, key) {
+      // let's not clean up any hidden boards for now
+      if (_.contains(HIDDEN_BOARDS, key)) {
+        console.log("SKIPPING BOARD", key, val.length);
+        return;
+      }
+
+
       BoardConfig.find({where: {board_id: key }}).success(function(board_config) {
         if (val.length > MAX_POSTS) {
           console.log("BOARD HAS TOO MANY POSTS", key, val.length);
