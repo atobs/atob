@@ -13,25 +13,23 @@ function size_tag_for_viewport(img_tag, aspect) {
   var viewportHeight = $(window).height();
 
   if (viewportWidth > 600) {
-    width = 300;
     if (aspect) {
+      width = 300;
       height = width / aspect;
     }
   }
 
   if (viewportWidth > 900) {
-    width = 500;
-
     if (aspect) {
+      width = 500;
       height = width / aspect;
     }
 
   }
 
   if (viewportWidth > 1200) {
-    width = 600;
-
     if (aspect) {
+      width = 600;
       height = width / aspect;
     }
   }
