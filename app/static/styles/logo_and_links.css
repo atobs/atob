@@ -75,6 +75,10 @@ body:not(:-moz-handler-blocked) #anons {
   }
 }
 
+.flying_burtle {
+  z-index: 3000 !important;
+}
+
 #logobar .navbar_helper {
   margin-left: 0px;
   margin-right: 0px;
@@ -90,7 +94,7 @@ body:not(:-moz-handler-blocked) #anons {
     position: relative;
 
       img {
-        z-index: 2000;
+        z-index: 10000;
       }
   }
 }

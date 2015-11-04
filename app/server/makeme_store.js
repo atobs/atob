@@ -168,6 +168,28 @@ function maybe_stalk(sid, doing, s) {
 }
 
 
+var THIRD_EYES = {};
+function blast_enlightenment() {
+  _.each(THIRD_EYES, function(data, sid) {
+    if (Date.now() - data.movement > 3000) {
+      delete THIRD_EYES[sid];
+    }
+  });
+
+  var load_controller = require_core("server/controller").load;
+  var home_controller = load_controller("home");
+  var boards_controller = load_controller("boards");
+  var posts_controller = load_controller("posts");
+
+  home_controller.get_socket().emit("thirdeye", THIRD_EYES);
+  boards_controller.get_socket().emit("thirdeye", THIRD_EYES);
+  posts_controller.get_socket().emit("thirdeye", THIRD_EYES);
+
+  setTimeout(blast_enlightenment, 3000);
+}
+
+blast_enlightenment = _.throttle(blast_enlightenment, 200);
+
 function subscribe_to_updates(s) {
 
   var sid = s.spark.headers.sid;
@@ -280,6 +302,25 @@ function subscribe_to_updates(s) {
     do_doing(doing, cb);
     if (cb) { cb(); }
   }, 200));
+
+
+  // need to track all third eyes, including old ones and then stuff
+  s.on("thirdeye", function(data, cb) {
+    if (DOING_NOW[sid]) {
+      data.icon = DOING_NOW[sid].what;
+    }
+
+    THIRD_EYES[sid] = data;
+
+    data.movement = Date.now();
+
+    blast_enlightenment();
+
+  });
+
+  s.on("thirdeyerind", function(data, cb) {
+
+  });
 
 }
 

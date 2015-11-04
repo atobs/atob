@@ -499,6 +499,7 @@ module.exports = {
       });
 
       var lookup = {
+        e: "icon-atob",
         t: "icon-keyboardalt",
         f: "icon-glassesalt",
         u: "icon-glassesalt",

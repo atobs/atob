@@ -1,11 +1,26 @@
 var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var notif = require("app/client/notif");
 var storage = require("app/client/storage");
-var anonications = require("app/client/anonications")
+var anonications = require("app/client/anonications");
+var EMOJIES = require("app/client/emojies");
 
 require("app/static/vendor/velocity");
 
 
+
+var ICON_LOOKUP = {
+  e: "icon-atob",
+  t: "icon-keyboardalt",
+  f: "icon-glassesalt",
+  u: "icon-glassesalt",
+  d: "icon-ducky",
+  b: "icon-comedy",
+  n: "icon-toast",
+  s: "icon-ghost"
+};
+function get_anonicator_for(c) {
+  return ICON_LOOKUP[c[0]] || "icon-" + c.replace(/:/g, "");
+}
 
 var cookie_opts = {
   path: '/',
@@ -18,6 +33,7 @@ var LOOKUP = {};
 var SIDEBARS = false;
 var MAX_TRIPS = 10;
 var MAX_FOURS = 20;
+var LENGTH_OF_ENLIGHTENMENT = 30000;
 
 var get_from_storage = storage.get;
 var set_in_storage = storage.set;
@@ -33,6 +49,19 @@ function filter_content() {
   });
 
 }
+
+var burtleEl = $("<div class='thirdeye icon-atob' />");
+
+$("body").append(burtleEl);
+burtleEl.css({
+  position: "fixed",
+  zIndex: 1050,
+  cursor: "pointer",
+  bottom: "10px",
+  top: "inherit",
+  right: "10px"
+});
+
 
 module.exports = {
   gen_tripcode: tripcode_gen,
@@ -476,22 +505,16 @@ module.exports = {
 
     var counts = {};
     var anon_to_post = {};
+    var burtles = {};
     _.each(doings, function(anons, object_id) {
       _.each(anons, function(emote, id) {
         anon_to_post[id] = object_id;
         counts[id] = emote;
+        if (emote == "enlightenment") {
+          burtles[id] = emote;
+        }
       });
     });
-
-    var lookup = {
-      t: "icon-keyboardalt",
-      f: "icon-glassesalt",
-      u: "icon-glassesalt",
-      d: "icon-ducky",
-      b: "icon-comedy",
-      n: "icon-toast",
-      s: "icon-ghost"
-    };
 
     var anon_order = _.keys(counts);
     anon_order = _.sortBy(anon_order, function(c) {
@@ -501,7 +524,7 @@ module.exports = {
 
     var str = _.map(anon_order, function(id) {
       var c = counts[id];
-      var el = $("<i class='anonicator " + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' />");
+      var el = $("<i class='anonicator " + get_anonicator_for(c) + "' />");
 
       el.attr("data-post", anon_to_post[id] || 0);
       el.attr("data-anon", id || 0);
@@ -668,6 +691,8 @@ module.exports = {
     s.on("star_post", this.star_post);
     s.on("unstar_post", this.unstar_post);
 
+    s.on("thirdeye", this.see_third_eyes);
+
     s.on("burtled", this.burtled);
     s.on("goto_post", this.goto_post);
   },
@@ -816,7 +841,148 @@ module.exports = {
       this.$el.find(".identity_tripcode").removeClass("desaturate");
     }
   },
+  see_third_eyes: function(burtles) {
+    // find this burtle on the page.. if it doesn't exist, then we create it
+    var allBurtles = $(".flying_burtle");
+
+    var w = $(window).width();
+    var h = $(window).height();
+
+
+    var occupied = {};
+
+    _.each(burtles, function(b, id) {
+      var burtleEl = $(".burtle_" + id);
+      var icon = get_anonicator_for(b.icon) || "icon-atob";
+      if (!burtleEl.length) {
+
+        burtleEl = $("<div/>").addClass("burtle_" + id).addClass(icon);
+        burtleEl.css({
+          position: "fixed",
+          left: 0,
+          top: 0,
+          fontSize: "2em",
+          zIndex: "1050"
+        });
+
+        burtleEl.on("click", function() {
+          SF.controller().emit("thirdeyerind", id);
+        });
+
+        burtleEl.addClass("flying_burtle");
+        burtleEl.appendTo($("body"));
+        burtleEl.attr("data-sid", id);
+      }
+
+      var ratio_x = b.x / b.w;
+      var ratio_y = b.y / b.h;
+
+      var abs_x = parseInt(ratio_x * w, 10);
+      var abs_y = parseInt(ratio_y * h, 10);
+
+      var ratio_key = parseInt(ratio_x * 25, 10)  + ":" + parseInt(ratio_y * 25, 10);
+
+      function collision_at(x, y, me, them) {
+        var el = $("<div class='hue' />");
+
+        var index_me = _.indexOf(EMOJIES, me.replace("icon-", "")) * 6351212;
+        var index_them = _.indexOf(EMOJIES, them.replace("icon-", "")) * 982;
+        var index_child = (index_me + index_them) % (EMOJIES.length);
+
+        var emojie_babe = EMOJIES[index_child];
+
+        el.addClass("icon-" + emojie_babe);
+        
+        el.css({
+          position: "fixed",
+          left: x + _.random(0, 20),
+          top: y + _.random(0, 20),
+        });
+
+        $("body").append(el);
+        setTimeout(function() {
+          el.fadeOut();
+        }, 1000);
+      }
+
+      if (occupied[ratio_key]) {
+        collision_at(abs_x, abs_y, occupied[ratio_key], icon);
+      }
+      occupied[ratio_key] = icon;;
+
+
+      var proportion = parseInt(b.s, 10);
+      burtleEl.velocity("stop").velocity({
+        translateX: abs_x,
+        translateY: abs_y,
+        translateZ: 100,
+        opacity: proportion / 100
+      }, { 
+        duration: 500
+      });
+
+    });
+
+    _.each(allBurtles, function(b) {
+      if (!burtles[$(b).data("sid")]) {
+        $(b).fadeOut(function() {
+          $(b).remove();
+        });
+      }
+    });
+
+
+
+  },
+  unlock_the_third_eye: _.throttle(function(e) {
+    console.log("UNLOCKING THIRD EYE FOR", LENGTH_OF_ENLIGHTENMENT / 1000, "SECONDS");
+    $(e.target).closest(".thirdeye").fadeOut();
+    setTimeout(function() {
+      $(e.target).closest(".thirdeye").fadeIn();
+    }, LENGTH_OF_ENLIGHTENMENT);
+
+    e.stopPropagation();
+    e.preventDefault();
+    // this is where we start tracking mouse for however long and then we stop
+    var controller = SF.controller();
+    // normalize coordinates...
+    var width = $(window).width();
+    var height = $(window).height();
+
+    var talk_to_server = _.throttle(function(e, proportion) {
+      SF.socket().emit("thirdeye", {
+        x: e.clientX,
+        y: e.clientY,
+        w: width,
+        h: height,
+        s: proportion
+      });
+
+    }, 100);
+
+    var update_width_and_height = _.throttle(function() {
+      width = $(window).width();
+      height = $(window).height();
+
+    }, 500);
+
+    var start = Date.now();
+    $("body").on("mousemove", _.throttle(function(e) {
+      var now = Date.now();
+      var left = LENGTH_OF_ENLIGHTENMENT - (now - start);
+      var proportion = parseInt(left / LENGTH_OF_ENLIGHTENMENT * 100, 10);
+      talk_to_server(e, proportion);
+      update_width_and_height();
+
+    }, 50));
+
+    setTimeout(function() {
+      $("body").off("mousemove");
+    }, LENGTH_OF_ENLIGHTENMENT);
+  }, LENGTH_OF_ENLIGHTENMENT),
+
   controller_events: {
+    "click .thirdeye" : "unlock_the_third_eye",
     "change input.newtrip" : "save_newtrip",
     "change input.privtrip" : "save_privtrip",
     "change input.filtercontent" : "save_filter",
