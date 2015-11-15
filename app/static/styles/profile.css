@@ -90,7 +90,7 @@
   }
 
   .cover_photo_bottom .profile_code div {
-    height: 200px !important; 
+    height: 150px !important; 
     @media @mobile {
       height: 100px !important; 
 

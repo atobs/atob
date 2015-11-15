@@ -26,6 +26,7 @@ var IP = require_app("models/ip");
 var model = require_app("models/model");
 var mod = require_app("server/mod");
 var post_links = require_app("server/post_links");
+var anon_pocket = require_app("server/anon_pocket");
 
 var HIDDEN_BOARDS = require_app("server/hidden_boards");
 
@@ -486,6 +487,7 @@ function handle_new_reply(s, board, post, cb) {
               p.dataValues.up = up;
               p.dataValues.down = down;
               post_links.find_and_create_links(p.dataValues);
+              anon_pocket.find_and_create_items(p.dataValues);
 
               IP.create({
                 post_id: p.dataValues.post_id,

@@ -1,5 +1,6 @@
 var Post = require_app("models/post");
 var posting = require_app("server/posting");
+var Trophy = require_app("models/trophy");
 var HIDDEN_BOARDS = require_app("server/hidden_boards");
 var BoardClaim = require_app("models/board_claim");
 var gen_md5 = require_app("server/md5");
@@ -277,6 +278,15 @@ module.exports = {
       
 
     });
+
+    s.on("get_trophies", function(tripcode, cb) {
+      Trophy.findAll({where: { anon: tripcode }}).success(function(results) {
+        cb(_.map(results, function(r) {
+          return r.dataValues.trophy.replace(/:/g, "");
+        }));
+      });
+    });
+
     s.on("list_posts", function(board_id, cb) {
       console.log("Handling API list_posts on", board_id);
       var board_id_clause = board_id;

@@ -14,8 +14,8 @@ var CLIENT_COMMANDS = {
   }
 };
 
-function hide_popovers(e) {
-  $(e.target).popover("destroy");
+function hide_popovers(el) {
+  $(el.target || el).popover("destroy");
   $(".popover").each(function() {
     if ($(this).hasClass("in")) {
       return;
@@ -67,6 +67,8 @@ module.exports = {
     "mouseleave .imglink" : "handle_mouseleave_imglink",
     "mouseenter .post" : "handle_removepulse",
     "mouseleave .post" : "handle_removepulse",
+    "mouseenter .tripcode" : "handle_mouseenter_tripcode",
+    "mouseleave .tripcode" : "handle_mouseleave_tripcode",
     "mousemove .post" : "handle_removepulse",
     "click .replylink" : "handle_mouseenter_replylink",
     "mouseenter .replylink" : "handle_mouseenter_replylink",
@@ -196,6 +198,43 @@ module.exports = {
   },
   handle_mouseleave_imglink: function(e) {
     hide_popovers(e);
+  },
+
+  handle_mouseenter_tripcode: function(e) {
+    hide_popovers($(e.target).closest(".tripcode"));
+    var el = $(e.target).closest(".tripcode");
+    // reach in and modify
+    var tripcode = el.data("tripcode");
+    var container = this.$el;
+    e.stopPropagation();
+
+    SF.controller().emit("get_trophies", tripcode, function(trophies) {
+      var div = $("<div></div>");
+      if (!trophies.length) {
+        return;
+      }
+      _.each(trophies, function(tr) {
+        div.append($("<span class='pam' />").addClass("icon-" + tr));
+      });
+
+      $(el)
+        .popover({ html: true, content: div.html(), placement: "top", container: container })
+        .data("bs.popover")
+        .tip()
+        .addClass("reply");
+
+      _.defer(function() {
+        $(el).popover("show");
+      });
+
+
+
+    });
+  },
+
+  handle_mouseleave_tripcode: function(e) {
+    hide_popovers($(e.target).closest(".tripcode"));
+
   },
 
   handle_mouseenter_replylink: function(e) {

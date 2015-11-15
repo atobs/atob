@@ -7,6 +7,7 @@ var value_of = controller.value_of,
 
 var Post = require_app("models/post");
 var Action = require_app("models/action");
+var Trophy = require_app("models/trophy");
 var board_utils = require_app("server/board_utils");
 
 function make_trips(flush, icon) {
@@ -17,7 +18,7 @@ function make_trips(flush, icon) {
         var tripcode_gen = require_app("server/tripcode");
         _.each(results, function(res) {
           var el = $("<div class='tripcode' />");
-          el.attr("data-tripcode", res.object);
+          el.attr("data-tripcode", res.forcetrip || res.object);
           el.css({
             width: "100px",
             display: "inline-block",
@@ -28,7 +29,7 @@ function make_trips(flush, icon) {
           tripcode_gen.gen_tripcode(el);
           el.children().each(function() {
             var child = $(this);
-            child.addClass(icon);
+            child.addClass(icon || "icon-" + res.action.replace(/:/g, ""));
             var bgColor = child.css("background-color");
 
             child.css({
@@ -107,11 +108,25 @@ module.exports = {
 
     });
 
+    var render_trophies = api.page.async(function(flush) {
+      Trophy.findAll({where: {
+        anon: tripcode
+      }}).success(function(results) {
+        // Massage into form for the make_trips function
+        _.each(results, function(r) {
+          r.actor = r.anon;
+          r.action = r.trophy;
+        });
+        make_trips(flush)(results);
+      });
+    });
+
     var template_str = api.template.render("controllers/profiles/profiles.html.erb", { 
       tripcode: tripcode,
       render_about: render_about,
       render_ships: render_ships,
-      render_burtles: render_burtles
+      render_burtles: render_burtles,
+      render_trophies: render_trophies
     });
     api.page.render({ content: template_str });
   },
