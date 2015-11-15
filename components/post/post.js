@@ -266,8 +266,7 @@ module.exports = {
     var replyEl =$("<div class='pam reply'/>");
     replyEl.attr("id", replyId);
     var tripEl = $("<div class='tripcode' />")
-      .data("tripcode", data.tripcode)
-      .attr("title", "anon");
+      .data("tripcode", data.tripcode);
 
     tripEl.css("marginRight", "8px");
     this.helpers['app/client/tripcode'].gen_tripcode(tripEl);
