@@ -586,6 +586,8 @@ function handle_update_post(socket, board, post, cb) {
           result.text = escape_html(post.text);
           result.save();
 
+          anon_pocket.find_and_create_items(result);
+
           socket.emit("notif", action_name + post.id, "success");
           socket.emit("update_post", post.id, result.text);
           socket.broadcast.to(result.board_id).emit("update_post", post.id, result.text);

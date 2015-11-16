@@ -114,6 +114,7 @@ module.exports = {
       }}).success(function(results) {
         // Massage into form for the make_trips function
         _.each(results, function(r) {
+          r.object = r.actor;
           r.actor = r.anon;
           r.action = r.trophy;
         });

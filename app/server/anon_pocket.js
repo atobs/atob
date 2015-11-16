@@ -13,6 +13,13 @@ module.exports = {
       return;
     }
 
+    var post_id = post.post_id || post.id;
+    if (post_id) {
+      Trophy.findAll({where: { anon_id: post_id }}).success(function (results) {
+        _.each(results, function(r) { r.destroy(); }); 
+      });
+    }
+
     var groups = post.text.match(POCKET_RE);
     if (groups && groups[2]) {
       console.log("Adding trophy", groups[1], "in post", groups[2]);
@@ -23,7 +30,8 @@ module.exports = {
             actor: post.tripcode,
             anon: pocket_post.dataValues.tripcode,
             trophy: groups[1],
-            post_id: groups[2]
+            post_id: groups[2],
+            anon_id: post_id
           });
 
         }
