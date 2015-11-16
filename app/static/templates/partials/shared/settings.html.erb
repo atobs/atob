@@ -46,6 +46,23 @@
         </label>
       </div>
 
+      <div class="optionbox rfloat ptl clearfix">
+        <label>Notify me </label>
+        <select name='notify_when' class='notify_when'>
+          <% _.each({
+            all: "on every post and reply",
+            posts: "on new posts only",
+            boards: "on posts to favorite boards",
+            page: "on posts to current page",
+            never: "never"
+
+          }, function(name, key) {%>
+            <option value='<%= key %>'><%= name %> </option>
+          <% }); %>
+
+        </select>
+      </div>
+
     </div>
 
 

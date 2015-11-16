@@ -42,6 +42,7 @@ FOURCODES = JSON.parse(get_from_storage("fourcodes") || "[]");
 
 SIDEBARS = JSON.parse(get_from_storage("use_sidebars") || "false");
 
+
 function filter_content() {
   bootloader.require("app/client/profanity", function(mods) {
     var clean_element = require("app/client/profanity");
@@ -128,6 +129,13 @@ module.exports = {
       $(".tripbar, .identity_tripcode").toggleClass("desaturate");
     });
   },
+  save_notifywhen: function() {
+    var notifyEl = this.$page.find("select.notify_when").last();
+    var notify_when = notifyEl.val();
+    notif.set_notif_level(notify_when);
+    set_in_storage("notify_when", notify_when);
+
+  },
   save_newtrip: function() {
     var newtripEl = this.$page.find("input.newtrip").last();
     var newtrip = !!newtripEl.prop('checked');
@@ -209,6 +217,15 @@ module.exports = {
   },
   get_trip_identity: function() {
     return md5(this.get_handle() + ":" + this.get_triphash());
+  },
+  get_trip_identities: function() {
+    var codes = _.clone(TRIPCODES).concat(FOURCODES);
+
+    return _.map(codes, function(f) {
+      return md5(f.tripname + ":" + f.tripcode);
+
+    });
+
   },
   get_handle: function() {
     return $("input.handle").last().val() || get_from_storage("handle") || "anon";
@@ -397,6 +414,14 @@ module.exports = {
     });
 
     var newtrip = this.load_checkbox_value("newtrip", "input.newtrip");
+
+    this.load_value("notify_when", "select.notify_when", function(el, val) {
+      if (val) {
+        el.val(val);
+      } else {
+        el.val("page");
+      }
+    });
 
     this.load_value("handle", "input.handle", function(el, val) {
       if (val) {
@@ -984,6 +1009,7 @@ module.exports = {
   controller_events: {
     "click .thirdeye" : "unlock_the_third_eye",
     "change input.newtrip" : "save_newtrip",
+    "change select.notify_when" : "save_notifywhen",
     "change input.privtrip" : "save_privtrip",
     "change input.filtercontent" : "save_filter",
     "click .beeper" : "request_notifs",
