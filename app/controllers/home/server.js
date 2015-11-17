@@ -150,7 +150,7 @@ function render_even_more_recent(api, cb, use_header) {
         return !is_hidden;
       });
 
-      posts = posts.slice(5, 15);
+      posts = posts.slice(3, 15);
 
       var template_str = api.template.partial("home/recent_posts.html.erb", {
         posts: posts,
