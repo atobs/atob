@@ -200,7 +200,7 @@ module.exports = {
     hide_popovers(e);
   },
 
-  handle_mouseenter_tripcode: function(e) {
+  handle_mouseenter_tripcode: _.throttle(function(e) {
     hide_popovers($(e.target).closest(".tripcode"));
     var el = $(e.target).closest(".tripcode");
     // reach in and modify
@@ -217,20 +217,24 @@ module.exports = {
         div.append($("<span class='pam' />").addClass("icon-" + tr));
       });
 
-      $(el)
-        .popover({ html: true, content: div.html(), placement: "top", container: container })
-        .data("bs.popover")
-        .tip()
-        .addClass("reply");
-
-      _.defer(function() {
-        $(el).popover("show");
+      div.css({
+        position: "relative",
+        display: "inline",
+        top: "0px",
+        left: "-50px"
       });
 
+      div.animate({ left: "0px" });
 
+      $(el).after(div);
+      console.log(div);
+
+      _.delay(function() {
+        div.fadeOut(function() { div.remove(); });
+      }, 3000);
 
     });
-  },
+  }, 500),
 
   handle_mouseleave_tripcode: function(e) {
     hide_popovers($(e.target).closest(".tripcode"));
