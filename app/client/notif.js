@@ -209,13 +209,14 @@ module.exports = {
 $.notify.addStyle("notif", {
   html: "<div>\n"+
     "<div data-notify-text='title'></div>\n"+
-    "<small><div data-notify-html='msg'> </div></small>\n" +
+    "<small><div data-notify-html='msg' style='max-width: 300px; overflow-x: hidden'> </div></small>\n" +
     "<div data-notify-html='goto'></div>\n"+
     "</div>",
   classes: {
     base: {
       "font-weight": "bold",
       "padding": "8px 15px 8px 14px",
+      "text-overflow" : "ellipsis",
       "text-shadow": "0 1px 0 rgba(255, 255, 255, 0.5)",
       "background-color": "#fefefe",
       "border": "1px solid #fbeed5",
