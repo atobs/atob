@@ -198,8 +198,23 @@ function add_board_links($el) {
       return reddit_str.replace(/NAME/g, post_id.toLowerCase());
     });
 
+    replaced = replaced.replace(/\s\/4(?:ch)?\/(\w+)/g, function(x, post_id) {
+      var chan_str = " <a target='_blank' href='http://4chan.org/NAME'><i class='icon-circlefour'></i>/NAME</a>";
+      return chan_str.replace(/NAME/g, post_id.toLowerCase());
+    });
+
+    replaced = replaced.replace(/\s\/8(?:ch)?\/(\w+)/g, function(x, post_id) {
+      var chan_str = " <a target='_blank' href='http://8ch.net/NAME'><i class='icon-circleeight'></i>/NAME</a>";
+      return chan_str.replace(/NAME/g, post_id.toLowerCase());
+    });
+
+    replaced = replaced.replace(/\s\/e(?:ch)?\/(\w+)/g, function(x, post_id) {
+      var chan_str = " <a target='_blank' href='http://euphoria.io/room/NAME'><i class='icon-emojigrin'></i>/NAME</a>";
+      return chan_str.replace(/NAME/g, post_id.toLowerCase());
+    });
+
     replaced = replaced.replace(/\s\/(\w+)/g, function(x, post_id) {
-      var reply_str = " <span href='/b/NAME' class='boardlink' target='_blank'>/NAME</span>";
+      var reply_str = " <span href='/b/NAME' class='boardlink' target='_blank'><i class='icon-atob'></i>/NAME</span>";
       return reply_str.replace(/NAME/g, post_id.toLowerCase());
     });
 
