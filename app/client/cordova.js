@@ -79,7 +79,7 @@ function add_in_app_browser() {
 var notif_count = 0;
 
 function handle_notif(title, options, post) {
-  if (window.plugin && window.plugin.notification) {
+  if (window.plugin && window.plugin.notification && document.hidden) {
     setTimeout(function() {
       window.plugin.notification.local.add({
           id:      1,
