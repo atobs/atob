@@ -1,0 +1,34 @@
+<% set_default("recent", false) %>
+
+<div class="pal" style="margin-top: 10px">
+  <div class='rfloat'>
+    <% if (recent) { %>
+      last months stats
+      (<small><a href="<%= url_for("data.all") %>">see all days</a></small>)
+    <% } else { %>
+      all time stats
+      (<small><a href="<%= url_for("data.recent") %>">see last 30 days</a></small>)
+    <% } %>
+  </div>
+
+  <div class="clearfix"> </div>
+  <div class="loading col-md-12 pal" style="text-align: center;">
+    <h2>Loading</h2>
+    <div style="width: 200px; margin: auto;">
+      <%= render_partial("shared/loading.html.erb") %>
+    </div>
+  </div>
+
+  <div class="" id='timeseries_container' style='height: 500px;'>
+    
+  </div>
+
+  <div class="" id='dayofweek_container' style='height: 500px;'>
+    
+  </div>
+
+  <div class="" id='timeofday_container' style='height: 500px;'>
+    
+  </div>
+</div>
+

@@ -1,0 +1,9 @@
+{
+  "main" : "stats_dialog",
+  "style": "stats_dialog.css",
+  "styles": [],
+
+  "template": "stats_dialog.html.erb",
+  "helpers": [],
+  "no_redefine" : false
+}
