@@ -14,7 +14,10 @@ var bridge = require_core("server/bridge");
 
 function prepare_chart(name, options, cb) {
   // Render the time series
-  var after = _.after(4, function() {
+  // Posts
+  // Trophies
+  // Actions (5 in 1)
+  var after = _.after(3, function() {
     bridge.controller("data", "render_" + name + "_charts");
     cb();
   });
@@ -48,15 +51,22 @@ function prepare_chart(name, options, cb) {
   // For the Actions table, we also want counts
   options.attributes.push(['SUM(count)', 'sum']);
   options.where.action = "burtled";
-  Action.findAll(options).success(function(results) {
-    bridge.controller("data", func_name, "burtles", results);
+
+  var actions = ["burtled", "sunkship", "ducked", "pokeycursor", "madd"];
+  var lookup = {
+    "sunkship" : "battleships"
+  };
+
+  var miniafter = _.after(actions.length, function() {
     after();
   });
 
-  options.where.action = "sunkship";
-  Action.findAll(options).success(function(results) {
-    bridge.controller("data", func_name, "battleships", results);
-    after();
+  _.each(actions, function(action) {
+    options.where.action = action;
+    Action.findAll(options).success(function(results) {
+      bridge.controller("data", func_name, action, results);
+      miniafter();
+    });
   });
 
 }

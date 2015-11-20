@@ -304,6 +304,20 @@ function subscribe_to_updates(s) {
   }, 200));
 
 
+  
+  var enlighten_anon = function () {
+    var actortrip = SID_TO_TRIP[sid] || "anonanonanon";
+
+    Action.create({
+      actor: actortrip,
+      action: "pokeycursor"
+
+    });
+  };
+
+  enlighten_anon = _.throttle(enlighten_anon, 30 * 1000);
+
+
   // need to track all third eyes, including old ones and then stuff
   s.on("thirdeye", function(data, cb) {
     if (DOING_NOW[sid]) {
@@ -314,6 +328,7 @@ function subscribe_to_updates(s) {
 
     data.movement = Date.now();
 
+    enlighten_anon();
     blast_enlightenment();
 
   });

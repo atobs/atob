@@ -7,7 +7,34 @@ var Post = require_app("models/post");
 module.exports = {
   check: function(s, doing, stalked_socket, actortrip, bytrip) {
     var sid = s.spark.headers.sid;
+    var where_clause = {
+      actor: actortrip,
+      object: bytrip
+    };
+
+    function do_action(name) {
+      if (!bytrip) {
+        bytrip = "anonanon";
+      }
+      if (!actortrip) {
+        actortrip = "anonanon";
+      }
+
+      where_clause.action = name;
+      Action.find({ 
+        where: where_clause
+      }).success(function(action) {
+        if (!action) {
+          Action.create(where_clause);
+        } else {
+          action.increment("count", where_clause);
+        }
+      });
+    }
+
+
     if (doing.what === "snooing") {
+      do_action("snooed");
 
       s.emit("notif", "snoo meets burtle", "success");
 
@@ -22,6 +49,7 @@ module.exports = {
     }
 
     if (doing.what === "kited") {
+      do_action("madd");
       s.emit("notif", "you are working towards mutually assured destruction", "error");
       s.emit("kited", { by: sid, sid: doing.anon, tripcode: actortrip });
 
@@ -37,6 +65,8 @@ module.exports = {
 
 
     if (doing.what === "ducking") {
+      do_action("ducked");
+
       if (!DUCKENINGS[sid]) {
         DUCKENINGS[sid] = 0;
       }
@@ -67,6 +97,8 @@ module.exports = {
     }
 
     if (doing.what === "stalking") {
+      do_action("burtled");
+
       var burtle_post = function(post) {
         post.dataValues.burtles += 1;
         require_app("server/makeme_store").bump_meter(2);
@@ -103,29 +135,6 @@ module.exports = {
       }
 
 
-      var where_clause = {
-        actor: actortrip,
-        object: bytrip,
-        action: "burtled",
-      };
-
-
-      if (!bytrip || !actortrip) {
-        return true;
-      }
-
-
-      Action.find({ 
-        where: where_clause
-      }).success(function(action) {
-        if (!action) {
-          Action.create(where_clause);
-        } else {
-          action.increment("count", where_clause);
-        }
-
-
-      });
 
     }
 

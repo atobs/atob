@@ -28,10 +28,18 @@ function render_chart(options) {
   var data = [];
   var chart_type = options.type || "bar";
 
-  bootloader.require("app/static/vendor/plotly-latest.min", function() {
-    _.each(["posts", "trophies", "burtles", "battleships"], function(key) {
-      var chart_data = charts[key];
+  // stupid me to name the action "burtled"
+  var enabled_charts = [ "posts", "trophies", "burtled", "sunkship" ];
+  var names = {
+    "burtled" : "burtles",
+    "sunkship" : "battleships",
+    "trophies" : "butts stuffed"
+  };
 
+  bootloader.require("app/static/vendor/plotly-latest.min", function() {
+    _.each(enabled_charts, function(key) {
+      var chart_data = charts[key];
+      var chart_name = names[key] || key;
       var labels = [];
       var series = [];
 
@@ -62,7 +70,7 @@ function render_chart(options) {
           width: 4,
         },
 
-        name: key,
+        name: chart_name,
         yaxis: "y",
         mode: "line",
         opacity: 1,
