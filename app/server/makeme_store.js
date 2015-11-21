@@ -283,6 +283,15 @@ function subscribe_to_updates(s) {
       update_post_status(olddoing.post_id);
     }
 
+    if (doing.what.indexOf(":") != -1) {
+      var actortrip = SID_TO_TRIP[sid] || "anonanonanon";
+      Action.create({
+        actor: actortrip,
+        object: doing.what,
+        action: "makeme"
+      });
+    }
+
   }
 
   // TODO: make a better schema for how this works
@@ -382,6 +391,12 @@ module.exports = {
       home_controller.get_socket().emit("burtledance");
       boards_controller.get_socket().emit("burtledance");
       posts_controller.get_socket().emit("burtledance");
+
+
+      Action.create({
+        actor: "everyanon",
+        action: "burtlestorm"
+      });
 
       console.log("METER MAXED OUT!");
       METER_TOTAL %= METER_MAX;
