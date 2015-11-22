@@ -79,21 +79,20 @@ function add_in_app_browser() {
 var notif_count = 0;
 
 function handle_notif(title, options, post) {
-  if (window.plugin && window.plugin.notification && document.hidden) {
-    setTimeout(function() {
-      window.plugin.notification.local.add({
-          id:      1,
-          json:      post.id,
-          title:   title,
-          message: options.body,
-          autoCancel: true
-      });
-    });
-  }
-
   if (window.plugin && window.plugin.backgroundMode) {
     if (window.plugin.backgroundMode.isActive()) {
-      console.log("BG MODE IS ACTIVE");
+      if (window.plugin && window.plugin.notification) {
+        setTimeout(function() {
+          window.plugin.notification.local.add({
+              id:      1,
+              json:      post.id,
+              title:   title,
+              message: options.body,
+              autoCancel: true
+          });
+        });
+      }
+
       notif_count += 1;
       window.plugin.backgroundMode.configure({
         text: notif_count + " new truths"
