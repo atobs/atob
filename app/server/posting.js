@@ -184,7 +184,7 @@ function is_user_banned(s, board, done) {
   Ban.findAll({
     where: {
       ip: ip,
-      board: board
+      board: [board, '*']
     }
   }).success(function(bans) {
     var banned = false;

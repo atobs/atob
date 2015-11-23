@@ -14,7 +14,7 @@ var BoardClaim = require_app("models/board_claim");
 
 var OPS = {
   ban: function(post, hours) {
-    hours = parseInt(hours, 10) || 1;
+    hours = parseInt(hours, 10) || 24;
 
     IP.find({where: { post_id: post.id} })
       .success(function(ip) {
