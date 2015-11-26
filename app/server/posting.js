@@ -23,6 +23,7 @@ var BoardClaim = require_app("models/board_claim");
 var Post = require_app("models/post");
 var User = require_app("models/user");
 var IP = require_app("models/ip");
+var Trophy = require_app("models/trophy");
 var model = require_app("models/model");
 var mod = require_app("server/mod");
 var post_links = require_app("server/post_links");
@@ -253,12 +254,43 @@ function check_for_blasphemy(s, parentish, post, cb) {
     var has_john = parent.title.match(john_regex);
 
     var has_poop = title.toString().match(poopex) || text.toString().match(poopex);
+    var tripcode = gen_md5(author + ":" + post.tripcode);
+
+    // absolution for anon? we'll see...
+    if (has_poop && (has_james || has_sarah || has_john)) {
+      Trophy.find({
+        where: {
+          anon: tripcode 
+        }
+      }).success(function(trophy) {
+        if (!trophy) {
+          return;
+        }
+
+        var deity = "JAMES";
+        if (has_john) {
+          deity = "JOHN";
+        } 
+        if (has_sarah) {
+          deity = "SARAH";
+        }
+
+        _.delay(function() {
+          s.emit("notif", deity + " takes your " + trophy.trophy.replace(/:/g, "") + " as penance", "info");
+        }, 500);
+        trophy.anon = deity;
+        trophy.save();
+
+      });
+
+
+    }
 
     if (has_james && has_poop) {
       Post.create({
         text: text,
         title: "i am a sinner and a blasphemer",
-        tripcode: gen_md5(author + ":" + post.tripcode),
+        tripcode: tripcode,
         author: escape_html(author),
         board_id: "heretics",
         bumped_at: Date.now()
@@ -293,7 +325,7 @@ function check_for_blasphemy(s, parentish, post, cb) {
       Post.create({
         text: text,
         title: "i am a sinner and a blasphemer",
-        tripcode: gen_md5(author + ":" + post.tripcode),
+        tripcode: tripcode,
         author: escape_html(author),
         board_id: "cleretics",
         bumped_at: Date.now()
@@ -320,7 +352,7 @@ function check_for_blasphemy(s, parentish, post, cb) {
       Post.create({
         text: text,
         title: "i am a sinner and a blasphemer",
-        tripcode: gen_md5(author + ":" + post.tripcode),
+        tripcode: tripcode,
         author: escape_html(author),
         board_id: "apostles",
         bumped_at: Date.now()

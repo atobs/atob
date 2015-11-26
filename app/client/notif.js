@@ -140,7 +140,7 @@ function notify_user(title, options, post) {
       SF.controller().goto_post(post.post_id);
     });
     if (!window._POSTS[post.parent_id]) {
-      $.notify({ title: title, msg: options.body, goto: gotoEl } , { style: "notif" });
+      $.notify({ title: title, msg: options.body, goto: gotoEl, autohideDelay: 7000 } , { style: "notif" });
     }
   }
 
