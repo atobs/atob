@@ -56,7 +56,6 @@ An example NGINX sites-available config might look like:
 
       server_name atob.xyz;
       server_name atob.cc;
-      server_name atob.kthxb.ai;
 
       location / {
          # assume the app is running on 8001
