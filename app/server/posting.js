@@ -852,6 +852,10 @@ function render_posting(api, flush, result, highlight_id) {
       postCmp.add_markdown(text_formatter);
       postCmp.gen_tripcodes(tripcode_gen.gen_tripcode);
 
+      if (post_data.board_id === "chat") {
+        postCmp.be_discreet();
+      }
+
       api.bridge.controller("posts", "set_board", post_data.board_id);
       flush(postCmp.toString());
     });

@@ -402,6 +402,22 @@ module.exports = {
       });
     }, duration);
   },
+  be_discreet: function() {
+
+    // blend the post into the page...
+
+    $(this.$el.find(".title")[0]).css("display", "none");
+    $(this.$el.find(".post")[0]).css({
+      "background-color": "inherit",
+      border: "none",
+      padding: "0px"
+    });
+    $(this.$el.find(".many")[0]).removeClass("col-md-12");
+    _.each(this.$el.find(".op"), function(el) {
+      $(el).css("display", "none");
+    });
+
+  },
 
   setup_polls: function() {
     var orderedLists = this.$el.find("ol");

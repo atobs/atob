@@ -392,6 +392,7 @@ module.exports = {
           return flush();
         }
         parent.children = posts;
+        api.bridge.controller("home", "join_chat");
         render_posting(api, flush, parent);
       });
     });
@@ -402,7 +403,6 @@ module.exports = {
       slogan: ""
     });
 
-    api.bridge.controller("home", "join_chat");
     api.bridge.controller("home", "init_tripcodes");
     api.bridge.controller("home", "set_board", "chat");
 
