@@ -21,9 +21,9 @@
           <p>
             <b>a to b</b> is a real time <b>textboard</b>. a textboard is like a
             forum, but there's no registration and post authors are anonymous.
-            sound interesting? join a board and speak whats on your mind. 
-            
-            reading between the letters is encouraged. 
+            sound interesting? join a board and speak whats on your mind.
+
+            reading between the letters is encouraged.
 
             so is reading the <a href="#" class="ruleslink">rules</a> and <a href="/b/faq">faq</a>.
           </p>
@@ -35,10 +35,10 @@
 
         <h3><a href="/b/a">get started!</a></h3>
 
-      
+
         <hr />
 
-        <div class="chat hidden"> 
+        <div class="chat hidden">
           <%= render_recent_chats() %>
         </div>
 
@@ -55,7 +55,16 @@
 
       <div class="col-md-6">
         <div class="front recent hidden threads">
-          <h3>recent threads <small><a href="/recent">(moariarty)</a></small></h3>
+          <h3>recent threads
+            <small><a class="icon-toast" href="#" data-toggle="collapse" data-target=".new_post"></a></small>
+            <small><a href="/recent">(moariarty)</a></small>
+          </h3>
+          <div class="clearfix col-md-12">
+            <%= render_partial("shared/new_post.html.erb") %>
+          </div>
+
+
+
           <%= render_recent_threads() %>
         </div>
 
@@ -68,8 +77,6 @@
         <div class="sponsored">
           <%= render_sponsored_content() %>
         </div>
-
-
 
       </div>
 

@@ -262,7 +262,7 @@ function check_for_blasphemy(s, parentish, post, cb) {
     if (has_poop && (has_james || has_sarah || has_john)) {
       Trophy.find({
         where: {
-          anon: tripcode 
+          anon: tripcode
         }
       }).success(function(trophy) {
         if (!trophy) {
@@ -272,7 +272,7 @@ function check_for_blasphemy(s, parentish, post, cb) {
         var deity = "JAMES";
         if (has_john) {
           deity = "JOHN";
-        } 
+        }
         if (has_sarah) {
           deity = "SARAH";
         }
@@ -693,7 +693,7 @@ function handle_star_post(socket, board, post) {
     anon_is_board_mod(post.author, post.tripcode, board, function(is_mod) {
       if (is_mod) {
         var BoardConfig = require_app("models/board_config");
-        BoardConfig.find({ where: { 
+        BoardConfig.find({ where: {
           board_id: board,
         }}).success(function(config) {
           function save_config(config) {
@@ -732,8 +732,8 @@ function handle_star_post(socket, board, post) {
 
           Post.create(post_data);
         });
-        
-        
+
+
       }
     });
   });
@@ -806,7 +806,7 @@ function handle_delete_post(socket, board, post) {
             });
 
           }
-      
+
 
 
         });
@@ -845,7 +845,7 @@ function render_posting(api, flush, result, highlight_id) {
     }
 
 
-  
+
     post_links.freshen_client(post_data.post_id, result.children, function() {
       var postCmp = $C("post", post_data);
       var text_formatter = require_root("app/client/text");
@@ -888,7 +888,7 @@ module.exports = {
     });
 
     s.on("new_post", function(post, cb) {
-      var board = post.board || _board;
+      var board = post.board || _board || "b";
       // Special case mod postings
       if (board === board_names.MOD) {
         mod.handle_new_post(s, post);

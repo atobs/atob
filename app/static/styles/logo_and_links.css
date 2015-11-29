@@ -27,6 +27,7 @@
   right: 0px;
   opacity: 0.4;
   zoom: 0.8;
+  cursor: pointer;
 
   @media only screen and (min-width: 767px) {
     right: 36px;

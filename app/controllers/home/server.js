@@ -734,7 +734,7 @@ module.exports = {
     });
 
   },
-  mods: function(ctx, api) { 
+  mods: function(ctx, api) {
     api.template.add_stylesheet("home");
     var BoardClaim = require_app("models/board_claim");
 
@@ -814,6 +814,11 @@ module.exports = {
     makeme_store.lurk(s);
     makeme_store.subscribe_to_updates(s);
     client_api.add_to_socket(s);
+
+    s.on("new_post", function(post, cb) {
+      post.board = "b";
+      posting.handle_new_post(s, post.board, post, cb);
+    });
 
     s.on("new_reply", function(post, cb) {
       post.tripcode = Math.random() + "";
