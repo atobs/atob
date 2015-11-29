@@ -7,21 +7,7 @@ var EMOJIES = require("app/client/emojies");
 require("app/static/vendor/velocity");
 
 
-
-var ICON_LOOKUP = {
-  e: "icon-atob",
-  t: "icon-keyboardalt",
-  f: "icon-glassesalt",
-  u: "icon-glassesalt",
-  d: "icon-ducky",
-  b: "icon-comedy",
-  n: "icon-toast",
-  s: "icon-ghost"
-};
-function get_anonicator_for(c) {
-  return ICON_LOOKUP[c[0]] || "icon-" + c.replace(/:/g, "");
-}
-
+var get_anonicator_for = require("app/client/anonications").get_anonicator_for;
 var cookie_opts = {
   path: '/',
   expires: 365

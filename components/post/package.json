@@ -5,6 +5,7 @@
 
   "template": "post.html.erb",
   "helpers": [ 
+    "app/client/anonications",
     "app/client/tripcode", 
     "app/client/text" ],
   "no_redefine" : false

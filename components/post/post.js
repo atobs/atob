@@ -380,8 +380,10 @@ module.exports = {
       s: "icon-ghost hue"
     };
 
+    var get_anonicator_for = this.helpers['app/client/anonications'].get_anonicator_for;
+
     var str = _.map(counts, function(c) {
-      return "<i class='" + (lookup[c[0]] || "icon-" + c.replace(/:/g, "")) + "' />";
+      return "<i class='" + get_anonicator_for(c) + "' />";
     });
 
     // Update who is typing, who is idle and who is gone.
