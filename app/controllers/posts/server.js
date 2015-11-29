@@ -11,9 +11,11 @@ var posting = require_app("server/posting");
 var render_posting = posting.render_posting;
 var makeme_store = require_app("server/makeme_store");
 var post_links = require_app("server/post_links");
+var board_names = require_app("server/board_names");
 var Post = require_app("models/post");
 var ArchivedPost = require_app("models/archived_post");
 var Board = require_app("models/board");
+var worship_boards = require_app("server/worship_boards");
 
 var client_api = require_app("server/client_api");
 var sponsored_content = require_app("server/sponsored_content");
@@ -77,7 +79,7 @@ module.exports = {
 
           var post_data = result.dataValues;
 
-          if (post_data.board_id === "chat") {
+          if (post_data.board_id === board_names.CHAT) {
             api.bridge.controller("posts", "goto_chat");
             flush();
             return;
@@ -112,7 +114,7 @@ module.exports = {
     var render_sinners = api.page.async(function(flush) {
       Post.findAll({
         where: {
-          board_id: ["heretics", "cleretics", "apostles"]
+          board_id: worship_boards.boards,
         }
       }).success(function(results) {
         var sinners = _.map(results, function(r) { return r.dataValues; });

@@ -14,6 +14,7 @@ var mod = require_app("server/mod");
 var config = require_core("server/config");
 var sponsored_content = require_app("server/sponsored_content");
 var client_api = require_app("server/client_api");
+var worship_boards = require_app("server/worship_boards");
 
 var makeme_store = require_app("server/makeme_store");
 
@@ -70,7 +71,7 @@ module.exports = {
       board_id_clause = null;
       order_clause = "created_at DESC";
       limit = 300;
-    } else if (board_id === "heretics" || board_id === "cleretics" || board_id === "apostles") {
+    } else if (worship_boards.contains(board_id)) {
       order_clause = "created_at DESC";
     }
 
@@ -170,7 +171,7 @@ module.exports = {
     var render_sinners = api.page.async(function(flush) {
       Post.findAll({
         where: {
-          board_id: ["heretics", "cleretics", "apostles"]
+          board_id: worship_boards.boards
         }
       }).success(function(results) {
         var sinners = _.map(results, function(r) { return r.dataValues; });

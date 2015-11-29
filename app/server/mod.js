@@ -9,6 +9,7 @@ var load_controller = require_core("server/controller").load;
 var gen_md5 = require_app("server/md5");
 var config = require_core("server/config");
 var post_links = require_app("server/post_links");
+var board_names = require_app("server/board_names");
 
 var BoardClaim = require_app("models/board_claim");
 
@@ -25,7 +26,7 @@ var OPS = {
         post.title = "[banned from " + post.board_id + "] " + post.title;
         var old_board_id = post.board_id;
 
-        post.board_id = "ban";
+        post.board_id = board_names.BAN;
         post.parent_id = null;
         post.thread_id = null;
 
@@ -145,10 +146,10 @@ module.exports = {
 
           var board;
           if (success && user) {
-            board = config.mod_board || 'mod';
+            board = config.mod_board || board_names.MOD;
             socket.emit("notif", op + " success. all hail JAMES", "success");
           } else {
-            board = config.fail_board || 'cop';
+            board = config.fail_board || board_names.COP;
             socket.emit("notif", op + " failure. the JAMES knows all", "warn");
           }
 

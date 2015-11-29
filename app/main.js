@@ -5,6 +5,7 @@ var fakedata = require_app("fakedata");
 var Board = require_app("models/board");
 var config = require_core("server/config");
 var zlib = require("zlib");
+var board_names = require_app("server/board_names");
 
 
 if (process.env.DEBUG) {
@@ -38,7 +39,7 @@ module.exports = {
 
       if (force_reset) {
         var Post = require_app("models/post");
-        Post.create({ board_id: "chat", title: "welcome to atob",  }).success(function() { });
+        Post.create({ board_id: board_names.CHAT, title: "welcome to atob",  }).success(function() { });
       }
 
       if (process.env.FAKEDATA) {

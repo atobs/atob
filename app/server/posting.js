@@ -17,6 +17,7 @@ var MAX_COLONS = 100;
 
 var load_controller = require_core("server/controller").load;
 var gen_md5 = require_app("server/md5");
+var board_names = require_app("server/board_names");
 
 var Ban = require_app("models/ban");
 var BoardClaim = require_app("models/board_claim");
@@ -28,6 +29,7 @@ var model = require_app("models/model");
 var mod = require_app("server/mod");
 var post_links = require_app("server/post_links");
 var anon_pocket = require_app("server/anon_pocket");
+var worship_boards = require_app("server/worship_boards");
 
 var HIDDEN_BOARDS = require_app("server/hidden_boards");
 
@@ -138,8 +140,8 @@ function handle_new_post(s, board, post, cb) {
 
   is_user_banned(s, board, function(banned) {
     if (banned) {
-      board = "ban";
-      data.board_id = "ban";
+      board = board_names.BAN;
+      data.board_id = board;
     }
 
     Post.create(data)
@@ -292,7 +294,7 @@ function check_for_blasphemy(s, parentish, post, cb) {
         title: "i am a sinner and a blasphemer",
         tripcode: tripcode,
         author: escape_html(author),
-        board_id: "heretics",
+        board_id: board_names.HERETICS,
         bumped_at: Date.now()
       }).success(function() {
 
@@ -327,7 +329,7 @@ function check_for_blasphemy(s, parentish, post, cb) {
         title: "i am a sinner and a blasphemer",
         tripcode: tripcode,
         author: escape_html(author),
-        board_id: "cleretics",
+        board_id: board_names.CLERETICS,
         bumped_at: Date.now()
       }).success(function() {
 
@@ -354,7 +356,7 @@ function check_for_blasphemy(s, parentish, post, cb) {
         title: "i am a sinner and a blasphemer",
         tripcode: tripcode,
         author: escape_html(author),
-        board_id: "apostles",
+        board_id: board_names.APOSTLES,
         bumped_at: Date.now()
       }).success(function() {
 
@@ -467,7 +469,7 @@ function handle_new_reply(s, board, post, cb) {
 
       is_user_banned(s, board, function(banned) {
         if (banned) {
-          board = "ban";
+          board = board_names.BAN;
           title = "reply to " + post.post_id + ":" + title;
         }
 
@@ -501,7 +503,7 @@ function handle_new_reply(s, board, post, cb) {
             title = blasphemy.title;
           }
 
-          if (board === "chat") {
+          if (board === board_names.CHAT) {
             post.tripcode = Math.random() + "";
           }
 
@@ -546,7 +548,7 @@ function handle_new_reply(s, board, post, cb) {
                 var home_controller = load_controller("home");
                 var home_socket = home_controller.get_socket();
                 home_socket.emit("new_reply", p.dataValues);
-              } else if (p.dataValues.board_id === "chat") {
+              } else if (p.dataValues.board_id === board_names.CHAT) {
                 var home_controller = load_controller("home");
                 var home_socket = home_controller.get_socket();
                 home_socket.emit("new_chat", p.dataValues);
@@ -566,7 +568,7 @@ function handle_new_reply(s, board, post, cb) {
 }
 
 function handle_update_post(socket, board, post, cb) {
-  if (board === "log" || board === "mod") {
+  if (board === board_names.LOG || board === board_names.MOD) {
     return;
   }
 
@@ -607,7 +609,7 @@ function handle_update_post(socket, board, post, cb) {
           }
 
           Post.create({
-            board_id: "log",
+            board_id: board_names.LOG,
             tripcode: delete_code,
             title: "update " + post.id,
             text: "**new text for #" + post.id + ":**\n\n" + escape_html(post.text) +  "\n\n\n\n**old text for #" + post.id + ":**\n\n " + result.text,
@@ -720,7 +722,7 @@ function handle_star_post(socket, board, post) {
 
           var text = post_text(result);
           var post_data = {
-            board_id: "mod",
+            board_id: board_names.MOD,
             tripcode: delete_code,
             title: "star " + post.id,
             author: post.author,
@@ -749,8 +751,7 @@ function handle_delete_post(socket, board, post) {
     var delete_code = gen_md5(post.author + ':' + post.tripcode);
     if (result) {
 
-      if (result.board_id === "heretics" ||
-          result.board_id === "log" || result.board_id === "cleretics") {
+      if (worship_boards.contains(result.board_id) || result.board_id === board_names.LOG) {
         socket.emit("notif", "nice try, but badanon.", "warn");
         return;
       }
@@ -760,7 +761,7 @@ function handle_delete_post(socket, board, post) {
         action_name = "OP Deleted post #";
 
         Post.create({
-          board_id: "log",
+          board_id: board_names.LOG,
           tripcode: delete_code,
           title: "delete " + post.id,
           author: post.author,
@@ -781,7 +782,7 @@ function handle_delete_post(socket, board, post) {
 
             var text = post_text(result);
             var post_data = {
-              board_id: "mod",
+              board_id: board_names.MOD,
               tripcode: delete_code,
               title: "delete " + post.id,
               author: post.author,
@@ -797,7 +798,7 @@ function handle_delete_post(socket, board, post) {
 
             socket.emit("notif", action_name + post.id, "success");
             Post.create({
-              board_id: "log",
+              board_id: board_names.LOG,
               tripcode: delete_code,
               title: "report " + post.id,
               author: post.author,
@@ -852,7 +853,7 @@ function render_posting(api, flush, result, highlight_id) {
       postCmp.add_markdown(text_formatter);
       postCmp.gen_tripcodes(tripcode_gen.gen_tripcode);
 
-      if (post_data.board_id === "chat") {
+      if (post_data.board_id === board_names.CHAT) {
         postCmp.be_discreet();
       }
 
@@ -889,7 +890,7 @@ module.exports = {
     s.on("new_post", function(post, cb) {
       var board = post.board || _board;
       // Special case mod postings
-      if (board === "mod") {
+      if (board === board_names.MOD) {
         mod.handle_new_post(s, post);
       } else {
         handle_new_post(s, board, post, cb);
@@ -900,7 +901,7 @@ module.exports = {
       var board = post.board_id || post.board || _board;
       Post.find({ where: { id: post.post_id }}).success(function(result) {
         if (result) {
-          if (result.board_id === "mod") {
+          if (result.board_id === board_names.MOD) {
 
             post.parent_id = post.id || post.post_id;
             post.thread_id = post.id || post.post_id;

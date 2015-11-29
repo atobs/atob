@@ -13,6 +13,7 @@ var posting = require_app("server/posting");
 var render_posting = posting.render_posting;
 var sponsored_content = require_app("server/sponsored_content");
 var config = require_core("server/config");
+var board_names = require_app("server/board_names");
 
 var ICONS = require_app("client/emojies");
 var makeme_store = require_app("server/makeme_store");
@@ -136,7 +137,7 @@ function render_even_more_recent(api, cb, use_header) {
   var render_recent_threads = api.page.async(function(flush) {
     Post.findAll({
       where: [
-        "Posts.thread_id is NULL AND Posts.board_id != 'ban'"
+        "Posts.thread_id is NULL",
       ],
       order: "id DESC",
       limit: 100
@@ -369,7 +370,7 @@ module.exports = {
       Post.findAll({
         where: {
           board_id: {
-            eq: "chat"
+            eq: board_names.CHAT
           },
         },
         order: "id DESC",
@@ -461,7 +462,7 @@ module.exports = {
     var render_recent_threads = api.page.async(function(flush) {
       Post.findAll({
         where: [
-          "Posts.thread_id is NULL AND Posts.board_id != 'ban'"
+          "Posts.thread_id is NULL",
         ],
         order: "id DESC",
         limit: 100
@@ -534,7 +535,7 @@ module.exports = {
       Post.findAll({
         where: {
           board_id: {
-            eq: "chat"
+            eq: board_names.CHAT
           },
         },
         order: "id DESC",
@@ -816,7 +817,7 @@ module.exports = {
 
     s.on("new_reply", function(post, cb) {
       post.tripcode = Math.random() + "";
-      posting.handle_new_reply(s, "chat", post, cb);
+      posting.handle_new_reply(s, board_names.CHAT, post, cb);
     });
 
     s.on("upboat", function(link_id, cb) {

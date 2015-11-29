@@ -6,6 +6,8 @@ var BoardClaim = require_app("models/board_claim");
 var gen_md5 = require_app("server/md5");
 var User = require_app("models/user");
 var config = require_core("server/config");
+var worship_boards = require_app("server/worship_boards");
+var board_names = require_app("server/board_names");
 
 module.exports = {
   add_to_socket: function(s) {
@@ -102,7 +104,7 @@ module.exports = {
           s.emit("notif", "A new board claim has been created for you, anon", "success");
 
           Post.create({
-            board_id: "mod",
+            board_id: board_names.MOD,
             author: tripname,
             tripcode: hashtrip,
             created_at: Date.now(),
@@ -129,7 +131,7 @@ module.exports = {
       Post.findAll({
         order: "id DESC",
         where: {
-          board_id: "chat",
+          board_id: board_names.CHAT,
         },
         limit: 50
       }).success(function(posts) {
@@ -196,7 +198,7 @@ module.exports = {
 
       Post.findAll({
         where: [
-          "Posts.thread_id is NULL AND Posts.board_id != 'ban'"
+          "Posts.thread_id is NULL"
         ],
         order: "id DESC",
         limit: 100
@@ -296,7 +298,7 @@ module.exports = {
         board_id_clause = null;
         order_clause = "created_at DESC";
         limit = 300;
-      } else if (board_id === "heretics" || board_id === "apostles" || board_id === "cleretics") {
+      } else if (worship_boards.contains(board_id)) {
         order_clause = "created_at DESC";
       }
 
@@ -318,7 +320,7 @@ module.exports = {
             
             results = _.filter(results, function(r) { 
               var is_hidden = false;
-              _.each([ "heretics", "faq", "bugs", "log", "mod", "cop", "ban", "test"], function(board) {
+              _.each(HIDDEN_BOARDS, function(board) {
                 is_hidden = is_hidden || board === r.board_id;
               });
 

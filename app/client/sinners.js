@@ -1,4 +1,4 @@
-
+var board_names = require("app/server/board_names");
 var SINNERS;
 function check_and_replace_trip(el, tripcode) {
   tripcode = tripcode || $(el).data("tripcode");
@@ -22,11 +22,11 @@ module.exports = {
 
     var iconClass = "icon-poop";
     // for SARAH!
-    if (sinner_data.board_id === "cleretics") {
+    if (sinner_data.board_id === board_names.CLERETICS) {
       iconClass = "icon-securityalt-shieldalt";
     }
     // for JOHN!
-    if (sinner_data.board_id === "apostles") {
+    if (sinner_data.board_id === board_names.APOSTLES) {
       iconClass = "icon-crackedegg";
     }
     

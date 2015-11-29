@@ -6,6 +6,7 @@ var marked = require_app("static/vendor/marked");
 var UPBOAT_TIMEOUT = 60 * 1000;
 var Link = require_app("models/link");
 var bridge = require_core("server/bridge");
+var HIDDEN_BOARDS = require_app("server/hidden_boards");
 
 var text_formatter = require_app("client/text");
 
@@ -14,7 +15,7 @@ function find_and_create_links(post) {
     post = post.dataValues;
   }
 
-  if (post.board_id === 'log' || post.board_id === 'ban' || post.board_id === 'bugs') {
+  if (_.contains(HIDDEN_BOARDS, post.board_id)) {
     return;
   }
 

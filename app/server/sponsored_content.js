@@ -1,4 +1,5 @@
 var Post = require_app("models/post");
+var board_names = require_app("server/board_names");
 
 module.exports = {
   render: function(api) {
@@ -6,7 +7,7 @@ module.exports = {
     var ad;
     return api.page.async(function(flush) {
       Post.findAll({
-        where: { board_id: "ads", parent_id: null },
+        where: { board_id: board_names.ADS, parent_id: null },
       }).success(function(results) {
 
         function wrap_in_divs(inner) {
