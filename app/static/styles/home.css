@@ -29,6 +29,7 @@
   margin-right: 10px;
   right: 5px;
   top: 85px;
+  cursor: pointer;
 
   @media @device {
     float: right;
