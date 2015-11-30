@@ -59,7 +59,7 @@ body {
 
 .hideContent {
   height: 6em;
-  display: block;
+  display: inline-block;
   overflow: hidden;
 }
 
