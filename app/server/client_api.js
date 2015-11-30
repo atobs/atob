@@ -9,6 +9,10 @@ var config = require_core("server/config");
 var worship_boards = require_app("server/worship_boards");
 var board_names = require_app("server/board_names");
 
+
+// just a cache
+var EMOTION_TABLE = {};
+
 module.exports = {
   add_to_socket: function(s) {
     s.on("adminme", function(board, author, tripcode, cb) {
@@ -286,6 +290,57 @@ module.exports = {
         cb(_.map(results, function(r) {
           return r.dataValues.trophy.replace(/:/g, "");
         }));
+      });
+    });
+
+    s.on("get_emotions", function(tripcode, cb) {
+
+      if (EMOTION_TABLE[tripcode]) {
+        cb && cb(EMOTION_TABLE[tripcode]);
+        return;
+      }
+
+
+
+      Post.findAll({
+        where: {
+          tripcode: tripcode
+        }
+      }).success(function(results) {
+        var then = Date.now();
+        if (results && results.length) {
+          var sentiment = require("sentiment");
+
+          var polarities = [];
+          var subjectivities = [];
+
+          _.each(results, function(r) {
+            if (!r.text) {
+              return;
+            }
+            var e = sentiment(r.text);
+            polarities.push(e.score);
+        
+            subjectivities.push(e.comparative);
+          });
+
+          var avg_p = _.reduce(polarities, function(m, o) { return m + o; }, 0) / polarities.length;
+          var avg_s = _.reduce(subjectivities, function(m, o) { return m + o; }, 0) / subjectivities.length;
+          var done = Date.now();
+          
+          var emotions = {
+            polarity: avg_p,
+            subjectivity: avg_s,
+            time: (done - then) / 1000
+          };
+
+          EMOTION_TABLE[tripcode] = emotions;
+          _.delay(function() {
+            delete EMOTION_TABLE[tripcode];
+          }, 60 * 1000);
+
+          cb && cb(emotions);
+        }
       });
     });
 

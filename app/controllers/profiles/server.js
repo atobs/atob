@@ -9,6 +9,7 @@ var Post = require_app("models/post");
 var Action = require_app("models/action");
 var Trophy = require_app("models/trophy");
 var board_utils = require_app("server/board_utils");
+var client_api = require_app("server/client_api");
 
 function make_trips(flush, icon) {
   return function (results) {
@@ -122,6 +123,8 @@ module.exports = {
       });
     });
 
+    api.bridge.controller("profiles", "set_code", tripcode);
+
     var template_str = api.template.render("controllers/profiles/profiles.html.erb", { 
       tripcode: tripcode,
       render_about: render_about,
@@ -129,8 +132,10 @@ module.exports = {
       render_burtles: render_burtles,
       render_trophies: render_trophies
     });
-    api.page.render({ content: template_str });
+    api.page.render({ content: template_str, socket: true });
   },
 
-  socket: function() {}
+  socket: function(s) {
+    client_api.add_to_socket(s); 
+  }
 };

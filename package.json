@@ -9,6 +9,7 @@
     "cheerio": "^0.13.1",
     "Faker": "^0.7.0",
     "escape-html": "^1.0.1",
+    "sentiment" : "x",
     "rss" : "x"
   },
   "scripts": {
