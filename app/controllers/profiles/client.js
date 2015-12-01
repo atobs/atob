@@ -23,7 +23,6 @@ module.exports = {
   set_code: function(code) {
     function do_work() {
       SF.controller().emit("get_emotions", code, function(e) {
-        console.log("EMOTIONS", e);
         $(".loading").fadeIn();
         _.delay(function() { 
           $(".container").slideUp(function() {

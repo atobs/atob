@@ -121,6 +121,8 @@ module.exports = {
     var tripcode = target.data("tripcode");
 
     window.open("/u/" + tripcode, "_blank");
+    e.preventDefault();
+    e.stopPropagation();
   },
 
   handle_click_boardlink: function(e) {

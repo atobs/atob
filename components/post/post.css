@@ -246,6 +246,10 @@
   float: none;
 }
 
+.tripcode {
+  float: none;
+}
+
 
 // Most important
 .maximize {
