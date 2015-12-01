@@ -23,11 +23,13 @@ module.exports = {
     var groups = post.text.match(POCKET_RE);
     if (groups && groups[2]) {
       console.log("Adding trophy", groups[1], "in post", groups[2]);
-      Post.find({ where: { id: groups[2] }}).success(function(pocket_post) {
+      Post.find({ where: { id: groups[2] }, order: "id ASC"}).success(function(pocket_post) {
         if (pocket_post) {
           // we found a post, therefore we can make this action!
           Trophy.create({
             actor: post.tripcode,
+            updated_at: pocket_post.created_at,
+            created_at: pocket_post.created_at,
             anon: pocket_post.dataValues.tripcode,
             trophy: groups[1],
             post_id: groups[2],
