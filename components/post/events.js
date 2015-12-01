@@ -420,6 +420,7 @@ module.exports = {
       replyContainer.text(escaped_reply);
       this.helpers['app/client/text'].format_text(replyContainer);
       replyPreview.append(replyContainer);
+      this.replace_oplinks(replyContainer);
     }
 
 

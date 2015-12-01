@@ -346,6 +346,7 @@ module.exports = {
     return this.starred;
 
   },
+  replace_oplinks: replace_oplinks,
   unstar: function() {
     this.starred = false;
     this.$el.find(".post")
