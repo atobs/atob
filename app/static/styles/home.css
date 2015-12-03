@@ -76,6 +76,7 @@ h1, h2, h3 {
 
 .tripcode {
   cursor: pointer;
+  float: none;
 }
 
 .recent_container {

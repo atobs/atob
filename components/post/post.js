@@ -30,6 +30,111 @@ function async_loop(items, func, timeout) {
 
 }
 
+// make a list of last seen IDs per post
+// then, whenever you have a 'last seen' ID
+// you can turn the thread into the two parter
+function collapse_threads($el, lastSeenId) {
+  var depths = {};
+
+  if (!lastSeenId) {
+    lastSeenId = 0;
+  }
+
+  function collapse_reply(replyEl, replyId) {
+    // Look for replylinks, right?
+    if (replyEl.data("visited")) {
+      return;
+    }
+
+    replyEl.data("visited", true);
+
+    var repliesTo = $el.find(".replylink[data-parent-id=" + replyId + "], .oplink[data-parent-id=" + replyId + "]");
+
+    var threaded = [];
+    var unthreaded = [];
+
+    _.each(repliesTo, function(r) {
+      var cloneId = $(r).closest(".reply").attr("id");
+      if (!cloneId) {
+        return;
+      }
+
+      cloneId = cloneId.replace(/reply/, "");
+      if (parseInt(cloneId, 10) < lastSeenId || !lastSeenId) {
+        threaded.push(r);
+      } else {
+        unthreaded.push(r);
+      }
+    });
+
+    var padding = 2;
+    replyEl.css("padding-left", "0px"); 
+    replyEl.css("margin-left", "0px");
+    if (repliesTo.length <= 1) {
+      padding = 1;
+    }
+
+    if (threaded.length) {
+      var nestEl = replyEl.children(".nest");
+      if (!nestEl.length) {
+        nestEl = $("<div class='nest' />");
+        replyEl.append(nestEl);
+      }
+
+      if (repliesTo.length > 1) {
+        nestEl.addClass("many");
+
+      }
+
+      _.each(threaded, function(el) {
+        var parEl = $(el).closest(".reply");
+        if (parEl.data("visited")) {
+          return;
+        }
+
+        var cloneEl = parEl;
+        var depth = depths[replyId] || 1;
+        var cloneId = cloneEl.attr("id");
+        if (!cloneId) {
+          return;
+        }
+
+        cloneId = cloneId.replace(/reply/, "");
+        depths[cloneId] = depth + 1;
+
+        collapse_reply(cloneEl, cloneId);
+
+        cloneEl.css("padding-left", padding + "px");
+        cloneEl.css("padding-right", "0px");
+        cloneEl.css("margin-left", padding + "px");
+
+        nestEl.append(cloneEl);
+
+      });
+    }
+  }
+
+  var replies = $el.find(".reply");
+  var repliesContainer = $el.find(".replies");
+
+  _.each(replies, function(r) {
+
+    var thisEl = $(r);
+    var thisId = thisEl.attr("id");
+
+    if (!thisId) {
+      return;
+    }
+
+
+    thisId = thisId.replace(/reply/, "");
+
+    // Over here, we need to either append this reply to teh end (its greater than lastSeen)
+    // or put it in its right place...
+    collapse_reply(thisEl, thisId);
+  });
+
+}
 function replace_oplinks(el) {
   el.find(".tripcode.oplink").each(function() {
     var child = $(this);
@@ -177,7 +282,7 @@ module.exports = {
       });
     }
 
-    var replyInput = this.$el.find(".reply textarea");
+    var replyInput = this.$el.find(".replyform textarea");
     var text = window.bootloader.storage.get("reply" + this.get_post_id());
     replyInput.val(text);
     require("app/client/emojies", function(emojies) {
@@ -230,8 +335,100 @@ module.exports = {
     });
 
     replace_oplinks(this.$el);
+
+    if (window.bootloader.storage.get("threadify") === "true" && options.threading) {
+      // check if we should collapse threads...
+      collapse_threads(this.$el);
+    }
   },
 
+  collapse_threads: function(last_seen) {
+    this.last_seen_id = last_seen;
+
+    $(".reply").data("visited", false);
+    var replies = this.$el.find(".reply");
+    replies = _.sortBy(replies, function(r) {
+      var id = $(r).attr("id");
+      return id && parseInt(id.replace(/reply/, ""), 10);
+    });
+
+    var replyContainer = this.$el.find(".replies");
+    var prevReply;
+    _.each(replies, function(r) {
+      replyContainer.append(r);
+
+    });
+
+    collapse_threads(this.$el, last_seen);
+
+    _.each(this.$el.find(".reply"), function(r) {
+      var id = $(r).attr("id");
+      id = (id || 0) && parseInt(id.replace(/reply/, ""), 10);
+      if (id && id < last_seen) {
+        prevReply = r;
+      }
+    });
+
+    console.log("PREV REPLY", prevReply);
+
+    var spacerDiv = this.make_spacer_div();
+    spacerDiv.fadeOut();
+    function set_spacer_text(text) {
+      spacerDiv.find(".spacertext").empty().append(text);
+    }
+
+    function scroll_to_spacer() {
+      spacerDiv.stop(true, true).fadeIn();
+      $(window).scrollTo(spacerDiv, 500, {
+        offset: {
+          top: -200
+        }
+      });
+    }
+
+    if (prevReply) {
+      var parents = $(prevReply).parents(".reply");
+      parents.add(prevReply.closest(".reply"));
+      var lastParent = _.last(parents, 1);
+
+      console.log("PARENTS", parents);
+
+      if (!parents.length) {
+        replyContainer.append(spacerDiv);
+        set_spacer_text("Now");
+        scroll_to_spacer();
+
+        return;
+      }
+
+      $(lastParent).after(spacerDiv);
+      // what was the last reply's time?
+      var id = $(prevReply).attr("id").replace(/reply/, "");
+      var replyObj = window._REPLIES[id];
+      if (replyObj) {
+        var ago = $("<div class='timeago' />");
+        ago.attr("title", replyObj.created_at);
+
+        var delta = (+new Date()) - (+new Date(replyObj.created_at));
+        if (delta > 1000 * 60 * 60 * 24) {
+          ago.html((new Date(replyObj.created_at)).toLocaleString());
+        } else {
+          ago.timeago();
+        }
+
+        set_spacer_text(ago);
+
+      } else {
+        set_spacer_text("");
+      }
+    } else {
+      set_spacer_text("the beginning");
+      replyContainer.prepend(spacerDiv);
+    }
+
+    scroll_to_spacer();
+
+  },
   bumped: function(animate) {
     var repliesEl = this.$el.find(".replies");
     if (animate) {
@@ -263,7 +460,7 @@ module.exports = {
 
     REPLY_TEXT[data.post_id] = data;
 
-    var replyEl =$("<div class='pam reply'/>");
+    var replyEl =$("<div class='reply'/>");
     replyEl.attr("id", replyId);
     var tripEl = $("<div class='tripcode' />")
       .data("tripcode", data.tripcode);
@@ -273,16 +470,16 @@ module.exports = {
 
     replyEl.append(tripEl);
 
+    var deleteEl = $("<a class='deletereply ' href='#' ><i class='icon-edit'> </i> </a>");
+    deleteEl.attr("data-parent-id", data.post_id);
+    replyEl.append(deleteEl);
+
     var infoEl = $("<a class='rfloat addreply' >");
     infoEl.attr("href", "/p/" + data.post_id);
     infoEl.html(data.post_id);
     infoEl.attr("data-parent-id", data.post_id);
     infoEl.attr("title", (new Date(data.created_at)).toLocaleString());
     replyEl.append($("<small />").append(infoEl));
-
-    var deleteEl = $("<a class='deletereply icon-edit' href='#' />");
-    deleteEl.attr("data-parent-id", data.post_id);
-    replyEl.append(deleteEl);
 
     var titleEl = $("<b />").text(data.title);
     this.helpers['app/client/text'].format_text(titleEl);
@@ -302,12 +499,50 @@ module.exports = {
     return replyEl;
   },
 
+  thread_back: function() {
+    // look through our replies and then go forward and backwards 
+
+    // so... now we find the thread id before this one
+    var opts = this.options.client_options;
+    var indexOf = _.indexOf(opts.replies, window._REPLIES[this.last_seen_id]);
+    var newId = opts.replies[Math.max(0, indexOf - 5)]; 
+    console.log("NEW ID", newId);
+    this.collapse_threads(newId.id);
+  },
+
+  thread_forward: function() {
+    // so... now we find the thread id before this one
+    var opts = this.options.client_options;
+    var indexOf = _.indexOf(opts.replies, window._REPLIES[this.last_seen_id]);
+    var newId = opts.replies[Math.min(opts.replies.length-1, indexOf + 5)]; 
+    console.log("NEW ID", newId);
+    this.collapse_threads(newId.id);
+  },
+
+  make_spacer_div: function() {
+    var self = this;
+    var spacerDiv = self.$el.find(".newreplyspacer");
+    if (!spacerDiv.length) {
+      spacerDiv = $("<div class='newreplyspacer clearfix pal'><div class='spacertext' /></div>");
+      var upDiv = $("<div class='history back icon icon-arrow-up rfloat' />");
+      var downDiv = $("<div class='history forward icon icon-arrow-down lfloat' />");
+
+      spacerDiv.append(upDiv);
+      spacerDiv.append(downDiv);
+      spacerDiv.attr("title", "new replies go under here");
+      self.$el.find(".replies").append(spacerDiv);
+    }
+
+    return spacerDiv;
+  },
+
   add_reply: function(data, dontpulse) {
 
     if (!dontpulse) {
       this.$el.find(".post").addClass("pulsepost");
     }
 
+    this.make_spacer_div();
     var replyEl = this.make_reply_el(data);
 
 
@@ -315,6 +550,8 @@ module.exports = {
     var repliesEl = this.$el.find(".replies");
     repliesEl.append(replyEl);
     this.bumped(true);
+
+    this.last_seen_id = data.post_id;
 
     process_vote(replyEl);
 
@@ -362,7 +599,7 @@ module.exports = {
     var post = this.$el.find(".post");
 
     post.css("border-color", "gold");
-    
+
     this.bumped();
     var parent = this.$el.closest(".posts");
     parent.prepend(this.$el);

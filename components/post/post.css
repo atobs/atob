@@ -16,10 +16,6 @@
   opacity: 0.8;
 }
 
-.highlight {
-  background-color: #fafaee;
-}
-
 .placeholder {
   width: 0px;
   display: inline-block;
@@ -143,6 +139,12 @@
   cursor: pointer;
 }
 
+.reply {
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+}
+
 .reply p {
   display: block;
 }
@@ -233,7 +235,14 @@
   margin-top: 10px;
   min-height: 50px;
   max-height: 200px !important;
-  overflow-y: scroll;
+  overflow-y: auto;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+
+.nest.many {
+  padding-left: 4px;
+  border-left: 1px dotted #aeaeae;
 }
 
 .replies .tripcode {
@@ -243,10 +252,6 @@
   overflow-y: hidden;
   margin-bottom: 0px;
   margin-right: 8px;
-  float: none;
-}
-
-.tripcode {
   float: none;
 }
 
@@ -290,8 +295,8 @@
 }
 
 .deletereply {
-  float: left;
-  margin-left: -20px;
+  float: right;
+  margin-left: 5px;
   margin-top: 2px;
   opacity: 0.3;
   font-size: 80%;
@@ -454,4 +459,33 @@ ol li .votes {
 
 .blockquote {
   color: #00af32;
+}
+
+.newreplyspacer {
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-top: 3px dotted #aeaeae;
+  border-bottom: 3px dotted #aeaeae;
+
+  text-align: center;
+
+  .spacertext {
+    display: inline-block;
+    margin: auto;
+    width: 50%;
+    min-width: 200px;
+    max-width: 600px;
+  }
+
+  .history {
+    cursor: pointer;
+    opacity: 0.7;
+    display: block;
+  }
+
+  .history:hover {
+    opacity: 1;
+  }
+
 }

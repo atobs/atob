@@ -74,7 +74,7 @@
     <div class="replies clearfix mtm mbm col-md-12 <%= replies.length > 6 ? "many" : "" %>">
       <% _.each(replies, function(r) { %>
         <% highlighted = highlight_id == r.id %>
-        <div class="pam reply <%= highlighted ? "highlight" : "" %>" id="reply<%= r.id %>">
+        <div class="reply <%= highlighted ? "highlight" : "" %>" id="reply<%= r.id %>">
           <div class="tripcode" data-tripcode="<%= r.tripcode %>"></div>
           <a href="#" class="deletereply"
             data-parent-id="<%= r.id %>"
@@ -129,7 +129,7 @@
 
   <div class="mtl clearfix">
     <% if (!archived) { %>
-      <form class="reply">
+      <form class="replyform">
         <div class="mtl clearfix mbl" style="position: relative">
           <textarea type="text" class="form-control" placeholder="reply"></textarea>
           <input type="file" class="photoupload" 

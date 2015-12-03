@@ -54,10 +54,10 @@ module.exports = {
     "click .addglyph" :  "handle_addglyph",
     "click .boardlink" : "handle_click_boardlink",
     "submit form": "handle_reply",
-    "keydown .post .reply textarea" : "handle_maybe_submit",
-    "keydown .reply textarea" : "handle_typing",
-    "blur .reply textarea" : "handle_unfocus",
-    "focus .reply textarea" : "handle_focus",
+    "keydown .post .replyform textarea" : "handle_maybe_submit",
+    "keydown .replyform textarea" : "handle_typing",
+    "blur .replyform textarea" : "handle_unfocus",
+    "focus .replyform textarea" : "handle_focus",
     "click .addreply" : "handle_addreply",
     "click .deletereply" : "handle_deletereply",
     "click .truncable" : "handle_click_truncable",
@@ -76,7 +76,9 @@ module.exports = {
     "mouseenter .reply" : "handle_mouseenter_reply",
     "mouseleave .reply" : "handle_mouseleave_reply",
     "click .upload_image" : "click_upload_image",
-    "change .reply input.photoupload" : "handle_upload_image"
+    "change .replyform input.photoupload" : "handle_upload_image",
+    "click .history.back" : "thread_back",
+    "click .history.forward" : "thread_forward"
   },
   handle_upload_image: function(e) {
     var self = this;
@@ -87,14 +89,14 @@ module.exports = {
     e.preventDefault();
 
     // now do we add the image to the post?
-    var textareaEl = this.$el.find(".reply textarea");
+    var textareaEl = this.$el.find(".replyform textarea");
 
     bootloader.require("app/client/imgur", function(handle_imgur_upload) {
       handle_imgur_upload(textareaEl, e.target.files[0]);
     });
   },
   click_upload_image: function() {
-    this.$el.find(".reply .photoupload").click();
+    this.$el.find(".replyform .photoupload").click();
   },
 
   handle_mouseenter_reply: function(e) {
@@ -161,7 +163,7 @@ module.exports = {
   },
   handle_addreply: function(e) {
     e.preventDefault();
-    var textarea = this.$el.find(".reply textarea");
+    var textarea = this.$el.find(".replyform textarea");
     textarea.focus();
     textarea.val(textarea.val() + " >>" + $(e.target).closest("a").attr("data-parent-id") + " ");
   },
@@ -229,7 +231,6 @@ module.exports = {
       div.animate({ left: "0px" });
 
       $(el).after(div);
-      console.log(div);
 
       _.delay(function() {
         div.fadeOut(function() { div.remove(); });
@@ -243,62 +244,91 @@ module.exports = {
 
   },
 
+  expand_replies: function(div, depth, expanded) {
+    var replylinks = _.filter(div.find(".replylink"), function(r) {
+      return !$(r).closest(".nest").length;
+    });
+
+    depth = depth || 0;
+    var border;
+    if (replylinks.length > 1) {
+      depth += 1;
+      border = "1px dotted #ddd";
+    }
+
+    var self = this;
+
+    _.each(replylinks, function(el) {
+      var responseEl = self.get_reply_content(el, expanded);
+      self.expand_replies(responseEl, depth, expanded);
+      var wrapper = $("<div />");
+      wrapper.css({ borderLeft: border, paddingLeft: depth * 4 + "px" });
+      wrapper.append(responseEl.children());
+
+      div.prepend(wrapper);
+    });
+
+    div.find(".nest").remove();
+
+
+  },
+  get_reply_content: function(el, expanded) {
+    var clone_id = $(el).data("parent-id");
+    if (expanded[clone_id]) {
+      return $("<div />");
+    }
+
+    expanded[clone_id] = true;
+    var responseEl = $("#reply" + clone_id);
+
+    var parentEl = responseEl.parent();
+    if (parentEl.hasClass("post")) {
+      var retEl = $("<div />");
+      retEl.append(parentEl.find(".title").clone());
+      retEl.append(responseEl.clone());
+
+      return retEl;
+    }
+
+    if (!responseEl.length) {
+      var retEl = $("<div></div>");
+      var replaceEl = $("<div  style='min-width: 300px; min-height: 40px' />");
+      var replaceId = _.uniqueId("replyId");
+      retEl.append(replaceEl);
+      replaceEl.attr("id", replaceId);
+
+
+      var post_data = POST_CACHE[clone_id];
+      if (!post_data) {
+        SF.socket().emit("get_post_only", clone_id, function(post_data) {
+          POST_CACHE[clone_id] = post_data;
+          if (!post_data) {
+            $("#" + replaceId).html("<b>Oops. Burtle Couldn't find post #" + clone_id + " </b>");
+          } else {
+            display_post(post_data, clone_id, retEl, replaceId);
+          }
+        });
+      } else {
+        _.defer(function() {
+          display_post(post_data, clone_id, retEl, replaceId);
+        });
+      }
+
+      return retEl;
+    }
+
+    return responseEl.clone();
+  },
+
   handle_mouseenter_replylink: function(e) {
     e.stopPropagation();
 
     var container = this.$el;
     var expanded = {};
-
-    function get_reply_content(el) {
-      var clone_id = $(el).data("parent-id");
-      if (expanded[clone_id]) {
-        return $("<div />");
-      }
-
-      expanded[clone_id] = true;
-      var responseEl = $("#reply" + clone_id);
-
-      var parentEl = responseEl.parent();
-      if (parentEl.hasClass("post")) {
-        var retEl = $("<div />");
-        retEl.append(parentEl.find(".title").clone());
-        retEl.append(responseEl.clone());
-
-        return retEl;
-      }
-
-      if (!responseEl.length) {
-        var retEl = $("<div></div>");
-        var replaceEl = $("<div  style='min-width: 300px; min-height: 40px' />");
-        var replaceId = _.uniqueId("replyId");
-        retEl.append(replaceEl);
-        replaceEl.attr("id", replaceId);
-
-
-        var post_data = POST_CACHE[clone_id];
-        if (!post_data) {
-          SF.socket().emit("get_post_only", clone_id, function(post_data) {
-            POST_CACHE[clone_id] = post_data;
-            if (!post_data) {
-              $("#" + replaceId).html("<b>Oops. Burtle Couldn't find post #" + clone_id + " </b>");
-            } else {
-              display_post(post_data, clone_id, retEl, replaceId);
-            }
-          });
-        } else {
-          _.defer(function() {
-            display_post(post_data, clone_id, retEl, replaceId);
-          });
-        }
-
-        return retEl;
-      }
-
-      return responseEl.clone();
-    }
+    var self = this;
 
     function buildreply_popup(el, anchor) {
-      var responseEl = get_reply_content(el);
+      var responseEl = self.get_reply_content(el, expanded);
       var titleEl = responseEl.siblings(".title");
 
       $(".popover").remove();
@@ -306,38 +336,20 @@ module.exports = {
       if (responseEl.length) {
         e.preventDefault();
       }
+
+      var div = $("<div />");
       if (titleEl.length) {
         div.prepend(titleEl.clone());
       }
-      var div = $("<div />");
       div.append(responseEl.children());
 
       return div;
     }
 
-    function expand_replies(div, depth) {
-      var replylinks = div.find(".replylink");
-      depth = depth || 0;
-      var border;
-      if (replylinks.length > 1) {
-        depth += 1;
-        border = "1px dotted #ddd";
-      }
-
-      replylinks.each(function() {
-        var responseEl = get_reply_content(this);
-        expand_replies(responseEl, depth);
-        var wrapper = $("<div />");
-        wrapper.css({ borderLeft: border, paddingLeft: depth * 4 + "px" });
-        wrapper.append(responseEl.children());
-
-        div.prepend(wrapper);
-      });
-    }
-
     var div = buildreply_popup(e.target);
     var el = e.target;
-    expand_replies(div);
+
+    self.expand_replies(div, 0, expanded);
 
     div.find(".tripcode").addClass("mtm");
 
@@ -361,7 +373,7 @@ module.exports = {
 
   handle_addglyph: function(e) {
     var glyph = $(e.target).data("glyph");
-    var textarea = this.$el.find(".reply textarea");
+    var textarea = this.$el.find(".replyform textarea");
     textarea.focus();
     textarea.val(textarea.val() + " :" + glyph + ": ");
 
@@ -404,7 +416,7 @@ module.exports = {
 
   update_reply_preview: function() {
     // Update our preview with markdwon, too
-    var replyInput = this.$el.find(".reply textarea");
+    var replyInput = this.$el.find(".replyform textarea");
     var reply = replyInput.val().trim();
     var escaped_reply = $("<div />").text(reply).html();
 
@@ -451,7 +463,7 @@ module.exports = {
 
   handle_reply: function(e) {
     e.preventDefault();
-    var replyInput = this.$el.find(".reply textarea");
+    var replyInput = this.$el.find(".replyform textarea");
     var replyPreview = this.$el.find(".replypreview");
     var reply = replyInput.val();
 

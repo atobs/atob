@@ -818,11 +818,12 @@ function handle_delete_post(socket, board, post) {
 }
 
 
-function render_posting(api, flush, result, highlight_id) {
+function render_posting(api, flush, result, highlight_id, nothreading) {
   var post_data = result.dataValues;
   post_data = result.dataValues;
   post_data.post_id = post_data.id;
   post_data.highlight_id = highlight_id;
+  post_data.threading = !nothreading;
   post_data.collapsed = false;
   post_data.maximized = true;
   delete post_data.id;
@@ -834,6 +835,7 @@ function render_posting(api, flush, result, highlight_id) {
 
   post_data.client_options = _.clone(post_data);
   module.exports.trim_post(post_data.client_options);
+  post_data.client_options.threading = !nothreading;
 
 
   var BoardConfig = require_app("models/board_config");

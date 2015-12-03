@@ -46,8 +46,8 @@ module.exports = {
     setTimeout(function() {
       var dest = $("#reply" + id).filter(":visible");
       if (params.e) {
-        dest = $("form.reply");
-        $("form.reply textarea").focus();
+        dest = $("form.replyform");
+        $("form.replyform textarea").focus();
       } 
 
       if (!dest.length) {

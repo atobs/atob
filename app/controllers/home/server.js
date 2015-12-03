@@ -559,7 +559,7 @@ module.exports = {
         }
 
         parent.children = posts;
-        render_posting(api, flush, parent);
+        render_posting(api, flush, parent, null /* highlight_id */, true /* nothreading! */);
 
         api.bridge.controller("home", "show_chat");
       });

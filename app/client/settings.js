@@ -90,6 +90,18 @@ module.exports = {
 
   },
 
+  save_threadify: function() {
+    var filterEl = this.$page.find("input.threadify").last();
+    _.defer(function() {
+      var filter = !!filterEl.prop('checked');
+
+      set_in_storage("threadify", filter);
+      window.location.reload();
+
+    });
+
+  },
+
   save_filter: function() {
 
     var filterEl = this.$page.find("input.filtercontent").last();
@@ -398,6 +410,8 @@ module.exports = {
         filter_content();
       }
     });
+
+    this.load_checkbox_value("threadify", "input.threadify", function(el, val) { });
 
     var newtrip = this.load_checkbox_value("newtrip", "input.newtrip");
 
@@ -998,6 +1012,7 @@ module.exports = {
     "change select.notify_when" : "save_notifywhen",
     "change input.privtrip" : "save_privtrip",
     "change input.filtercontent" : "save_filter",
+    "change input.threadify" : "save_threadify",
     "click .beeper" : "request_notifs",
     "click .identity_tripcode" : "regen_tripcode",
     "click .regen_tripcode" : "regen_tripcode",

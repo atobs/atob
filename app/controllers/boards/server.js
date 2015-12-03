@@ -146,6 +146,7 @@ module.exports = {
               posting.trim_post(client_options);
 
               post_links.freshen_client(post_data.post_id, children, function() {
+                post_data.client_options.threading = true;
                 var postCmp = $C("post", post_data);
                 var text_formatter = require_root("app/client/text");
                 var tripcode_gen = require_app("server/tripcode");
