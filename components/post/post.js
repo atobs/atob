@@ -369,8 +369,6 @@ module.exports = {
       }
     });
 
-    console.log("PREV REPLY", prevReply);
-
     var spacerDiv = this.make_spacer_div();
     spacerDiv.fadeOut();
     function set_spacer_text(text) {
@@ -386,12 +384,14 @@ module.exports = {
       });
     }
 
-    if (prevReply) {
+    if ($(prevReply).length) {
       var parents = $(prevReply).parents(".reply");
-      parents.add(prevReply.closest(".reply"));
       var lastParent = _.last(parents, 1);
 
-      console.log("PARENTS", parents);
+      if (!parents.length) {
+        parents = parents.add(prevReply.closest(".reply"));
+        lastParent = prevReply.closest(".reply");
+      }
 
       if (!parents.length) {
         replyContainer.append(spacerDiv);
@@ -506,7 +506,6 @@ module.exports = {
     var opts = this.options.client_options;
     var indexOf = _.indexOf(opts.replies, window._REPLIES[this.last_seen_id]);
     var newId = opts.replies[Math.max(0, indexOf - 5)]; 
-    console.log("NEW ID", newId);
     this.collapse_threads(newId.id);
   },
 
@@ -515,7 +514,6 @@ module.exports = {
     var opts = this.options.client_options;
     var indexOf = _.indexOf(opts.replies, window._REPLIES[this.last_seen_id]);
     var newId = opts.replies[Math.min(opts.replies.length-1, indexOf + 5)]; 
-    console.log("NEW ID", newId);
     this.collapse_threads(newId.id);
   },
 

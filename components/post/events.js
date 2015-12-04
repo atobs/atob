@@ -48,7 +48,6 @@ module.exports = {
   // that is generally not relevant to the server.
   events: {
     "click .upboat" : "handle_upboat_link",
-    "click .tripcode" : "handle_click_tripcode",
     "click .restore" :  "handle_restore",
     "click .formatting_help" :  "handle_click_help",
     "click .addglyph" :  "handle_addglyph",
@@ -68,7 +67,7 @@ module.exports = {
     "mouseenter .post" : "handle_removepulse",
     "mouseleave .post" : "handle_removepulse",
     "mouseenter .tripcode" : "handle_mouseenter_tripcode",
-    "mouseleave .tripcode" : "handle_mouseleave_tripcode",
+    "click  .tripcode" : "handle_mouseenter_tripcode",
     "mousemove .post" : "handle_removepulse",
     "click .replylink" : "handle_mouseenter_replylink",
     "mouseenter .replylink" : "handle_mouseenter_replylink",
@@ -217,6 +216,17 @@ module.exports = {
       if (!trophies.length) {
         return;
       }
+
+      if (e.type === "mouseover") {
+        $(el).finish().animate({opacity: 0}, function() {
+          $(el).finish().animate({opacity: 1});
+
+        });
+
+        return;
+
+      }
+
       _.each(trophies, function(tr) {
         div.append($("<span class='pam' />").addClass("icon-" + tr));
       });
@@ -237,12 +247,7 @@ module.exports = {
       }, 3000);
 
     });
-  }, 500),
-
-  handle_mouseleave_tripcode: function(e) {
-    hide_popovers($(e.target).closest(".tripcode"));
-
-  },
+  }, 50),
 
   expand_replies: function(div, depth, expanded) {
     var replylinks = _.filter(div.find(".replylink"), function(r) {
