@@ -75,9 +75,17 @@ module.exports = {
     "mouseenter .reply" : "handle_mouseenter_reply",
     "mouseleave .reply" : "handle_mouseleave_reply",
     "click .upload_image" : "click_upload_image",
+    "click .history.back" : "click_history_back",
+    "click .history.forward" : "click_history_forward",
     "change .replyform input.photoupload" : "handle_upload_image",
-    "click .history.back" : "thread_back",
-    "click .history.forward" : "thread_forward"
+  },
+
+  click_history_back: function(e) {
+    this.thread_back();
+  },
+  click_history_forward: function(e) {
+    this.thread_forward();
+
   },
   handle_upload_image: function(e) {
     var self = this;
@@ -169,6 +177,7 @@ module.exports = {
 
   handle_removepulse: _.throttle(function() {
     this.$el.find(".post").removeClass("pulsepost");
+    this.save_last_seen();
   }, 200),
 
   handle_mouseenter_imglink: function(e) {
@@ -218,7 +227,7 @@ module.exports = {
       }
 
       if (e.type === "mouseover") {
-        $(el).finish().animate({opacity: 0}, function() {
+        $(el).finish().animate({opacity: 0.6}, function() {
           $(el).finish().animate({opacity: 1});
 
         });

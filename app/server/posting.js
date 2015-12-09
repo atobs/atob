@@ -930,7 +930,7 @@ module.exports = {
       post.replies.push({
         id: reply.id,
         tripcode: reply.tripcode,
-        created_at: reply.created_at
+        created_at: (new Date(reply.created_at)).toISOString()
       });
     });
 

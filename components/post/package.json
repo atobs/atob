@@ -1,12 +1,13 @@
 {
   "main" : "post",
   "style": "post.css",
-  "styles": [],
+  "styles": [
+  ],
 
   "template": "post.html.erb",
-  "helpers": [ 
+  "helpers": [
     "app/client/anonications",
-    "app/client/tripcode", 
+    "app/client/tripcode",
     "app/client/text" ],
   "no_redefine" : false
 }

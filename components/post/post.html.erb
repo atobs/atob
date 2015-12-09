@@ -12,7 +12,7 @@
 <% set_default("archived", false) %>
 <% set_default("board_id", "?") %>
 
-<div class="post <%= maximized ? "maximize" : "" %> <%= archived ? "archived" : "" %>" 
+<div class="post <%= maximized ? "maximize" : "" %> <%= archived ? "archived" : "" %>"
     data-post-id="<%= post_id %>" style="display: none">
   <div class="title clearfix">
     <a href="/p/<%= post_id %>" data-parent-id="<%= post_id %>" class='postlink'>
@@ -39,7 +39,7 @@
 
 
       <div class="clearfix timebox">
-        <div class="created"><small><a href="/b/<%= board_id %>">posted to /<%= board_id %></a> 
+        <div class="created"><small><a href="/b/<%= board_id %>">posted to /<%= board_id %></a>
             <span class="timeago" title="<%= new Date(created_at).toISOString() %>"> </span>
           </small>
         </div>
@@ -70,11 +70,10 @@
   </div>
 
   <div id="post<%= post_id %>" class="cpost">
-
-    <div class="replies clearfix mtm mbm col-md-12 <%= replies.length > 6 ? "many" : "" %>">
+    <div class="unthreaded replies clearfix mtm mbm col-md-12 <%= replies.length > 6 ? "many" : "" %>">
       <% _.each(replies, function(r) { %>
         <% highlighted = highlight_id == r.id %>
-        <div class="reply <%= highlighted ? "highlight" : "" %>" id="reply<%= r.id %>">
+        <div class="clearfix reply <%= highlighted ? "highlight" : "" %>" id="reply<%= r.id %>">
           <div class="tripcode" data-tripcode="<%= r.tripcode %>"></div>
           <a href="#" class="deletereply"
             data-parent-id="<%= r.id %>"
@@ -87,6 +86,7 @@
 
             <small><%= r.id %></small>
           </a>
+
           <b class="text"><%- r.title %></b>
           <small class="text"><%- r.text %></small>
         </div>
@@ -103,7 +103,7 @@
 
     <div href="#" class="mtl see_replies lfloat">
         <span class="icon-chat mtl"> </span>
-        <span class="reply_count count"><%= replies.length || 0 %></span> 
+        <span class="reply_count count"><%= replies.length || 0 %></span>
 
     </div>
 
@@ -132,12 +132,12 @@
       <form class="replyform">
         <div class="mtl clearfix mbl" style="position: relative">
           <textarea type="text" class="form-control" placeholder="reply"></textarea>
-          <input type="file" class="photoupload" 
+          <input type="file" class="photoupload"
              style="visibility: collapse; width: 0px; height: 0px;">
           </input>
-          <a style="position: absolute; left: 0px; bottom: -18px; z-index: 10; font-size: 80%; cursor: pointer" 
+          <a style="position: absolute; left: 0px; bottom: -18px; z-index: 10; font-size: 80%; cursor: pointer"
                class="upload_image lfloat mrl">upload img</a>
-          <a style="position: absolute; right: -10px; bottom: -18px; z-index: 10; font-size: 80%; cursor: pointer" 
+          <a style="position: absolute; right: -10px; bottom: -18px; z-index: 10; font-size: 80%; cursor: pointer"
                class="formatting_help rfloat mrl">formatting help </a>
         </div>
 

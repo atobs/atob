@@ -40,6 +40,17 @@ function collapse_threads($el, lastSeenId) {
     lastSeenId = 0;
   }
 
+  var replyMap = {};
+  var replylinks = $el.find(".replylink, .oplink");
+  _.each(replylinks, function(r) {
+    var parentId = $(r).data("parent-id");
+    if (!replyMap[parentId]) {
+      replyMap[parentId] = [];
+    }
+
+    replyMap[parentId].push(r);
+  });
+
   function collapse_reply(replyEl, replyId) {
     // Look for replylinks, right?
     if (replyEl.data("visited")) {
@@ -48,31 +59,25 @@ function collapse_threads($el, lastSeenId) {
 
     replyEl.data("visited", true);
 
-    var repliesTo = $el.find(".replylink[data-parent-id=" + replyId + "], .oplink[data-parent-id=" + replyId + "]");
+    var repliesTo = replyMap[replyId] || [];
 
     var threaded = [];
     var unthreaded = [];
 
     _.each(repliesTo, function(r) {
       var cloneId = $(r).closest(".reply").attr("id");
-      if (!cloneId) {
+      var nested = !!$(r).closest(".nest").length;
+      if (!cloneId || nested) {
         return;
       }
 
       cloneId = cloneId.replace(/reply/, "");
-      if (parseInt(cloneId, 10) < lastSeenId || !lastSeenId) {
+      if (parseInt(cloneId, 10) <= lastSeenId || !lastSeenId) {
         threaded.push(r);
       } else {
         unthreaded.push(r);
       }
     });
-
-    var padding = 2;
-    replyEl.css("padding-left", "0px"); 
-    replyEl.css("margin-left", "0px");
-    if (repliesTo.length <= 1) {
-      padding = 1;
-    }
 
     if (threaded.length) {
       var nestEl = replyEl.children(".nest");
@@ -104,10 +109,6 @@ function collapse_threads($el, lastSeenId) {
 
         collapse_reply(cloneEl, cloneId);
 
-        cloneEl.css("padding-left", padding + "px");
-        cloneEl.css("padding-right", "0px");
-        cloneEl.css("margin-left", padding + "px");
-
         nestEl.append(cloneEl);
 
       });
@@ -115,8 +116,6 @@ function collapse_threads($el, lastSeenId) {
   }
 
   var replies = $el.find(".reply");
-  var repliesContainer = $el.find(".replies");
-
   _.each(replies, function(r) {
 
     var thisEl = $(r);
@@ -135,6 +134,7 @@ function collapse_threads($el, lastSeenId) {
   });
 
 }
+
 function replace_oplinks(el) {
   el.find(".tripcode.oplink").each(function() {
     var child = $(this);
@@ -261,6 +261,62 @@ module.exports = {
       tripcode_gen(el);
     });
   },
+
+  update_spacer_text: function(last_seen, insert_before) {
+    var prevReply;
+    var replyContainer = this.$el.find(".replies");
+    _.each(this.$el.find(".reply"), function(r) {
+      var id = $(r).attr("id");
+      id = (id || 0) && parseInt(id.replace(/reply/, ""), 10);
+      if (id && id <= last_seen) {
+        prevReply = r;
+      }
+    });
+
+
+    var spacerDiv = this.make_spacer_div();
+    if ($(prevReply).length) {
+      var parents = $(prevReply).parents(".reply");
+      var lastParent = _.last(parents, 1);
+
+      if (!parents.length) {
+        parents = parents.add(prevReply.closest(".reply"));
+        lastParent = prevReply.closest(".reply");
+      }
+
+
+      if (!parents.length) {
+        return;
+      }
+
+      if (insert_before) {
+        $(lastParent).before(spacerDiv);
+      } else {
+        $(lastParent).after(spacerDiv);
+
+      }
+    }
+
+  },
+  scroll_to_spacer: _.throttle(function(amount) {
+    var current_max = this.$el.find(".post").hasClass("maximize");
+    var spacerDiv = this.make_spacer_div();
+    spacerDiv.finish().fadeIn();
+    var container = this.$el.find(".replies");
+    var scrollTop = 0;
+    if (current_max) {
+      container = $(window);
+      scrollTop = amount || -400;
+    }
+
+    container.finish().scrollTo(spacerDiv, 500, {
+      offset: {
+        top: scrollTop
+      },
+      duration: 100,
+      interrupt: true
+    });
+  }, 50),
   client: function(options) {
     var POSTS = window._POSTS || {};
     var self = this;
@@ -337,13 +393,161 @@ module.exports = {
     replace_oplinks(this.$el);
 
     if (window.bootloader.storage.get("threadify") === "true" && options.threading) {
-      // check if we should collapse threads...
-      collapse_threads(this.$el);
+      var last_seen = self.get_last_seen();
+
+      self.collapse_threads(last_seen);
+      self.update_spacer_text(last_seen);
+      self.scroll_to_spacer();
+
     }
   },
 
+  save_last_seen: function() {
+    var repls = this.options.client_options.replies;
+    var last_seen = 0;
+    if (!this.last_seen) {
+      this.last_seen = [];
+    }
+
+    if (repls.length) {
+      last_seen = repls[repls.length-1].id;
+    } 
+
+    if (!_.contains(this.last_seen, last_seen)) {
+      this.last_seen.push(last_seen);
+    }
+
+    window.bootloader.storage.set("lastseen:" + this.options.client_options.post_id, JSON.stringify(this.last_seen));
+  },
+
+  get_last_seen: function() {
+    // check if we should collapse threads...
+    var last_seen = window.bootloader.storage.get("lastseen:" + this.options.client_options.post_id);
+    if (last_seen) {
+      try {
+        last_seen = JSON.parse(last_seen);
+      } catch(e) { }
+      if (_.isArray(last_seen)) {
+        this.last_seen = last_seen;
+        this.last_seen_id = last_seen[last_seen.length-1];
+      } else if (_.isNumber(last_seen)) {
+        this.last_seen = [last_seen];
+        this.last_seen_id = last_seen;
+      }
+
+    }
+
+    if (!this.last_seen) {
+      this.last_seen = [];
+    }
+
+    last_seen = last_seen || -1;
+
+
+    return this.last_seen_id;
+
+  },
+
+  set_last_seen: function(id) {
+    this.get_last_seen();
+    this.last_seen_id = id;
+    var self = this;
+
+    if (!_.contains(this.last_seen, id)) {
+      self.last_seen.push(id);
+    }
+  },
+
+  thread_back: function() {
+    var closestHistoryBefore;
+    var self = this;
+    _.each(this.last_seen, function(id) {
+      if (id >= self.cur_seen_id) {
+        return;
+      }
+
+      closestHistoryBefore = id;
+    });
+
+    if (closestHistoryBefore) {
+
+      this.collapse_threads(closestHistoryBefore);
+      this.update_spacer_text(closestHistoryBefore);
+      this.scroll_to_spacer();
+
+      return;
+    } 
+
+    // look through our replies and then go forward and backwards
+
+    // so... now we find the thread id before this one
+    var opts = this.options.client_options;
+    var newId = opts.replies[0];
+    this.collapse_threads(newId.id);
+    this.update_spacer_text(newId.id, true);
+
+    this.scroll_to_spacer();
+  },
+
+  thread_forward: function() {
+    var closestHistoryAfter;
+    var self = this;
+    _.each(this.last_seen, function(id) {
+      if (closestHistoryAfter || id <= self.cur_seen_id) {
+        return;
+      }
+
+      closestHistoryAfter = id;
+    });
+
+    if (closestHistoryAfter) {
+
+      this.collapse_threads(closestHistoryAfter);
+      this.update_spacer_text(closestHistoryAfter);
+      this.scroll_to_spacer();
+
+      return;
+    } 
+    
+    // look through our replies and then go forward and backwards
+
+    // so... now we find the thread id before this one
+    var opts = this.options.client_options;
+    var indexOf = _.indexOf(opts.replies, window._REPLIES[this.cur_seen_id]);
+    if (indexOf === -1) {
+      // the reply has gone missing, find the next closest...
+      var closestReplyId;
+      var closestReplyIndex;
+      _.each(opts.replies, function(r, index) {
+        if (r.id > self.cur_seen_id) {
+          return;
+        }
+        closestReplyId = r.id;
+        closestReplyIndex = index;
+      });
+      indexOf = closestReplyIndex || -1;
+
+    }
+    var newId = opts.replies[Math.min(opts.replies.length-1, indexOf + 5)];
+    this.collapse_threads(newId.id);
+    this.update_spacer_text(newId.id);
+    this.scroll_to_spacer();
+  },
+
   collapse_threads: function(last_seen) {
-    this.last_seen_id = last_seen;
+    var self = this;
+    var swappedArea = $("<div />");
+    if (!last_seen || last_seen === -1) {
+      (function() {
+        var repls = self.options.client_options.replies;
+        last_seen = 0;
+        if (repls.length) {
+          last_seen = repls[repls.length-1].id;
+        } 
+      })();
+    }
+
+    this.cur_seen_id = last_seen;
 
     $(".reply").data("visited", false);
     var replies = this.$el.find(".reply");
@@ -355,80 +559,17 @@ module.exports = {
     var replyContainer = this.$el.find(".replies");
     var prevReply;
     _.each(replies, function(r) {
-      replyContainer.append(r);
+      swappedArea.append(r);
 
     });
 
-    collapse_threads(this.$el, last_seen);
+    collapse_threads(swappedArea, last_seen);
 
-    _.each(this.$el.find(".reply"), function(r) {
-      var id = $(r).attr("id");
-      id = (id || 0) && parseInt(id.replace(/reply/, ""), 10);
-      if (id && id < last_seen) {
-        prevReply = r;
-      }
-    });
-
-    var spacerDiv = this.make_spacer_div();
-    spacerDiv.fadeOut();
-    function set_spacer_text(text) {
-      spacerDiv.find(".spacertext").empty().append(text);
-    }
-
-    function scroll_to_spacer() {
-      spacerDiv.stop(true, true).fadeIn();
-      $(window).scrollTo(spacerDiv, 500, {
-        offset: {
-          top: -200
-        }
-      });
-    }
-
-    if ($(prevReply).length) {
-      var parents = $(prevReply).parents(".reply");
-      var lastParent = _.last(parents, 1);
-
-      if (!parents.length) {
-        parents = parents.add(prevReply.closest(".reply"));
-        lastParent = prevReply.closest(".reply");
-      }
-
-      if (!parents.length) {
-        replyContainer.append(spacerDiv);
-        set_spacer_text("Now");
-        scroll_to_spacer();
-
-        return;
-      }
-
-      $(lastParent).after(spacerDiv);
-      // what was the last reply's time?
-      var id = $(prevReply).attr("id").replace(/reply/, "");
-      var replyObj = window._REPLIES[id];
-      if (replyObj) {
-        var ago = $("<div class='timeago' />");
-        ago.attr("title", replyObj.created_at);
-
-        var delta = (+new Date()) - (+new Date(replyObj.created_at));
-        if (delta > 1000 * 60 * 60 * 24) {
-          ago.html((new Date(replyObj.created_at)).toLocaleString());
-        } else {
-          ago.timeago();
-        }
-
-        set_spacer_text(ago);
-
-      } else {
-        set_spacer_text("");
-      }
-    } else {
-      set_spacer_text("the beginning");
-      replyContainer.prepend(spacerDiv);
-    }
-
-    scroll_to_spacer();
+    replyContainer.empty();
+    replyContainer.append(swappedArea.children());
 
   },
+
   bumped: function(animate) {
     var repliesEl = this.$el.find(".replies");
     if (animate) {
@@ -460,7 +601,7 @@ module.exports = {
 
     REPLY_TEXT[data.post_id] = data;
 
-    var replyEl =$("<div class='reply'/>");
+    var replyEl =$("<div class='reply clearfix'/>");
     replyEl.attr("id", replyId);
     var tripEl = $("<div class='tripcode' />")
       .data("tripcode", data.tripcode);
@@ -499,36 +640,31 @@ module.exports = {
     return replyEl;
   },
 
-  thread_back: function() {
-    // look through our replies and then go forward and backwards 
-
-    // so... now we find the thread id before this one
-    var opts = this.options.client_options;
-    var indexOf = _.indexOf(opts.replies, window._REPLIES[this.last_seen_id]);
-    var newId = opts.replies[Math.max(0, indexOf - 5)]; 
-    this.collapse_threads(newId.id);
-  },
-
-  thread_forward: function() {
-    // so... now we find the thread id before this one
-    var opts = this.options.client_options;
-    var indexOf = _.indexOf(opts.replies, window._REPLIES[this.last_seen_id]);
-    var newId = opts.replies[Math.min(opts.replies.length-1, indexOf + 5)]; 
-    this.collapse_threads(newId.id);
-  },
-
   make_spacer_div: function() {
-    var self = this;
-    var spacerDiv = self.$el.find(".newreplyspacer");
-    if (!spacerDiv.length) {
-      spacerDiv = $("<div class='newreplyspacer clearfix pal'><div class='spacertext' /></div>");
-      var upDiv = $("<div class='history back icon icon-arrow-up rfloat' />");
-      var downDiv = $("<div class='history forward icon icon-arrow-down lfloat' />");
+    if (window.bootloader.storage.get("threadify") !== "true" || !this.options.client_options.threading) {
+      return $("<div />");
+    }
 
-      spacerDiv.append(upDiv);
-      spacerDiv.append(downDiv);
+    var self = this;
+    if (!self) {
+      return $("<div />");
+    }
+    var spacerDiv = self.$el.find(".newreplyspacer");
+    var replies = !!self.$el.find(".reply").length;
+    if (!replies || replies.length < 5) {
+      return $("<div />");
+    }
+
+    if (!spacerDiv.length) {
+      spacerDiv = $("<div class='reply newreplyspacer clearfix pal' />");
+      var controlDiv = $("<div class='history controls spacertext' />");
+      controlDiv.append($("<div class='history back icon-arrow-up'/>"));
+      controlDiv.append($("<div class='history forward icon-arrow-down'/>"));
+      spacerDiv.append(controlDiv);
+
       spacerDiv.attr("title", "new replies go under here");
-      self.$el.find(".replies").append(spacerDiv);
+      self.$el.find(".replies")
+        .append(spacerDiv);
     }
 
     return spacerDiv;
@@ -549,7 +685,7 @@ module.exports = {
     repliesEl.append(replyEl);
     this.bumped(true);
 
-    this.last_seen_id = data.post_id;
+    this.set_last_seen(data.post_id);
 
     process_vote(replyEl);
 

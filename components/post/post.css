@@ -73,7 +73,7 @@
     left: 0px;
     padding-left: 20px;
   }
-    
+
 }
 
 .post.tilerow {
@@ -112,7 +112,7 @@
     font-size: 1em;
   }
 
-  .timebox { 
+  .timebox {
     float: left;
 
   }
@@ -143,6 +143,11 @@
   padding-left: 5px;
   padding-right: 0px;
   padding-top: 5px;
+}
+
+.many .reply {
+  padding: 0px;
+  padding-left: 4px;
 }
 
 .reply p {
@@ -238,6 +243,11 @@
   overflow-y: auto;
   padding-left: 0px !important;
   padding-right: 0px !important;
+  position: relative;
+}
+
+.nest {
+  background-color: #eaeaea;
 }
 
 .nest.many {
@@ -254,7 +264,6 @@
   margin-right: 8px;
   float: none;
 }
-
 
 // Most important
 .maximize {
@@ -286,7 +295,7 @@
   -webkit-transform-origin:70% 70%;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
-  
+
 }
 
 .addreply {
@@ -296,6 +305,7 @@
 
 .deletereply {
   float: right;
+  clear: right;
   margin-left: 5px;
   margin-top: 2px;
   margin-right: 5px;
@@ -308,7 +318,6 @@
 }
 
 .reply:hover {
-  background-color: #fafadd;
 }
 
 .hideContent {
@@ -464,29 +473,74 @@ ol li .votes {
 
 .newreplyspacer {
   margin: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border-top: 3px dotted #aeaeae;
-  border-bottom: 3px dotted #aeaeae;
+  padding: 0px;
 
   text-align: center;
+  max-width: 90%;
+  cursor: pointer;
 
-  .spacertext {
+  @media @mobile {
+    .history.controls {
+      zoom: 1.25;
+    }
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+}
+
+.history.controls {
+  border-bottom: 2px dotted #ddd;
+  max-height: 1em;
+
+  .back, .forward {
+    opacity: 0;
+    @media @mobile {
+      opacity: 0.2;
+    }
+  }
+
+  &:hover {
+    .back, .forward {
+      opacity: 0.2;
+    }
+  }
+
+  .back {
+    float: left;
+    margin-left: -25px;
+
+  }
+
+  .forward {
+    float: right;
+    margin-right: -25px;
+
+  }
+
+  .back, .forward {
     display: inline-block;
-    margin: auto;
-    width: 50%;
-    min-width: 200px;
-    max-width: 600px;
+    padding: 5px;
+    margin-top: -15px;
   }
 
-  .history {
-    cursor: pointer;
-    opacity: 0.7;
-    display: block;
+  .back, .forward {
+      &:hover {
+      opacity: 0.5;
+    }
   }
+}
 
-  .history:hover {
-    opacity: 1;
+.spacertext {
+  max-width: 200px;
+  @media @mobile {
+    max-width: 100px;
   }
+  margin: auto;
+  padding-top: 1em;
+  text-align: center;
+}
 
+.newreplyspacer:last-child {
+  opacity: 0.8;
 }
