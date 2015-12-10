@@ -37,11 +37,8 @@
 
 
         <hr />
-
-        <div class="chat hidden">
-          <%= render_recent_chats() %>
-        </div>
-
+        
+        <%= render_partial("shared/chat.html.erb", { render_recent_chats: render_recent_chats }) %>
       </div>
 
       <div class="col-md-6">

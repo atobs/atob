@@ -13,6 +13,8 @@ var posting = require_app("server/posting");
 var render_posting = posting.render_posting;
 var sponsored_content = require_app("server/sponsored_content");
 var config = require_core("server/config");
+
+var chat = require_app("server/chat");
 var board_names = require_app("server/board_names");
 
 var ICONS = require_app("client/emojies");
@@ -531,40 +533,7 @@ module.exports = {
       return str.join(" ");
     };
 
-    var render_recent_chats = api.page.async(function(flush) {
-      Post.findAll({
-        where: {
-          board_id: {
-            eq: board_names.CHAT
-          },
-        },
-        order: "id DESC",
-        limit: 30
-      }).success(function(posts) {
-        // Find the most recent thread
-        var parent = null;
-        _.each(posts, function(post) {
-          if (post && !post.dataValues.parent_id && !parent) {
-            parent = post;
-          }
-        });
-
-
-        if (!parent && posts.length) {
-          parent = posts[posts.length - 1];
-        }
-
-        if (!parent) {
-          return flush("");
-        }
-
-        parent.children = posts;
-        render_posting(api, flush, parent, null /* highlight_id */, true /* nothreading! */);
-
-        api.bridge.controller("home", "show_chat");
-      });
-    });
-
+    var render_recent_chats = chat.render_recent(api);
     var render_sponsored_content = sponsored_content.render(api);
 
 

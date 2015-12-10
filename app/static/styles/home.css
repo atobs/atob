@@ -83,40 +83,6 @@ h1, h2, h3 {
   padding-top: 10px;
 }
 
-.chat {
-  .cmp-post {
-    .post {
-      border: 0px;
-      padding: 0px;
-      background: inherit;
-
-      .title {
-        display: none;
-      }
-      .op.text, .upboat {
-        display: none;
-      }
-
-      .deletereply, .restore, .see_replies, .ups, .downs {
-        display: none !important;
-      }
-
-      .addreply {
-        opacity: 0.1;
-
-        &:hover {
-          opacity: 0.7;
-        }
-      }
-
-      .replies {
-        max-height: 100px !important;
-      }
-    }
-
-  }
-}
-
 #fullpage .section {
 
   @media @desktop {

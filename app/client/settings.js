@@ -3,6 +3,7 @@ var notif = require("app/client/notif");
 var storage = require("app/client/storage");
 var anonications = require("app/client/anonications");
 var EMOJIES = require("app/client/emojies");
+var chat = require("app/client/chat");
 
 require("app/static/vendor/velocity");
 
@@ -591,6 +592,7 @@ module.exports = {
     var target = $(e.target);
     var post_id = target.data("post");
     var anon_id = target.data("anon");
+    var self = this;
 
     function pulse_logo() {
       $(".logo").addClass("pulse");
@@ -610,6 +612,12 @@ module.exports = {
         anon: anon_id,
         mytrip: module.exports.get_trip_identity()
       }, function() {
+        if (post_id === "chat") {
+          self.show_chat_popup();  
+          pulse_logo();
+          return;
+        }
+
         // so we start the stalking game...
         var next_ref = "/p/" + post_id;
         if (window.location.href.indexOf(next_ref) === -1) {

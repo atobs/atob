@@ -395,9 +395,11 @@ EMOJIES.add_textcomplete = function(textarea) {
         replace: function (value) {
             return ':' + value + ': ';
         },
-        index: 1
+        index: 1,
       }
-    ]);
+    ], {
+      zIndex: 1100
+    });
   });
 };
 

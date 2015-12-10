@@ -506,7 +506,7 @@ module.exports = {
 
     var tokens = reply.split(" ");
     var first_word = tokens[0];
-    var postId = this.get_post_id();
+    var postId = this.get_real_id();
     if (CLIENT_COMMANDS[first_word]) {
       CLIENT_COMMANDS[first_word].apply(this, tokens);
       replyInput.val("");

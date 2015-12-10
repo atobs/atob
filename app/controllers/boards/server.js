@@ -11,6 +11,7 @@ var gen_md5 = require_app("server/md5");
 var posting = require_app("server/posting");
 var post_links = require_app("server/post_links");
 var mod = require_app("server/mod");
+var chat = require_app("server/chat");
 var config = require_core("server/config");
 var sponsored_content = require_app("server/sponsored_content");
 var client_api = require_app("server/client_api");
@@ -188,6 +189,7 @@ module.exports = {
       board: board_id,
       tripcode: gen_md5(Math.random()),
       render_posts: render_posts,
+      render_recent_chats: chat.render_recent(api),
       board_slogan: board_slogan,
       render_sponsored_content: render_sponsored_content,
       new_thread: board_id !== "to"

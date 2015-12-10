@@ -3,6 +3,7 @@
 var post_utils = require("app/client/post_utils");
 var settings = require("app/client/settings");
 var notif = require("app/client/notif");
+var chat = require("app/client/chat");
 var emojies = require("app/client/emojies");
 var storage = require("app/client/storage");
 var favorites = require("app/client/favorite_boards");
@@ -104,6 +105,9 @@ module.exports = {
   no_posts: function() {
     $(".loading").html("<h2>there are no posts on this board, plz make some</h2>");
   },
+  fix_chat: function() {
+    $(".chat .post").removeClass("tile tilerow");
+  },
   popstate: function() {
     var pathname = window.location.pathname;
     var boardstyle = storage.get("boardstyle") || "";
@@ -113,12 +117,14 @@ module.exports = {
       _.each(window._POSTS, function(post) {
         post.collapse();
       });
+      this.fix_chat();
     } else if (pathname.indexOf("/p/") === 0) { // we are showing a post
       var postId = pathname.slice(3);
       postId = parseInt(postId, 10);
       var post = window._POSTS[postId];
       if (post) {
         $(".post").hide();
+        $(".chat .post").show();
         this.hide_board_header();
         post.expand();
         post.$el.find(".post")
@@ -148,8 +154,10 @@ module.exports = {
     var lastTime = (new Date()).getTime();
     var textarea = this.$el.find(".new_post textarea[name='text']");
     emojies.add_textcomplete(textarea);
+    var self = this;
 
     SF.on("set_boardstyle", _.throttle(function(boardstyle) {
+      self.fix_chat();
       $(".boardview a").removeClass("active");
       var boardlink;
       if (boardstyle === "tile") {
@@ -191,6 +199,7 @@ module.exports = {
       });
     });
 
+    chat.add_socket_subscriptions(s);
     settings.add_socket_subscriptions(s);
     s.on("doings", function(data) {
       var post = window._POSTS[data.post_id];
@@ -238,6 +247,8 @@ module.exports = {
   },
 };
 
+_.extend(module.exports, chat);
+_.extend(module.exports.events, chat.controller_events);
 _.extend(module.exports, settings);
 _.extend(module.exports.events, settings.controller_events);
 

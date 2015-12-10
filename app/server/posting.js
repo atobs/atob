@@ -552,6 +552,8 @@ function handle_new_reply(s, board, post, cb) {
                 var home_controller = load_controller("home");
                 var home_socket = home_controller.get_socket();
                 home_socket.emit("new_chat", p.dataValues);
+                post_socket.emit("new_chat", p.dataValues);
+                boards_socket.emit("new_chat", p.dataValues);
               }
 
               if (cb) {

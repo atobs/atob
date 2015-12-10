@@ -31,6 +31,7 @@
       <%= render_post() %>
     </div>
 
+    <%= render_partial("shared/chat.html.erb", { render_recent_chats: render_recent_chats }) %>
     <div>
       <%= render_sponsored_content() %>
     </div>

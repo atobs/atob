@@ -4,6 +4,7 @@ var tripcode_gen = require("app/client/tripcode").gen_tripcode;
 var summarize = require("app/client/summarize");
 var notif = require("app/client/notif");
 var drawing = require("app/client/drawing");
+var chat = require("app/client/chat");
 
 require("app/client/cordova");
 
@@ -163,26 +164,6 @@ module.exports = {
   join_chat: function() {
     console.log("JOINING CHAT?");
   },
-  show_chat: function() {
-    var storage = require("app/client/storage");
-    var tripcode_str = storage.get("tripcodes");
-    var tripcodes = [];
-    try {
-      tripcodes = JSON.parse(tripcode_str);
-    } catch (e) {
-
-    }
-
-    if (tripcodes.length) {
-      // This is where we can show and hide chat?
-      $(".chat").removeClass("hidden");
-      var repliesEl = $(".chat .replies");
-      if (repliesEl.length) {
-        repliesEl.scrollTop(repliesEl[0].scrollHeight);
-      }
-
-    }
-  },
   show_recent_threads: function() {
     format_and_show($(".threads.recent.hidden"));
   },
@@ -219,12 +200,7 @@ module.exports = {
       notif.handle_notif(msg, type, options);
     });
 
-    s.on("new_chat", function(reply) {
-      var only_post = _.keys(_POSTS)[0];
-      if (only_post) {
-        _POSTS[only_post].add_reply(reply);
-      }
-    });
+    chat.add_socket_subscriptions(s);
 
     s.on("new_reply", function(reply) {
       var postParent = $(".posts .post").parent();
@@ -269,6 +245,9 @@ module.exports = {
     settings.add_socket_subscriptions(s);
   }
 };
+
+_.extend(module.exports, chat);
+_.extend(module.exports.events, chat.controller_events);
 
 _.extend(module.exports, settings);
 _.extend(module.exports.events, settings.controller_events);

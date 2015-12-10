@@ -205,7 +205,17 @@ module.exports = {
   defaults: {
     content: "default content"
   },
-  get_post_id: function() { return this.$el.find(".post").data("post-id"); },
+  get_real_id: function() {
+    return this.$el.find(".post").data("post-id"); 
+
+  },
+  get_post_id: function() { 
+    if (this.$el.closest(".chat").length) {
+      return "chat";
+    }
+
+    return this.$el.find(".post").data("post-id"); 
+  },
   initialize: function() { },
   collapse: function() {
     this.$el.find(".cpost").collapse("hide");

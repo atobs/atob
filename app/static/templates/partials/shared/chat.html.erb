@@ -1,0 +1,9 @@
+<% add_stylesheet("chat.css") %>
+<div class="chat hidden">
+
+  <div class="chat_header noselect"><a href="#">the void <span class='counter'></span></a></div>
+  <div class="chat_content clearfix" style="display: none">
+    <%= render_recent_chats() %>
+  </div>
+</div>
+

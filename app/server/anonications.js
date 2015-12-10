@@ -116,13 +116,15 @@ module.exports = {
 
       };
 
-      Post.find(doing.post_id).success(function(res) {
-        if (res.dataValues.parent_id) {
-          Post.find(res.dataValues.parent_id).success(burtle_post);
-        } else {
-          burtle_post(res);
-        }
-      });
+      if (doing.post_id !== "chat") {
+        Post.find(doing.post_id).success(function(res) {
+          if (res.dataValues.parent_id) {
+            Post.find(res.dataValues.parent_id).success(burtle_post);
+          } else {
+            burtle_post(res);
+          }
+        });
+      }
 
       if (stalked_socket) {
         _.each(stalked_socket, function(s) {

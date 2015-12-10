@@ -7,6 +7,7 @@ var value_of = controller.value_of,
     
 
 var config = require_core("server/config");
+var chat = require_app("server/chat");
 var posting = require_app("server/posting");
 var render_posting = posting.render_posting;
 var makeme_store = require_app("server/makeme_store");
@@ -126,9 +127,11 @@ module.exports = {
 
     api.bridge.controller("posts", "resaturate_tripbar");
     api.bridge.controller("posts", "set_api_key", config.imgur_key);
+    var render_recent_chats = chat.render_recent(api);
     var template_str = api.template.render("controllers/posts/show.html.erb", 
       { 
         render_post: render_post, 
+        render_recent_chats: render_recent_chats,
         tripcode: gen_md5(Math.random()),
         render_sponsored_content: render_sponsored_content
       });

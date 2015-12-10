@@ -3,6 +3,8 @@
 var settings = require("app/client/settings");
 var post_utils = require("app/client/post_utils");
 var notif = require("app/client/notif");
+var chat = require("app/client/chat");
+
 require("app/client/drawing");
 
 var newthread = require("app/client/newthread");
@@ -62,6 +64,7 @@ module.exports = {
     var self = this;
     notif.subscribe(s);
 
+    chat.add_socket_subscriptions(s);
     settings.add_socket_subscriptions(s);
     s.on("doings", function(data) {
       var post = window._POSTS[data.post_id];
@@ -113,6 +116,9 @@ module.exports = {
     $(".loading").fadeOut();
   }
 };
+
+_.extend(module.exports, chat);
+_.extend(module.exports.events, chat.controller_events);
 
 _.extend(module.exports, settings);
 _.extend(module.exports.events, settings.controller_events);
