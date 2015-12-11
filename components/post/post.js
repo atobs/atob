@@ -147,11 +147,12 @@ function replace_oplinks(el) {
 
     function gen_tripcode() {
       child.removeClass("desaturate");
+      child.data("tripcode", tripcode);
+      child.attr("data-tripcode", tripcode);
+
       window.gen_tripcode(child);
 
       if (tripcode) {
-        child.data("tripcode", tripcode);
-        child.attr("data-tripcode", tripcode);
         require("app/client/sinners", function(sinners) {
           sinners.check_reply(child, tripcode);
         });
@@ -613,7 +614,7 @@ module.exports = {
 
     var replyEl =$("<div class='reply clearfix'/>");
     replyEl.attr("id", replyId);
-    var tripEl = $("<div class='tripcode' />")
+    var tripEl = $("<div class='tripcode noselect' />")
       .data("tripcode", data.tripcode);
 
     tripEl.css("marginRight", "8px");

@@ -226,7 +226,7 @@ function add_board_links($el) {
 function add_replies($el) {
   var escaped = $el.html();
   if (escaped) {
-    var reply_str = "<div class='tripcode oplink desaturate' data-parent-id='NAME' data-tripcode='' ></div>";
+    var reply_str = "<div class='tripcode oplink desaturate noselect' data-parent-id='NAME' data-tripcode='' ></div>";
     var replaced = escaped.replace(/&gt;&gt;#?([\d]+)\s*\*/ig, function(x, post_id) {
       return reply_str.replace(/NAME/g, post_id.toLowerCase());
     });
