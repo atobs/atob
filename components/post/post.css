@@ -246,10 +246,6 @@
   position: relative;
 }
 
-.nest {
-  background-color: #eaeaea;
-}
-
 .nest.many {
   padding-left: 4px;
   border-left: 1px dotted #aeaeae;
