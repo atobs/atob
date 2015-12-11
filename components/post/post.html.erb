@@ -47,7 +47,7 @@
         <div class="rfloat last_reply">
           <small>last reply was
             <% if (replies.length) { %>
-              <% var last_reply_date = new Date(updated_at) %>
+              <% var last_reply_date = new Date(bumped_at) %>
                 <span
                   class="timeago"
                   title="<%= last_reply_date.toISOString() %>" />
