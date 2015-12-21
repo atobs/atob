@@ -9,10 +9,6 @@ module.exports = {
       post = post.dataValues;
     }
 
-    if (_.contains(HIDDEN_BOARDS, post.board_id)) {
-      return;
-    }
-
     var post_id = post.post_id || post.id;
     if (post_id) {
       Trophy.findAll({where: { anon_id: post_id }}).success(function (results) {
