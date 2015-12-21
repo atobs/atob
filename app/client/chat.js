@@ -50,7 +50,7 @@ module.exports = {
         try {
           window._POSTS.chat = window._POSTS[post_id];
         } catch (e) {
-          if (tries < 5) {
+          if (tries < 20) {
             try_again();
           }
         }
