@@ -547,7 +547,7 @@ module.exports = {
       replyInput.val("");
       replyPreview.text("");
       received = true;
-      window.bootloader.storage.delete("reply" + postId);
+      window.bootloader.storage.delete("reply" + self.get_post_id());
       SF.controller().remember_tripcode(author, tripcode);
       if (replyEl) {
         replyEl.slideUp();
