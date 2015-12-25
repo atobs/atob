@@ -862,6 +862,7 @@ function render_posting(api, flush, result, highlight_id, nothreading) {
       }
 
       api.bridge.controller("posts", "set_board", post_data.board_id);
+
       flush(postCmp.toString());
     });
   });
@@ -893,6 +894,10 @@ module.exports = {
 
     s.on("new_post", function(post, cb) {
       var board = post.board || _board || "b";
+      if (board === board_names.CHAT) {
+        board = "b";
+      }
+
       // Special case mod postings
       if (board === board_names.MOD) {
         mod.handle_new_post(s, post);

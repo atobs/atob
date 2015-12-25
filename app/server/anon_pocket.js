@@ -16,6 +16,10 @@ module.exports = {
       });
     }
 
+    if (!post.text) {
+      return;
+    }
+
     var groups = post.text.match(POCKET_RE);
     if (groups && groups[2]) {
       console.log("Adding trophy", groups[1], "in post", groups[2]);
