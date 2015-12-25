@@ -161,8 +161,15 @@ module.exports = {
       });
     });
   },
-  join_chat: function() {
-    console.log("JOINING CHAT?");
+  join_chat: function(id) {
+    var chat_id = _.keys(window._POSTS)[0];
+
+    SF.socket().on("new_chat", function(reply) {
+      if (window._POSTS[chat_id]) {
+        window._POSTS[chat_id].add_reply(reply);
+      }
+    });
+
   },
   show_recent_threads: function() {
     format_and_show($(".threads.recent.hidden"));
