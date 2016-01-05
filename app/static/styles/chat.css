@@ -61,7 +61,7 @@
   }
 
   .cmp-post {
-    min-height: 400px !important;
+    min-height: 400px;
     max-height: 400px !important;
     .post {
       .title {
@@ -97,4 +97,39 @@
     }
 
   }
+}
+
+/* homepage chat overrides */
+.home_chat_container .chat {
+  position: inherit;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  top: auto;
+
+  .chat_header {
+    display: none;
+  }
+  .chat_content {
+    .cmp-post {
+      min-height: 200px !important;
+      max-height: 200px !important;
+    }
+
+    max-width: none;
+    padding: 0px;
+    display: block !important;
+    background-color: inherit;
+    border: none;
+
+    .replies {
+      max-height: 150px !important;
+    }
+    .post {
+      background-color: inherit;
+    }
+
+    padding-bottom: 30px;
+  }
+
 }

@@ -37,9 +37,11 @@
         <h3><a href="/b/a">get started!</a></h3>
 
 
-        <hr />
-        
-        <%= render_partial("shared/chat.html.erb", { render_recent_chats: render_recent_chats }) %>
+        <hr style="margin-bottom: 0px" />
+
+        <div class="home_chat_container">
+          <%= render_partial("shared/chat.html.erb", { render_recent_chats: render_recent_chats }) %>
+        </div>
       </div>
 
       <div class="col-md-6">
