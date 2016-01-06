@@ -758,7 +758,7 @@ module.exports = {
 
     find_top_anons(function(hashes, count) {
 
-      var content = $("<div class='container mtl' />");
+      var content = $("<div class='container mtl anons' />");
       _.each(hashes, function(hash) {
         var hashEl = $("<div class='col-xs-4 col-md-2 tripcode'>");
         hashEl.attr("data-tripcode", hash.tripcode);

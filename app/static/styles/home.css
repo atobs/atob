@@ -79,6 +79,10 @@ h1, h2, h3 {
   float: none;
 }
 
+.anons .tripcode {
+  float: left;
+}
+
 .recent_container {
   padding-top: 10px;
 }
