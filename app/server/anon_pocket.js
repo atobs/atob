@@ -32,7 +32,8 @@ module.exports = {
       }
 
       trophies.push([trophy, parent_id]);
-      text = text.replace(groups[1], ""); 
+      var indexOf = text.lastIndexOf(trophy);
+      text = text.substring(0, indexOf) + text.substring(indexOf + trophy.length);
       groups = text.match(POCKET_RE);
     }
 
