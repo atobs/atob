@@ -134,3 +134,7 @@ h1, h2, h3 {
     left: 0px;
   }
 }
+
+.truncable {
+  word-break: break-all;
+}
