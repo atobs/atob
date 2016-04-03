@@ -46,21 +46,6 @@ function format_and_show($el) {
 
 module.exports = {
   fullpage: function() {
-    if ($("body").width() > 1280) {
-      $(".front.recent").fadeOut();
-      bootloader.css("jquery.fullPage", function() {
-        bootloader.require("app/static/vendor/jquery.fullPage", function() {
-          $("#fullpage .section.hidden").removeClass("hidden");
-          $(".header").addClass("stayput");
-          $("#fullpage").fullpage({
-            normalScrollElements: ".chat .replies",
-            verticalCentered: false,
-            paddingTop: "132px",
-            scrollBar: true
-          });
-        });
-      });
-    }
   },
   events: {
     "click .imglink" : "handle_mouseenter_imglink",

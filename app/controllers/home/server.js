@@ -538,35 +538,6 @@ module.exports = {
 
 
 
-    var async_render_burtles = function() { };
-    var async_render_recent = function() {};
-    var async_render_about = function() { };
-
-    // This is being done in setup_request
-    if (!ctx.req.is_mobile) {
-      async_render_burtles = api.page.async(function(flush) {
-        render_burtles(function(content) {
-          flush(content.toString());
-        });
-      });
-
-      async_render_recent = api.page.async(function(flush) {
-        render_even_more_recent(api, function(template_str) {
-          flush(template_str);
-        });
-      });
-
-      async_render_about = api.page.async(function(flush) {
-        // bring the slogans in over here
-        var template_str = api.template.render("controllers/about.html.erb", {
-          slogan: SLOGANS[_.random(SLOGANS.length)]
-        });
-
-        flush(template_str);
-      });
-    }
-
-
     var board_utils = require_app("server/board_utils");
     var render_boards = board_utils.render_boards();
 
@@ -577,13 +548,10 @@ module.exports = {
       render_anons: render_anons,
       render_recent_posts: render_recent_posts,
       render_recent_threads: render_recent_threads,
-      render_burtles: async_render_burtles,
       render_sponsored_content: render_sponsored_content,
       slogan: SLOGANS[_.random(SLOGANS.length)],
 
-      render_about: async_render_about,
       render_recent_chats: render_recent_chats,
-      render_even_more_recent: async_render_recent,
     });
 
     api.bridge.controller("home", "fullpage");
