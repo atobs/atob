@@ -79,6 +79,25 @@ module.exports = {
     "all" : "all",
     "recent" : "recent",
   },
+  post_routes: {
+    "s" : "add_sample"
+  },
+
+  add_sample: function(ctx, api) {
+    var snorkel_api = require_app("server/snorkel_api");
+
+    var samples = ctx.req.body.samples;
+    if (samples && samples.length) {
+      console.log("RECEIVED", samples.length, "SAMPLES");
+      _.each(samples, function(sample) {
+        snorkel_api.handle_json_sample(sample, ctx.req);
+      });
+    } else if (ctx.req.body.sample) {
+      snorkel_api.handle_json_sample(ctx.req.body.sample);
+    }
+
+    ctx.res.end("OK");
+  },
 
   render_timeseries: function(ctx, api, recent) {
     var options = {

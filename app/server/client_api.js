@@ -8,13 +8,42 @@ var User = require_app("models/user");
 var config = require_core("server/config");
 var worship_boards = require_app("server/worship_boards");
 var board_names = require_app("server/board_names");
+var context = require_core("server/context");
 
+
+var snorkel_api = require_app("server/snorkel_api");
 
 // just a cache
 var EMOTION_TABLE = {};
 
+
 module.exports = {
   add_to_socket: function(s) {
+    s.spark.on("data", function(data) {
+      if (data.data && data.data[0]) {
+        var sample = snorkel_api.Sample("socketrcv");
+        sample.integer("time", parseInt(+Date.now() / 1000, 10));
+        sample.string("msg", data.data[0]);
+        snorkel_api.decorate_sample(sample, snorkel_api.DECO.browser_info, s.socket.request);
+
+        sample.send();
+
+      }
+    });
+
+    s.on("samples", function(data, cb) {
+      if (data.samples && data.samples.length) {
+        console.log("SOCKET RECEIVED", data.samples.length, "SAMPLES");
+ 
+        s.socket.request.ip = s.socket.request.forwarded.ip;
+        _.each(data.samples, function(sample) {
+          snorkel_api.handle_json_sample(sample, s.socket.request);
+        });
+      }
+
+      cb();
+    });
+
     s.on("adminme", function(board, author, tripcode, cb) {
       // For now, we assume yes...
       // ADMIN PANEL LETS YOU:

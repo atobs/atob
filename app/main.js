@@ -6,6 +6,8 @@ var Board = require_app("models/board");
 var config = require_core("server/config");
 var zlib = require("zlib");
 var board_names = require_app("server/board_names");
+var body_parser = require("body-parser");
+var snorkel_api = require_app("server/snorkel_api");
 
 
 if (process.env.DEBUG) {
@@ -57,7 +59,8 @@ module.exports = {
       db_emitter.emit("synced");
     });
 
-
+    app.use(body_parser.urlencoded({ extended: true }));
+    app.use(body_parser.json());
   },
   setup_request: function(req, res) {
     if (req.path.indexOf("/pkg") !== 0) {
@@ -73,6 +76,7 @@ module.exports = {
     req.start = Date.now();
 
     if (req.headers.referer && req.sessionID) { 
+      // TODO: add more, for 4ch, euphoria, etc
       var makeme_store = require_app("server/makeme_store");
       if (req.headers.referer.match('reddit')) {
 
@@ -99,6 +103,16 @@ module.exports = {
     var end = Date.now();
     var diff = end - req.start;
     console.log("Finished request", req.path, "(" +  diff +  "ms)");
+
+    if (_.isNumber(diff) && !_.isNaN(diff)) {
+      var s = new snorkel_api.Sample("pagestats");
+      s.string("page", req.path);
+      s.integer("gen", diff);
+      s.integer("time", parseInt(Date.now() / 1000, 10));
+      snorkel_api.decorate_sample(s, snorkel_api.DECO.browser_info);
+      s.send();
+
+    }
 
   },
   setup_context: function(ctx) {

@@ -18,6 +18,7 @@ var TRIPCODES = [];
 var FOURCODES = [];
 var LOOKUP = {};
 var SIDEBARS = false;
+var VOYEUR = false;
 var MAX_TRIPS = 10;
 var MAX_FOURS = 20;
 var LENGTH_OF_ENLIGHTENMENT = 30000;
@@ -26,8 +27,14 @@ var get_from_storage = storage.get;
 var set_in_storage = storage.set;
 TRIPCODES = JSON.parse(get_from_storage("tripcodes") || "[]");
 FOURCODES = JSON.parse(get_from_storage("fourcodes") || "[]");
-
 SIDEBARS = JSON.parse(get_from_storage("use_sidebars") || "false");
+VOYEUR = JSON.parse(get_from_storage("voyeur") || "false");
+
+if (VOYEUR) {
+  window.bootloader.require("app/client/voyeur", function(mod) {
+    mod.init();
+  });
+}
 
 
 function filter_content() {
@@ -89,6 +96,21 @@ module.exports = {
 
     return val;
 
+  },
+
+  save_voyeur: function(force) {
+    var filterEl = this.$page.find("input.voyeur").last();
+    _.defer(function() {
+      var filter = !!filterEl.prop('checked');
+      VOYEUR = filter;
+      set_in_storage("voyeur", VOYEUR);
+
+      if (filter || force) {
+        window.bootloader.require("app/client/voyeur", function(mod) {
+          mod.init();
+        });
+      }
+    });
   },
 
   save_threadify: function() {
@@ -413,6 +435,7 @@ module.exports = {
     });
 
     this.load_checkbox_value("threadify", "input.threadify", function(el, val) { });
+    this.load_checkbox_value("voyeur", "input.voyeur", function(el, val) { });
 
     var newtrip = this.load_checkbox_value("newtrip", "input.newtrip");
 
@@ -516,8 +539,7 @@ module.exports = {
   },
 
   burtle_storm: function() {
-    bootloader.require("app/client/burtle_storm", function() {
-      var mod = require("app/client/burtle_storm");
+    bootloader.require("app/client/burtle_storm", function(mod) {
       var storms = _.random(1, 3);
       for (var i = 0; i < storms; i++) {
         mod.storm();
@@ -1021,6 +1043,7 @@ module.exports = {
     "change input.privtrip" : "save_privtrip",
     "change input.filtercontent" : "save_filter",
     "change input.threadify" : "save_threadify",
+    "change input.voyeur" : "save_voyeur",
     "click .beeper" : "request_notifs",
     "click .identity_tripcode" : "regen_tripcode",
     "click .regen_tripcode" : "regen_tripcode",

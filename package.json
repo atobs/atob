@@ -5,6 +5,8 @@
   "private": true,
   "dependencies": {
     "superfluous": "x",
+    "ua-parser": "x",
+    "body-parser" : "x",
     "sequelize": "^1.7.0",
     "cheerio": "^0.13.1",
     "Faker": "^0.7.0",

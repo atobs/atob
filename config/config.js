@@ -1,6 +1,6 @@
 module.exports = {
   sockets: true,
-  primus_transformer: "sockjs",
+  primus_transformer: "engine.io",
   ssl: {
     key: "config/certs/server.key",
     certificate: "config/certs/server.crt"
