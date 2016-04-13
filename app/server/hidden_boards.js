@@ -14,10 +14,3 @@ module.exports = [
  "chat",
  "ads"
 ];
-
-
-BoardConfig.findAll().success(function(results) {
-  _.each(results, function(config) {
-
-  });
-});

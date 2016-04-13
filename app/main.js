@@ -57,6 +57,12 @@ module.exports = {
       }
 
       db_emitter.emit("synced");
+
+
+      var board_migrations = require_app("server/board_migrations");
+      board_migrations.run();
+
+
     });
 
     app.use(body_parser.urlencoded({ extended: true }));

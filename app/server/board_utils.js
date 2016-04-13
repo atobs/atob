@@ -4,9 +4,6 @@ var bridge = require_core("server/bridge");
 var page = require_core("server/page");
 var template = require_core("server/template");
 
-var board_migrations = require_app("server/board_migrations");
-board_migrations.run();
-
 module.exports = {
   render_boards: function() {
     var render_boards = page.async(function(flush) {

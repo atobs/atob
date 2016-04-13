@@ -52,6 +52,10 @@
           }
         }
 
+        if (!copy.__ts) {
+          copy.__ts = obj.__ts || obj.meta.ts;
+        }
+
         if (!copy.dataset) {
           copy.dataset = obj.dataset;
         }
