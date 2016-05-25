@@ -59,24 +59,12 @@ module.exports = {
 
     try_again();
 
-
-    var storage = require("app/client/storage");
-    var tripcode_str = storage.get("tripcodes");
-    var tripcodes = [];
-    try {
-      tripcodes = JSON.parse(tripcode_str);
-    } catch (e) {
-
+    // This is where we can show and hide chat?
+    $(".chat").removeClass("hidden");
+    var repliesEl = $(".chat .replies");
+    if (repliesEl.length) {
+      repliesEl.scrollTop(repliesEl[0].scrollHeight);
     }
 
-    if (tripcodes.length) {
-      // This is where we can show and hide chat?
-      $(".chat").removeClass("hidden");
-      var repliesEl = $(".chat .replies");
-      if (repliesEl.length) {
-        repliesEl.scrollTop(repliesEl[0].scrollHeight);
-      }
-
-    }
   },
 };
