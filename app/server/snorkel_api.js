@@ -35,6 +35,12 @@ var DECO = {
       s.string("ip", hashed);
     }
 
+    var sid = req.headers && req.headers.sid;
+    if (sid) {
+      var hashsid = IP.toHash(sid);
+      s.string("sid", hashsid);
+    }
+
     return s;
 
   },
