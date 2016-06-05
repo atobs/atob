@@ -2,17 +2,20 @@
 
 var POST_CACHE = {};
 var CLIENT_COMMANDS = {
-  "/makeme" : function(cmd, icon) {
-    var postId = this.get_post_id();
-
-    icon = $("<div />").html(icon).text();
-
-    SF.socket().emit("isdoing", {
-      post_id: postId,
-      what: icon
-    });
-  }
+  "/makme" : makeme_handler,
+  "/makeme" : makeme_handler
 };
+
+function makeme_handler(cmd, icon) {
+  var postId = this.get_post_id();
+
+  icon = $("<div />").html(icon).text();
+
+  SF.socket().emit("isdoing", {
+    post_id: postId,
+    what: icon
+  });
+}
 
 function hide_popovers(el) {
   $(el.target || el).popover("destroy");
