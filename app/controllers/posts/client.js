@@ -69,7 +69,7 @@ module.exports = {
     s.on("doings", function(data) {
       var post = window._POSTS[data.post_id];
       if (post) {
-        post.update_counts(data.counts);
+        post.update_counts(data.counts, data.last_seen);
       }
 
     });

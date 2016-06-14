@@ -281,6 +281,8 @@
 
 .pulsepost {
   border-color: rgba(240, 65, 195, 1);
+  transition: border-color 1s;
+  -webkit-transition: border-color 1s;
 }
 
 .addreply {

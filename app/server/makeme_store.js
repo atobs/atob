@@ -198,9 +198,23 @@ function subscribe_to_updates(s) {
 
   function update_post_status(post_id) {
     digest_doings();
+
+    var last_seen = {};
+    var now = +Date.now();
+    _.each(LAST_SEEN, function(then, sid) {
+      var duration = now - then;
+      if (duration > 60 * 60 * 3600) {
+        delete LAST_SEEN[sid];
+        delete SID_TO_TRIP[sid];
+      } else {
+        last_seen[sid] = duration;
+      }
+    });
+
     var doings = {
       post_id: post_id,
-      counts: _.map(DOING_ONS[post_id], function(v) { return v; })
+      counts: _.map(DOING_ONS[post_id], function(v) { return v; }),
+      last_seen: _.map(DOING_ONS[post_id], function(v, sid) { return last_seen[sid]; })
     };
 
     var last_update = LAST_UPDATE[post_id];

@@ -753,24 +753,41 @@ module.exports = {
     this.$el.find(".burtles_count").text(burtles);
     this.$el.find(".burtles").removeClass("hidden");
   },
-  update_counts: function(counts) {
-    counts.sort();
-
-    var lookup = {
-      t: "icon-keyboardalt",
-      f: "icon-glassesalt",
-      u: "icon-glassesalt",
-      s: "icon-ghost hue"
-    };
+  update_counts: function(counts, last_seen) {
+    var merged = _.zip(last_seen, counts);
+    merged.sort(function(a) { return a[0]; });
 
     var get_anonicator_for = this.helpers['app/client/anonications'].get_anonicator_for;
 
-    var str = _.map(counts, function(c) {
-      return "<i class='" + get_anonicator_for(c) + "' />";
+    var str = _.map(merged, function(data) {
+      var updated = data[0];
+      var c = data[1];
+      var active = "";
+      if (updated < 1000) {
+        active = "active_anon";
+      }
+
+      return "<i class='" + get_anonicator_for(c) + " " + active + "' />";
     });
 
     // Update who is typing, who is idle and who is gone.
     this.$el.find(".counts").html(str.join(" "));
+
+    var self = this;
+    var count = 1;
+    function flash_actives(flashes) {
+      var actives = self.$el.find(".active_anon");
+      count++;
+      actives.stop(true).fadeOut(function() { 
+        actives.stop().fadeIn(); 
+        if (count < flashes) {
+          _.defer(function() { flash_actives(flashes); });
+        }
+      
+      });
+    }
+
+    flash_actives();
   },
 
   shake: function(duration) {
