@@ -279,19 +279,8 @@
   }
 }
 
-@-webkit-keyframes pulse_animation {
-  0%   { border-color: rgba(240, 65, 195, 0); }
-  50%  { border-color: rgba(240, 65, 195, 1); }
-  100% { border-color: rgba(240, 65, 195, 0); }
-}
-
 .pulsepost {
-  -webkit-animation-name: 'pulse_animation';
-  -webkit-animation-duration: 6000ms;
-  -webkit-transform-origin:70% 70%;
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-timing-function: linear;
-
+  border-color: rgba(240, 65, 195, 1);
 }
 
 .addreply {
