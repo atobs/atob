@@ -19,14 +19,21 @@ var EMOTION_TABLE = {};
 
 module.exports = {
   add_to_socket: function(s) {
+    var prev_sample = null;
     s.spark.on("data", function(data) {
       if (data.data && data.data[0]) {
         var sample = snorkel_api.Sample("socketrcv");
+        var prev_msg = "$";
+        if (prev_sample) { prev_msg = prev_sample.data.string.msg; }
+        prev_sample = sample;
+
         sample.integer("time", parseInt(+Date.now() / 1000, 10));
         sample.string("msg", data.data[0]);
-        snorkel_api.decorate_sample(sample, snorkel_api.DECO.browser_info, s.socket.request);
+        sample.string("prev_msg", prev_msg);
 
+        snorkel_api.decorate_sample(sample, snorkel_api.DECO.browser_info, s.socket.request);
         sample.send();
+
 
       }
     });

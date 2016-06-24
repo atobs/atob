@@ -18,6 +18,7 @@ module.exports = {
     "click .chat_header" : "toggle_chat"
   },
   show_chat_popup: function() {
+    _ET.local("chat", "show_popup");
     this.$el.find(".chat_content").slideDown();
     this.$el.find(".chat").addClass("visible");
     var repliesEl = this.$el.find(".chat .replies");
@@ -30,6 +31,7 @@ module.exports = {
 
   },
   hide_chat_popup: function() {
+    _ET.local("chat", "hide_popup");
     this.$el.find(".chat_content").slideUp();
     this.$el.find(".chat").removeClass("visible");
 

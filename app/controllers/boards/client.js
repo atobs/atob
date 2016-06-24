@@ -86,12 +86,14 @@ module.exports = {
       return;
     }
 
+
     // to pretend like we went to a URL
     var post_id = target.data("post-id");
     if (post_id) {
       e.preventDefault();
       e.stopPropagation();
 
+      _ET.global("post", "click_title", { string: { id: post_id }});
       var url = window.location.pathname.match(post_id);
       if (url) {
         return;

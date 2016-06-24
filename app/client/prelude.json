@@ -14,6 +14,7 @@
     "app/static/vendor/notify.js",
     "app/static/vendor/fastclick.js",
     "app/static/vendor/strtotime.js",
+    "app/static/vendor/useractions_stub.js",
     "app/static/vendor/hex-rgb.src.js"
   ],
   "styles" : [

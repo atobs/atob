@@ -115,7 +115,7 @@ module.exports = {
       s.string("page", req.path);
       s.integer("gen", diff);
       s.integer("time", parseInt(Date.now() / 1000, 10));
-      snorkel_api.decorate_sample(s, snorkel_api.DECO.browser_info);
+      snorkel_api.decorate_sample(s, snorkel_api.DECO.browser_info, req);
       s.send();
 
     }

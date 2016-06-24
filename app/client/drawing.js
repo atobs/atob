@@ -112,6 +112,13 @@ module.exports = {
   toggle: function() {
     checkInstall();
     showing = !showing;
+
+    if (showing) {
+      _ET.global("drawing_board", "show");
+    } else {
+      _ET.global("drawing_board", "hide");
+    }
+
     iframe.fadeToggle();
     maybehideframe();
 

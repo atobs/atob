@@ -253,6 +253,7 @@ module.exports = {
   },
   regen_tripcode: function() {
     var tripcodeEl = this.$page.find("input.tripcode");
+    _ET.global("tripcode", "regen");
 
     // try out choosing 5 words:
     var tripcode = md5(Math.random() + "");
@@ -278,6 +279,7 @@ module.exports = {
     this.update_trip_colors();
   },
   restore_old_code: function(el) {
+    _ET.global("tripcode", "benjamin_button");
     var $el = $(el.target).closest(".tripcode_button");
     var code = LOOKUP[$el.data("tripcode")];
     if (code) {
@@ -295,6 +297,7 @@ module.exports = {
   },
   delete_old_code: function(el) {
     console.log("DELETING OLD CODE", el);
+    _ET.global("tripcode", "delete");
     var $el = $(el.target).siblings(".tripcode_button");
     var code = LOOKUP[$el.data("tripcode")];
     if (code) {
@@ -339,11 +342,13 @@ module.exports = {
         buttonsContainer.slideToggle();
       });
       el.html("benjamin button");
+      _ET.global("tripcode", "open_history");
     } else {
       buttonsContainer.slideToggle(function() {
         identityContainer.slideToggle();
       });
       el.html("back to settings");
+      _ET.global("tripcode", "close_history");
     }
   },
   tripcode_history: function(buttonEl) {
@@ -540,6 +545,7 @@ module.exports = {
 
   burtle_storm: function() {
     bootloader.require("app/client/burtle_storm", function(mod) {
+      _ET.global("anonicator", "burtle_storm");
       var storms = _.random(1, 3);
       for (var i = 0; i < storms; i++) {
         mod.storm();
@@ -627,6 +633,8 @@ module.exports = {
       return;
     }
 
+    _ET.global("anonicator", "poopstalk");
+
     if (post_id) {
       SF.socket().emit("stalking", {
         what: "stalking",
@@ -687,6 +695,7 @@ module.exports = {
       e.preventDefault();
       e.stopPropagation();
 
+      _ET.global("anonicator", "battleship");
       SF.socket().emit("isdoing", {
         what: "battleship",
         mytrip: module.exports.get_trip_identity()
@@ -819,6 +828,7 @@ module.exports = {
       color: "#000"
     });
     $(".ducked").fadeOut();
+    $(".duckcode").remove();
 
   },
   get_ducked: function(data) {
@@ -834,7 +844,7 @@ module.exports = {
 
     var ducked = $(".ducked");
 
-    var tripcodeEl = $("<div />");
+    var tripcodeEl = $("<div class='duckcode' />");
     tripcodeEl.data("tripcode", data.tripcode);
     $("body").append(tripcodeEl);
     tripcode_gen(tripcodeEl);
@@ -921,6 +931,7 @@ module.exports = {
         });
 
         burtleEl.on("click", function() {
+          _ET.global("anonicator", "thirdeye");
           SF.controller().emit("thirdeyerind", id);
         });
 
@@ -953,6 +964,8 @@ module.exports = {
           left: x + _.random(0, 20),
           top: y + _.random(0, 20),
         });
+
+        _ET.local("anonicator", "sprinkles");
 
         $("body").append(el);
         setTimeout(function() {
@@ -1036,6 +1049,16 @@ module.exports = {
     }, LENGTH_OF_ENLIGHTENMENT);
   }, LENGTH_OF_ENLIGHTENMENT),
 
+  click_toggler: function(e) {
+    if ($(e.target).hasClass("icon-bookmark")) {
+      _ET.global("favorites", "toggle");
+    }
+
+    if ($(e.target).hasClass("icon-squaresettings")) {
+      _ET.global("settings", "toggle");
+    }
+  },
+
   controller_events: {
     "click .thirdeye" : "unlock_the_third_eye",
     "change input.newtrip" : "save_newtrip",
@@ -1057,7 +1080,8 @@ module.exports = {
     "change input.handle" : "save_handle",
     "keyup input.tripcode" : "update_trip_colors",
     "keyup input.handle" : "update_trip_colors",
-    "submit .searchform" : "handle_search"
+    "submit .searchform" : "handle_search",
+    "click .navbar_helper a[data-toggle]" : "click_toggler"
   }
 };
 

@@ -3,6 +3,13 @@ var context = require_core("server/context");
 
 var ua_parser = require("ua-parser");
 
+var geoip;
+try {
+  geoip = require('geoip-lite');
+} catch(e) {
+
+}
+
 var Sample = client_api.Sample;
 
 
@@ -30,9 +37,20 @@ var DECO = {
     s.string("os_family", os.family);
 
     var ip = req.ip;
-    if (ip) {
+
+    if (ip && geoip) {
       var hashed = IP.toHash(ip);
       s.string("ip", hashed);
+      var geo = geoip.lookup(ip);
+
+      if (geo) {
+        s.string("country", geo.country);
+        s.string("region", geo.region);
+        s.string("city", geo.city);
+      }
+
+
+
     }
 
     var sid = req.headers && req.headers.sid;
@@ -68,10 +86,12 @@ module.exports = {
     s.data.integer = json_obj.integer || {};
     s.data.string = json_obj.string || {};
     s.data.set = json_obj.set || {};
-  
+ 
+    // record server and client side timestamps, separately
     var ts = Date.now();
     if (s.__ts) {
       ts = +new Date(s.__ts);
+      s.integer("client_time", parseInt(ts / 1000, 10));
     }
 
     s.integer("time", parseInt(ts / 1000, 10));
@@ -113,9 +133,7 @@ function send_samples(dataset, samples) {
   var http = require('http');
 
   var req = http.request(options, function(res) { });
-  req.on('error', function(err) {
-    console.log("ERROR", err);
-  });
+  req.on('error', function(err) { });
 
   req.write(JSON.stringify(data));
   req.end();

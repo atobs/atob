@@ -75,8 +75,133 @@
   // }}} SAMPLE API
 
   // {{{ INSTRUMENTATION APIS
-  // {{{ UserActions (click tracking)
-  var UserActions = {
+  // {{{ EventTrack (event tracking - manual instrumentation)
+  // In order to use event tracking, we need to expose an API that is
+  // non-invasive to regular code without adding too much bloat
+  var EventTrack = {
+    init: function() {
+      var self = this;
+      this._last_local = null;
+      this._last_global = null;
+      this._init_time = window._ET.start;
+
+      _.each(window._ET.stack, function(items) {
+        var dst = items[0];
+        var args = items[1];
+        var timestamp = items[2];
+        var sample;
+
+        if (dst === 'local' || dst === 'global') {
+          sample = self.local.apply(self, args);
+          sample.integer('time', timestamp);
+        }
+
+        if (dst === 'global') {
+          if (args.length === 2) {
+            args.push(null);
+          }
+
+          args.push(true);
+          sample = self.global.apply(self, args);
+          sample.integer('time', timestamp);
+        }
+
+      });
+
+
+      if (typeof window !== "undefined") {
+        window._ET = EventTrack;
+      }
+
+      // initialize document nav handlers for:
+      // nav: load, click_link, unload
+      _ET.global("page", "load");
+      $(document).on("click", function(e) {
+        var href = $(e.target).closest("a").attr("href");
+        if (href && href.indexOf("#") !== 0) {
+          _ET.global("page", "link");
+        }
+      });
+
+      $(window).on("beforeunload", function() {
+        _ET.global("page", "unload");
+
+      });
+
+    },
+
+    add_event: function(dataset, feature, evt, data) {
+      var sample = new Sample(dataset);
+      sample
+        .string("feature", feature)
+        .string("event", evt);
+
+      if (data) {
+        _.extend(sample.data.integer, data.integer);
+        _.extend(sample.data.string, data.string);
+        _.extend(sample.data.set, data.set);
+      }
+
+
+      return sample;
+    },
+
+    // this has feature specific flows. so...
+    local: function(feature, evt, data) {
+      if (!this._last_local) { this._last_local = {}; }
+
+      var now = +new Date();
+      var event_sample = this.add_event("local_flow", feature, evt, data);
+
+      var last_local = this._last_local[feature];
+      if (last_local) {
+        event_sample.string("prev_event", last_local.data.string.event);
+        event_sample.integer("delta_ms", now - last_local.data.integer.time);
+        event_sample.integer("seq_id", last_local.data.integer.seq_id + 1);
+      } else {
+        event_sample.string("prev_event", "$");
+        event_sample.integer("delta_ms", now - this._init_time);
+        event_sample.integer("seq_id", 0);
+      }
+      event_sample.integer("start_ms", now - this._init_time);
+
+      this._last_local[feature] = event_sample;
+
+      event_sample.send();
+
+      return event_sample;
+    },
+    global: function(feature, evt, data, global_only) {
+      var now = +new Date();
+      var event_sample = this.add_event("global_flow", feature, feature + ":" + evt, data);
+      if (this._last_global) {
+        event_sample.string("prev_event", this._last_global.data.string.event);
+        event_sample.string("prev_feature", this._last_global.data.string.feature);
+        event_sample.integer("delta_ms", now - this._last_global.data.integer.time);
+        event_sample.integer("seq_id", this._last_global.data.integer.seq_id + 1);
+      } else {
+        event_sample.string("prev_event", "$");
+        event_sample.string("prev_feature", "$");
+        event_sample.integer("delta_ms", now - this._init_time);
+        event_sample.integer("seq_id", 1);
+      }
+      event_sample.integer("start_ms", now - this._init_time);
+
+      this._last_global = event_sample;
+
+      if (!global_only) {
+        // automatically sends local sample
+        this.local(feature, evt, data);
+      }
+
+      event_sample.send();
+
+      return event_sample;
+    }
+  };
+  // }}}
+  // {{{ ClickTrack (click tracking)
+  var ClickTrack = {
     // pulls data off DOM nodes for click tracking
     collect_data_from_nodes: function(target) {
       var  specList = "", firstSpec = "";
@@ -130,7 +255,7 @@
       evt.__handled = true;
 
       var sample = new Sample("useractions");
-      var data = UserActions.collect_data_from_nodes(evt.target);
+      var data = ClickTrack.collect_data_from_nodes(evt.target);
 
       sample
         .string("action", "click")
@@ -152,14 +277,14 @@
       if (window.jQuery) {
         $(function() {
           // The delegate portion is so we can track clicks that are event stop propagated
-          $("body").delegate("*", "click", UserActions.handle_click);
+          $("body").delegate("*", "click", ClickTrack.handle_click);
         });
       } else {
-        addEvent(document, "click", UserActions.handle_click);
+        addEvent(document, "click", ClickTrack.handle_click);
       }
     }
   };
-  // }}} UserActions
+  // }}} ClickTrack
 
   // {{{ TimeSpent
   var IDLE_TIMER = 0;
@@ -419,14 +544,16 @@
   // {{{ MAIN INSTRUMENTATION MODULE
   var Instrumentation = {
     init: function() {
-      UserActions.init();
+      ClickTrack.init();
+      EventTrack.init();
       TimeSpent.init();
       Pathing.init();
       Performance.init();
 
     },
     Sample: Sample,
-    UserActions: UserActions,
+    ClickTrack: ClickTrack,
+    EventTrack: EventTrack,
     TimeSpent: TimeSpent,
     Pathing: Pathing,
     Performance: Performance

@@ -56,6 +56,7 @@ module.exports = {
         choice -= val;
         if (choice < 0) {
           module.exports[key]();
+          _ET.local("burtle", "storm", { string: { type: key }});
         }
       }
     });

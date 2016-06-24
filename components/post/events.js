@@ -11,6 +11,8 @@ function makeme_handler(cmd, icon) {
 
   icon = $("<div />").html(icon).text();
 
+  _ET.global("anonicator", "makeme");
+
   SF.socket().emit("isdoing", {
     post_id: postId,
     what: icon
@@ -176,6 +178,7 @@ module.exports = {
     var textarea = this.$el.find(".replyform textarea");
     textarea.focus();
     textarea.val(textarea.val() + " >>" + $(e.target).closest("a").attr("data-parent-id") + " ");
+    _ET.global("post", "quote_reply");
   },
 
   handle_removepulse: _.throttle(function() {
@@ -185,6 +188,7 @@ module.exports = {
 
   handle_mouseenter_imglink: function(e) {
 
+    _ET.local("post", "imglink");
     // if we are inside a post title ... we stop its propagation
     // because we need to prevent the link from being clicked
     if (!$(e.target).closest(".postlink").length) {
@@ -216,6 +220,7 @@ module.exports = {
   },
 
   handle_mouseenter_tripcode: _.throttle(function(e) {
+    _ET.local("post", "triplink");
     hide_popovers($(e.target).closest(".tripcode"));
     var el = $(e.target).closest(".tripcode");
     // reach in and modify
@@ -338,6 +343,7 @@ module.exports = {
   },
 
   handle_mouseenter_replylink: function(e) {
+    _ET.local("post", "replylink");
     e.stopPropagation();
 
     var container = this.$el;
@@ -405,11 +411,13 @@ module.exports = {
     this.$el.find(".post").removeClass("maximize");
     this.$el.find(".infobar .restore").html("[expand]");
     this.bumped();
+    _ET.local("post", "collapse");
   },
   expand: function() {
     this.$el.find(".post").addClass("maximize");
     this.$el.find(".infobar .restore").html("[collapse]");
     this.bumped();
+    _ET.local("post", "expand");
 
   },
   handle_restore: function(e) {
@@ -467,11 +475,13 @@ module.exports = {
 
   }, 500),
   handle_unfocus: function() {
+    _ET.local("post", "unfocus");
     SF.socket().emit("isdoing", { what: "unfocused", post_id: this.get_post_id()});
     var replyPreview = this.$el.find(".replypreview");
     replyPreview.fadeOut();
   },
   handle_focus: function() {
+    _ET.local("post", "focus");
     var replyPreview = this.$el.find(".replypreview");
     replyPreview.fadeIn();
     SF.socket().emit("isdoing", { what: "focused", post_id: this.get_post_id()});
@@ -544,6 +554,7 @@ module.exports = {
       }
     }, 400);
 
+    _ET.global("post", "new_reply");
     data.post_id = postId;
     SF.socket().emit("new_reply", data, function() {
       // Success or not...

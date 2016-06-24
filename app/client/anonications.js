@@ -45,6 +45,8 @@ module.exports = {
           mytrip: tripcode
         });
 
+        _ET.global("anonicator", action);
+
         ret = true;
       }
 
