@@ -61,11 +61,11 @@
       <div class="col-md-6">
         <div class="front recent hidden threads">
           <h3>recent threads
-            <small><a class="icon-toast" href="#" data-toggle="collapse" data-target=".new_post"></a></small>
+            <small><a class="icon-toast composer_toggle" href="#"></a></small>
             <small><a href="/recent">(moariarty)</a></small>
           </h3>
-          <div class="clearfix col-md-12">
-            <%= render_partial("shared/new_post.html.erb") %>
+          <div class="clearfix">
+            <%= render_partial("shared/new_post.html.erb",  { show_tripcode: true }) %>
           </div>
 
 

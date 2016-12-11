@@ -129,3 +129,7 @@ h1, h2, h3 {
 .truncable {
   word-break: break-all;
 }
+
+.identity_tripcode {
+  cursor: pointer;
+}

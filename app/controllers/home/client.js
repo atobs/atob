@@ -52,6 +52,7 @@ module.exports = {
     "click .identity_tripcode" : "regen_tripcode",
     "click .upboat" : "handle_upboat_link",
     "click .tripcode" : "handle_click_tripcode",
+    "click .composer_toggle" : "handle_composer_toggle",
     "mouseenter .imglink" : "handle_mouseenter_imglink",
     "mouseleave .imglink" : "handle_mouseleave_imglink",
     "mouseenter .ruleslink" : "handle_mouseenter_ruleslink",
@@ -65,6 +66,13 @@ module.exports = {
     window.open("/u/" + tripcode, "_blank");
     e.preventDefault();
     e.stopPropagation();
+  },
+
+  handle_composer_toggle: function(e) {
+    console.log("WRITING NEW POST");
+    this.$el.find(".new_post").slideToggle();
+    this.init_tripcodes();
+
   },
 
   handle_upboat_link: function(e) {

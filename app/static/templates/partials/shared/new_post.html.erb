@@ -1,9 +1,19 @@
+<%= set_default("show_tripcode", false) %>
+
 <form class="form-inline new_post collapse">
+  <% if (show_tripcode) { %>
+    <div class='clearfix'>
+      <div class='identity_tripcode' style='width: 100%'> </div>
+      <input class='hidden tripcode' />
+    </div>
+  <% } %>
+
   <div>
     <hr />
     <label for="title">Title</label>
     <input name="title" class="form-control" type="text"> </input>
   </div>
+
   <div>
     <label for="text">Text</label>
     <textarea name="text" class="form-control col-md-4"> </textarea>
