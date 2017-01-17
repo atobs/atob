@@ -86,6 +86,7 @@ function post_text(result, op) {
 }
 
 module.exports = {
+  OPS: OPS,
   handle_new_post: function(socket, post) {
     if (!post.tripcode || !post.author) {
       return;
@@ -95,7 +96,7 @@ module.exports = {
 
     User.find({
       where: {
-        tripcode: post.tripcode,
+        tripcode: post.tripcode || "nobod",
         tripname: post.author
       }
     }).success(function(user) {

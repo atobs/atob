@@ -868,6 +868,48 @@ function render_posting(api, flush, result, highlight_id, nothreading) {
   });
 }
 
+function handle_ban_post(socket, board, post) {
+  console.log("Banning post", post);
+  Post.find({
+    where: {
+      id: post.id
+    }
+  }).success(function(result) {
+    var delete_code = gen_md5(post.author + ':' + post.tripcode);
+    if (result) {
+      if (worship_boards.contains(result.board_id) || result.board_id === board_names.LOG) {
+        socket.emit("notif", "nice try, but badanon.", "warn");
+        return;
+      }
+      anon_is_board_mod(post.author, post.tripcode, board, function(is_mod) {
+        if (is_mod) {
+          socket.emit("notif", "Board Mod Helped #" + post.id, "success");
+          result.board_id = board_names.BAN;
+          result.save();
+
+          mod.OPS.ban(result, 24);
+
+          var text = post_text(result);
+          var post_data = {
+            board_id: board_names.MOD,
+            tripcode: delete_code,
+            title: "ban " + post.id,
+            author: post.author,
+            text: text,
+            bumped_at: Date.now()
+          };
+
+          Post.create(post_data);
+          socket.emit("update_post", post.id);
+          socket.broadcast.to(result.board_id).emit("update_post", post.id);
+          post_links.erase_links(result, function() { });
+        }
+      });
+    }
+  });
+
+}
+
 module.exports = {
   handle_new_reply: handle_new_reply,
   handle_new_post: handle_new_post,
@@ -880,6 +922,11 @@ module.exports = {
     s.on("update_post", function(post, cb) {
       var board = post.board || _board;
       handle_update_post(s, board, post, cb);
+    });
+
+    s.on("ban_post", function(post) {
+      var board = post.board || _board;
+      handle_ban_post(s, board, post);
     });
 
     s.on("delete_post", function(post) {

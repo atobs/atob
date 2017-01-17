@@ -3,6 +3,7 @@
 module.exports = {
   events: {
     "click .delete" :  "handle_delete_post",
+    "click .ban" :  "handle_ban_post",
     "click .star" :  "handle_star_post",
     "click .edit" : "handle_edit_post",
     "click .update" :  "handle_update_post",
@@ -31,6 +32,9 @@ module.exports = {
     this.post_to_controller("update_post", { text: text });
   },
 
+  handle_ban_post: function() {
+    this.post_to_controller("ban_post");
+  },
   handle_delete_post: function() {
     this.post_to_controller("delete_post");
   },
