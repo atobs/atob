@@ -253,6 +253,7 @@ function add_replies($el) {
 }
 
 function translate_markdown($el, escaped) {
+  escaped = escaped.replace(/>/g, "&gt;");
   escaped = marked(escaped, { renderer: renderer, breaks: true, sanitize: true});
 
   // need to add icons here before data-text is added to the element
@@ -275,37 +276,44 @@ function translate_markdown($el, escaped) {
 
   });
 
-  var brs = $el.find("br");
-  brs.each(function() {
-    var $br = $(this);
+  function add_greentext(reg, class_) {
 
-    var textEl = $br[0].previousSibling || $br[0].prev;
-    if (textEl) {
-      if (textEl.data) {
-        var match = textEl.data.toString().match(/^(&gt;|>)((?!(&gt;|>)))/);
-        if (match) {
-          var text = textEl.data;
-          text = "<span class='blockquote'>" + text + "</span>";
-          $(textEl).remove();
+    var brs = $el.find("br");
+    var outerRegexp = RegExp("^" + reg);
+    var replyRegexp = RegExp("^\\s*((&gt;&gt;|>>)\\d+\\s*)+" + reg);
 
-          $br.before($(text));
-        } else {
-          // regex for ">>reply >" (in case someone tries to blockquote with a reply in front)
-          match = textEl.data.toString().match(/^((&gt;&gt;|>>)\d+\s*)+(&gt;|>)((?!(&gt;|>)))/);
+
+    brs.each(function() {
+      var $br = $(this);
+
+      var textEl = $br[0].previousSibling || $br[0].prev;
+      if (textEl) {
+        if (textEl.data) {
+          var match = textEl.data.toString().match(outerRegexp);
           if (match) {
             var text = textEl.data;
-            text = "<span class='blockquote'>" + text + "</span>";
+            text = "<span class='" + class_ + "'>" + text + "</span>";
             $(textEl).remove();
 
             $br.before($(text));
+          } else {
+            // regex for ">>reply >" (in case someone tries to blockquote with a reply in front)
+            match = textEl.data.toString().match(replyRegexp);
+            if (match) {
+              var text = textEl.data;
+              text = "<span class='" + class_ + "'>" + text + "</span>";
+              $(textEl).remove();
+
+              $br.before($(text));
+            }
           }
         }
       }
-    }
-  });
+    });
+  }
 
-
-
+  add_greentext("(&gt;|>)!", "spoiler");
+  add_greentext("(&gt;|>)((?!(&gt;|>|!)))", "blockquote");
 }
 
 // Hmmm...
@@ -396,7 +404,6 @@ function is_gfycat_url(img_link) {
 
 function make_gfycat_url(img_link) {
   var match = is_gfycat_url(img_link);
-  console.log("MATCH IS", match);
 
   if (!match) {
     return;

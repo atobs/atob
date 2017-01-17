@@ -133,3 +133,38 @@ h1, h2, h3 {
 .identity_tripcode {
   cursor: pointer;
 }
+
+
+.text, .replypreview {
+  .spoiler {
+    opacity: 0.5;
+    background-color: #aaaaaa;
+    color: #aaaaaa;
+    cursor: pointer;
+
+    -webkit-transition: color 0.5s ease-in-out;
+    -moz-transition: color 0.5s ease-in-out;
+    transition: color 0.5s ease-in-out;
+
+    -webkit-transition: background-color 0.5s ease-in-out;
+    -moz-transition: background-color 0.5s ease-in-out;
+    transition: background-color 0.5s ease-in-out;
+
+    -webkit-transition: opacity 0.5s ease-in-out;
+    -moz-transition: opacity 0.5s ease-in-out;
+    transition: opacity 0.5s ease-in-out;
+
+
+  }
+
+  &:hover {
+    .spoiler {
+      opacity: 1;
+      color: #666666;
+      background-color: inherit;
+
+    }
+  }
+}
+
+
