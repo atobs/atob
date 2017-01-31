@@ -14,6 +14,16 @@ var board_names = require_app("server/board_names");
 var BoardClaim = require_app("models/board_claim");
 
 var OPS = {
+  move: function(post, board_name) {
+    if (!board_name) {
+      return false;
+    }
+
+    post.board_id = board_name;
+    post.save();
+    return true;
+
+  },
   ban: function(post, hours) {
     hours = parseInt(hours, 10) || 24;
 
