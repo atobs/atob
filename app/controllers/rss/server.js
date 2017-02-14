@@ -53,7 +53,9 @@ function refresh_feed(board, cb) {
         limit: 20
     }).success(function(results) {
       var feed = new RSS({
-        title: "atob/" + board
+        title: "atob/" + board,
+        feed_url: "http://atob.xyz/r/" + board,
+        site_url: "http://atob.xyz"
       });
 
       _.each(results, function(post) {
