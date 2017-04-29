@@ -9,7 +9,7 @@ module.exports = {
     "click .update" :  "handle_update_post",
     "keydown textarea" : "handle_typing"
   },
-  post_to_controller: function(msg, options) {
+  post_to_controller(msg, options) {
     var author = this.$el.find("input[name=author]").val();
     var tripcode = this.$el.find("input[name=tripcode]").val();
 
@@ -18,28 +18,28 @@ module.exports = {
     this.$el.find('.modal').modal('hide');
     SF.socket().emit(msg, _.extend({
       id: post_id,
-      tripcode: tripcode,
+      tripcode,
       board: SF.controller().board,
-      author: author
+      author
     }, options));
 
 
   },
 
 
-  handle_update_post: function() {
+  handle_update_post() {
     var text = this.$el.find("textarea[name=text]").val();
-    this.post_to_controller("update_post", { text: text });
+    this.post_to_controller("update_post", { text });
   },
 
-  handle_ban_post: function() {
+  handle_ban_post() {
     this.post_to_controller("ban_post");
   },
-  handle_delete_post: function() {
+  handle_delete_post() {
     this.post_to_controller("delete_post");
   },
 
-  handle_star_post: function() {
+  handle_star_post() {
     this.post_to_controller("star_post");
   },
   handle_typing: _.throttle(function() {
@@ -61,7 +61,7 @@ module.exports = {
 
   }, 100),
 
-  handle_edit_post: function() {
+  handle_edit_post() {
     this.$el.find(".edit-post").fadeIn();
     this.$el.find(".edit")
       .text("done")

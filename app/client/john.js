@@ -9,7 +9,7 @@ function sweep_text(el) {
   var context = el.nodeValue;
 
   // test for john...
-  _.each(SWEAR_REs, function(swr, rep) {
+  _.each(SWEAR_REs, (swr, rep) => {
     if (swr.test(context)) {
       var replaced =  Luni.tools.creepify.encode(rep);
       context = context.replace(swr, replaced);
@@ -39,8 +39,8 @@ function recurse(element)
   }
 }
 
-module.exports = function(el) {
-  bootloader.require("app/static/vendor/lunicode", function(Lunicode) {
+module.exports = el => {
+  bootloader.require("app/static/vendor/lunicode", Lunicode => {
     Luni = new Lunicode();
 
     el = $(el)[0];

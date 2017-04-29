@@ -16,7 +16,7 @@ var Sample = client_api.Sample;
 var IP = require_app("models/ip");
 
 var DECO = {
-  browser_info: function(s, req) {
+  browser_info(s, req) {
     if (typeof req === "undefined") {
       req = context("request");
     }
@@ -67,20 +67,20 @@ var DECO = {
 
 // Post it to the snorkel instance...
 module.exports = { 
-  Sample: Sample,
-  decorate_sample: function(s, decorations, request) {
+  Sample,
+  decorate_sample(s, decorations, request) {
     if (!_.isArray(decorations)) {
       if (_.isFunction(decorations)) {
         decorations = [ decorations ];
       }
     }
 
-    _.each(decorations, function(deco) {
+    _.each(decorations, deco => {
       deco(s, request);
     });
   },
-  DECO: DECO,
-  handle_json_sample: function(json_obj, request) {
+  DECO,
+  handle_json_sample(json_obj, request) {
     var s = new Sample();
 
     s.data.integer = json_obj.integer || {};
@@ -101,11 +101,11 @@ module.exports = {
     module.exports.decorate_sample(s, DECO.browser_info, request);
 
 
-    _.each(s.data.integer, function(v, k) {
+    _.each(s.data.integer, (v, k) => {
       s.data.integer[k] = parseInt(v, 10);
     });
 
-    _.defer(function() {
+    _.defer(() => {
       s.send();
     }, 1000);
     return s;
@@ -132,15 +132,15 @@ function send_samples(dataset, samples) {
 
   var http = require('http');
 
-  var req = http.request(options, function(res) { });
-  req.on('error', function(err) { });
+  var req = http.request(options, res => { });
+  req.on('error', err => { });
 
   req.write(JSON.stringify(data));
   req.end();
 }
 
-var queue_sample_send = _.throttle(function() {
-  _.each(SAMPLES, function(samples, dataset) {
+var queue_sample_send = _.throttle(() => {
+  _.each(SAMPLES, (samples, dataset) => {
     send_samples(dataset, samples);
     SAMPLES[dataset] = [];
   });
@@ -148,7 +148,7 @@ var queue_sample_send = _.throttle(function() {
 }, 10000);
 
 var SAMPLES = {};
-Sample.__send = function(sample) {
+Sample.__send = sample => {
   var sample_list = SAMPLES[sample.dataset];
   if (!sample_list) {
     SAMPLES[sample.dataset] = [];

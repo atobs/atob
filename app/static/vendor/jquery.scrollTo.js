@@ -7,7 +7,7 @@
  * @author Ariel Flesler
  * @version 2.1.2
  */
-;(function(factory) {
+;((factory => {
 	'use strict';
 	if (typeof define === 'function' && define.amd) {
 		// AMD
@@ -19,12 +19,10 @@
 		// Global
 		factory(jQuery);
 	}
-})(function($) {
+}))($ => {
 	'use strict';
 
-	var $scrollTo = $.scrollTo = function(target, duration, settings) {
-		return $(window).scrollTo(target, duration, settings);
-	};
+	var $scrollTo = $.scrollTo = (target, duration, settings) => $(window).scrollTo(target, duration, settings);
 
 	$scrollTo.defaults = {
 		axis:'xy',
@@ -62,17 +60,17 @@
 		settings.over = both(settings.over);
 
 		return this.each(function() {
-			// Null target yields nothing, just like jQuery does
-			if (target === null) return;
+            // Null target yields nothing, just like jQuery does
+            if (target === null) return;
 
-			var win = isWin(this),
-				elem = win ? this.contentWindow || window : this,
-				$elem = $(elem),
-				targ = target, 
-				attr = {},
-				toff;
+            var win = isWin(this);
+            var elem = win ? this.contentWindow || window : this;
+            var $elem = $(elem);
+            var targ = target;
+            var attr = {};
+            var toff;
 
-			switch (typeof targ) {
+            switch (typeof targ) {
 				// A number will pass the regex
 				case 'number':
 				case 'string':
@@ -93,16 +91,16 @@
 					}
 			}
 
-			var offset = $.isFunction(settings.offset) && settings.offset(elem, targ) || settings.offset;
+            var offset = $.isFunction(settings.offset) && settings.offset(elem, targ) || settings.offset;
 
-			$.each(settings.axis.split(''), function(i, axis) {
-				var Pos	= axis === 'x' ? 'Left' : 'Top',
-					pos = Pos.toLowerCase(),
-					key = 'scroll' + Pos,
-					prev = $elem[key](),
-					max = $scrollTo.max(elem, axis);
+            $.each(settings.axis.split(''), (i, axis) => {
+                var Pos	= axis === 'x' ? 'Left' : 'Top';
+                var pos = Pos.toLowerCase();
+                var key = 'scroll' + Pos;
+                var prev = $elem[key]();
+                var max = $scrollTo.max(elem, axis);
 
-				if (toff) {// jQuery / DOMElement
+                if (toff) {// jQuery / DOMElement
 					attr[key] = toff[pos] + (win ? 0 : prev - $elem.offset()[pos]);
 
 					// If it's a dom element, reduce the margin
@@ -125,14 +123,14 @@
 						: val;
 				}
 
-				// Number or 'number'
-				if (settings.limit && /^\d+$/.test(attr[key])) {
+                // Number or 'number'
+                if (settings.limit && /^\d+$/.test(attr[key])) {
 					// Check the limits
 					attr[key] = attr[key] <= 0 ? 0 : Math.min(attr[key], max);
 				}
 
-				// Don't waste time animating, if there's no need.
-				if (!i && settings.axis.length > 1) {
+                // Don't waste time animating, if there's no need.
+                if (!i && settings.axis.length > 1) {
 					if (prev === attr[key]) {
 						// No animation needed
 						attr = {};
@@ -143,41 +141,41 @@
 						attr = {};
 					}
 				}
-			});
+            });
 
-			animate(settings.onAfter);
+            animate(settings.onAfter);
 
-			function animate(callback) {
+            function animate(callback) {
 				var opts = $.extend({}, settings, {
 					// The queue setting conflicts with animate()
 					// Force it to always be true
 					queue: true,
-					duration: duration,
-					complete: callback && function() {
+					duration,
+					complete: callback && (() => {
 						callback.call(elem, targ, settings);
-					}
+					})
 				});
 				$elem.animate(attr, opts);
 			}
-		});
+        });
 	};
 
 	// Max scrolling position, works on quirks mode
 	// It only fails (not too badly) on IE, quirks mode.
-	$scrollTo.max = function(elem, axis) {
-		var Dim = axis === 'x' ? 'Width' : 'Height',
-			scroll = 'scroll'+Dim;
+	$scrollTo.max = (elem, axis) => {
+        var Dim = axis === 'x' ? 'Width' : 'Height';
+        var scroll = 'scroll'+Dim;
 
-		if (!isWin(elem))
+        if (!isWin(elem))
 			return elem[scroll] - $(elem)[Dim.toLowerCase()]();
 
-		var size = 'client' + Dim,
-			doc = elem.ownerDocument || elem.document,
-			html = doc.documentElement,
-			body = doc.body;
+        var size = 'client' + Dim;
+        var doc = elem.ownerDocument || elem.document;
+        var html = doc.documentElement;
+        var body = doc.body;
 
-		return Math.max(html[scroll], body[scroll]) - Math.min(html[size], body[size]);
-	};
+        return Math.max(html[scroll], body[scroll]) - Math.min(html[size], body[size]);
+    };
 
 	function both(val) {
 		return $.isFunction(val) || $.isPlainObject(val) ? val : { top:val, left:val };
@@ -186,10 +184,10 @@
 	// Add special hooks so that window scroll properties can be animated
 	$.Tween.propHooks.scrollLeft = 
 	$.Tween.propHooks.scrollTop = {
-		get: function(t) {
+		get(t) {
 			return $(t.elem)[t.prop]();
 		},
-		set: function(t) {
+		set(t) {
 			var curr = this.get(t);
 			// If interrupt is true and user scrolled, stop animating
 			if (t.options.interrupt && t._last && t._last !== curr) {

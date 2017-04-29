@@ -4,8 +4,8 @@ var render_posting = posting.render_posting;
 var board_names = require_app("server/board_names");
 
 module.exports = {
-  render_recent: function(api) {
-    return api.page.async(function(flush) {
+  render_recent(api) {
+    return api.page.async(flush => {
       Post.findAll({
         where: {
           board_id: {
@@ -14,10 +14,10 @@ module.exports = {
         },
         order: "id DESC",
         limit: 30
-      }).success(function(posts) {
+      }).success(posts => {
         // Find the most recent thread
         var parent = null;
-        _.each(posts, function(post) {
+        _.each(posts, post => {
           if (post && !post.dataValues.parent_id && !parent) {
             parent = post;
           }

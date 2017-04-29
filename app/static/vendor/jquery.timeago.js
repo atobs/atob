@@ -14,7 +14,7 @@
  * Copyright (c) 2008-2013, Ryan McGeary (ryan -[at]- mcgeary [*dot*] org)
  */
 
-(function (factory) {
+((factory => {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
     define(['jquery'], factory);
@@ -22,8 +22,8 @@
     // Browser globals
     factory(jQuery);
   }
-}(function ($) {
-  $.timeago = function(timestamp) {
+})($ => {
+  $.timeago = timestamp => {
     if (timestamp instanceof Date) {
       return inWords(timestamp);
     } else if (typeof timestamp === "string") {
@@ -65,7 +65,7 @@
       }
     },
 
-    inWords: function(distanceMillis) {
+    inWords(distanceMillis) {
       if(!this.settings.allowPast && ! this.settings.allowFuture) {
           throw 'timeago allowPast and allowFuture settings can not both be set to false.';
       }
@@ -113,7 +113,7 @@
       return $.trim([prefix, words, suffix].join(separator));
     },
 
-    parse: function(iso8601) {
+    parse(iso8601) {
       var s = $.trim(iso8601);
       s = s.replace(/\.\d+/,""); // remove milliseconds
       s = s.replace(/-/,"/").replace(/-/,"/");
@@ -122,11 +122,11 @@
       s = s.replace(/([\+\-]\d\d)$/," $100"); // +09 -> +0900
       return new Date(s);
     },
-    datetime: function(elem) {
+    datetime(elem) {
       var iso8601 = $t.isTime(elem) ? $(elem).attr("datetime") : $(elem).attr("title");
       return $t.parse(iso8601);
     },
-    isTime: function(elem) {
+    isTime(elem) {
       // jQuery's `is()` doesn't play well with HTML5 in IE
       return $(elem).get(0).tagName.toLowerCase() === "time"; // $(elem).is("time");
     }
@@ -136,7 +136,7 @@
   // init is default when no action is given
   // functions are called with context of a single element
   var functions = {
-    init: function(){
+    init() {
       var refresh_el = $.proxy(refresh, this);
       refresh_el();
       var $s = $t.settings;
@@ -144,17 +144,17 @@
         this._timeagoInterval = setInterval(refresh_el, $s.refreshMillis);
       }
     },
-    update: function(time){
+    update(time) {
       var parsedTime = $t.parse(time);
       $(this).data('timeago', { datetime: parsedTime });
       if($t.settings.localeTitle) $(this).attr("title", parsedTime.toLocaleString());
       refresh.apply(this);
     },
-    updateFromDOM: function(){
+    updateFromDOM() {
       $(this).data('timeago', { datetime: $t.parse( $t.isTime(this) ? $(this).attr("datetime") : $(this).attr("title") ) });
       refresh.apply(this);
     },
-    dispose: function () {
+    dispose() {
       if (this._timeagoInterval) {
         window.clearInterval(this._timeagoInterval);
         this._timeagoInterval = null;

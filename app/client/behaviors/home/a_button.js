@@ -3,7 +3,7 @@ module.exports = {
     "click" : "sample_click"
   },
 
-  sample_click: function() {
+  sample_click() {
     $("#clickit")
       .html("nice job :)")
       .fadeIn();

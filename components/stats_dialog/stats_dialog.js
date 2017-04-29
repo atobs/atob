@@ -4,10 +4,10 @@ module.exports = {
   defaults: {
     content: "default content"
   },
-  initialize: function(options) {
+  initialize(options) {
     console.log("Loaded", this, options);
   },
-  client: function(options) {
+  client(options) {
     var client_options = options.client_options;
 
     this.$el.find(".modal").modal();

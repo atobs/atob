@@ -10,7 +10,7 @@
 
 
 function try_cordova_backgrounding() {
-  setTimeout(function() {
+  setTimeout(() => {
     // now we setup background notifications, too
     try {
       console.log("backgrounding app");
@@ -20,14 +20,14 @@ function try_cordova_backgrounding() {
           ticker: 'atob is with you'
         });
       window.plugin.backgroundMode.enable();
-      window.plugin.backgroundMode.onactivate = function() {
+      window.plugin.backgroundMode.onactivate = () => {
         notif_count = 0;
       };
-      window.plugin.backgroundMode.ondeactivate = function() {
+      window.plugin.backgroundMode.ondeactivate = () => {
         notif_count = 0;
       };
 
-      window.plugin.notification.local.onclick = function(id, state, json) {
+      window.plugin.notification.local.onclick = (id, state, json) => {
         if (json) {
           window.location.replace("/p/" + json);
         }
@@ -47,9 +47,9 @@ function add_background_notifications() {
 
 function add_pull_to_refresh() {
   // install pull to refresh
-  bootloader.css(["RubberBand"], function() {
-    bootloader.require("app/static/vendor/RubberBand", function() {
-      var RB = new RubberBand(function(e) {
+  bootloader.css(["RubberBand"], () => {
+    bootloader.require("app/static/vendor/RubberBand", () => {
+      var RB = new RubberBand(e => {
         window.location.reload();
       });
     });
@@ -57,7 +57,7 @@ function add_pull_to_refresh() {
 }
 
 function add_in_app_browser() {
-  $(document).on("click", "a", function(e) {
+  $(document).on("click", "a", e => {
     var el = $(e.target).closest("a");
     var href = el.attr("href");
     var target = el.attr("target");
@@ -82,11 +82,11 @@ function handle_notif(title, options, post) {
   if (window.plugin && window.plugin.backgroundMode) {
     if (window.plugin.backgroundMode.isActive()) {
       if (window.plugin && window.plugin.notification) {
-        setTimeout(function() {
+        setTimeout(() => {
           window.plugin.notification.local.add({
               id:      1,
               json:      post.id,
-              title:   title,
+              title,
               message: options.body,
               autoCancel: true
           });
@@ -108,7 +108,7 @@ function handle_notif(title, options, post) {
 }
 
 function add_notifications() {
-  SF.on("notify", function(title, options, post) {
+  SF.on("notify", (title, options, post) => {
     try {
       handle_notif(title, options, post);
     } catch(e) {
@@ -131,7 +131,7 @@ function insert_cordova() {
 }
 
 function setup_back_button() {
-  document.addEventListener("backbutton", function() {
+  document.addEventListener("backbutton", () => {
     window.history.back();
   });
 }

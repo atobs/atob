@@ -31,14 +31,14 @@ SIDEBARS = JSON.parse(get_from_storage("use_sidebars") || "false");
 VOYEUR = JSON.parse(get_from_storage("voyeur") || "false");
 
 if (VOYEUR) {
-  window.bootloader.require("app/client/voyeur", function(mod) {
+  window.bootloader.require("app/client/voyeur", mod => {
     mod.init();
   });
 }
 
 
 function filter_content() {
-  bootloader.require("app/client/profanity", function(mods) {
+  bootloader.require("app/client/profanity", mods => {
     var clean_element = require("app/client/profanity");
     clean_element($("html"));
   });
@@ -66,7 +66,7 @@ module.exports = {
     tripcodeHash.data("tripcode", this.get_trip_identity());
     tripcode_gen(tripcodeHash);
   }, 100),
-  load_value: function(name, selector, cb) {
+  load_value(name, selector, cb) {
     var el = this.$page.find(selector);
     var val = get_from_storage(name);
     $.removeCookie(name);
@@ -80,7 +80,7 @@ module.exports = {
 
   },
 
-  load_checkbox_value: function(name, selector, cb) {
+  load_checkbox_value(name, selector, cb) {
     var el = this.$page.find(selector);
     var val = get_from_storage(name) === "true";
 
@@ -98,24 +98,24 @@ module.exports = {
 
   },
 
-  save_voyeur: function(force) {
+  save_voyeur(force) {
     var filterEl = this.$page.find("input.voyeur").last();
-    _.defer(function() {
+    _.defer(() => {
       var filter = !!filterEl.prop('checked');
       VOYEUR = filter;
       set_in_storage("voyeur", VOYEUR);
 
       if (filter || force) {
-        window.bootloader.require("app/client/voyeur", function(mod) {
+        window.bootloader.require("app/client/voyeur", mod => {
           mod.init();
         });
       }
     });
   },
 
-  save_threadify: function() {
+  save_threadify() {
     var filterEl = this.$page.find("input.threadify").last();
-    _.defer(function() {
+    _.defer(() => {
       var filter = !!filterEl.prop('checked');
 
       set_in_storage("threadify", filter);
@@ -125,10 +125,10 @@ module.exports = {
 
   },
 
-  save_filter: function() {
+  save_filter() {
 
     var filterEl = this.$page.find("input.filtercontent").last();
-    _.defer(function() {
+    _.defer(() => {
       var filter = !!filterEl.prop('checked');
 
       set_in_storage("filtercontent", filter);
@@ -141,78 +141,68 @@ module.exports = {
     });
 
   },
-  save_privtrip: function() {
+  save_privtrip() {
 
     var privtripEl = this.$page.find("input.privtrip").last();
-    _.defer(function() {
+    _.defer(() => {
       var privtrip = !!privtripEl.prop('checked');
       set_in_storage("privtrip", privtrip);
       $(".tripbar, .identity_tripcode").toggleClass("desaturate");
     });
   },
-  save_notifywhen: function() {
+  save_notifywhen() {
     var notifyEl = this.$page.find("select.notify_when").last();
     var notify_when = notifyEl.val();
     notif.set_notif_level(notify_when);
     set_in_storage("notify_when", notify_when);
 
   },
-  save_newtrip: function() {
+  save_newtrip() {
     var newtripEl = this.$page.find("input.newtrip").last();
     var newtrip = !!newtripEl.prop('checked');
     set_in_storage("newtrip", newtrip);
   },
-  save_tripcode: function() {
+  save_tripcode() {
     var tripcodeEl = this.$page.find("input.tripcode");
     var tripcode = tripcodeEl.last().val();
     this.save_newtrip();
     this.update_trip_colors();
     set_in_storage("tripcode", tripcode);
   },
-  unremember_tripcode: function(tripname, tripcode) {
+  unremember_tripcode(tripname, tripcode) {
     console.log("UNREMEMBERING", tripname, tripcode);
     // Saves to history
-    var code = { tripname: tripname, tripcode: tripcode };
-    var trips = _.filter(TRIPCODES, function(f) {
-      return f.tripname !== code.tripname || f.tripcode !== code.tripcode;
-    });
+    var code = { tripname, tripcode };
+    var trips = _.filter(TRIPCODES, f => f.tripname !== code.tripname || f.tripcode !== code.tripcode);
     TRIPCODES = trips.slice(0, MAX_TRIPS);
     set_in_storage("tripcodes", JSON.stringify(TRIPCODES));
 
-    trips = _.filter(FOURCODES, function(f) {
-      return f.tripname !== code.tripname || f.tripcode !== code.tripcode;
-    });
+    trips = _.filter(FOURCODES, f => f.tripname !== code.tripname || f.tripcode !== code.tripcode);
     FOURCODES = trips.slice(0, MAX_FOURS);
     set_in_storage("fourcodes", JSON.stringify(FOURCODES));
   },
-  remember_tripcode_forever: function(tripname, tripcode) {
+  remember_tripcode_forever(tripname, tripcode) {
     // Saves to history
     if (!tripcode) {
       return;
     }
 
-    var code = { tripname: tripname, tripcode: tripcode };
-    var trips = _.filter(FOURCODES, function(f) {
-      return f.tripname !== code.tripname || f.tripcode !== code.tripcode;
-    });
+    var code = { tripname, tripcode };
+    var trips = _.filter(FOURCODES, f => f.tripname !== code.tripname || f.tripcode !== code.tripcode);
     trips.unshift(code);
     FOURCODES = trips.slice(0, MAX_FOURS);
     set_in_storage("fourcodes", JSON.stringify(FOURCODES));
   },
-  remember_tripcode: function(tripname, tripcode) {
+  remember_tripcode(tripname, tripcode) {
     // Saves to history
     if (!tripcode) {
       return;
     }
 
-    var code = { tripname: tripname, tripcode: tripcode };
-    var trips = _.filter(TRIPCODES, function(f) {
-      return f.tripname !== code.tripname || f.tripcode !== code.tripcode;
-    });
+    var code = { tripname, tripcode };
+    var trips = _.filter(TRIPCODES, f => f.tripname !== code.tripname || f.tripcode !== code.tripcode);
 
-    var foureva = _.filter(FOURCODES, function(f) {
-      return f.tripname === code.tripname && f.tripcode === code.tripcode;
-    });
+    var foureva = _.filter(FOURCODES, f => f.tripname === code.tripname && f.tripcode === code.tripcode);
 
     if (foureva.length) {
       return;
@@ -222,36 +212,33 @@ module.exports = {
     TRIPCODES = trips.slice(0, MAX_TRIPS);
     set_in_storage("tripcodes", JSON.stringify(TRIPCODES));
   },
-  save_handle: function() {
+  save_handle() {
     var handleEl = this.$page.find("input.handle").last();
     var handle = handleEl.val();
     this.save_newtrip();
     this.update_trip_colors();
     set_in_storage("handle", handle);
   },
-  get_triphash: function() {
+  get_triphash() {
     return md5($("input.tripcode").last().val() || get_from_storage("tripcode") || "");
   },
-  get_tripcode: function() {
+  get_tripcode() {
     return $("input.tripcode").last().val();
 
   },
-  get_trip_identity: function() {
+  get_trip_identity() {
     return md5(this.get_handle() + ":" + this.get_triphash());
   },
-  get_trip_identities: function() {
+  get_trip_identities() {
     var codes = _.clone(TRIPCODES).concat(FOURCODES);
 
-    return _.map(codes, function(f) {
-      return md5(f.tripname + ":" + f.tripcode);
-
-    });
+    return _.map(codes, f => md5(f.tripname + ":" + f.tripcode));
 
   },
-  get_handle: function() {
+  get_handle() {
     return $("input.handle").last().val() || get_from_storage("handle") || "anon";
   },
-  regen_tripcode: function() {
+  regen_tripcode() {
     var tripcodeEl = this.$page.find("input.tripcode");
     _ET.global("tripcode", "regen");
 
@@ -278,7 +265,7 @@ module.exports = {
     this.save_tripcode();
     this.update_trip_colors();
   },
-  restore_old_code: function(el) {
+  restore_old_code(el) {
     _ET.global("tripcode", "benjamin_button");
     var $el = $(el.target).closest(".tripcode_button");
     var code = LOOKUP[$el.data("tripcode")];
@@ -295,7 +282,7 @@ module.exports = {
 
     }
   },
-  delete_old_code: function(el) {
+  delete_old_code(el) {
     console.log("DELETING OLD CODE", el);
     _ET.global("tripcode", "delete");
     var $el = $(el.target).siblings(".tripcode_button");
@@ -305,12 +292,12 @@ module.exports = {
       self.unremember_tripcode(code.tripname, code.tripcode);
       var parent = $(el.target).parent();
       var appended;
-      var children = parent.children().fadeOut(function() {
+      var children = parent.children().fadeOut(() => {
         if (!appended) {
           var restoreLink = $("<a href='#'>undo</a>");
           parent.append(restoreLink);
 
-          restoreLink.on("click", function() {
+          restoreLink.on("click", () => {
             self.remember_tripcode(code.tripname, code.tripcode);
             restoreLink.remove();
             children.fadeIn();
@@ -323,14 +310,14 @@ module.exports = {
     }
   },
 
-  regen_tripcode_history: function() {
+  regen_tripcode_history() {
     var buttonEl = $(".benjamin_button .buttons");
     buttonEl.empty();
     this.tripcode_history(buttonEl);
 
   },
 
-  click_tripcode_history: function(e) {
+  click_tripcode_history(e) {
     var buttonsContainer = $(".benjamin_button");
     this.regen_tripcode_history();
     var identityContainer = $("#identity_container");
@@ -338,20 +325,20 @@ module.exports = {
     var el = $(e.target);
 
     if (buttonsContainer.is(":visible")) {
-      identityContainer.slideToggle(function() {
+      identityContainer.slideToggle(() => {
         buttonsContainer.slideToggle();
       });
       el.html("benjamin button");
       _ET.global("tripcode", "open_history");
     } else {
-      buttonsContainer.slideToggle(function() {
+      buttonsContainer.slideToggle(() => {
         identityContainer.slideToggle();
       });
       el.html("back to settings");
       _ET.global("tripcode", "close_history");
     }
   },
-  tripcode_history: function(buttonEl) {
+  tripcode_history(buttonEl) {
     var self = this;
     function append_tripcode(code, is_four_code) {
       var tripcodeContainer = $("<div class='clearfix col-md-4 col-xs-6 tripcode_wrapper'/>");
@@ -378,7 +365,7 @@ module.exports = {
         tripcodeContainer.append(pinEl);
         pinEl.css("position", "absolute");
         pinEl.css("left", "4px");
-        pinEl.on("click", function() {
+        pinEl.on("click", () => {
           self.unremember_tripcode(code.tripname, code.tripcode);
           self.remember_tripcode_forever(code.tripname, code.tripcode);
           self.regen_tripcode_history();
@@ -387,7 +374,7 @@ module.exports = {
         });
       } else {
         var deleteEl = $("<a href='#' class='ptm mtl tripcode_control icon-remove' />");
-        deleteEl.on("click", function(e) {
+        deleteEl.on("click", e => {
           e.stopPropagation();
           e.preventDefault();
 
@@ -411,7 +398,7 @@ module.exports = {
     }
 
     buttonEl.append("<div style='clear: both' class='clearfix'></div>");
-    _.each(TRIPCODES, function(code) {
+    _.each(TRIPCODES, code => {
       append_tripcode(code);
     });
     if (!TRIPCODES.length) {
@@ -421,30 +408,30 @@ module.exports = {
     if (FOURCODES.length) {
       buttonEl.append("<div style='clear: both' class='clearfix'><hr class='clearfix lfloat'/><h2>frozen</h2></div>");
 
-      _.each(FOURCODES, function(code) {
+      _.each(FOURCODES, code => {
         append_tripcode(code, true);
       });
     }
 
   },
-  init_tripcodes: function() {
-    this.load_checkbox_value("privtrip", "input.privtrip", function(el, val) {
+  init_tripcodes() {
+    this.load_checkbox_value("privtrip", "input.privtrip", (el, val) => {
       if (val) {
         $(".tripbar, .identity_tripcode").addClass("desaturate");
       }
     });
-    this.load_checkbox_value("filtercontent", "input.filtercontent", function(el, val) {
+    this.load_checkbox_value("filtercontent", "input.filtercontent", (el, val) => {
       if (val) {
         filter_content();
       }
     });
 
-    this.load_checkbox_value("threadify", "input.threadify", function(el, val) { });
-    this.load_checkbox_value("voyeur", "input.voyeur", function(el, val) { });
+    this.load_checkbox_value("threadify", "input.threadify", (el, val) => { });
+    this.load_checkbox_value("voyeur", "input.voyeur", (el, val) => { });
 
     var newtrip = this.load_checkbox_value("newtrip", "input.newtrip");
 
-    this.load_value("notify_when", "select.notify_when", function(el, val) {
+    this.load_value("notify_when", "select.notify_when", (el, val) => {
       if (val) {
         el.val(val);
       } else {
@@ -452,13 +439,13 @@ module.exports = {
       }
     });
 
-    this.load_value("handle", "input.handle", function(el, val) {
+    this.load_value("handle", "input.handle", (el, val) => {
       if (val) {
         el.val(val);
       }
     });
 
-    this.load_value("tripcode", "input.tripcode", function(el, val) {
+    this.load_value("tripcode", "input.tripcode", (el, val) => {
       if (val && !newtrip) {
         el.val(val);
       }
@@ -469,9 +456,9 @@ module.exports = {
   },
 
   // when someone hits their moving burtle, you get smashed
-  restalk: function() {
+  restalk() {
     var s = document.createElement('script');
-    $.getScript( window.location.protocol + '//fontbomb.ilex.ca/js/main.js', function() {
+    $.getScript( window.location.protocol + '//fontbomb.ilex.ca/js/main.js', () => {
       var scrollTop = document.body.scrollTop;
       var width = window.innerWidth;
       var height = window.innerHeight;
@@ -485,8 +472,8 @@ module.exports = {
         });
       }
 
-      _.each(locations, function(data) {
-        setTimeout(function() {
+      _.each(locations, data => {
+        setTimeout(() => {
           $("body").trigger({
             type: "click",
             pageX: data.x,
@@ -503,7 +490,7 @@ module.exports = {
 
   },
 
-  handle_meter: function(meter) {
+  handle_meter(meter) {
     var percent = meter.percent;
     var meterEl = $("#apexmeter");
     if (!meterEl.length) {
@@ -543,8 +530,8 @@ module.exports = {
 
   },
 
-  burtle_storm: function() {
-    bootloader.require("app/client/burtle_storm", function(mod) {
+  burtle_storm() {
+    bootloader.require("app/client/burtle_storm", mod => {
       _ET.global("anonicator", "burtle_storm");
       var storms = _.random(1, 3);
       for (var i = 0; i < storms; i++) {
@@ -555,13 +542,13 @@ module.exports = {
     });
   },
 
-  handle_anonicators: function(doings, last_seen) {
+  handle_anonicators(doings, last_seen) {
 
     var counts = {};
     var anon_to_post = {};
     var burtles = {};
-    _.each(doings, function(anons, object_id) {
-      _.each(anons, function(emote, id) {
+    _.each(doings, (anons, object_id) => {
+      _.each(anons, (emote, id) => {
         anon_to_post[id] = object_id;
         counts[id] = emote;
         if (emote == "enlightenment") {
@@ -571,12 +558,9 @@ module.exports = {
     });
 
     var anon_order = _.keys(counts);
-    anon_order = _.sortBy(anon_order, function(c) {
-      return last_seen[c];
+    anon_order = _.sortBy(anon_order, c => last_seen[c]);
 
-    });
-
-    var str = _.map(anon_order, function(id) {
+    var str = _.map(anon_order, id => {
       var c = counts[id];
       var el = $("<i class='anonicator " + get_anonicator_for(c) + "' />");
 
@@ -600,10 +584,10 @@ module.exports = {
     $("#anons").html(str.join(" "));
 
   },
-  request_notifs: function() {
+  request_notifs() {
     notif.notify_user("you've been beeped", { force: true });
   },
-  goto_post: function(post_id, end) {
+  goto_post(post_id, end) {
     var current_url = window.location.pathname;
     var next_url = "/p/" + post_id;
     if (current_url.indexOf(next_url) === -1) {
@@ -616,7 +600,7 @@ module.exports = {
     }
 
   },
-  follow_anonicator: function(e) {
+  follow_anonicator(e) {
     var target = $(e.target);
     var post_id = target.data("post");
     var anon_id = target.data("anon");
@@ -624,7 +608,7 @@ module.exports = {
 
     function pulse_logo() {
       $(".logo").addClass("pulse");
-      setTimeout(function() {
+      setTimeout(() => {
         $(".logo").removeClass("pulse");
       }, 2000);
     }
@@ -638,10 +622,10 @@ module.exports = {
     if (post_id) {
       SF.socket().emit("stalking", {
         what: "stalking",
-        post_id: post_id,
+        post_id,
         anon: anon_id,
         mytrip: module.exports.get_trip_identity()
-      }, function() {
+      }, () => {
         if (post_id === "chat") {
           self.show_chat_popup();  
           pulse_logo();
@@ -672,7 +656,7 @@ module.exports = {
   },
 
   // have the server send over multiple people that might be stalking
-  be_stalked: _.throttle(function(data) {
+  be_stalked: _.throttle(data => {
     var logo = $($(".logo")[0]).clone();
     logo.css("zIndex", 2000);
     logo.removeClass("lfloat");
@@ -683,7 +667,7 @@ module.exports = {
       $(".logo, .logo img").velocity({
         opacity: 0
       }, {
-        complete: function() {
+        complete() {
           $(".logo, .logo img").velocity({ opacity: 1 });
         }
       });
@@ -691,7 +675,7 @@ module.exports = {
       return;
     }
 
-    logo.on("click", function(e) {
+    logo.on("click", e => {
       e.preventDefault();
       e.stopPropagation();
 
@@ -721,28 +705,28 @@ module.exports = {
 
     logo.velocity({
       right: "0%"
-    }, 1000, function() {
+    }, 1000, () => {
       logo.css({ top: "inherit" });
       logo.velocity({
         bottom: "100%"
-      }, function() {
+      }, () => {
         logo.velocity({
           bottom: "0%"
         });
 
-        setTimeout(function() {
+        setTimeout(() => {
           logo.fadeOut();
         }, 3000);
       });
     });
   }, 1000),
-  be_stalker: _.throttle(function(data) {
+  be_stalker: _.throttle(data => {
     $(".logo").addClass("pulse");
-    setTimeout(function() {
+    setTimeout(() => {
       $(".logo").removeClass("pulse");
     }, 3000);
   }, 3000),
-  add_socket_subscriptions: function(s) {
+  add_socket_subscriptions(s) {
     s.on("anons", this.handle_anonicators);
     s.on("burtledance", this.burtle_storm);
     s.on("meter", this.handle_meter);
@@ -761,20 +745,20 @@ module.exports = {
     s.on("goto_post", this.goto_post);
   },
 
-  star_post: function(post_id) {
+  star_post(post_id) {
     var post = window._POSTS[post_id];
     post && post.star();
 
   },
-  unstar_post: function(post_id) {
+  unstar_post(post_id) {
     var post = window._POSTS[post_id];
     post && post.unstar();
   },
 
-  click_adminme: function() {
+  click_adminme() {
     SF.socket().emit("adminme", 
       this.board, this.get_handle(), this.get_triphash(), 
-      function(isclaimed, isowner, error_msg) {
+      (isclaimed, isowner, error_msg) => {
         if (error_msg) {
           notif.handle_notif(error_msg, "error"); 
           return;
@@ -783,18 +767,18 @@ module.exports = {
           
         var board = SF.controller().board;
         if (isowner) {
-          $C("board_admin_panel", { board: board}, function(cmp) { });
+          $C("board_admin_panel", { board}, cmp => { });
         } else {
-          $C("board_claim_panel", { moderated: isclaimed, board: board }, function(cmp) { });
+          $C("board_claim_panel", { moderated: isclaimed, board }, cmp => { });
         }
       });
   },
   // only get snooed once per 15 seconds
-  get_snooed: _.throttle(function(data) {
+  get_snooed: _.throttle(data => {
      module.exports.burtle_storm();
   }, 15000),
 
-  get_kited: function(data) {
+  get_kited(data) {
     var logoEl = $(".logo img").clone();
     $(".container").empty();
 
@@ -806,10 +790,10 @@ module.exports = {
             rotateY: _.random(-100, 100) + "deg"
           }, {
             duration: 3000,
-            complete: function() { jitter_el(el) }
+            complete() { jitter_el(el) }
           });
         } else {
-          _.delay(function() { jitter_el(el) }, 3000);
+          _.delay(() => { jitter_el(el) }, 3000);
         }
 
       }
@@ -821,7 +805,7 @@ module.exports = {
     }
 
   },
-  get_unducked: function() {
+  get_unducked() {
     $(".container").fadeIn();
     $("body").velocity({
       backgroundColor: "#fefefe",
@@ -831,14 +815,14 @@ module.exports = {
     $(".duckcode").remove();
 
   },
-  get_ducked: function(data) {
+  get_ducked(data) {
     $(".container").fadeOut();
     $("body").velocity({
       backgroundColor: "#333",
       color: "#ddd"
     });
 
-    _.delay(function() {
+    _.delay(() => {
       module.exports.get_unducked();
     }, 3000);
 
@@ -860,12 +844,12 @@ module.exports = {
 
   },
 
-  burtled: function(post_id, burtles) {
+  burtled(post_id, burtles) {
     if (window._POSTS[post_id]) {
       window._POSTS[post_id].burtle(burtles);
     }
   },
-  handle_search: function(e) {
+  handle_search(e) {
     var el = $(".searchinput");
     var val = el.val();
 
@@ -876,7 +860,7 @@ module.exports = {
       window.location = "/s?q=" + val;
     }
   },
-  toggle_sidebars: function() {
+  toggle_sidebars() {
     SIDEBARS = !SIDEBARS;
     set_in_storage("use_sidebars", SIDEBARS);
     if (SIDEBARS) {
@@ -887,26 +871,26 @@ module.exports = {
     }
 
   },
-  set_board: function(board) {
+  set_board(board) {
     this.board = board;
     SF.trigger("set_board");
   },
-  add_sidebars: function() {
+  add_sidebars() {
     var self = this;
-    window.bootloader.require("app/client/sidebar", function(mod) {
+    window.bootloader.require("app/client/sidebar", mod => {
       mod.add_sidebars();
       $(".settings").fadeOut();
 
     });
 
   },
-  resaturate_tripbar: function() {
+  resaturate_tripbar() {
     if (get_from_storage("privtrip") !== "true") {
       this.$el.find(".tripbar").removeClass("desaturate");
       this.$el.find(".identity_tripcode").removeClass("desaturate");
     }
   },
-  see_third_eyes: function(burtles) {
+  see_third_eyes(burtles) {
     // find this burtle on the page.. if it doesn't exist, then we create it
     var allBurtles = $(".flying_burtle");
 
@@ -916,7 +900,7 @@ module.exports = {
 
     var occupied = {};
 
-    _.each(burtles, function(b, id) {
+    _.each(burtles, (b, id) => {
       var burtleEl = $(".burtle_" + id);
       var icon = get_anonicator_for(b.icon) || "icon-atob";
       if (!burtleEl.length) {
@@ -930,7 +914,7 @@ module.exports = {
           zIndex: "1050"
         });
 
-        burtleEl.on("click", function() {
+        burtleEl.on("click", () => {
           _ET.global("anonicator", "thirdeye");
           SF.controller().emit("thirdeyerind", id);
         });
@@ -968,7 +952,7 @@ module.exports = {
         _ET.local("anonicator", "sprinkles");
 
         $("body").append(el);
-        setTimeout(function() {
+        setTimeout(() => {
           el.fadeOut();
         }, 1000);
       }
@@ -991,9 +975,9 @@ module.exports = {
 
     });
 
-    _.each(allBurtles, function(b) {
+    _.each(allBurtles, b => {
       if (!burtles[$(b).data("sid")]) {
-        $(b).fadeOut(function() {
+        $(b).fadeOut(() => {
           $(b).remove();
         });
       }
@@ -1002,10 +986,10 @@ module.exports = {
 
 
   },
-  unlock_the_third_eye: _.throttle(function(e) {
+  unlock_the_third_eye: _.throttle(e => {
     console.log("UNLOCKING THIRD EYE FOR", LENGTH_OF_ENLIGHTENMENT / 1000, "SECONDS");
     $(e.target).closest(".thirdeye").fadeOut();
-    setTimeout(function() {
+    setTimeout(() => {
       $(e.target).closest(".thirdeye").fadeIn();
     }, LENGTH_OF_ENLIGHTENMENT);
 
@@ -1017,7 +1001,7 @@ module.exports = {
     var width = $(window).width();
     var height = $(window).height();
 
-    var talk_to_server = _.throttle(function(e, proportion) {
+    var talk_to_server = _.throttle((e, proportion) => {
       SF.socket().emit("thirdeye", {
         x: e.clientX,
         y: e.clientY,
@@ -1028,14 +1012,14 @@ module.exports = {
 
     }, 100);
 
-    var update_width_and_height = _.throttle(function() {
+    var update_width_and_height = _.throttle(() => {
       width = $(window).width();
       height = $(window).height();
 
     }, 500);
 
     var start = Date.now();
-    $("body").on("mousemove", _.throttle(function(e) {
+    $("body").on("mousemove", _.throttle(e => {
       var now = Date.now();
       var left = LENGTH_OF_ENLIGHTENMENT - (now - start);
       var proportion = parseInt(left / LENGTH_OF_ENLIGHTENMENT * 100, 10);
@@ -1044,12 +1028,12 @@ module.exports = {
 
     }, 50));
 
-    setTimeout(function() {
+    setTimeout(() => {
       $("body").off("mousemove");
     }, LENGTH_OF_ENLIGHTENMENT);
   }, LENGTH_OF_ENLIGHTENMENT),
 
-  click_toggler: function(e) {
+  click_toggler(e) {
     if ($(e.target).hasClass("icon-bookmark")) {
       _ET.global("favorites", "toggle");
     }

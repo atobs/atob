@@ -3,7 +3,7 @@
 var COLORS = {};
 var color_idx = 0;
 var COLOR_SCALE;
-var get_color = function(key) {
+var get_color = key => {
   if (!COLOR_SCALE) {
 
     COLOR_SCALE = d3.scale.category10();
@@ -36,8 +36,8 @@ function render_chart(options) {
     "trophies" : "butts stuffed"
   };
 
-  bootloader.require("app/static/vendor/plotly-latest.min", function() {
-    _.each(enabled_charts, function(key) {
+  bootloader.require("app/static/vendor/plotly-latest.min", () => {
+    _.each(enabled_charts, key => {
       var chart_data = charts[key];
       var chart_name = names[key] || key;
       var labels = [];
@@ -47,7 +47,7 @@ function render_chart(options) {
 
 
       var running_sum = 0;
-      _.each(chart_data, function(d) {
+      _.each(chart_data, d => {
         labels.push(x_func(d.created_hour));
         var val = d.sum || d.count;
         if (options.running_sum) {
@@ -86,7 +86,7 @@ function render_chart(options) {
 
     });
 
-    _.delay(function() {
+    _.delay(() => {
       window.Plotly.newPlot(container, data, {
         title: options.title,
         paper_bgcolor: "transparent",
@@ -117,50 +117,50 @@ module.exports = {
   events: {
 
   },
-  add_timeseries_chart: function(key, data) {
+  add_timeseries_chart(key, data) {
     this.timeseries_charts = this.timeseries_charts || {};
     this.timeseries_charts[key] = data;
   },
-  add_timeofday_chart: function(key, data) {
+  add_timeofday_chart(key, data) {
     this.timeofday_charts = this.timeofday_charts || {};
     this.timeofday_charts[key] = data;
   },
 
-  add_dayofweek_chart: function(key, data) {
+  add_dayofweek_chart(key, data) {
     this.dayofweek_charts = this.dayofweek_charts || {};
     this.dayofweek_charts[key] = data;
 
   },
-  render_dayofweek_charts: function() {
+  render_dayofweek_charts() {
     var DAYS = [ "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" ];
     render_chart({
       charts: this.dayofweek_charts,
       type: "bar",
       title: "activity by day of week",
       sort: 'day_of_week',
-      value_func: function(x) {
+      value_func(x) {
         return DAYS[x];
       },
       into: "dayofweek_container"
     });
   },
-  render_timeofday_charts: function() {
+  render_timeofday_charts() {
     render_chart({
       charts: this.timeofday_charts,
       type: "bar",
       title: "activity by time of day",
-      sort: function(r) {
+      sort(r) {
         return (parseInt(r.created_hour, 10) + 16) % 24;
       },
-      value_func: function(x) {
+      value_func(x) {
         return (parseInt(x, 10) + 16) % 24;
       },
       into: "timeofday_container"
     });
   },
-  render_timeseries_charts: function() {
+  render_timeseries_charts() {
     var prev_max = null;
-    _.each(this.timeseries_charts.posts, function(d) {
+    _.each(this.timeseries_charts.posts, d => {
       var delta = d.max_id - prev_max;
       d.count = delta;
       prev_max = d.max_id;
@@ -172,14 +172,14 @@ module.exports = {
       title: "activity",
       running_sum: true,
       sort: 'created_at',
-      value_func: function(x) {
+      value_func(x) {
         return new Date(x);
       },
       into: "timeseries_container"
     });
 
   },
-  init: function() {
+  init() {
 
   }
 };

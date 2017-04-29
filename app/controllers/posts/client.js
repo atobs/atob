@@ -15,7 +15,7 @@ module.exports = {
     "click .post .title h4" : "post_title_click"
 
   },
-  post_title_click: function(e) {
+  post_title_click(e) {
     var linklink = $(e.target).closest(".linklink, .titlelink");
     if (linklink.length) {
       return;
@@ -27,25 +27,25 @@ module.exports = {
     return;
 
   },
-  init: function() {
+  init() {
     this.init_tripcodes();
 
 
     var current_location = window.location.pathname;
-    SF.subscribe("popstate", function() {
+    SF.subscribe("popstate", () => {
       if (window.location.pathname !== current_location) { 
         window.location.reload();
       }
     });
   },
-  goto_chat: function() {
+  goto_chat() {
     window.location = "/chat";
   },
-  focus_post: function(id) {
+  focus_post(id) {
     var self = this;
     var params = $.deparam(window.location.search.substr(1));
 
-    setTimeout(function() {
+    setTimeout(() => {
       var dest = $("#reply" + id).filter(":visible");
       if (params.e) {
         dest = $("form.replyform");
@@ -60,13 +60,13 @@ module.exports = {
 
     }, 50);
   },
-  socket: function(s) {
+  socket(s) {
     var self = this;
     notif.subscribe(s);
 
     chat.add_socket_subscriptions(s);
     settings.add_socket_subscriptions(s);
-    s.on("doings", function(data) {
+    s.on("doings", data => {
       var post = window._POSTS[data.post_id];
       if (post) {
         post.update_counts(data.counts, data.last_seen);
@@ -74,45 +74,45 @@ module.exports = {
 
     });
 
-    s.on("new_reply", function(data) {
+    s.on("new_reply", data => {
       var post = window._POSTS[data.parent_id];
       if (post) {
         post.add_reply(data);
       }
     });
 
-    s.on("joined", function(c) {
+    s.on("joined", c => {
       console.log("Joined the board", c);
     });
 
-    s.on("shake_post", function(post_id, duration) {
+    s.on("shake_post", (post_id, duration) => {
       var post = window._POSTS[post_id];
       if (post) {
         post.shake(duration);
       }
     });
 
-    s.on("update_post", function(post_id, text) {
+    s.on("update_post", (post_id, text) => {
       post_utils.update_post(post_id, text);
     });
 
-    s.on("notif", function(msg, type, options) {
+    s.on("notif", (msg, type, options) => {
       notif.handle_notif(msg, type, options);
     });
 
     var self = this;
-    self.do_when(self.board, "set_board", function() {
+    self.do_when(self.board, "set_board", () => {
       s.emit("join", self.board);
     });
 
     var post_id = $(".post").data("post-id");
-    s.emit("isdoing", { what: "focused", post_id: post_id });
+    s.emit("isdoing", { what: "focused", post_id });
   },
-  goto: function(url) {
+  goto(url) {
     // redirecting
     window.location = url;
   },
-  hide_loading: function() {
+  hide_loading() {
     $(".loading").fadeOut();
   }
 };

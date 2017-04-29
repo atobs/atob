@@ -5,27 +5,27 @@ var settings = require("app/client/settings");
 module.exports = {
   events: {
   },
-  init: function() {
+  init() {
     this.init_tripcodes();
     this.init_profile_codes();
     this.loop_jaw();
-    $(".loading").fadeOut(function() {
+    $(".loading").fadeOut(() => {
       $(".loading h2").text("mutating doppelnon...");
       $(".navbar").hide();
       $(".profile_container").removeClass("hidden");
     
     });
   },
-  timeago: function() {
+  timeago() {
     var timeago = this.$el.find(".timeago");
     timeago.timeago();
   },
-  set_code: function(code) {
+  set_code(code) {
     function do_work() {
-      SF.controller().emit("get_emotions", code, function(e) {
+      SF.controller().emit("get_emotions", code, e => {
         $(".loading").fadeIn();
-        _.delay(function() { 
-          $(".container").slideUp(function() {
+        _.delay(() => { 
+          $(".container").slideUp(() => {
             $(".loading h2").text("deleting old doppelnons...");
             $(".loading").fadeOut();
             // now adjust the profile based on emotions...
@@ -63,7 +63,7 @@ module.exports = {
 
             $(".profile_photo").css("border-radius", parseInt(roundedness, 10) + "px");
 
-            $(".container").fadeIn(1000, function() { 
+            $(".container").fadeIn(1000, () => { 
               $(".loading").slideUp(); 
             });
 
@@ -77,23 +77,23 @@ module.exports = {
     this.code = code;
     var socket = SF.socket();
     if (!socket) {
-      SF.once("bridge/socket", function() { do_work(); });
+      SF.once("bridge/socket", () => { do_work(); });
     } else {
       do_work();
     }
   },
-  init_profile_codes: function() {
+  init_profile_codes() {
     this.$el.find(".profile_code").each(function() {
       // init some profile codes
       tripcoder.gen_tripcode($(this));
     });
   },
-  loop_jaw: function() {
+  loop_jaw() {
     var open = true;
     var jaw = $(".cover_photo_bottom");
     var interval = 800;
     function loop_jaw() {
-      setTimeout(function() {
+      setTimeout(() => {
         if (open) {
           open = !open;
           jaw.animate({ marginTop: "-100px" }, interval, "swing", loop_jaw); 
@@ -106,7 +106,7 @@ module.exports = {
 
     loop_jaw();
   },
-  is_noob: function() {
+  is_noob() {
     this.$el.find(".profile_photo").addClass("noob");
     this.$el.find(".cover_photo_bottom").addClass("desaturate");
   }

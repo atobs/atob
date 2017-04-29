@@ -5,10 +5,10 @@
  *
  * Copyright (C) 2015 alvarotrigo.com - A project by Alvaro Trigo
  */
-(function(global, factory) {
+(((global, factory) => {
     'use strict';
     factory(jQuery, global, global.document, global.Math);
-})(typeof window !== 'undefined' ? window : this, function($, window, document, Math, undefined) {
+}))(typeof window !== 'undefined' ? window : this, ($, window, document, Math, undefined) => {
     'use strict';
 
     // keeping central set of classnames and selectors
@@ -146,16 +146,16 @@
 
 
         //easeInOutCubic animation included in the plugin
-        $.extend($.easing,{ easeInOutCubic: function (x, t, b, c, d) {if ((t/=d/2) < 1) return c/2*t*t*t + b;return c/2*((t-=2)*t*t + 2) + b;}});
+        $.extend($.easing,{ easeInOutCubic(x, t, b, c, d) {if ((t/=d/2) < 1) return c/2*t*t*t + b;return c/2*((t-=2)*t*t + 2) + b;}});
 
         //TO BE REMOVED in future versions. Maintained temporaly for backwards compatibility.
-        $.extend($.easing,{ easeInQuart: function (x, t, b, c, d) { return c*(t/=d)*t*t*t + b; }});
+        $.extend($.easing,{ easeInQuart(x, t, b, c, d) { return c*(t/=d)*t*t*t + b; }});
 
         /**
         * Sets the autoScroll option.
         * It changes the scroll bar visibility and the history of the site as a result.
         */
-        FP.setAutoScrolling = function(value, type){
+        FP.setAutoScrolling = (value, type) => {
             setVariableState('autoScrolling', value, type);
 
             var element = $(SECTION_ACTIVE_SEL);
@@ -206,28 +206,28 @@
         /**
         * Defines wheter to record the history for each hash change in the URL.
         */
-        FP.setRecordHistory = function(value, type){
+        FP.setRecordHistory = (value, type) => {
             setVariableState('recordHistory', value, type);
         };
 
         /**
         * Defines the scrolling speed
         */
-        FP.setScrollingSpeed = function(value, type){
+        FP.setScrollingSpeed = (value, type) => {
             setVariableState('scrollingSpeed', value, type);
         };
 
         /**
         * Sets fitToSection
         */
-        FP.setFitToSection = function(value, type){
+        FP.setFitToSection = (value, type) => {
             setVariableState('fitToSection', value, type);
         };
 
         /**
         * Adds or remove the possiblity of scrolling through sections by using the mouse wheel or the trackpad.
         */
-        FP.setMouseWheelScrolling = function (value){
+        FP.setMouseWheelScrolling = value => {
             if(value){
                 addMouseWheelHandler();
             }else{
@@ -241,11 +241,11 @@
         *
         * @param directions string containing the direction or directions separated by comma.
         */
-        FP.setAllowScrolling = function (value, directions){
+        FP.setAllowScrolling = (value, directions) => {
             if(typeof directions != 'undefined'){
                 directions = directions.replace(/ /g,'').split(',');
 
-                $.each(directions, function (index, direction){
+                $.each(directions, (index, direction) => {
                     setIsScrollable(value, direction);
                 });
             }
@@ -261,14 +261,14 @@
         /**
         * Adds or remove the possiblity of scrolling through sections by using the keyboard arrow keys
         */
-        FP.setKeyboardScrolling = function (value){
+        FP.setKeyboardScrolling = value => {
             options.keyboardScrolling = value;
         };
 
         /**
         * Moves the page up one section.
         */
-        FP.moveSectionUp = function(){
+        FP.moveSectionUp = () => {
             var prev = $(SECTION_ACTIVE_SEL).prev(SECTION_SEL);
 
             //looping to the bottom if there's no more sections above
@@ -284,7 +284,7 @@
         /**
         * Moves the page down one section.
         */
-        FP.moveSectionDown = function (){
+        FP.moveSectionDown = () => {
             var next = $(SECTION_ACTIVE_SEL).next(SECTION_SEL);
 
             //looping to the top if there's no more sections below
@@ -302,7 +302,7 @@
         * Moves the page to the given section and slide with no animation.
         * Anchors or index positions can be used as params.
         */
-        FP.silentMoveTo = function(sectionAnchor, slideAnchor){
+        FP.silentMoveTo = (sectionAnchor, slideAnchor) => {
             FP.setScrollingSpeed (0, 'internal');
             FP.moveTo(sectionAnchor, slideAnchor)
             FP.setScrollingSpeed (originals.scrollingSpeed, 'internal');
@@ -312,7 +312,7 @@
         * Moves the page to the given section and slide.
         * Anchors or index positions can be used as params.
         */
-        FP.moveTo = function (sectionAnchor, slideAnchor){
+        FP.moveTo = (sectionAnchor, slideAnchor) => {
             var destiny = getSectionByAnchor(sectionAnchor);
 
             if (typeof slideAnchor !== 'undefined'){
@@ -325,21 +325,21 @@
         /**
         * Slides right the slider of the active section.
         */
-        FP.moveSlideRight = function(){
+        FP.moveSlideRight = () => {
             moveSlide('next');
         };
 
         /**
         * Slides left the slider of the active section.
         */
-        FP.moveSlideLeft = function(){
+        FP.moveSlideLeft = () => {
             moveSlide('prev');
         };
 
         /**
          * When resizing is finished, we adjust the slides sizes and positions
          */
-        FP.reBuild = function(resizing){
+        FP.reBuild = resizing => {
             if(container.hasClass(DESTROYED)){ return; }  //nothing to do if the plugin was destroyed
 
             isResizing = true;
@@ -526,7 +526,7 @@
                 }
             }
 
-        }).promise().done(function(){
+        }).promise().done(() => {
             FP.setAutoScrolling(options.autoScrolling, 'internal');
 
             //the starting point is a slide?
@@ -597,7 +597,7 @@
             //setting the class for the body element
             setBodyClass();
 
-            $window.on('load', function() {
+            $window.on('load', () => {
                 scrollToAnchor();
             });
 
@@ -627,9 +627,7 @@
             $body.append('<div id="' + SECTION_NAV + '"><ul></ul></div>');
             nav = $(SECTION_NAV_SEL);
 
-            nav.addClass(function() {
-                return options.showActiveTooltip ? SHOW_ACTIVE_TOOLTIP + ' ' + options.navigationPosition : options.navigationPosition;
-            });
+            nav.addClass(() => options.showActiveTooltip ? SHOW_ACTIVE_TOOLTIP + ' ' + options.navigationPosition : options.navigationPosition);
 
             for (var i = 0; i < $(SECTION_SEL).length; i++) {
                 var link = '';
@@ -751,7 +749,7 @@
 
                     //small timeout in order to avoid entering in hashChange event when scrolling is not finished yet
                     clearTimeout(scrollId);
-                    scrollId = setTimeout(function(){
+                    scrollId = setTimeout(() => {
                         isScrolling = false;
                     }, 100);
                 }
@@ -760,7 +758,7 @@
                     //for the auto adjust of the viewport to fit a whole section
                     clearTimeout(scrollId2);
 
-                    scrollId2 = setTimeout(function(){
+                    scrollId2 = setTimeout(() => {
                         if(canScroll){
                             //allows to scroll to an active section and
                             //if the section is already active, we prevent firing callbacks
@@ -796,7 +794,8 @@
             if (!isScrollAllowed[type]){
                 return;
             }
-            var check, scrollSection;
+            var check;
+            var scrollSection;
 
             if(type == 'down'){
                 check = 'bottom';
@@ -1078,10 +1077,10 @@
 
             //local variables
             var v = {
-                element: element,
-                callback: callback,
-                isMovementUp: isMovementUp,
-                dest: dest,
+                element,
+                callback,
+                isMovementUp,
+                dest,
                 dtop: dest.top,
                 yMovement: getYmovement(element),
                 anchorLink: element.data('anchor'),
@@ -1144,7 +1143,7 @@
                 //even when the scrollingSpeed is 0 there's a little delay, which might cause the
                 //scrollingSpeed to change in case of using silentMoveTo();
                 if(options.scrollingSpeed){
-                    setTimeout(function () {
+                    setTimeout(() => {
                         afterSectionLoads(v);
                     }, options.scrollingSpeed);
                 }else{
@@ -1158,7 +1157,7 @@
 
                 $(scrollSettings.element).animate(
                     scrollSettings.options,
-                options.scrollingSpeed, options.easing).promise().done(function () { //only one single callback in case of animating  `html, body`
+                options.scrollingSpeed, options.easing).promise().done(() => { //only one single callback in case of animating  `html, body`
                     afterSectionLoads(v);
                 });
             }
@@ -1297,7 +1296,7 @@
         $document.keydown(keydownHandler);
 
         //to prevent scrolling while zooming
-        $document.keyup(function(e){
+        $document.keyup(e => {
             controlPressed = e.ctrlKey;
         });
 
@@ -1318,7 +1317,7 @@
                     e.preventDefault();
                 }
 
-                keydownId = setTimeout(function(){
+                keydownId = setTimeout(() => {
                     onkeydown(e);
                 },150);
             }
@@ -1373,7 +1372,7 @@
         }
 
         //binding the mousemove when the mouse's middle button is released
-        container.mousedown(function(e){
+        container.mousedown(e => {
             //middle button
             if (e.which == 2){
                 oldPageY = e.pageY;
@@ -1382,7 +1381,7 @@
         });
 
         //unbinding the mousemove when the mouse's middle button is released
-        container.mouseup(function(e){
+        container.mouseup(e => {
             //middle button
             if (e.which == 2){
                 container.off('mousemove');
@@ -1433,11 +1432,11 @@
         * Ignoring the scrolls over the specified selectors.
         */
         if(options.normalScrollElements){
-            $document.on('mouseenter', options.normalScrollElements, function () {
+            $document.on('mouseenter', options.normalScrollElements, () => {
                 FP.setMouseWheelScrolling(false);
             });
 
-            $document.on('mouseleave', options.normalScrollElements, function(){
+            $document.on('mouseleave', options.normalScrollElements, () => {
                 FP.setMouseWheelScrolling(true);
             });
         }
@@ -1499,7 +1498,7 @@
                 setState(slideIndex, slideAnchor, anchorLink, sectionIndex);
             }
 
-            var afterSlideLoads = function(){
+            var afterSlideLoads = () => {
                 //if the site is not just resizing and readjusting the slides
                 if(!localIsResizing){
                     $.isFunction( options.afterSlideLoad ) && options.afterSlideLoad.call( destiny, anchorLink, (sectionIndex + 1), slideAnchor, slideIndex);
@@ -1513,13 +1512,13 @@
 
                 addAnimation(slides.find(SLIDES_CONTAINER_SEL), options.scrollingSpeed>0).css(getTransforms(translate3d));
 
-                setTimeout(function(){
+                setTimeout(() => {
                     afterSlideLoads();
                 }, options.scrollingSpeed, options.easing);
             }else{
                 slides.animate({
                     scrollLeft : Math.round(destinyPos.left)
-                }, options.scrollingSpeed, options.easing, function() {
+                }, options.scrollingSpeed, options.easing, () => {
 
                     afterSlideLoads();
                 });
@@ -1557,7 +1556,7 @@
                 //http://stackoverflow.com/questions/4298612/jquery-how-to-call-resize-event-only-once-its-finished-resizing
                 clearTimeout(resizeId);
 
-                resizeId = setTimeout(function(){
+                resizeId = setTimeout(() => {
                     FP.reBuild(true);
                 }, 350);
             }
@@ -1790,7 +1789,7 @@
             container.css(getTransforms(translate3d));
 
             //syncronously removing the class after the animation has been applied.
-            setTimeout(function(){
+            setTimeout(() => {
                 container.removeClass(NO_TRANSITION);
             },10);
         }
@@ -1835,7 +1834,7 @@
 
             //we need to scroll to the section and then to the slide
             if (destiny !== lastScrolledDestiny && !section.hasClass(ACTIVE)){
-                scrollPage(section, function(){
+                scrollPage(section, () => {
                     scrollSlider(section, slide);
                 });
             }
@@ -1989,15 +1988,16 @@
         * http://stackoverflow.com/questions/5661671/detecting-transform-translate3d-support
         */
         function support3d() {
-            var el = document.createElement('p'),
-                has3d,
-                transforms = {
-                    'webkitTransform':'-webkit-transform',
-                    'OTransform':'-o-transform',
-                    'msTransform':'-ms-transform',
-                    'MozTransform':'-moz-transform',
-                    'transform':'transform'
-                };
+            var el = document.createElement('p');
+            var has3d;
+
+            var transforms = {
+                'webkitTransform':'-webkit-transform',
+                'OTransform':'-o-transform',
+                'msTransform':'-ms-transform',
+                'MozTransform':'-moz-transform',
+                'transform':'transform'
+            };
 
             // Add it to the body to get the computed style.
             document.body.insertBefore(el, null);
@@ -2169,7 +2169,7 @@
         /*
         * Destroys fullpage.js plugin events and optinally its html markup and styles
         */
-        FP.destroy = function(all){
+        FP.destroy = all => {
             FP.setAutoScrolling(false, 'internal');
             FP.setAllowScrolling(false);
             FP.setKeyboardScrolling(false);
@@ -2271,7 +2271,7 @@
             }
 
             //anchors can not have the same value as any element ID or NAME
-            $.each(options.anchors, function(index, name){
+            $.each(options.anchors, (index, name) => {
                 if($('#' + name).length || $('[name="'+name+'"]').length ){
                     showError('error', 'data-anchor tags can not have the same value as any `id` element on the site (or `name` element for IE).');
                 }

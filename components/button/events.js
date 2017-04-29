@@ -3,6 +3,6 @@ module.exports = {
     "click" :  "handle_button_click"
   },
 
-  handle_button_click: function() {
+  handle_button_click() {
   }
 };

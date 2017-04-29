@@ -21,16 +21,14 @@ var ICONS = require_app("client/emojies");
 var makeme_store = require_app("server/makeme_store");
 var client_api = require_app("server/client_api");
 
-var ICON_GROUPS = _.groupBy(ICONS, function(icon, index) {
-  return parseInt(index / 50, 10);
-});
+var ICON_GROUPS = _.groupBy(ICONS, (icon, index) => parseInt(index / 50, 10));
 
 var ANON_OF_THE_NOW = "abcdefabcdef";
 global.ANON_OF_THE_NOW = ANON_OF_THE_NOW;
 
-var update_anon_of_the_now = _.throttle(function() {
+var update_anon_of_the_now = _.throttle(() => {
   // This is kind of unrelated...
-  find_top_anons(function(hashes) {
+  find_top_anons(hashes => {
     try {
       ANON_OF_THE_NOW = hashes[_.random(0, Math.min(hashes.length - 1, 10))].tripcode;
       global.ANON_OF_THE_NOW = ANON_OF_THE_NOW;
@@ -89,9 +87,9 @@ function find_top_anons(cb) {
       "tripcode",
       "author"
       ],
-    }).success(function(groups) {
+    }).success(groups => {
       var count = 0;
-      _.each(groups, function(group) {
+      _.each(groups, group => {
         if (group.dataValues.count) {
           hashes.push(group.dataValues);
           count += 1;
@@ -107,7 +105,7 @@ function render_even_more_recent(api, cb, use_header) {
   var summarize = require_app("client/summarize");
 
   api.template.add_stylesheet("links");
-  var render_recent_posts = api.page.async(function(flush) {
+  var render_recent_posts = api.page.async(flush => {
     Post.findAll({
       where: {
         parent_id: {
@@ -116,10 +114,10 @@ function render_even_more_recent(api, cb, use_header) {
       },
       order: "id DESC",
       limit: 100
-    }).success(function(posts) {
-      posts = _.filter(posts, function(p) {
+    }).success(posts => {
+      posts = _.filter(posts, p => {
         var is_hidden = false;
-        _.each(HIDDEN_BOARDS, function(board) {
+        _.each(HIDDEN_BOARDS, board => {
           is_hidden = is_hidden || board === p.board_id;
         });
 
@@ -128,7 +126,7 @@ function render_even_more_recent(api, cb, use_header) {
       var template_str = api.template.partial("home/recent_posts.html.erb", {
         posts: posts.slice(5, 20),
         class_: "posts",
-        summarize: summarize
+        summarize
       });
       api.bridge.controller("home", "show_recent_posts");
       api.bridge.controller("home", "format_text");
@@ -136,17 +134,17 @@ function render_even_more_recent(api, cb, use_header) {
     });
   });
 
-  var render_recent_threads = api.page.async(function(flush) {
+  var render_recent_threads = api.page.async(flush => {
     Post.findAll({
       where: [
         "Posts.thread_id is NULL",
       ],
       order: "id DESC",
       limit: 100
-    }).success(function(posts) {
-      posts = _.filter(posts, function(p) {
+    }).success(posts => {
+      posts = _.filter(posts, p => {
         var is_hidden = false;
-        _.each(HIDDEN_BOARDS, function(board) {
+        _.each(HIDDEN_BOARDS, board => {
           is_hidden = is_hidden || board === p.board_id;
         });
 
@@ -156,9 +154,9 @@ function render_even_more_recent(api, cb, use_header) {
       posts = posts.slice(3, 15);
 
       var template_str = api.template.partial("home/recent_posts.html.erb", {
-        posts: posts,
+        posts,
         class_: "threads",
-        summarize: summarize
+        summarize
       });
 
       api.bridge.controller("home", "show_recent_threads");
@@ -169,10 +167,10 @@ function render_even_more_recent(api, cb, use_header) {
 
   var slogan = SLOGANS[_.random(SLOGANS.length)];
   var template_str = api.template.render("controllers/recent.html.erb", {
-    render_recent_posts: render_recent_posts,
-    render_recent_threads: render_recent_threads,
-    use_header: use_header,
-    slogan: slogan
+    render_recent_posts,
+    render_recent_threads,
+    use_header,
+    slogan
   });
 
   cb(template_str);
@@ -195,11 +193,11 @@ function render_burtles(cb) {
     },
     order: "count DESC",
     limit: 500
-  }).success(function(actions) {
+  }).success(actions => {
     var count = 0;
     var content = $("<div class='profile_container container mtl' />");
     var tripcode_gen = require_app("server/tripcode");
-    _.each(actions, function(action) {
+    _.each(actions, action => {
       var hashEl = $("<div class='col-xs-4 col-md-2 tripcode'>");
       hashEl.attr("data-tripcode", action.actor);
 
@@ -254,15 +252,15 @@ module.exports = {
   },
 
 
-  boards: function(ctx, api) {
-    var render_boards = api.page.async(function(flush) {
+  boards(ctx, api) {
+    var render_boards = api.page.async(flush => {
       Sequelize.instance.query("select board_id, count(*) as count from posts group by board_id order by count desc")
-      .success(function(results) {
+      .success(results => {
         if (results && results.length) {
           api.bridge.controller("home", "set_board", results);
-          results = _.shuffle(_.filter(results, function(r) {
+          results = _.shuffle(_.filter(results, r => {
             var is_hidden = false;
-            _.each(HIDDEN_BOARDS, function(board) {
+            _.each(HIDDEN_BOARDS, board => {
               is_hidden = is_hidden || board === r.board_id;
             });
 
@@ -270,7 +268,7 @@ module.exports = {
           }));
 
           var container = $("<div />");
-          _.each(results, function(r) {
+          _.each(results, r => {
             var a = $("<a />");
             a.attr("href", "/b/" + r.board_id);
             a.attr("rel", Math.sqrt(r.count));
@@ -290,7 +288,7 @@ module.exports = {
     });
 
     var template_str = api.template.render("controllers/boards/list.html.erb", {
-      render_boards: render_boards,
+      render_boards,
     });
 
     api.page.render({
@@ -301,14 +299,14 @@ module.exports = {
   },
 
 
-  about: function(ctx, api) {
+  about(ctx, api) {
     this.set_title("atob/about");
 
     var slogan = SLOGANS[_.random(SLOGANS.length)];
 
     // bring the slogans in over here
     var template_str = api.template.render("controllers/about.html.erb", {
-      slogan: slogan,
+      slogan,
       use_header: true
 
     });
@@ -320,13 +318,13 @@ module.exports = {
 
   },
 
-  archives: function(ctx, api) {
+  archives(ctx, api) {
     this.set_title("atob/archives");
     api.template.add_stylesheet("archive");
 
     var board_utils = require_app("server/board_utils");
     var render_boards = board_utils.render_boards();
-    var render_recent_archives = api.page.async(function(flush) {
+    var render_recent_archives = api.page.async(flush => {
       var summarize = require_app("client/summarize");
       ArchivedPost.findAll({
         where: {
@@ -334,13 +332,13 @@ module.exports = {
           parent_id: null
         },
         order: "id DESC"
-      }).success(function(posts) {
-        posts = _.unique(posts, function(p) { return p.id; } );
+      }).success(posts => {
+        posts = _.unique(posts, p => p.id );
         var template_str = api.template.partial("home/recent_posts.html.erb", {
-          posts: posts,
+          posts,
           class_: "posts",
           title_only: true,
-          summarize: summarize,
+          summarize,
           archive: "a"
         });
 
@@ -353,7 +351,7 @@ module.exports = {
     });
 
     var template_str = api.template.render("controllers/archives.html.erb", {
-      render_boards: render_boards,
+      render_boards,
       render_archives: render_recent_archives
     });
 
@@ -363,12 +361,12 @@ module.exports = {
 
   },
 
-  chat: function(ctx, api) {
+  chat(ctx, api) {
     this.set_title("atob");
 
     api.template.add_stylesheet("links");
     api.bridge.call("app/client/sidebar", "add_sidebars");
-    var render_recent_chats = api.page.async(function(flush) {
+    var render_recent_chats = api.page.async(flush => {
       Post.findAll({
         where: {
           board_id: {
@@ -377,10 +375,10 @@ module.exports = {
         },
         order: "id DESC",
         limit: 50
-      }).success(function(posts) {
+      }).success(posts => {
         // Find the most recent thread
         var parent = null;
-        _.each(posts, function(post) {
+        _.each(posts, post => {
           if (post && !post.dataValues.parent_id && !parent) {
             parent = post;
           }
@@ -402,7 +400,7 @@ module.exports = {
 
     var template_str = api.template.render("controllers/chat.html.erb", {
       render_recent_posts: render_recent_chats,
-      render_recent_threads: function() { },
+      render_recent_threads() { },
       slogan: ""
     });
 
@@ -413,11 +411,11 @@ module.exports = {
 
   },
 
-  recent: function(ctx, api) {
+  recent(ctx, api) {
     this.set_title("atob");
     var use_header = true;
 
-    render_even_more_recent(api, function(template_str) {
+    render_even_more_recent(api, template_str => {
 
       api.page.render({ content: template_str, socket: true});
 
@@ -426,14 +424,14 @@ module.exports = {
 
   },
 
-  index: function(ctx, api) {
+  index(ctx, api) {
     this.set_title("atob");
 
     var summarize = require_app("client/summarize");
     update_anon_of_the_now();
 
     api.template.add_stylesheet("links");
-    var render_recent_posts = api.page.async(function(flush) {
+    var render_recent_posts = api.page.async(flush => {
       Post.findAll({
         where: {
           parent_id: {
@@ -442,10 +440,10 @@ module.exports = {
         },
         order: "id DESC",
         limit: 100
-      }).success(function(posts) {
-        posts = _.filter(posts, function(p) {
+      }).success(posts => {
+        posts = _.filter(posts, p => {
           var is_hidden = false;
-          _.each(HIDDEN_BOARDS, function(board) {
+          _.each(HIDDEN_BOARDS, board => {
             is_hidden = is_hidden || board === p.board_id;
           });
 
@@ -454,24 +452,24 @@ module.exports = {
         var template_str = api.template.partial("home/recent_posts.html.erb", {
           class_: "posts",
           posts: posts.slice(0, 5),
-          summarize: summarize
+          summarize
         });
         api.bridge.controller("home", "show_recent_posts");
         flush(template_str);
       });
     });
 
-    var render_recent_threads = api.page.async(function(flush) {
+    var render_recent_threads = api.page.async(flush => {
       Post.findAll({
         where: [
           "Posts.thread_id is NULL",
         ],
         order: "id DESC",
         limit: 100
-      }).success(function(posts) {
-        posts = _.filter(posts, function(p) {
+      }).success(posts => {
+        posts = _.filter(posts, p => {
           var is_hidden = false;
-          _.each(HIDDEN_BOARDS, function(board) {
+          _.each(HIDDEN_BOARDS, board => {
             is_hidden = is_hidden || board === p.board_id;
           });
 
@@ -481,8 +479,8 @@ module.exports = {
         posts = _.first(posts, 3);
 
         var template_str = api.template.partial("home/recent_posts.html.erb", {
-          posts: posts,
-          summarize: summarize,
+          posts,
+          summarize,
           class_: "threads",
         });
 
@@ -491,12 +489,12 @@ module.exports = {
       });
     });
 
-    var render_anons = function() {
+    var render_anons = () => {
       var counts = {};
       makeme_store.digest_doings();
 
-      _.each(makeme_store.DOING_ONS, function(anons) {
-        _.each(anons, function(emote, id) {
+      _.each(makeme_store.DOING_ONS, anons => {
+        _.each(anons, (emote, id) => {
           counts[id] = emote;
         });
       });
@@ -513,12 +511,9 @@ module.exports = {
       };
 
       var anon_order = _.keys(counts);
-      var order = _.sortBy(anon_order, function(c) {
-        return -makeme_store.LAST_SEEN[c];
+      var order = _.sortBy(anon_order, c => -makeme_store.LAST_SEEN[c]);
 
-      });
-
-      var str = _.map(order, function(id) {
+      var str = _.map(order, id => {
         var c = counts[id];
         var opacity = 1;
         var last_seen = makeme_store.LAST_SEEN[id];
@@ -544,33 +539,33 @@ module.exports = {
     api.bridge.controller("home", "set_api_key", config.imgur_key);
 
     var template_str = api.template.render("controllers/home.html.erb", {
-      render_boards: render_boards,
-      render_anons: render_anons,
-      render_recent_posts: render_recent_posts,
-      render_recent_threads: render_recent_threads,
-      render_sponsored_content: render_sponsored_content,
+      render_boards,
+      render_anons,
+      render_recent_posts,
+      render_recent_threads,
+      render_sponsored_content,
       slogan: SLOGANS[_.random(SLOGANS.length)],
 
-      render_recent_chats: render_recent_chats,
+      render_recent_chats,
     });
 
     api.bridge.controller("home", "fullpage");
 
     api.page.render({ content: template_str, socket: true});
   },
-  rules: function(ctx, api) {
+  rules(ctx, api) {
     var template_str = api.template.partial("home/rules.html.erb", {} );
 
     api.page.render({ content: template_str});
 
   },
-  icons: function(ctx, api) {
-    var render_icons = function() {
+  icons(ctx, api) {
+    var render_icons = () => {
       var icon_list = $("<div />");
-      _.each(ICON_GROUPS, function(icons) {
-        var async_work = api.page.async(function(flush) {
+      _.each(ICON_GROUPS, icons => {
+        var async_work = api.page.async(flush => {
           var iconsEl = $("<div class='clearfix' />");
-          _.each(icons, function(icon) {
+          _.each(icons, icon => {
             var divEl = $("<div class='col-sm-3' />");
             var iconEl = $("<i class='mrl' />");
             iconEl.addClass("icon-" + icon);
@@ -592,19 +587,19 @@ module.exports = {
     };
 
     var template_str = api.template.partial("home/icons.html.erb", {
-      render_icons: render_icons
+      render_icons
     });
 
     api.page.render({ content: template_str});
 
   },
-  faq: function(ctx, api) {
+  faq(ctx, api) {
     var template_str = api.template.partial("home/faq.html.erb", { });
 
     api.page.render({ content: template_str});
 
   },
-  render_links: function(ctx, api, images_only) {
+  render_links(ctx, api, images_only) {
     this.set_title("atob/links");
     if (images_only) {
       this.set_title("atob/gifs");
@@ -613,11 +608,11 @@ module.exports = {
     api.template.add_stylesheet("links");
     var MAX_BUMP_AGE = 12;
     var url = require("url");
-    var render_links = api.page.async(function(flush) {
-      Link.findAll({ order: "post_id DESC", limit: 49, where: { image: images_only ? 1 : 0} }).success(function(links) {
+    var render_links = api.page.async(flush => {
+      Link.findAll({ order: "post_id DESC", limit: 49, where: { image: images_only ? 1 : 0} }).success(links => {
           var content = $("<div class='container col-md-12 mtl mll' />");
-          var max_ups = _.max(links, function(link) { return link.ups || 0; });
-          links = _.sortBy(links, function(link) {
+          var max_ups = _.max(links, link => link.ups || 0);
+          links = _.sortBy(links, link => {
             var recency = (Date.now() - link.created_at) / 1000 / 60 / 60;
             var bump_amount = Math.max((MAX_BUMP_AGE - recency) / MAX_BUMP_AGE * max_ups.ups, 0);
 
@@ -626,7 +621,7 @@ module.exports = {
             return -amount;
           });
 
-          _.each(links, function(link) {
+          _.each(links, link => {
             link.dataValues.domain = url.parse(link.href).hostname;
             link.dataValues.id = link.id;
             link.dataValues.uppable = (Date.now() - link.updated_at > UPBOAT_TIMEOUT);
@@ -650,28 +645,28 @@ module.exports = {
         board_slogan = "and other pics";
       }
       var template_str = api.template.render("controllers/links.html.erb", {
-        render_links: render_links,
+        render_links,
         tripcode: "",
         images: images_only,
-        board_slogan: board_slogan
+        board_slogan
       });
       api.bridge.controller("home", "init_tripcodes");
       api.page.render({content: template_str, socket: true });
 
   },
-  gifs: function(ctx, api) {
+  gifs(ctx, api) {
     this.render_links(ctx, api, true);
   },
-  links: function(ctx, api) {
+  links(ctx, api) {
     this.render_links(ctx, api);
   },
-  burtles: function(ctx, api) {
-    render_burtles(function(content) {
+  burtles(ctx, api) {
+    render_burtles(content => {
       api.page.render({content: content.toString() });
     });
 
   },
-  mods: function(ctx, api) {
+  mods(ctx, api) {
     api.template.add_stylesheet("home");
     var BoardClaim = require_app("models/board_claim");
 
@@ -682,19 +677,17 @@ module.exports = {
 
     BoardClaim.findAll({
       where: {
-        accepted: accepted
+        accepted
       }
-    }).success(function(claims) {
+    }).success(claims => {
       var content = $("<div class='container mtl' />");
 
-      var groups = _.groupBy(claims, function(c) {
-        return c.board_id;
-      });
+      var groups = _.groupBy(claims, c => c.board_id);
 
 
-      _.each(groups, function(group_claims, board_id) {
+      _.each(groups, (group_claims, board_id) => {
         content.append($("<h3 class='col-md-12'/>").text("/" + board_id));
-        _.each(group_claims, function(claim) {
+        _.each(group_claims, claim => {
           var boardEl = $("<span class='pal clearfix' />");
           var hashEl = $("<div class='col-xs-4 col-md-2 tripcode'>");
           hashEl.attr("data-tripcode", claim.tripcode);
@@ -708,7 +701,7 @@ module.exports = {
       // bring the slogans in over here
       var slogan = SLOGANS[_.random(SLOGANS.length)];
       var template_str = api.template.render("controllers/mods.html.erb", {
-        slogan: slogan,
+        slogan,
         mods: content,
         use_header: true
 
@@ -721,13 +714,13 @@ module.exports = {
 
 
   },
-  colors: function(ctx, api) {
+  colors(ctx, api) {
     api.template.add_stylesheet("home");
 
-    find_top_anons(function(hashes, count) {
+    find_top_anons((hashes, count) => {
 
       var content = $("<div class='container mtl anons' />");
-      _.each(hashes, function(hash) {
+      _.each(hashes, hash => {
         var hashEl = $("<div class='col-xs-4 col-md-2 tripcode'>");
         hashEl.attr("data-tripcode", hash.tripcode);
         var opacity = Math.max(parseFloat(hash.count * 20) / count);
@@ -743,27 +736,27 @@ module.exports = {
 
 
   },
-  robots: function(ctx) {
+  robots(ctx) {
     ctx.res.end("User-agent: *\nDisallow: /");
   },
 
-  socket: function(s) {
+  socket(s) {
     makeme_store.lurk(s);
     makeme_store.subscribe_to_updates(s);
     client_api.add_to_socket(s);
 
-    s.on("new_post", function(post, cb) {
+    s.on("new_post", (post, cb) => {
       post.board = "b";
       posting.handle_new_post(s, post.board, post, cb);
     });
 
-    s.on("new_reply", function(post, cb) {
+    s.on("new_reply", (post, cb) => {
       post.tripcode = Math.random() + "";
       posting.handle_new_reply(s, board_names.CHAT, post, cb);
     });
 
-    s.on("upboat", function(link_id, cb) {
-      Link.find(link_id).success(function(link) {
+    s.on("upboat", (link_id, cb) => {
+      Link.find(link_id).success(link => {
         if (Date.now() - link.updated_at < UPBOAT_TIMEOUT) {
           if (cb) { cb(); }
           return;

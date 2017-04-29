@@ -1,12 +1,12 @@
 module.exports = {
-  set_starred: function(post_id, no_load) {
+  set_starred(post_id, no_load) {
     if (!post_id) {
       return;
     }
 
     if (!window._POSTS) {
       var self = this;
-      setTimeout(function() {
+      setTimeout(() => {
         module.exports.set_starred(post_id, no_load);
       }, 100);
       return;
@@ -15,11 +15,11 @@ module.exports = {
     if (!window._POSTS[post_id]) {
 
       if (no_load) {
-        setTimeout(function() { module.exports.set_starred(post_id, no_load); }, 1000);
+        setTimeout(() => { module.exports.set_starred(post_id, no_load); }, 1000);
       } else {
-        SF.socket().emit("get_post", post_id, function(post) {
+        SF.socket().emit("get_post", post_id, post => {
           post.post_id = post.id;
-          $C("post", post, function(cmp) {
+          $C("post", post, cmp => {
             $(".posts").prepend(cmp.$el);
             cmp.star();
             cmp.add_markdown();

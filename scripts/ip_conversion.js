@@ -4,8 +4,8 @@ var IP = require_app("models/ip");
 
 function translate_ips() {
   var count = 0;
-  IP.findAll({}).success(function(ips) {
-    _.each(ips, function(ip) {
+  IP.findAll({}).success(ips => {
+    _.each(ips, ip => {
       if (ip.ip.indexOf(".") !== -1) {
         console.log("IP", ip.ip, "TO", IP.toHash(ip.ip), ip.id);
         ip.ip = IP.toHash(ip.ip);
@@ -21,7 +21,7 @@ function translate_ips() {
 
 
 module.exports = {
-  translate_ips: translate_ips
+  translate_ips
 };
 
 

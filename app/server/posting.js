@@ -138,14 +138,14 @@ function handle_new_post(s, board, post, cb) {
     bumped_at: Date.now()
   };
 
-  is_user_banned(s, board, function(banned) {
+  is_user_banned(s, board, banned => {
     if (banned) {
       board = board_names.BAN;
       data.board_id = board;
     }
 
     Post.create(data)
-      .success(function(p) {
+      .success(p => {
         IP.create({
           post_id: p.id,
           ip: IP.toHash(s.spark.address.ip),
@@ -158,7 +158,7 @@ function handle_new_post(s, board, post, cb) {
         s.broadcast.to(board).emit("new_post", data);
 
         var is_hidden = false;
-        _.each(HIDDEN_BOARDS, function(board) {
+        _.each(HIDDEN_BOARDS, board => {
           is_hidden = is_hidden || board === p.dataValues.board_id;
         });
         if (!is_hidden) {
@@ -186,14 +186,14 @@ function is_user_banned(s, board, done) {
   // take the md5 of the IP + a salt?
   Ban.findAll({
     where: {
-      ip: ip,
+      ip,
       board: [board, '*']
     }
-  }).success(function(bans) {
+  }).success(bans => {
     var banned = false;
 
     if (bans) {
-      _.each(bans, function(b) {
+      _.each(bans, b => {
         var hours = parseInt(b.hours, 10);
         if (!hours) {
           // Permabanned...
@@ -217,11 +217,11 @@ function is_user_banned(s, board, done) {
     } else {
       // check how many unique IPs have posted recently
       model.instance.query("SELECT count(distinct(ip)) as count FROM IPs", null, { raw: true })
-        .success(function(rows) {
+        .success(rows => {
           var row = rows[0];
           // find out if anon was one of them
-          IP.count({ where: { ip: ip }})
-            .success(function(result) {
+          IP.count({ where: { ip }})
+            .success(result => {
               banned = false;
               if (result && result > 0) {
                 // anon is in the DB of IPs, so is allowed through
@@ -264,7 +264,7 @@ function check_for_blasphemy(s, parentish, post, cb) {
         where: {
           anon: tripcode
         }
-      }).success(function(trophy) {
+      }).success(trophy => {
         if (!trophy) {
           return;
         }
@@ -277,7 +277,7 @@ function check_for_blasphemy(s, parentish, post, cb) {
           deity = "SARAH";
         }
 
-        _.delay(function() {
+        _.delay(() => {
           s.emit("notif", deity + " takes your " + trophy.trophy.replace(/:/g, "") + " as penance", "info");
         }, 500);
         trophy.anon = deity;
@@ -290,13 +290,13 @@ function check_for_blasphemy(s, parentish, post, cb) {
 
     if (has_james && has_poop) {
       Post.create({
-        text: text,
+        text,
         title: "i am a sinner and a blasphemer",
-        tripcode: tripcode,
+        tripcode,
         author: escape_html(author),
         board_id: board_names.HERETICS,
         bumped_at: Date.now()
-      }).success(function() {
+      }).success(() => {
 
       });
 
@@ -322,16 +322,16 @@ function check_for_blasphemy(s, parentish, post, cb) {
       title = JAMES_TITLES[_.random(0, JAMES_TITLES.length - 1)];
       text = JAMES_TEXTS[_.random(0, JAMES_TEXTS.length - 1)];
 
-      cb({ title: title, text: text });
+      cb({ title, text });
     } else if (has_sarah && has_poop) {
       Post.create({
-        text: text,
+        text,
         title: "i am a sinner and a blasphemer",
-        tripcode: tripcode,
+        tripcode,
         author: escape_html(author),
         board_id: board_names.CLERETICS,
         bumped_at: Date.now()
-      }).success(function() {
+      }).success(() => {
 
       });
 
@@ -349,16 +349,16 @@ function check_for_blasphemy(s, parentish, post, cb) {
       title = SARAH_TITLES[_.random(0, SARAH_TITLES.length - 1)];
       text = SARAH_TEXTS[_.random(0, SARAH_TEXTS.length - 1)];
 
-      cb({ title: title, text: text });
+      cb({ title, text });
     } else if (has_john && has_poop) {
       Post.create({
-        text: text,
+        text,
         title: "i am a sinner and a blasphemer",
-        tripcode: tripcode,
+        tripcode,
         author: escape_html(author),
         board_id: board_names.APOSTLES,
         bumped_at: Date.now()
-      }).success(function() {
+      }).success(() => {
 
       });
 
@@ -378,7 +378,7 @@ function check_for_blasphemy(s, parentish, post, cb) {
       title = JOHN_TITLES[_.random(0, JOHN_TITLES.length - 1)];
       text = JOHN_TEXTS[_.random(0, JOHN_TEXTS.length - 1)];
 
-      cb({ title: title, text: text });
+      cb({ title, text });
     } else {
       cb();
     }
@@ -387,7 +387,7 @@ function check_for_blasphemy(s, parentish, post, cb) {
   }
 
   if (_.isNumber(parentish)) {
-    Post.find(parentish).success(function(parent) {
+    Post.find(parentish).success(parent => {
       is_blasphemy(parent);
     });
   } else if (_.isObject(parentish)) {
@@ -444,15 +444,17 @@ function handle_new_reply(s, board, post, cb) {
 
 
   // Do things to the parent, now...
-  var down = false, up = false;
+  var down = false;
 
-  _.each(DOWNCONS, function(downcon) {
+  var up = false;
+
+  _.each(DOWNCONS, downcon => {
     if (text.toString().match(downcon)) {
       down = true;
     }
   });
 
-  _.each(UPCONS, function(upcon) {
+  _.each(UPCONS, upcon => {
     if (text.toString().match(upcon)) {
       up = true;
     }
@@ -464,10 +466,10 @@ function handle_new_reply(s, board, post, cb) {
 
 
   Post.find({ where: { id: post.post_id }})
-    .success(function(parent) {
+    .success(parent => {
       board = parent.board_id;
 
-      is_user_banned(s, board, function(banned) {
+      is_user_banned(s, board, banned => {
         if (banned) {
           board = board_names.BAN;
           title = "reply to " + post.post_id + ":" + title;
@@ -493,11 +495,11 @@ function handle_new_reply(s, board, post, cb) {
         }
 
         check_for_blasphemy(s, parent, {
-          text: text,
-          author: author,
+          text,
+          author,
           tripcode: post.tripcode,
-          title: title
-        }, function(blasphemy) {
+          title
+        }, blasphemy => {
           if (blasphemy) {
             text = blasphemy.text;
             title = blasphemy.title;
@@ -516,7 +518,7 @@ function handle_new_reply(s, board, post, cb) {
               tripcode: gen_md5(author + ":" + post.tripcode),
               author: escape_html(author),
               board_id: board
-            }).success(function(p) {
+            }).success(p => {
               p.dataValues.post_id = p.dataValues.id;
               p.dataValues.up = up;
               p.dataValues.down = down;
@@ -541,7 +543,7 @@ function handle_new_reply(s, board, post, cb) {
               post_socket.broadcast.to(board).emit("new_reply", p.dataValues);
 
               var is_hidden = false;
-              _.each(HIDDEN_BOARDS, function(board) {
+              _.each(HIDDEN_BOARDS, board => {
                 is_hidden = is_hidden || board === p.dataValues.board_id;
               });
               if (!is_hidden) {
@@ -591,7 +593,7 @@ function handle_update_post(socket, board, post, cb) {
     where: {
       id: post.id
     }
-  }).success(function(result) {
+  }).success(result => {
     var delete_code = gen_md5(post.author + ':' + post.tripcode);
     if (result) {
       if (Date.now() - result.created_at > UPDATE_LIMIT) {
@@ -603,7 +605,7 @@ function handle_update_post(socket, board, post, cb) {
         var action_name = "OP Updated post #";
 
         check_for_blasphemy(socket, result.parent_id, { text: post.text, title: "", author: post.author, tripcode: post.tripcode },
-          function(blasphemy) {
+          blasphemy => {
 
           if (blasphemy) {
             post.text = blasphemy.text;
@@ -628,7 +630,7 @@ function handle_update_post(socket, board, post, cb) {
           socket.emit("update_post", post.id, result.text);
           socket.broadcast.to(result.board_id).emit("update_post", post.id, result.text);
 
-          post_links.erase_links(result, function() {
+          post_links.erase_links(result, () => {
             post_links.find_and_create_links(result);
           });
 
@@ -655,19 +657,19 @@ function anon_is_board_mod(author, tripcode, board, cb) {
       tripname: author || "BOO",
       tripcode: [tripcode || gen_md5("URNS"), gen_md5(tripcode)]
     }
-  }).success(function(user) {
+  }).success(user => {
     if (user) {
       cb(true);
     } else {
       // That last nested attempt to look for the board admin...
       BoardClaim.findAll({
         where:{
-          author: author,
+          author,
           tripcode: [delete_code, tripcode, gen_md5(tripcode)],
           accepted: true,
           board_id: board
         }
-      }).success(function(claim) {
+      }).success(claim => {
         if (claim.length) {
           cb(true);
         } else {
@@ -691,13 +693,13 @@ function handle_star_post(socket, board, post) {
     where: {
       id: post.id
     }
-  }).success(function(result) {
-    anon_is_board_mod(post.author, post.tripcode, board, function(is_mod) {
+  }).success(result => {
+    anon_is_board_mod(post.author, post.tripcode, board, is_mod => {
       if (is_mod) {
         var BoardConfig = require_app("models/board_config");
         BoardConfig.find({ where: {
           board_id: board,
-        }}).success(function(config) {
+        }}).success(config => {
           function save_config(config) {
             if (config.getSetting("starred") === post.id) {
               config.setSetting("starred", null);
@@ -714,7 +716,7 @@ function handle_star_post(socket, board, post) {
 
           if (!config) {
             BoardConfig.create({board_id: board, author: post.author, tripcode: post.tripcode })
-              .success(function(c) {
+              .success(c => {
 
                 save_config(c);
               });
@@ -728,7 +730,7 @@ function handle_star_post(socket, board, post) {
             tripcode: delete_code,
             title: "star " + post.id,
             author: post.author,
-            text: text,
+            text,
             bumped_at: Date.now()
           };
 
@@ -749,7 +751,7 @@ function handle_delete_post(socket, board, post) {
     where: {
       id: post.id
     }
-  }).success(function(result) {
+  }).success(result => {
     var delete_code = gen_md5(post.author + ':' + post.tripcode);
     if (result) {
 
@@ -775,9 +777,9 @@ function handle_delete_post(socket, board, post) {
         socket.emit("notif", action_name + post.id, "success");
         socket.emit("update_post", post.id);
         socket.broadcast.to(result.board_id).emit("update_post", post.id);
-        post_links.erase_links(result, function() { });
+        post_links.erase_links(result, () => { });
       } else {
-        anon_is_board_mod(post.author, post.tripcode, board, function(is_mod) {
+        anon_is_board_mod(post.author, post.tripcode, board, is_mod => {
           if (is_mod) {
             socket.emit("notif", "Board Mod Deleted #" + post.id, "success");
             result.destroy();
@@ -788,14 +790,14 @@ function handle_delete_post(socket, board, post) {
               tripcode: delete_code,
               title: "delete " + post.id,
               author: post.author,
-              text: text,
+              text,
               bumped_at: Date.now()
             };
 
             Post.create(post_data);
             socket.emit("update_post", post.id);
             socket.broadcast.to(result.board_id).emit("update_post", post.id);
-            post_links.erase_links(result, function() { });
+            post_links.erase_links(result, () => { });
           } else {
 
             socket.emit("notif", action_name + post.id, "success");
@@ -830,10 +832,8 @@ function render_posting(api, flush, result, highlight_id, nothreading) {
   post_data.maximized = true;
   delete post_data.id;
 
-  post_data.replies = _.map(result.children, function(c) { return c.dataValues; } );
-  post_data.replies = _.sortBy(post_data.replies, function(d) {
-    return new Date(d.created_at);
-  });
+  post_data.replies = _.map(result.children, c => c.dataValues );
+  post_data.replies = _.sortBy(post_data.replies, d => new Date(d.created_at));
 
   post_data.client_options = _.clone(post_data);
   module.exports.trim_post(post_data.client_options);
@@ -841,7 +841,7 @@ function render_posting(api, flush, result, highlight_id, nothreading) {
 
 
   var BoardConfig = require_app("models/board_config");
-  BoardConfig.find({ where: { board_id: post_data.board_id }}).success(function(board_config) {
+  BoardConfig.find({ where: { board_id: post_data.board_id }}).success(board_config => {
     if (board_config) {
       var starred = board_config.getSetting("starred");
 
@@ -850,7 +850,7 @@ function render_posting(api, flush, result, highlight_id, nothreading) {
 
 
 
-    post_links.freshen_client(post_data.post_id, result.children, function() {
+    post_links.freshen_client(post_data.post_id, result.children, () => {
       var postCmp = $C("post", post_data);
       var text_formatter = require_root("app/client/text");
       var tripcode_gen = require_app("server/tripcode");
@@ -874,14 +874,14 @@ function handle_ban_post(socket, board, post) {
     where: {
       id: post.id
     }
-  }).success(function(result) {
+  }).success(result => {
     var delete_code = gen_md5(post.author + ':' + post.tripcode);
     if (result) {
       if (worship_boards.contains(result.board_id) || result.board_id === board_names.LOG) {
         socket.emit("notif", "nice try, but badanon.", "warn");
         return;
       }
-      anon_is_board_mod(post.author, post.tripcode, board, function(is_mod) {
+      anon_is_board_mod(post.author, post.tripcode, board, is_mod => {
         if (is_mod) {
           socket.emit("notif", "Board Mod Helped #" + post.id, "success");
           result.board_id = board_names.BAN;
@@ -895,14 +895,14 @@ function handle_ban_post(socket, board, post) {
             tripcode: delete_code,
             title: "ban " + post.id,
             author: post.author,
-            text: text,
+            text,
             bumped_at: Date.now()
           };
 
           Post.create(post_data);
           socket.emit("update_post", post.id);
           socket.broadcast.to(result.board_id).emit("update_post", post.id);
-          post_links.erase_links(result, function() { });
+          post_links.erase_links(result, () => { });
         }
       });
     }
@@ -911,35 +911,35 @@ function handle_ban_post(socket, board, post) {
 }
 
 module.exports = {
-  handle_new_reply: handle_new_reply,
-  handle_new_post: handle_new_post,
-  handle_delete_post: handle_delete_post,
-  handle_update_post: handle_update_post,
-  render_posting: render_posting,
-  add_socket_subscriptions: function(s) {
+  handle_new_reply,
+  handle_new_post,
+  handle_delete_post,
+  handle_update_post,
+  render_posting,
+  add_socket_subscriptions(s) {
     var _board;
 
-    s.on("update_post", function(post, cb) {
+    s.on("update_post", (post, cb) => {
       var board = post.board || _board;
       handle_update_post(s, board, post, cb);
     });
 
-    s.on("ban_post", function(post) {
+    s.on("ban_post", post => {
       var board = post.board || _board;
       handle_ban_post(s, board, post);
     });
 
-    s.on("delete_post", function(post) {
+    s.on("delete_post", post => {
       var board = post.board || _board;
       handle_delete_post(s, board, post);
     });
 
-    s.on("star_post", function(post) {
+    s.on("star_post", post => {
       var board = post.board || _board;
       handle_star_post(s, board, post);
     });
 
-    s.on("new_post", function(post, cb) {
+    s.on("new_post", (post, cb) => {
       var board = post.board || _board || "b";
       if (board === board_names.CHAT) {
         board = "b";
@@ -953,9 +953,9 @@ module.exports = {
       }
     });
 
-    s.on("new_reply", function(post, cb) {
+    s.on("new_reply", (post, cb) => {
       var board = post.board_id || post.board || _board;
-      Post.find({ where: { id: post.post_id }}).success(function(result) {
+      Post.find({ where: { id: post.post_id }}).success(result => {
         if (result) {
           if (result.board_id === board_names.MOD) {
 
@@ -973,14 +973,14 @@ module.exports = {
 
     });
 
-    s.on("upboat", function(link, cb) {
+    s.on("upboat", (link, cb) => {
       post_links.upvote_link(link, cb);
     });
   },
-  trim_post: function(post) {
+  trim_post(post) {
     var replies = post.replies;
     post.replies = [];
-    _.each(replies, function(reply) {
+    _.each(replies, reply => {
       post.replies.push({
         id: reply.id,
         tripcode: reply.tripcode,
@@ -998,7 +998,7 @@ module.exports = {
       "ip",
     ];
 
-    _.each(post_delete, function(key) {
+    _.each(post_delete, key => {
       delete post[key];
     });
 

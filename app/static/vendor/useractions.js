@@ -1,4 +1,4 @@
-(function() {
+((() => {
 
   // {{{ BROWSER EVENT HELPER
   function addEvent(listener, evt, cb) {
@@ -12,23 +12,23 @@
 
   // {{{ SAMPLE API
   // override Sample.__send to use this instrumentation to its fullest!
-  var Sample = function(dataset) {
+  var Sample = dataset => {
     var dict = { integer: {}, set: {}, string: {} };
 
     var obj = {
-      dataset: dataset,
+      dataset,
       meta: {
-        dataset: dataset,
+        dataset,
       },
-      integer: function(k, v) {
+      integer(k, v) {
         dict.integer[k] = v;
         return obj;
       },
-      string: function(k, v) {
+      string(k, v) {
         dict.string[k] = v;
         return obj;
       },
-      send: function() {
+      send() {
         if (dict.__sent) {
           console.log("Trying to double send sample");
           return;
@@ -68,7 +68,7 @@
     return obj;
   };
 
-  Sample.__send = function(s, meta) {
+  Sample.__send = (s, meta) => {
     console.log("Sending Sample", JSON.stringify(s), "with metadata", meta);
   };
 
@@ -79,20 +79,20 @@
   // In order to use event tracking, we need to expose an API that is
   // non-invasive to regular code without adding too much bloat
   var EventTrack = {
-    init: function() {
+    init() {
       var self = this;
       this._last_local = null;
       this._last_global = null;
       this._init_time = window._ET.start;
 
-      _.each(window._ET.stack, function(items) {
+      _.each(window._ET.stack, items => {
         var dst = items[0];
         var args = items[1];
         var timestamp = items[2];
         var sample;
 
         if (dst === 'local' || dst === 'global') {
-          sample = self.local.apply(self, args);
+          sample = self.local(...args);
           sample.integer('time', timestamp);
         }
 
@@ -102,7 +102,7 @@
           }
 
           args.push(true);
-          sample = self.global.apply(self, args);
+          sample = self.global(...args);
           sample.integer('time', timestamp);
         }
 
@@ -116,21 +116,21 @@
       // initialize document nav handlers for:
       // nav: load, click_link, unload
       _ET.global("page", "load");
-      $(document).on("click", function(e) {
+      $(document).on("click", e => {
         var href = $(e.target).closest("a").attr("href");
         if (href && href.indexOf("#") !== 0) {
           _ET.global("page", "link");
         }
       });
 
-      $(window).on("beforeunload", function() {
+      $(window).on("beforeunload", () => {
         _ET.global("page", "unload");
 
       });
 
     },
 
-    add_event: function(dataset, feature, evt, data) {
+    add_event(dataset, feature, evt, data) {
       var sample = new Sample(dataset);
       sample
         .string("feature", feature)
@@ -147,7 +147,7 @@
     },
 
     // this has feature specific flows. so...
-    local: function(feature, evt, data) {
+    local(feature, evt, data) {
       if (!this._last_local) { this._last_local = {}; }
 
       var now = +new Date();
@@ -171,7 +171,7 @@
 
       return event_sample;
     },
-    global: function(feature, evt, data, global_only) {
+    global(feature, evt, data, global_only) {
       var now = +new Date();
       var event_sample = this.add_event("global_flow", feature, feature + ":" + evt, data);
       if (this._last_global) {
@@ -203,8 +203,9 @@
   // {{{ ClickTrack (click tracking)
   var ClickTrack = {
     // pulls data off DOM nodes for click tracking
-    collect_data_from_nodes: function(target) {
-      var  specList = "", firstSpec = "";
+    collect_data_from_nodes(target) {
+      var specList = "";
+      var firstSpec = "";
       var curNode = target;
       var href = "";
       var closest_id = "";
@@ -242,12 +243,12 @@
       return {
         path: firstSpec,
         fullpath: specList,
-        href: href,
-        closest_id: closest_id
+        href,
+        closest_id
       };
     },
 
-    handle_click: function(evt) {
+    handle_click(evt) {
       if (evt.__handled) {
         return;
       }
@@ -273,9 +274,9 @@
         .send();
     },
 
-    init: function() {
+    init() {
       if (window.jQuery) {
-        $(function() {
+        $(() => {
           // The delegate portion is so we can track clicks that are event stop propagated
           $("body").delegate("*", "click", ClickTrack.handle_click);
         });
@@ -291,7 +292,7 @@
   // Allocates time spent proportional to the time spent in various contexts on the page
   var TimeSpent = {
     last_mouse_move: 0,
-    handle_mousemove_or_keydown: function() {
+    handle_mousemove_or_keydown() {
       if (Date.now() - this.last_mouse_move < 100) {
         return;
       }
@@ -303,7 +304,7 @@
 
     },
 
-    init: function() {
+    init() {
       var TIME_SPENT_URL;
       var TIME_SPENT_CTX;
 
@@ -313,7 +314,9 @@
 
       // FROM MDN: https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
       // Set the name of the hidden property and the change event for visibility
-      var hiddenProp, visibilityChange;
+      var hiddenProp;
+
+      var visibilityChange;
       if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
         hiddenProp = "hidden";
         visibilityChange = "visibilitychange";
@@ -452,10 +455,8 @@
         }
       }
       addEvent(window, "beforeunload", dump_packets);
-
-
     },
-    summarize: function() {
+    summarize() {
 
     }
   };
@@ -470,9 +471,9 @@
   // TODO: CURRENT_URL needs to be parsed by the server and turned into a
   // controller/method pair properly
   var Pathing = {
-    init: function() {
+    init() {
       function async_check() {
-        setTimeout(function() {
+        setTimeout(() => {
           var new_url = window.location.pathname;
           if (CURRENT_URL !== new_url) {
             var sample = new Sample("pathing");
@@ -500,7 +501,7 @@
   // }}}
   // {{{ Performance
   var Performance = {
-    init: function() {
+    init() {
       function checkPerf() {
         var s = new Sample("w3c_nav");
         // don't use CURRENT_URL because it won't be set yet
@@ -529,7 +530,7 @@
       if (document.readyState === "complete") {
         checkPerf();
       } else {
-        addEvent(document, "readystatechange", function() {
+        addEvent(document, "readystatechange", () => {
           if (document.readyState === "complete") {
             checkPerf();
           }
@@ -543,7 +544,7 @@
 
   // {{{ MAIN INSTRUMENTATION MODULE
   var Instrumentation = {
-    init: function() {
+    init() {
       ClickTrack.init();
       EventTrack.init();
       TimeSpent.init();
@@ -551,12 +552,12 @@
       Performance.init();
 
     },
-    Sample: Sample,
-    ClickTrack: ClickTrack,
-    EventTrack: EventTrack,
-    TimeSpent: TimeSpent,
-    Pathing: Pathing,
-    Performance: Performance
+    Sample,
+    ClickTrack,
+    EventTrack,
+    TimeSpent,
+    Pathing,
+    Performance
   };
 
   if (typeof module !== "undefined") {
@@ -564,4 +565,4 @@
   }
 
   // }}}
-})();
+}))();

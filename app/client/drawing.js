@@ -13,7 +13,7 @@ function toggler(e) {
 toggler = _.throttle(toggler, 100);
 
 $("html").keyup(toggler);
-$(window).on("message", function(msg) {
+$(window).on("message", msg => {
   if (msg.originalEvent.data == "tilde") {
     module.exports.hide();
   }
@@ -22,7 +22,7 @@ $(window).on("message", function(msg) {
 
 function maybehideframe() {
   clearTimeout(clearFrameTimer);
-  clearFrameTimer = setTimeout(function() {
+  clearFrameTimer = setTimeout(() => {
     if (showing) {
       return;
     }
@@ -48,7 +48,7 @@ function checkInstall() {
 
 }
 module.exports = {
-  install: function() {
+  install() {
     if (!iframe) {
 
       iframe = $("<iframe id='gtgkthx' />");
@@ -94,14 +94,14 @@ module.exports = {
     }
 
   },
-  show: function() {
+  show() {
     showing = true;
     checkInstall();
     iframe.fadeIn();
     iframe.focus();
 
   },
-  hide: function() {
+  hide() {
     showing = false;
     checkInstall();
     iframe.fadeOut();
@@ -109,7 +109,7 @@ module.exports = {
 
     maybehideframe();
   },
-  toggle: function() {
+  toggle() {
     checkInstall();
     showing = !showing;
 

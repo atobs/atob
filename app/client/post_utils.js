@@ -1,7 +1,7 @@
 require("app/client/cordova");
 
 module.exports = {
-  update_post: function(post_id, text) {
+  update_post(post_id, text) {
     var replyEl = $("#reply" + post_id).children("small.text");
     if (!text) {
       replyEl.parent().fadeOut();
@@ -12,7 +12,7 @@ module.exports = {
       return;
     }
 
-    require("app/client/text", function(formatter) {
+    require("app/client/text", formatter => {
       var replyContainer = $("<div />");
 
       // Update our in memory text for this post
@@ -23,7 +23,7 @@ module.exports = {
 
       replyEl.data("text", text);
 
-      replyEl.fadeOut(1000, function() {
+      replyEl.fadeOut(1000, () => {
         replyEl.empty();
         replyEl.text(text);
         formatter.format_text(replyEl);
@@ -31,12 +31,12 @@ module.exports = {
       });
     });
   },
-  freshen_links: function(post_id, links) {
+  freshen_links(post_id, links) {
     var post = window._POSTS && window._POSTS[post_id];
-    SF.do_when(post, 'post' + post_id, function() {
+    SF.do_when(post, 'post' + post_id, () => {
       var postEl = $(".post[data-post-id=" + post_id + "]");
 
-      _.each(links, function(link) {
+      _.each(links, link => {
         var textEl;
         if (link.post_id === post_id) {
           // Look for the link in postEls .op.text
@@ -53,15 +53,15 @@ module.exports = {
           var title = $this.data('text');
 
           if (href === link.href && title === link.title) {
-            setTimeout(function() {
-              $this.fadeOut(function() {
+            setTimeout(() => {
+              $this.fadeOut(() => {
                 $this.addClass('icon-arrow-up upboat');
                 $this.removeClass('icon-coffee');
                 $this.fadeIn();
               });
             }, link.remaining);
 
-            $this.fadeOut(function() {
+            $this.fadeOut(() => {
               $this.removeClass('icon-arrow-up');
               $this.removeClass("upboat");
               $this.addClass('icon-coffee');

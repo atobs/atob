@@ -9,7 +9,7 @@ var archive = new Sequelize('database', 'username', 'password', {
 });
 
 module.exports = {
-  up: function(migration, DataTypes, done) {
+  up(migration, DataTypes, done) {
     // add altering commands here, calling 'done' when finished
     var old_migrator = migration.migrator.sequelize;
     migration.migrator.sequelize = archive;
@@ -39,7 +39,7 @@ module.exports = {
     migration.queryInterface.sequelize = old_migrator;
     done();
   },
-  down: function(migration, DataTypes, done) {
+  down(migration, DataTypes, done) {
     // add reverting commands here, calling 'done' when finished
     var old_migrator = migration.migrator.sequelize;
     migration.migrator.sequelize = archive;

@@ -56,7 +56,7 @@ function _notify_user(title, options, post) {
     var notified = window.localStorage.getItem("notif" + post.id);
     if (!notified) {
       window.localStorage.setItem("notif" + post.id, tabOpenTime);
-      setTimeout(function() {
+      setTimeout(() => {
         _notify_user(title, options, post);
       }, 200);
       return;
@@ -75,7 +75,7 @@ function _notify_user(title, options, post) {
     notification = new Notification(title, options);
 
   } else if (Notification.permission != "denied") {
-    Notification.requestPermission(function (status) {
+    Notification.requestPermission(status => {
       if (Notification.permission != status) {
         Notification.permission = status;
       }
@@ -89,11 +89,11 @@ function _notify_user(title, options, post) {
   }
 
   if (notification) {
-    notification.onshow = function () { 
+    notification.onshow = () => { 
       setTimeout(notification.close.bind(notification), 5000); 
     };
 
-    notification.onclick = function () {
+    notification.onclick = () => {
       window.open("/p/" + post.id, "_blank");
     };
 
@@ -101,10 +101,10 @@ function _notify_user(title, options, post) {
       navigator.vibrate(400);
     }
 
-    $(window).on("unload", function() {
+    $(window).on("unload", () => {
       notification.close();
     });
-    $(window).on("beforeunload", function() {
+    $(window).on("beforeunload", () => {
       notification.close();
     });
 
@@ -136,11 +136,11 @@ function notify_user(title, options, post) {
   } else {
     options.className = "success";
     var gotoEl = $("<div class='clearfix'><small class='rfloat' style='text-decoration: underline'>goto</small></div>");
-    gotoEl.find("small").on("click", function() {
+    gotoEl.find("small").on("click", () => {
       SF.controller().goto_post(post.post_id);
     });
     if (!window._POSTS[post.parent_id]) {
-      $.notify({ title: title, msg: options.body, goto: gotoEl, autohideDelay: 7000 } , { style: "notif" });
+      $.notify({ title, msg: options.body, goto: gotoEl, autohideDelay: 7000 } , { style: "notif" });
     }
   }
 
@@ -148,7 +148,7 @@ function notify_user(title, options, post) {
 }
 
 function convert_post_text(post, cb) {
-  require("app/client/text", function(format_text) {
+  require("app/client/text", format_text => {
     var postEl = $("<span />");
     postEl.text(post.text);
 
@@ -162,8 +162,8 @@ function convert_post_text(post, cb) {
 }
 
 function add_notification_handlers(s) {
-  s.on("new_reply", function(reply) {
-    convert_post_text(reply, function(reply) {
+  s.on("new_reply", reply => {
+    convert_post_text(reply, reply => {
       notify_user("new reply on " + reply.parent_id + " (/" + reply.board_id + ")", {
         body: $("<div />").html(reply.formatted_text).text()
       }, reply);
@@ -171,8 +171,8 @@ function add_notification_handlers(s) {
 
   });
 
-  s.on("new_post", function(post) {
-    convert_post_text(post, function(post) {
+  s.on("new_post", post => {
+    convert_post_text(post, post => {
       var title = $("<div />").html(post.title).text();
       var text = $("<div />").html(post.formatted_text).text();
       notify_user("A new post to /" + post.board_id, {
@@ -184,20 +184,20 @@ function add_notification_handlers(s) {
 }
 
 module.exports = {
-  handle_notif: function(msg, type, options) {
+  handle_notif(msg, type, options) {
     options = options || {};
     options.className = type;
     options.position = "top right";
     $.notify(msg, options);
   },
-  subscribe_to_socket: function(s) {
+  subscribe_to_socket(s) {
     add_notification_handlers(s);
   },
-  set_notif_level: function(level) {
+  set_notif_level(level) {
     NOTIFY_WHEN = level;
   },
-  notify_user: notify_user,
-  subscribe: function() {
+  notify_user,
+  subscribe() {
     var s = SF.primus.channel("ctrl_home");
     // setup new_reply and new_post socket handlers
     this.subscribe_to_socket(s);

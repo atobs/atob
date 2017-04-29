@@ -5,7 +5,7 @@ var Action = require_app("models/action");
 
 var Post = require_app("models/post");
 module.exports = {
-  check: function(s, doing, stalked_socket, actortrip, bytrip) {
+  check(s, doing, stalked_socket, actortrip, bytrip) {
     var sid = s.spark.headers.sid;
     var where_clause = {
       actor: actortrip,
@@ -23,7 +23,7 @@ module.exports = {
       where_clause.action = name;
       Action.find({ 
         where: where_clause
-      }).success(function(action) {
+      }).success(action => {
         if (!action) {
           Action.create(where_clause);
         } else {
@@ -39,7 +39,7 @@ module.exports = {
       s.emit("notif", "snoo meets burtle", "success");
 
       if (stalked_socket) {
-        _.each(stalked_socket, function(s) {
+        _.each(stalked_socket, s => {
           s.emit("snooed", { by: sid, sid: doing.anon, tripcode: actortrip });
         });
       }
@@ -54,7 +54,7 @@ module.exports = {
       s.emit("kited", { by: sid, sid: doing.anon, tripcode: actortrip });
 
       if (stalked_socket) {
-        _.each(stalked_socket, function(s) {
+        _.each(stalked_socket, s => {
           s.emit("notif", "you are working towards mutually assured destruction", "error");
           s.emit("kited", { by: sid, sid: doing.anon, tripcode: actortrip });
         });
@@ -72,14 +72,14 @@ module.exports = {
       }
 
       DUCKENINGS[sid] += 1;
-      _.delay(function() {
+      _.delay(() => {
         DUCKENINGS[sid] -= 1;
       }, 30000); 
 
       if (DUCKENINGS[sid] >= _.random(3, MAX_DUCKS)) {
         s.emit("notif", "getting a bit greedy, anon?");
         for (var i = 0; i < _.random(2, 10); i++) {
-          s.emit("duckened", { by: sid, sid: sid, tripcode: actortrip} );
+          s.emit("duckened", { by: sid, sid, tripcode: actortrip} );
         }
         return true;
       }
@@ -87,7 +87,7 @@ module.exports = {
       s.emit("notif", "quack quack qua", "success");
 
       if (stalked_socket) {
-        _.each(stalked_socket, function(s) {
+        _.each(stalked_socket, s => {
           s.emit("duckened", { by: sid, sid: doing.anon, tripcode: actortrip });
         });
       }
@@ -99,7 +99,7 @@ module.exports = {
     if (doing.what === "stalking") {
       do_action("burtled");
 
-      var burtle_post = function(post) {
+      var burtle_post = post => {
         post.dataValues.burtles += 1;
         require_app("server/makeme_store").bump_meter(2);
         post.save();
@@ -117,7 +117,7 @@ module.exports = {
       };
 
       if (doing.post_id !== "chat") {
-        Post.find(doing.post_id).success(function(res) {
+        Post.find(doing.post_id).success(res => {
           if (res.dataValues.parent_id) {
             Post.find(res.dataValues.parent_id).success(burtle_post);
           } else {
@@ -127,7 +127,7 @@ module.exports = {
       }
 
       if (stalked_socket) {
-        _.each(stalked_socket, function(s) {
+        _.each(stalked_socket, s => {
           s.emit("bestalked", { by: sid, sid: doing.anon, tripcode: actortrip });
           s.emit("burtled", doing.post_id);
 

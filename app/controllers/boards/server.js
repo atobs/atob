@@ -35,18 +35,18 @@ module.exports = {
     "/:id" : "show",
   },
 
-  index: function(ctx, api) {
+  index(ctx, api) {
     api.page.render({
       content: "Nothing to see here"
     });
   },
-  show: function(ctx, api) {
+  show(ctx, api) {
     var board_id = ctx.req.params.id;
     this.set_title("atob/" + board_id);
 
     var specials = [ "links", "archives", "gifs", "chat" ];
     var redir;
-    _.each(specials, function(board) {
+    _.each(specials, board => {
       if (board_id === board) {
         ctx.res.redirect("/" + board);
         redir = true;
@@ -82,9 +82,9 @@ module.exports = {
     }
     where.thread_id = null;
 
-    var render_posts = api.page.async(function(flush) {
+    var render_posts = api.page.async(flush => {
       var BoardConfig = require_app("models/board_config");
-      BoardConfig.find({ where: { board_id: board_id }}).success(function(board_config) {
+      BoardConfig.find({ where: { board_id }}).success(board_config => {
         if (!board_config) {
           return;
         }
@@ -95,10 +95,10 @@ module.exports = {
       });
 
       Post.findAll({
-          where: where,
+          where,
           order: order_clause,
-          limit: limit
-      }).success(function(results) {
+          limit
+      }).success(results => {
         if (!results || !results.length) {
           api.bridge.controller("boards", "no_posts");
           return flush();
@@ -107,9 +107,9 @@ module.exports = {
         if (board_id === "to") {
 
           var hidden_boards = require_app("server/hidden_boards");
-          results = _.filter(results, function(r) {
+          results = _.filter(results, r => {
             var is_hidden = false;
-            _.each(hidden_boards, function(board) {
+            _.each(hidden_boards, board => {
               is_hidden = is_hidden || board === r.board_id;
             });
 
@@ -128,25 +128,23 @@ module.exports = {
           results.push(grabbag);
         }
 
-        _.each(results, function(result) {
+        _.each(results, result => {
           var now = Date.now();
-          var async_work = api.page.async(function(flush_post) {
+          var async_work = api.page.async(flush_post => {
             var dataValues = result.dataValues;
 
-            result.getChildren().success(function(children) {
+            result.getChildren().success(children => {
               var post_data = dataValues;
               post_data.post_id = post_data.id;
               delete post_data.id;
-              post_data.replies = _.map(children, function(c) { return c.dataValues; } );
-              post_data.replies = _.sortBy(post_data.replies, function(d) {
-                return d.id;
-              });
+              post_data.replies = _.map(children, c => c.dataValues );
+              post_data.replies = _.sortBy(post_data.replies, d => d.id);
 
               var client_options = _.clone(post_data);
               post_data.client_options = client_options;
               posting.trim_post(client_options);
 
-              post_links.freshen_client(post_data.post_id, children, function() {
+              post_links.freshen_client(post_data.post_id, children, () => {
                 post_data.client_options.threading = true;
                 var postCmp = $C("post", post_data);
                 var text_formatter = require_root("app/client/text");
@@ -170,13 +168,13 @@ module.exports = {
       });
     });
 
-    var render_sinners = api.page.async(function(flush) {
+    var render_sinners = api.page.async(flush => {
       Post.findAll({
         where: {
           board_id: worship_boards.boards
         }
-      }).success(function(results) {
-        var sinners = _.map(results, function(r) { return r.dataValues; });
+      }).success(results => {
+        var sinners = _.map(results, r => r.dataValues);
         api.bridge.call("app/client/sinners", "punish", sinners);
         flush();
       });
@@ -188,10 +186,10 @@ module.exports = {
     var template_str = api.template.render("controllers/boards/show.html.erb", {
       board: board_id,
       tripcode: gen_md5(Math.random()),
-      render_posts: render_posts,
+      render_posts,
       render_recent_chats: chat.render_recent(api),
-      board_slogan: board_slogan,
-      render_sponsored_content: render_sponsored_content,
+      board_slogan,
+      render_sponsored_content,
       new_thread: board_id !== "to"
     });
 
@@ -209,11 +207,11 @@ module.exports = {
 
   },
 
-  socket: function(s) {
+  socket(s) {
     var _board;
 
     var joined = {};
-    s.on("join", function(board) {
+    s.on("join", board => {
       s.board = board;
       if (joined[board]) {
         return;
@@ -235,5 +233,5 @@ module.exports = {
 
   handle_new_reply: posting.handle_new_reply,
   handle_new_post: posting.handle_new_post,
-  BOARD_SLOGANS: BOARD_SLOGANS
+  BOARD_SLOGANS
 };

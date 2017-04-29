@@ -44,12 +44,10 @@ function collect_garbage() {
       thread_id: null,
       parent_id: null
     }
-  }).success(function(posts) {
-    var by_board = _.groupBy(posts, function(b) {
-      return b.board_id;
-    });
+  }).success(posts => {
+    var by_board = _.groupBy(posts, b => b.board_id);
 
-    _.each(by_board, function(val, key) {
+    _.each(by_board, (val, key) => {
       // let's not clean up any hidden boards for now
       if (_.contains(HIDDEN_BOARDS, key)) {
         console.log("SKIPPING BOARD", key, val.length);
@@ -57,19 +55,17 @@ function collect_garbage() {
       }
 
 
-      BoardConfig.find({where: {board_id: key }}).success(function(board_config) {
+      BoardConfig.find({where: {board_id: key }}).success(board_config => {
         if (val.length > MAX_POSTS) {
           console.log("BOARD HAS TOO MANY POSTS", key, val.length);
-          var sorted = _.sortBy(val, function(v) {
-            return -v.bumped_at || -v.updated_at;
-          });
+          var sorted = _.sortBy(val, v => -v.bumped_at || -v.updated_at);
 
           var keep_posts = sorted.slice(0, MAX_POSTS);
           var delete_posts = sorted.slice(MAX_POSTS, sorted.length);
 
           console.log("TO KEEP POSTS", keep_posts.length);
 
-          _.each(delete_posts, function(post) {
+          _.each(delete_posts, post => {
             if (board_config && board_config.getSetting("starred") === post.id) {
               console.log("SAVING STARRED POST", post);
               return;
@@ -82,11 +78,11 @@ function collect_garbage() {
             }
 
             post.destroy();
-            post.getChildren().success(function(children) {
-              console.log("CHILDREN IDS ARE", _.map(children, function(p) { return p.id; }));
+            post.getChildren().success(children => {
+              console.log("CHILDREN IDS ARE", _.map(children, p => p.id));
 
               if (archive) {
-                _.each(children, function(p) {
+                _.each(children, p => {
                   ArchivedPost.findOrCreate({ id: p.id }, p.dataValues);
                 });
               }
@@ -107,7 +103,7 @@ function collect_garbage() {
 }
 
 module.exports = {
-  collect_garbage: collect_garbage
+  collect_garbage
 };
 
 

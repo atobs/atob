@@ -20,7 +20,7 @@ function hide_popovers(e) {
 }
 
 function convert_post_text(post, cb) {
-  require("app/client/text", function(format_text) {
+  require("app/client/text", format_text => {
     var postEl = $("<span />");
     postEl.text(post.text);
 
@@ -36,7 +36,7 @@ function convert_post_text(post, cb) {
 function format_and_show($el) {
   $el.find(".text").each(function() {
     var self = this;
-    require("app/client/text", function(format_text) {
+    require("app/client/text", format_text => {
       format_text.add_upboats(false);
       format_text.add_markdown($(self));
     });
@@ -45,7 +45,7 @@ function format_and_show($el) {
 }
 
 module.exports = {
-  fullpage: function() {
+  fullpage() {
   },
   events: {
     "click .imglink" : "handle_mouseenter_imglink",
@@ -59,7 +59,7 @@ module.exports = {
     "mouseleave .ruleslink" : "handle_mouseleave_ruleslink"
   },
 
-  handle_click_tripcode: function(e) {
+  handle_click_tripcode(e) {
     var target = $(e.target).closest(".tripcode");
     var tripcode = target.data("tripcode");
 
@@ -68,20 +68,20 @@ module.exports = {
     e.stopPropagation();
   },
 
-  handle_composer_toggle: function(e) {
+  handle_composer_toggle(e) {
     console.log("WRITING NEW POST");
     this.$el.find(".new_post").slideToggle();
     this.init_tripcodes();
 
   },
 
-  handle_upboat_link: function(e) {
+  handle_upboat_link(e) {
     var link = $(e.target).closest(".link");
     var arrow = link.find(".upboat");
     var linkId = link.data("linkid");
 
-    SF.socket().emit("upboat", linkId, function() {
-      arrow.fadeOut(function() {
+    SF.socket().emit("upboat", linkId, () => {
+      arrow.fadeOut(() => {
         arrow.html("<span class='icon-heart' />");
         arrow.fadeIn();
 
@@ -89,7 +89,7 @@ module.exports = {
     });
 
   },
-  handle_mouseenter_ruleslink: function(e) {
+  handle_mouseenter_ruleslink(e) {
     e.preventDefault();
     e.stopPropagation();
     hide_popovers(e);
@@ -113,22 +113,22 @@ module.exports = {
          
 
   },
-  handle_mouseleave_ruleslink: function(e) {
+  handle_mouseleave_ruleslink(e) {
     e.preventDefault();
     hide_popovers(e);
 
   },
-  handle_mouseenter_imglink: function(e) {
+  handle_mouseenter_imglink(e) {
     e.stopPropagation();
     e.preventDefault();
     hide_popovers(e);
     var responseEl = $("<div />");
     var img_link = $(e.target).closest(".imglink").attr("href");
 
-    require("app/client/text", function(format_text) {
+    require("app/client/text", format_text => {
       var img_tag = format_text.format_image_link(img_link);
       responseEl.append(img_tag);
-      _.defer(function() { 
+      _.defer(() => { 
         $(e.target).popover({
           html: true,
           content: responseEl.html(),
@@ -141,45 +141,45 @@ module.exports = {
     });
 
   },
-  handle_mouseleave_imglink: function(e) {
+  handle_mouseleave_imglink(e) {
     hide_popovers(e);
   },
 
-  format_text: function() {
+  format_text() {
     require("app/client/text", function(format_text) {
       format_text.add_upboats(false);
       var self = this;
-      $(".text").each(function() {
+      $(".text").each(() => {
           format_text.add_markdown($(self));
       });
     });
   },
-  join_chat: function(id) {
+  join_chat(id) {
     var chat_id = _.keys(window._POSTS)[0];
 
-    SF.socket().on("new_chat", function(reply) {
+    SF.socket().on("new_chat", reply => {
       if (window._POSTS[chat_id]) {
         window._POSTS[chat_id].add_reply(reply);
       }
     });
 
   },
-  show_recent_threads: function() {
+  show_recent_threads() {
     format_and_show($(".threads.recent.hidden"));
   },
-  show_recent_posts: function() {
+  show_recent_posts() {
     format_and_show($(".posts.recent.hidden"));
   },
-  show_recent_links: function() {
+  show_recent_links() {
     format_and_show($(".links.recent.hidden"));
   },
-  gen_tripcodes: function() {
+  gen_tripcodes() {
     $(".tripcode").each(function() {
       tripcode_gen(this);
     });
   },
-  gen_tagcloud: function() {
-    bootloader.require("app/static/vendor/jquery.tagcloud", function() {
+  gen_tagcloud() {
+    bootloader.require("app/static/vendor/jquery.tagcloud", () => {
       $(".tagcloud a").tagcloud({
         color: {start: '#8aa', end: '#aaf'} ,
         size: { start: 2, end: 4, unit: 'em' } 
@@ -193,10 +193,10 @@ module.exports = {
         });
     });
   },
-  socket: function(s) {
+  socket(s) {
 
     notif.subscribe_to_socket(s);
-    s.on("notif", function(msg, type, options) {
+    s.on("notif", (msg, type, options) => {
       notif.handle_notif(msg, type, options);
     });
 
@@ -208,7 +208,7 @@ module.exports = {
 
 
       var self = this;
-      convert_post_text(reply, function(reply) {
+      convert_post_text(reply, reply => {
         reply.text = reply.formatted_text;
         var summarize = require("app/client/summarize");
 
@@ -225,9 +225,9 @@ module.exports = {
     s.on("bestalked", this.be_stalked);
     s.on("stalking", this.be_stalker);
 
-    s.on("new_post", function(post) {
+    s.on("new_post", post => {
 
-      convert_post_text(post, function(post) {
+      convert_post_text(post, post => {
         post.text = post.formatted_text;
         var postParent = $(".threads .post").parent();
         post.id = post.post_id || post.id;

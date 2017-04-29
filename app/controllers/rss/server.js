@@ -17,7 +17,7 @@ var FEED_TIMEOUT = 60 * 1000;
 
 function clear_feed(board) {
   if (!TIMERS[board]) {
-    TIMERS[board] = setTimeout(function() {
+    TIMERS[board] = setTimeout(() => {
       console.log("Clearing feed for board /" + board);
       delete FEEDS[board];
       delete TIMERS[board];
@@ -49,14 +49,14 @@ function refresh_feed(board, cb) {
   if (!FEEDS[board]) {
     Post.findAll({
         order: "bumped_at DESC",
-        where: where,
+        where,
         limit: 20
-    }).success(function(results) {
+    }).success(results => {
       var feed = new RSS({
         title: "atob/" + board
       });
 
-      _.each(results, function(post) {
+      _.each(results, post => {
         if (!post.bumped_at) {
           return;
         }
@@ -91,10 +91,10 @@ module.exports = {
     "/:id" : "index",
   },
 
-  index: function(ctx, api) {
+  index(ctx, api) {
     var board_id = ctx.req.params.id;
 
-    refresh_feed(board_id, function(feed) {
+    refresh_feed(board_id, feed => {
       var hostname = ctx.req.headers.host;
       var xml_data = feed.xml();
       var proto = ctx.req.proto || "https";
@@ -103,5 +103,5 @@ module.exports = {
     });
   },
 
-  socket: function() {}
+  socket() {}
 };

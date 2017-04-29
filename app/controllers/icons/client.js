@@ -4,7 +4,7 @@ module.exports = {
   events: {
 
   },
-  init: function() {
+  init() {
 
   }
 };

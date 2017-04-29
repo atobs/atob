@@ -1,5 +1,5 @@
 module.exports = {
-  up: function(migration, DataTypes, done) {
+  up(migration, DataTypes, done) {
     // add altering commands here, calling 'done' when finished
   migration.createTable('Actions', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -13,7 +13,7 @@ module.exports = {
 
     done();
   },
-  down: function(migration, DataTypes, done) {
+  down(migration, DataTypes, done) {
     // add reverting commands here, calling 'done' when finished
     migration.dropTable('Actions');
     done()

@@ -10,7 +10,7 @@ module.exports = {
     "click .cancel" :  "handle_click_cancel"
   },
 
-  handle_click_save: function() {
+  handle_click_save() {
 
     var triphash = this.$el.find("input[name='triphash']").val();
     var tripname = this.$el.find("input[name='author']").val();
@@ -22,15 +22,15 @@ module.exports = {
     SF.controller().remember_tripcode_forever(tripname, SF.controller().get_tripcode()); 
     SF.socket().emit("try_claim_board", {
       tripcode: triphash,
-      tripname: tripname,
+      tripname,
       reason: desc,
-      board: board
+      board
     });
 
     this.$el.find(".modal").modal("hide");
 
   },
-  handle_click_cancel: function() {
+  handle_click_cancel() {
     this.$el.find(".modal").modal("hide");
 
   }

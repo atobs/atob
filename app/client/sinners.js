@@ -9,7 +9,7 @@ function check_and_replace_trip(el, tripcode) {
 
 }
 module.exports = {
-  poopcode: function(el, tripcode) {
+  poopcode(el, tripcode) {
     var tripcodeEl = $(el);
     var sinner_data = SINNERS[tripcode];
 
@@ -41,16 +41,16 @@ module.exports = {
     });
 
   },
-  punish: function(sinners) {
+  punish(sinners) {
     SINNERS = SINNERS || {};
-    _.each(sinners, function(sinner) {
+    _.each(sinners, sinner => {
       SINNERS[sinner.tripcode] = sinner;
     });
 
     SF.trigger("sinners");
   },
-  check_reply: function(replyEl, tripcode) {
-    SF.do_when(SINNERS, "sinners", function() {
+  check_reply(replyEl, tripcode) {
+    SF.do_when(SINNERS, "sinners", () => {
       if (replyEl.hasClass("tripcode")) {
         check_and_replace_trip($(replyEl)[0], tripcode);
       } else {
@@ -61,7 +61,7 @@ module.exports = {
 
     });
 
-    bootloader.require("app/client/john", function(john) {
+    bootloader.require("app/client/john", john => {
       john(replyEl);
     });
   },

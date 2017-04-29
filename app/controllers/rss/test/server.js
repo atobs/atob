@@ -1,6 +1,6 @@
-describe("A blank test for rss", function() {
-  it("should work", function(done) {
-    SF.controller("rss", function(ctrl) {
+describe("A blank test for rss", () => {
+  it("should work", done => {
+    SF.controller("rss", ctrl => {
       assert.notEqual(ctrl, null);
 
       done();

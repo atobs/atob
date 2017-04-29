@@ -6,7 +6,7 @@ var sidebars = [];
 var contentHandler;
 
 function hide_sidebars() {
-  _.each(sidebars, function(sidebar) {
+  _.each(sidebars, sidebar => {
     sidebar.hide();
     sidebar.data("opened", false);
   });
@@ -41,7 +41,7 @@ function make_sidebar(toggle_selector, content_selector, side) {
 
   var nav_selector = ".navbar_helper .logo";
 
-  $(toggle_selector).on("click", function(e) {
+  $(toggle_selector).on("click", e => {
     console.log("TOGGLE SELECTOR CLICKED");
     e.stopPropagation();
     e.preventDefault();
@@ -56,7 +56,7 @@ function make_sidebar(toggle_selector, content_selector, side) {
       hide_sidebars();
 
 
-      bootloader.require("app/static/vendor/velocity", function() {
+      bootloader.require("app/static/vendor/velocity", () => {
         if (side === "right") {
           sidebar_el.css({
             right: sidebarOffset,
@@ -86,7 +86,7 @@ function make_sidebar(toggle_selector, content_selector, side) {
         if (!contentHandler) {
           contentHandler = true;
 
-          $(".content").one("click.sidebar", function(e) {
+          $(".content").one("click.sidebar", e => {
             console.log("ONE CLICK SIDEBAR");
 
             if ($(e.target).closest(".logo").length) {
@@ -125,7 +125,7 @@ function make_sidebar(toggle_selector, content_selector, side) {
 
       var anim_options = {};
       anim_options[side_name] = sidebarOffset;
-      sidebar_el.velocity(anim_options, function() { });
+      sidebar_el.velocity(anim_options, () => { });
       options[side_name] = "0px";
       options[other_side_name] = "auto";
       $(nav_selector).velocity(options);
@@ -154,7 +154,7 @@ function add_sidebars() {
   var use_sidebars = storage.get("use_sidebars") === "true";
   if (!window._cordovaNative && !use_sidebars) {
     // Just unhide the boardlinks, then
-    _.delay(function() {
+    _.delay(() => {
       $(".boardlinks").fadeIn();
     }, 200);
 
@@ -171,7 +171,7 @@ function add_sidebars() {
 
   $(".toptop").fadeOut();
 
-  bootloader.css("jquery.sidr.light", function() {
+  bootloader.css("jquery.sidr.light", () => {
     if (window._addedSidebars) {
       return;
     }
@@ -183,7 +183,7 @@ function add_sidebars() {
     favorites.set_container(sidebar_events.el);
     favorites.render_favorites();
 
-    sidebar_events.on("opened", function() {
+    sidebar_events.on("opened", () => {
       console.log("RENDERING FAVORITES?");
       favorites.render_favorites();
     });
@@ -193,7 +193,7 @@ function add_sidebars() {
 
     // add benjamin button directly into the sidebar
     sidebar_events = make_sidebar("a.settingslink", ".navbar .settings", "right");
-    sidebar_events.on("opened", function() {
+    sidebar_events.on("opened", () => {
       var tripcodes_button = $("a.tripcode_done");
       tripcodes_button.hide();
 
@@ -214,7 +214,7 @@ function add_sidebars() {
     });
 
 
-    $(".sidr .boardlink").on("click", function() {
+    $(".sidr .boardlink").on("click", () => {
       hide_sidebars();
     });
 
@@ -234,6 +234,6 @@ function add_sidebars() {
 
 
 module.exports = {
-  add_sidebars: add_sidebars
+  add_sidebars
 };
 

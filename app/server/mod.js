@@ -14,11 +14,11 @@ var board_names = require_app("server/board_names");
 var BoardClaim = require_app("models/board_claim");
 
 var OPS = {
-  ban: function(post, hours) {
+  ban(post, hours) {
     hours = parseInt(hours, 10) || 24;
 
     IP.find({where: { post_id: post.id} })
-      .success(function(ip) {
+      .success(ip => {
         if (!ip) {
           return;
         }
@@ -34,19 +34,19 @@ var OPS = {
         Ban.create({
           ip: ip.ip,
           browser: ip.browser,
-          hours: hours,
+          hours,
           board: old_board_id
         });
       });
 
     return true;
   },
-  delete: function(post) {
+  delete(post) {
     post_links.erase_links(post);
     post.destroy();
     return true;
   },
-  accept: function(post) {
+  accept(post) {
     // accept an anon's mod request to become a moderator for a board
     var board_claim = "Anon claims /";
     var board = post.title.replace(board_claim, "");
@@ -58,7 +58,7 @@ var OPS = {
         tripcode: post.tripcode,
         accepted: null
       }
-    }).success(function(claim) {
+    }).success(claim => {
       if (claim) {
         claim.accepted = true;
         claim.save();
@@ -86,8 +86,8 @@ function post_text(result, op) {
 }
 
 module.exports = {
-  OPS: OPS,
-  handle_new_post: function(socket, post) {
+  OPS,
+  handle_new_post(socket, post) {
     if (!post.tripcode || !post.author) {
       return;
     }
@@ -99,7 +99,7 @@ module.exports = {
         tripcode: post.tripcode || "nobod",
         tripname: post.author
       }
-    }).success(function(user) {
+    }).success(user => {
       // Parse response to figure out what to do.
       // Format should be:
       //
@@ -119,7 +119,7 @@ module.exports = {
       Post.find({
         where: {
           id: post_id
-        }}).success(function(p) {
+        }}).success(p => {
           if (!p) {
             socket.emit("notif", "couldn't find post, " + post_id);
             return;
@@ -156,7 +156,7 @@ module.exports = {
 
           post.board_id = board;
 
-          Post.create(post).success(function(p) {
+          Post.create(post).success(p => {
             var boards_controller = load_controller("boards");
             var boards_socket = boards_controller.get_socket();
             p.dataValues.post_id = p.dataValues.id;

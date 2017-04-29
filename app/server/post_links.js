@@ -22,7 +22,7 @@ function find_and_create_links(post) {
   var div = $("<div />").html(post.text || "");
   if (div.text()) {
     CUR_POST = post;
-    marked(div.text(), { renderer: renderer });
+    marked(div.text(), { renderer });
   }
 }
 
@@ -38,13 +38,11 @@ function add_link(href, title, string, is_image) {
 
 
   Link.findAll( { where: {
-    href: href
+    href
     }
   })
-  .success(function(links) {
-    links = _.filter(links, function(link) {
-      return link.post_id === this_post.id;
-    });
+  .success(links => {
+    links = _.filter(links, link => link.post_id === this_post.id);
 
     href = href.trim();
     if (href.indexOf("javascript:") === 0) {
@@ -53,7 +51,7 @@ function add_link(href, title, string, is_image) {
 
     if (!links || !links.length) {
       Link.create({
-        href: href,
+        href,
         title: string,
         ups: 0,
         downs: 0,
@@ -77,15 +75,15 @@ renderer.link = add_link;
 renderer.image = add_image_link;
 
 module.exports = {
-  find_and_create_links: find_and_create_links,
-  erase_links: function(post, cb) {
-    Link.destroy({ post_id: post.id }).success(function() {
+  find_and_create_links,
+  erase_links(post, cb) {
+    Link.destroy({ post_id: post.id }).success(() => {
       if (cb) {
         cb();
       }
     });
   },
-  upvote_link: function(link, cb) {
+  upvote_link(link, cb) {
     if (!link.post_id || !link.href || !link.title) {
       if (cb) { 
         cb();
@@ -97,7 +95,7 @@ module.exports = {
       post_id: link.post_id,
       href: link.href,
       title: link.title
-    }}).success(function(result) {
+    }}).success(result => {
       if (Date.now() - result.updated_at < UPBOAT_TIMEOUT) {
         if (cb) { cb(); }
         return;
@@ -114,27 +112,23 @@ module.exports = {
 
     });
   },
-  freshen_client: function(post_id, children, cb) {
+  freshen_client(post_id, children, cb) {
 
     var UPBOAT_TIMEOUT = 60 * 1000;
-    var post_ids = _.map(children, function(c) { return c.id; });
+    var post_ids = _.map(children, c => c.id);
     post_ids.push(post_id);
 
-    Link.findAll({ where: { post_id: post_ids }}).success(function(links) {
+    Link.findAll({ where: { post_id: post_ids }}).success(links => {
 
-      var fresh_links = _.filter(links, function(l) {
-        return (Date.now() - l.updated_at) < UPBOAT_TIMEOUT;
-      });
+      var fresh_links = _.filter(links, l => (Date.now() - l.updated_at) < UPBOAT_TIMEOUT);
 
-      fresh_links = _.map(fresh_links, function(l) {
-        return {
-          href: l.href,
-          post_id: l.post_id,
-          updated_at: l.updated_at,
-          title: l.title,
-          remaining: UPBOAT_TIMEOUT - (Date.now() - l.updated_at)
-        };
-      });
+      fresh_links = _.map(fresh_links, l => ({
+        href: l.href,
+        post_id: l.post_id,
+        updated_at: l.updated_at,
+        title: l.title,
+        remaining: UPBOAT_TIMEOUT - (Date.now() - l.updated_at)
+      }));
 
       if (fresh_links.length) {
         bridge.call("app/client/post_utils", "freshen_links", post_id, fresh_links);

@@ -4,9 +4,9 @@ module.exports = {
   defaults: {
     content: "default content"
   },
-  initialize: function(options) {
+  initialize(options) {
   },
-  client: function(options) {
+  client(options) {
     function eyeLoop(){
         var randPosX = (Math.floor(Math.random()*100))+120;
         var randPosY = (Math.floor(Math.random()*50))+70;
@@ -16,7 +16,7 @@ module.exports = {
             top: randPosY
         }, {
             duration: 1000,
-            complete: function(){
+            complete() {
                 eyeLoop();
             }
         });

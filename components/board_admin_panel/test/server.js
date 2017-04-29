@@ -6,19 +6,19 @@ test_helper.init();
 var assert = require("assert");
 var component = require_core("server/component");
 
-describe('TEMPLATE', function(){
-  test_helper.setup_server(function() {
-    component.build('TEMPLATE', {}, function(cmp) {
-      describe('#initialize()', function(){
-        it('should initialize the component', function(){
+describe('TEMPLATE', () => {
+  test_helper.setup_server(() => {
+    component.build('TEMPLATE', {}, cmp => {
+      describe('#initialize()', () => {
+        it('should initialize the component', () => {
           assert.notEqual(cmp, null);
         });
       });
     });
 
-    component.build('TEMPLATE', {}, function(cmp) {
-      describe('#client()', function(){
-        it('should initialize the component on the client', function(){
+    component.build('TEMPLATE', {}, cmp => {
+      describe('#client()', () => {
+        it('should initialize the component on the client', () => {
           assert.notEqual(cmp.$el.html(), null);
         });
       });

@@ -1,9 +1,11 @@
 "use strict";
 
 var controller = require_core("server/controller");
+
 // Helpers for serialized form elements
-var value_of = controller.value_of,
-    array_of = controller.array_of;
+var value_of = controller.value_of;
+
+var array_of = controller.array_of;
 
 var Post = require_app("models/post");
 var Action = require_app("models/action");
@@ -12,12 +14,12 @@ var board_utils = require_app("server/board_utils");
 var client_api = require_app("server/client_api");
 
 function make_trips(flush, icon) {
-  return function (results) {
+  return results => {
       var container = $("<div class='container'/>");
       if (results) {
         
         var tripcode_gen = require_app("server/tripcode");
-        _.each(results, function(res) {
+        _.each(results, res => {
           var el = $("<div class='tripcode' />");
           el.attr("data-tripcode", res.forcetrip || res.object);
           el.css({
@@ -55,28 +57,28 @@ module.exports = {
     "/:id" : "show",
   },
 
-  show: function(ctx, api) {
+  show(ctx, api) {
     api.template.add_stylesheet("profile");
 
     api.bridge.call("app/client/sidebar", "add_sidebars");
     var tripcode = ctx.req.params.id;
 
-    var render_about = api.page.async(function(flush) {
+    var render_about = api.page.async(flush => {
       Post.findAll({
         where: {
-          tripcode: tripcode
+          tripcode
 
         }
         
-      }).success(function(results) {
+      }).success(results => {
 
         if (results && results.length) {
-          var post_count = _.filter(results, function(r) { return !r.selectedValues.parent_id; }).length;
-          var reply_count = _.filter(results, function(r) { return r.selectedValues.parent_id; }).length;
-          var first_seen = _.min(results, function(r) { return r.selectedValues.created_at; });
+          var post_count = _.filter(results, r => !r.selectedValues.parent_id).length;
+          var reply_count = _.filter(results, r => r.selectedValues.parent_id).length;
+          var first_seen = _.min(results, r => r.selectedValues.created_at);
           var template_str = api.template.partial("profiles/stats.html.erb", {
-            post_count: post_count,
-            reply_count: reply_count,
+            post_count,
+            reply_count,
             age: new Date(first_seen.created_at).toISOString()
           });
           api.bridge.controller("profiles", "timeago");
@@ -94,14 +96,14 @@ module.exports = {
     
     });
 
-    var render_ships = api.page.async(function(flush) {
+    var render_ships = api.page.async(flush => {
       Action.findAll({where: {
         actor: tripcode,
         action: "burtled"
       }}).success(make_trips(flush, "icon-ghost"));
     });
 
-    var render_burtles = api.page.async(function(flush) {
+    var render_burtles = api.page.async(flush => {
       Action.findAll({where: {
         actor: tripcode,
         action: "sunkship"
@@ -109,12 +111,12 @@ module.exports = {
 
     });
 
-    var render_trophies = api.page.async(function(flush) {
+    var render_trophies = api.page.async(flush => {
       Trophy.findAll({where: {
         anon: tripcode
-      }}).success(function(results) {
+      }}).success(results => {
         // Massage into form for the make_trips function
-        _.each(results, function(r) {
+        _.each(results, r => {
           r.object = r.actor;
           r.actor = r.anon;
           r.action = r.trophy;
@@ -126,16 +128,16 @@ module.exports = {
     api.bridge.controller("profiles", "set_code", tripcode);
 
     var template_str = api.template.render("controllers/profiles/profiles.html.erb", { 
-      tripcode: tripcode,
-      render_about: render_about,
-      render_ships: render_ships,
-      render_burtles: render_burtles,
-      render_trophies: render_trophies
+      tripcode,
+      render_about,
+      render_ships,
+      render_burtles,
+      render_trophies
     });
     api.page.render({ content: template_str, socket: true });
   },
 
-  socket: function(s) {
+  socket(s) {
     client_api.add_to_socket(s); 
   }
 };

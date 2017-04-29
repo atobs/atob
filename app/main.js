@@ -27,7 +27,7 @@ var EventEmitter = require("events").EventEmitter;
 var db_emitter = new EventEmitter();
 
 module.exports = {
-  setup_app: function(app) {
+  setup_app(app) {
     var force_reset = process.env.RESET;
 
     // add in marked and cheerio to our globals
@@ -36,18 +36,18 @@ module.exports = {
     global.md5 = require_app("server/md5");
 
     sequelize.archive.sync({ force: force_reset });
-    sequelize.instance.sync({ force: force_reset }).success(function() {
+    sequelize.instance.sync({ force: force_reset }).success(() => {
       console.log("Synced SQL DB to models");
 
       if (force_reset) {
         var Post = require_app("models/post");
-        Post.create({ board_id: board_names.CHAT, title: "welcome to atob",  }).success(function() { });
+        Post.create({ board_id: board_names.CHAT, title: "welcome to atob",  }).success(() => { });
       }
 
       if (process.env.FAKEDATA) {
         fakedata.generate();
       } else {
-        _.each(config.boards || DEFAULT_BOARDS, function(board) {
+        _.each(config.boards || DEFAULT_BOARDS, board => {
           Board.findOrCreate({
             name: board.code,
             title: board.title
@@ -68,7 +68,7 @@ module.exports = {
     app.use(body_parser.urlencoded({ extended: true }));
     app.use(body_parser.json());
   },
-  setup_request: function(req, res) {
+  setup_request(req, res) {
     if (req.path.indexOf("/pkg") !== 0) {
       console.log("Handling request", req.path, req.query, req.params);
     }
@@ -105,7 +105,7 @@ module.exports = {
     }
 
   },
-  end_request: function(req) {
+  end_request(req) {
     var end = Date.now();
     var diff = end - req.start;
     console.log("Finished request", req.path, "(" +  diff +  "ms)");
@@ -121,18 +121,18 @@ module.exports = {
     }
 
   },
-  setup_context: function(ctx) {
+  setup_context(ctx) {
     ctx.use_fullscreen = true;
   },
-  setup_plugins: function(app) {
+  setup_plugins(app) {
     app.add_plugin_dir("app/plugins/slog");
     app.add_plugin_dir("app/plugins/tester");
   },
-  after_cache: function(app) {
+  after_cache(app) {
     // Setup our 404 handler
     var router = require_core('server/router');
     var context = require_core("server/context");
-    app.use(function(req, res) {
+    app.use((req, res) => {
       var api = router.API;
       var stream = zlib.createGzip();
       stream._flush = zlib.Z_SYNC_FLUSH;
@@ -142,12 +142,12 @@ module.exports = {
       res.set("Content-Encoding", "gzip");
       res.set("Content-Type", "text/html");
       context.create({
-        req: req,
-        res: res,
+        req,
+        res,
         controller: "home",
-        stream: stream
+        stream
 
-      }, function(ctx) {
+      }, ctx => {
         var upeye = $C("upeye", { title: "" });
         var template_str = api.template.partial("home/404.html.erb", {
           render_upeye: upeye.toString
@@ -160,8 +160,8 @@ module.exports = {
 
     });
   },
-  setup_template_context: function(ret) {
+  setup_template_context(ret) {
     ret.$ = require("cheerio");
   },
-  db_emitter: db_emitter
+  db_emitter
 };

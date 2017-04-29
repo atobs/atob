@@ -16,9 +16,7 @@ function get_colors_for_hash(hashed) {
     var red = (color >> 16) & 255;
     var green = (color >> 8) & 255;
     var blue = color & 255;
-    var hex = _.map([red, green, blue], function(c, i) {
-      return padDigits(((c >> 4) * 0x10).toString(16), 2);
-    }).join('');
+    var hex = _.map([red, green, blue], (c, i) => padDigits(((c >> 4) * 0x10).toString(16), 2)).join('');
 
     hexes.push(hex);
   }
@@ -37,7 +35,7 @@ function gen_tripcode(el) {
     var colors = get_colors_for_hash(tripcode);
 
     var div = $(el);
-    _.each(colors, function(color) {
+    _.each(colors, color => {
       var colorDiv = $("<div class='tripcolor' />").css({
         "background-color": "#" + color,
       });
@@ -54,5 +52,5 @@ function gen_tripcode(el) {
 
 
 module.exports = {
-  gen_tripcode: gen_tripcode
+  gen_tripcode
 };

@@ -9,7 +9,7 @@ function Lunicode() {
     // Flip/rotate Text by 180Â°
     
     flip: {
-      init: function() {
+      init() {
                 
         // invert the map
         for (i in this.map) {
@@ -18,10 +18,10 @@ function Lunicode() {
         
       },
       
-      encode: function(text) {
-        var ret = [],
-            ch;
-        
+      encode(text) {
+        var ret = [];
+        var ch;
+
         for (var i = 0, len = text.length; i < len; i++) {
           ch = text.charAt(i);
           
@@ -44,16 +44,16 @@ function Lunicode() {
           
 
 
-        }    
+        }
 
         return ret.reverse().join("");
       },
       
       // same as encode(), for now...
-      decode: function(text) {
-        var ret = [],
-            ch;
-        
+      decode(text) {
+        var ret = [];
+        var ch;
+
         for (var i = 0, len = text.length; i < len; i++) {
           ch = text.charAt(i);
           
@@ -191,7 +191,7 @@ function Lunicode() {
     
     // Mirror text (flip horizontally)
     mirror: {
-      init: function() {
+      init() {
                 
         // invert the map
         for (i in this.map) {
@@ -200,11 +200,11 @@ function Lunicode() {
         
       },
       
-      encode: function(text) {
-        var ret = [],
-            ch,
-            newLines = [];
-        
+      encode(text) {
+        var ret = [];
+        var ch;
+        var newLines = [];
+
         for (var i = 0, len = text.length; i < len; i++) {
           ch = text.charAt(i);
           
@@ -231,16 +231,16 @@ function Lunicode() {
           }
           
   
-        }    
+        }
         newLines.push(ret.reverse().join(""));
         return newLines.join("\n");
       },
       
-      decode: function(text) {
-        var ret = [],
-            ch,
-            newLines = [];
-        
+      decode(text) {
+        var ret = [];
+        var ch;
+        var newLines = [];
+
         for (var i = 0, len = text.length; i < len; i++) {
           ch = text.charAt(i);
           
@@ -265,7 +265,7 @@ function Lunicode() {
             ret.push(ch);
           }
         }
-        
+
         newLines.push(ret.reverse().join(""));
         return newLines.join("\n");
       },
@@ -350,7 +350,7 @@ function Lunicode() {
     // Thanks to Michael S. Kaplan: http://blogs.msdn.com/b/michkap/archive/2006/02/17/533929.aspx
     // Creepify.
     creepify: {
-      init: function() {
+      init() {
         
         // Sort diacritics in top, bottom or middle
 
@@ -411,9 +411,9 @@ function Lunicode() {
 
       },
       
-      encode: function(text) {
-        var newText = '',
-            newChar;
+      encode(text) {
+        var newText = '';
+        var newChar;
         for (i in text) {
           newChar = text[i];
           
@@ -461,10 +461,10 @@ function Lunicode() {
         return newText;
       },
       
-      decode: function(text) {
-        var newText = '',
-            charCode;
-            
+      decode(text) {
+        var newText = '';
+        var charCode;
+
         for (i in text) {
           charCode = text[i].charCodeAt(0);
           if (charCode < 768 || charCode > 865) {
@@ -492,7 +492,7 @@ function Lunicode() {
     // Thanks to
     // - Alan Wood: http://www.alanwood.net/unicode/enclosed_alphanumerics.html
     bubbles: {
-      init: function() {
+      init() {
         
         
         
@@ -519,11 +519,11 @@ function Lunicode() {
         
       },
       
-      encode: function(text) {
-        var ret = "",
-            ch,
-            first = true;
-            
+      encode(text) {
+        var ret = "";
+        var ch;
+        var first = true;
+
         for (i in text) {
           ch = this.map[text[i]];
 
@@ -545,23 +545,23 @@ function Lunicode() {
         return ret;
       },
       
-      decode: function(text) {
-        var ret = "",
-            ch,
-            newRet = '';
-            
+      decode(text) {
+        var ret = "";
+        var ch;
+        var newRet = '';
+
         for (i in text) {
           ch = this.mapInverse[text[i]];
           ret += ((typeof(ch) == "undefined") ? text[i] : ch);
         }
-        
+
         for (i in ret) {
           ch = ret[i].charCodeAt(0);
           if (ch != 160 && ch != 8239 && ch != 8413) {
             newRet += ret[i];
           }
         }
-        
+
         return newRet;
       },
       
@@ -573,13 +573,13 @@ function Lunicode() {
     
     // Puts a Square Combining Character after a letter, thus ensquaring it, squarily.
     squares: {
-      init: function() {},
+      init() {},
       
-      encode: function(text) {
-        var ret = "",
-            ch,
-            first = true;
-            
+      encode(text) {
+        var ret = "";
+        var ch;
+        var first = true;
+
         for (i in text) {
           if (text[i].charCodeAt(0) >= 33) {
             ch = text[i] + String.fromCharCode(8414);
@@ -596,17 +596,17 @@ function Lunicode() {
         return ret;
       },
       
-      decode: function(text) {
-        var ret = "",
-            ch;
-            
+      decode(text) {
+        var ret = "";
+        var ch;
+
         for (i in text) {
           ch = text[i].charCodeAt(0);
           if (ch != 160 && ch != 8239 && ch != 8414) {
             ret += text[i];
           }
         }
-        
+
         return ret;
       }
     },
@@ -614,13 +614,13 @@ function Lunicode() {
     
     // Same as squares, just round.
     roundsquares: {
-      init: function() {},
+      init() {},
       
-      encode: function(text) {
-        var ret = "",
-            ch,
-            first = true;
-            
+      encode(text) {
+        var ret = "";
+        var ch;
+        var first = true;
+
         for (i in text) {
           if (text[i].charCodeAt(0) >= 33) {
             ch = text[i] + String.fromCharCode(8419);
@@ -637,17 +637,17 @@ function Lunicode() {
         return ret;
       },
       
-      decode: function(text) {
-        var ret = "",
-            ch;
-            
+      decode(text) {
+        var ret = "";
+        var ch;
+
         for (i in text) {
           ch = text[i].charCodeAt(0);
           if (ch != 160 && ch != 8239 && ch != 8419) {
             ret += text[i];
           }
         }
-        
+
         return ret;
       }
     },
@@ -655,7 +655,7 @@ function Lunicode() {
     
     // Weird looking alternatives to most characters
     bent: {
-      init: function() {
+      init() {
 
         // invert the map
         for (i in this.map) {
@@ -664,9 +664,9 @@ function Lunicode() {
 
       },
 
-      encode: function(text) {
-        var ret = '',
-            ch;
+      encode(text) {
+        var ret = '';
+        var ch;
 
         for (var i = 0, len = text.length; i < len; i++) {
           ch = this.map[text.charAt(i)];
@@ -675,14 +675,14 @@ function Lunicode() {
           }
           ret +=  ch;
 
-        }    
+        }
 
         return ret;
       },
 
-      decode: function(text) {
-        var ret = '',
-            ch;
+      decode(text) {
+        var ret = '';
+        var ch;
 
         for (var i = 0, len = text.length; i < len; i++) {
           ch = this.map[text.charAt(i)];
@@ -749,14 +749,14 @@ function Lunicode() {
           'Y' : 'Ó‹',
           'Z' : 'É€',
           '0' : 'âŠ˜',
-          '1' : 'í µí¿™',
+          '1' : 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½',
           '2' : 'Ï©',
           '3' : 'Ó ',
           '4' : 'à¥«',
           '5' : 'Æ¼',
           '6' : 'Ï¬',
           '7' : '7',
-          '8' : 'í µí¿ ',
+          '8' : 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½',
           '9' : 'à¥¯',
           '&' : 'â…‹',
           '(' : '{',
@@ -803,7 +803,7 @@ function Lunicode() {
     
     // Tiny Capitals
     tiny: {
-      init: function() {
+      init() {
 
         // invert the map
         for (i in this.map) {
@@ -812,9 +812,9 @@ function Lunicode() {
 
       },
 
-      encode: function(text) {
-        var ret = '',
-            ch;
+      encode(text) {
+        var ret = '';
+        var ch;
         text = text.toUpperCase();
         for (var i = 0, len = text.length; i < len; i++) {
           ch = this.map[text.charAt(i)];
@@ -823,14 +823,14 @@ function Lunicode() {
           }
           ret +=  ch;
 
-        }    
+        }
 
         return ret;
       },
 
-      decode: function(text) {
-        var ret = '',
-            ch;
+      decode(text) {
+        var ret = '';
+        var ch;
 
         for (var i = 0, len = text.length; i < len; i++) {
           ch = this.map[text.charAt(i)];
@@ -891,13 +891,16 @@ function Lunicode() {
   
   
   // Encode every character: U+00A0 -> &#x00a0; etc. 
-  this.getHTML = function(text) {
-    var html = '',
-        ch,
-        lastSpaceWasNonBreaking = true, // for alternating [non-braking] spaces
-        highSurrogate = 0,
-        codepoint = 0;        
-        
+  this.getHTML = text => {
+    var html = '';
+    var ch;
+
+    var // for alternating [non-braking] spaces
+    lastSpaceWasNonBreaking = true;
+
+    var highSurrogate = 0;
+    var codepoint = 0;
+
     for (var i = 0, len = text.length; i < len; i++) {
       ch = text.charCodeAt(i);
       
@@ -948,7 +951,7 @@ function Lunicode() {
 
       }
     }
-    
+
     return html;
   }  
 }
