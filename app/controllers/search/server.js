@@ -1,9 +1,11 @@
 "use strict";
 
 var controller = require_core("server/controller");
+
 // Helpers for serialized form elements
-var value_of = controller.value_of,
-    array_of = controller.array_of;
+var value_of = controller.value_of;
+
+var array_of = controller.array_of;
 
 var escape_html = require("escape-html");
 var Post = require_app("models/post");
@@ -15,10 +17,10 @@ function find_posts(q, cb) {
   var likeq = "%" + escape_html(q) + "%";
 
   Post.findAll({where: [ "(title like ? or text like ?)", likeq, likeq ], limit: 100, order: "ID DESC"})
-    .success(function(results) {
-      results = _.filter(results, function(r) {
+    .success(results => {
+      results = _.filter(results, r => {
         var is_hidden = false;
-        _.each(HIDDEN_BOARDS, function(board) {
+        _.each(HIDDEN_BOARDS, board => {
           is_hidden = is_hidden || board === r.board_id;
         });
         return !is_hidden;
@@ -39,14 +41,14 @@ module.exports = {
     "" : "index",
   },
 
-  index: function(ctx, api) {
+  index(ctx, api) {
     var query = ctx.req.query.q;
-    var render_search_results = api.page.async(function(flush) {
+    var render_search_results = api.page.async(flush => {
       if (query) {
-        find_posts(query, function(posts) {
+        find_posts(query, posts => {
           var div = $("<div />");
           var summarize = require_app("client/summarize");
-          _.each(posts, function(p) {
+          _.each(posts, p => {
             div.append(summarize(p));
           });
 
@@ -58,14 +60,14 @@ module.exports = {
 
     });
 
-    var template_str = api.template.render("controllers/search/search.html.erb", { query: query, render_search_results: render_search_results });
+    var template_str = api.template.render("controllers/search/search.html.erb", { query, render_search_results });
     // maybe load the search query results, too
     api.page.render({ content: template_str, socket: true});
   },
 
-  socket: function(s) {
-    s.on("query", function(q) {
-      find_posts(q, function(results) {
+  socket(s) {
+    s.on("query", q => {
+      find_posts(q, results => {
         s.emit("queryresults", _.last(results, 30), q, Date.now());
 
       });

@@ -18,9 +18,9 @@ var EMOTION_TABLE = {};
 
 
 module.exports = {
-  add_to_socket: function(s) {
+  add_to_socket(s) {
     var prev_sample = null;
-    s.spark.on("data", function(data) {
+    s.spark.on("data", data => {
       if (data.data && data.data[0]) {
         var sample = snorkel_api.Sample("socketrcv");
         var prev_msg = "$";
@@ -38,12 +38,12 @@ module.exports = {
       }
     });
 
-    s.on("samples", function(data, cb) {
+    s.on("samples", (data, cb) => {
       if (data.samples && data.samples.length) {
         console.log("SOCKET RECEIVED", data.samples.length, "SAMPLES");
  
         s.socket.request.ip = s.socket.request.forwarded.ip;
-        _.each(data.samples, function(sample) {
+        _.each(data.samples, sample => {
           snorkel_api.handle_json_sample(sample, s.socket.request);
         });
       }
@@ -51,7 +51,7 @@ module.exports = {
       cb();
     });
 
-    s.on("adminme", function(board, author, tripcode, cb) {
+    s.on("adminme", (board, author, tripcode, cb) => {
       // For now, we assume yes...
       // ADMIN PANEL LETS YOU:
       // submit a claim for the board
@@ -71,8 +71,8 @@ module.exports = {
 
       User.findAll({where: {
         tripname: author,
-        tripcode: tripcode
-      }}).success(function(users) {
+        tripcode
+      }}).success(users => {
         if (users && users.length) {
           cb && cb(true, true);
           found = true;
@@ -86,12 +86,12 @@ module.exports = {
 
         BoardClaim.findAll({ where: {
           board_id: board
-        } }).success(function(claims) {
+        } }).success(claims => {
           var hashtrip = gen_md5(author + ":" + tripcode);
           var isclaimed = false;
           var isowner = false;
 
-          _.each(claims, function(claim) {
+          _.each(claims, claim => {
             claim = claim.dataValues;
             if (claim.accepted) {
               isclaimed = true;
@@ -109,7 +109,7 @@ module.exports = {
 
     });
 
-    s.on("try_claim_board", function(claim) {
+    s.on("try_claim_board", claim => {
       var tripcode = claim.tripcode.trim();
       var tripname = claim.tripname.trim();
       var hashtrip = gen_md5(tripname + ":" + tripcode);
@@ -132,7 +132,7 @@ module.exports = {
           board_id: board,
           accepted: null
         }
-      }).success(function(claims) {
+      }).success(claims => {
         if (!claims.length) {
           BoardClaim.create({
             tripcode: hashtrip,
@@ -161,7 +161,7 @@ module.exports = {
 
     });
 
-    s.on("chats", function(delta, cb) {
+    s.on("chats", (delta, cb) => {
       // Find all posts older than delta ms
       var now = Date.now();
       now -= delta;
@@ -174,16 +174,14 @@ module.exports = {
           board_id: board_names.CHAT,
         },
         limit: 50
-      }).success(function(posts) {
-        posts = _.filter(posts, function(p) {
-          return p.created_at > now;
-        });
+      }).success(posts => {
+        posts = _.filter(posts, p => p.created_at > now);
 
         cb(posts);
       });
     });
 
-    s.on("since", function(delta, cb) {
+    s.on("since", (delta, cb) => {
       // Find all posts older than delta ms
       var now = Date.now();
       now -= delta;
@@ -193,10 +191,10 @@ module.exports = {
       Post.findAll({
         order: "id DESC",
         limit: 100
-      }).success(function(posts) {
-        posts = _.filter(posts, function(p) {
+      }).success(posts => {
+        posts = _.filter(posts, p => {
           var is_hidden = false;
-          _.each(HIDDEN_BOARDS, function(board) {
+          _.each(HIDDEN_BOARDS, board => {
             is_hidden = is_hidden || board === p.board_id;
           });
 
@@ -207,8 +205,8 @@ module.exports = {
       });
     });
 
-    s.on("recent_posts", function(cb) {
-      var after = _.after(2, function() {
+    s.on("recent_posts", cb => {
+      var after = _.after(2, () => {
         cb(ret); 
       });
 
@@ -221,10 +219,10 @@ module.exports = {
         },
         order: "id DESC",
         limit: 100
-      }).success(function(posts) {
-        posts = _.filter(posts, function(p) {
+      }).success(posts => {
+        posts = _.filter(posts, p => {
           var is_hidden = false;
-          _.each(HIDDEN_BOARDS, function(board) {
+          _.each(HIDDEN_BOARDS, board => {
             is_hidden = is_hidden || board === p.board_id;
           });
 
@@ -242,10 +240,10 @@ module.exports = {
         ],
         order: "id DESC",
         limit: 100
-      }).success(function(posts) {
-        posts = _.filter(posts, function(p) {
+      }).success(posts => {
+        posts = _.filter(posts, p => {
           var is_hidden = false;
-          _.each(HIDDEN_BOARDS, function(board) {
+          _.each(HIDDEN_BOARDS, board => {
             is_hidden = is_hidden || board === p.board_id;
           });
 
@@ -259,10 +257,10 @@ module.exports = {
 
     });
 
-    s.on("get_post_only", function(post_id, cb) {
+    s.on("get_post_only", (post_id, cb) => {
       Post.find({
           where: { id: post_id }
-      }).success(function(result) {
+      }).success(result => {
         if (result) {
           posting.trim_post(result);
         }
@@ -275,21 +273,19 @@ module.exports = {
 
     });
 
-    s.on("get_post", function(post_id, cb) {   
+    s.on("get_post", (post_id, cb) => {   
       console.log("Handling API get_post on", post_id);
       Post.find({
           where: { id: post_id },
           include: [
             { model: Post, as: "Children" }
           ]
-      }).success(function(result) {
+      }).success(result => {
         var post_data = result.dataValues;
         if (result) {
           posting.trim_post(result);
-          result.replies = _.map(result.children, function(c) { return c.dataValues; } );
-          result.replies = _.sortBy(result.replies, function(d) {
-            return new Date(d.created_at);
-          });
+          result.replies = _.map(result.children, c => c.dataValues );
+          result.replies = _.sortBy(result.replies, d => new Date(d.created_at));
         }
 
         if (post_data.parent_id) {
@@ -298,14 +294,12 @@ module.exports = {
             include: [
               {model: Post, as: "Children" },
             ]
-          }).success(function(parent) {
+          }).success(parent => {
             if (!parent) {
               cb(result);
             } else {
-              parent.replies = _.map(parent.children, function(c) { return c.dataValues; } );
-              parent.replies = _.sortBy(parent.replies, function(d) {
-                return new Date(d.created_at);
-              });
+              parent.replies = _.map(parent.children, c => c.dataValues );
+              parent.replies = _.sortBy(parent.replies, d => new Date(d.created_at));
 
               posting.trim_post(parent);
               cb(parent);
@@ -321,15 +315,13 @@ module.exports = {
 
     });
 
-    s.on("get_trophies", function(tripcode, cb) {
-      Trophy.findAll({where: { anon: tripcode }}).success(function(results) {
-        cb(_.map(results, function(r) {
-          return r.dataValues.trophy.replace(/:/g, "");
-        }));
+    s.on("get_trophies", (tripcode, cb) => {
+      Trophy.findAll({where: { anon: tripcode }}).success(results => {
+        cb(_.map(results, r => r.dataValues.trophy.replace(/:/g, "")));
       });
     });
 
-    s.on("get_emotions", function(tripcode, cb) {
+    s.on("get_emotions", (tripcode, cb) => {
 
       if (EMOTION_TABLE[tripcode]) {
         cb && cb(EMOTION_TABLE[tripcode]);
@@ -340,9 +332,9 @@ module.exports = {
 
       Post.findAll({
         where: {
-          tripcode: tripcode
+          tripcode
         }
-      }).success(function(results) {
+      }).success(results => {
         var then = Date.now();
         if (results && results.length) {
           var sentiment = require("sentiment");
@@ -350,7 +342,7 @@ module.exports = {
           var polarities = [];
           var subjectivities = [];
 
-          _.each(results, function(r) {
+          _.each(results, r => {
             if (!r.text) {
               return;
             }
@@ -360,8 +352,8 @@ module.exports = {
             subjectivities.push(e.comparative);
           });
 
-          var avg_p = _.reduce(polarities, function(m, o) { return m + o; }, 0) / polarities.length;
-          var avg_s = _.reduce(subjectivities, function(m, o) { return m + o; }, 0) / subjectivities.length;
+          var avg_p = _.reduce(polarities, (m, o) => m + o, 0) / polarities.length;
+          var avg_s = _.reduce(subjectivities, (m, o) => m + o, 0) / subjectivities.length;
           var done = Date.now();
           
           var emotions = {
@@ -371,7 +363,7 @@ module.exports = {
           };
 
           EMOTION_TABLE[tripcode] = emotions;
-          _.delay(function() {
+          _.delay(() => {
             delete EMOTION_TABLE[tripcode];
           }, 60 * 1000);
 
@@ -380,7 +372,7 @@ module.exports = {
       });
     });
 
-    s.on("list_posts", function(board_id, cb) {
+    s.on("list_posts", (board_id, cb) => {
       console.log("Handling API list_posts on", board_id);
       var board_id_clause = board_id;
       var limit = 30;
@@ -399,19 +391,19 @@ module.exports = {
       }
       where.thread_id = null;
         Post.findAll({
-            where: where,
+            where,
             order: order_clause,
-            limit: limit
-        }).success(function(results) {
+            limit
+        }).success(results => {
           if (!results || !results.length) {
             return cb();
           }
 
           if (board_id === "to") {
             
-            results = _.filter(results, function(r) { 
+            results = _.filter(results, r => { 
               var is_hidden = false;
-              _.each(HIDDEN_BOARDS, function(board) {
+              _.each(HIDDEN_BOARDS, board => {
                 is_hidden = is_hidden || board === r.board_id;
               });
 
@@ -429,19 +421,19 @@ module.exports = {
           }
 
           var ret = [];
-          var counter = _.after(results.length, function() {
+          var counter = _.after(results.length, () => {
             cb(ret);
           });
 
-          _.each(results, function(result) {
+          _.each(results, result => {
             var dataValues = result.dataValues;
             posting.trim_post(result);
-            result.getChildren().success(function(children) {
+            result.getChildren().success(children => {
               var post_data = dataValues;
               post_data.post_id = post_data.id;
               delete post_data.id;
-              post_data.replies = _.map(children, function(c) { return c.dataValues; } );
-              post_data.replies = _.sortBy(post_data.replies, function(d) {
+              post_data.replies = _.map(children, c => c.dataValues );
+              post_data.replies = _.sortBy(post_data.replies, d => {
                 posting.trim_post(d);
                 return d.id;
               });

@@ -3,7 +3,7 @@ var Sequelize = require("sequelize");
 var archive = new Sequelize('database', 'username', 'password', {
   dialect: 'sqlite',
   storage: 'ab.sqlite',
-  logging: function() { },
+  logging() { },
   define: {
     sync: { force: true },
     underscored: true
@@ -13,7 +13,7 @@ var archive = new Sequelize('database', 'username', 'password', {
 var sequelize = new Sequelize('database', 'username', 'password', {
   dialect: 'sqlite',
   storage: 'db.sqlite',
-  logging: function() { },
+  logging() { },
   define: {
     sync: { force: true },
     underscored: true
@@ -41,7 +41,7 @@ if (process.env.RESET) {
 
   console.log("LOADING ALL MODELS BECAUSE OF FIRST RUN");
 
-  _.each(paths, function(path) {
+  _.each(paths, path => {
     try {
       require_app("models/" + path.replace(/\.js/g, ''));
 

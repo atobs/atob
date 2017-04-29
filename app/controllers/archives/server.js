@@ -11,14 +11,14 @@ module.exports = {
     "/:id" : "get",
   },
 
-  get: function(ctx, api) {
+  get(ctx, api) {
     this.set_title("atob");
     api.template.add_stylesheet("post");
     api.template.add_stylesheet("archive");
 
     var board_utils = require_app("server/board_utils");
     var render_boards = board_utils.render_boards();
-    var render_post = api.page.async(function(flush) {
+    var render_post = api.page.async(flush => {
       function render_posting(result, highlight_id) {
         var post_data = result.dataValues;
         post_data = result.dataValues;
@@ -28,10 +28,8 @@ module.exports = {
         post_data.collapsed = false;
         delete post_data.id;
 
-        post_data.replies = _.map(result.children, function(c) { return c.dataValues; } );
-        post_data.replies = _.sortBy(post_data.replies, function(d) {
-          return new Date(d.created_at);
-        });
+        post_data.replies = _.map(result.children, c => c.dataValues );
+        post_data.replies = _.sortBy(post_data.replies, d => new Date(d.created_at));
 
         post_data.client_options = _.clone(post_data);
         post_data.archived = true;
@@ -50,7 +48,7 @@ module.exports = {
           include: [
             {model: ArchivedPost, as: "Children" },
           ]})
-        .success(function(result) {
+        .success(result => {
           if (!result) { 
             var upeye = $C("upeye", { title: "something's not right here..."});
             return flush(upeye.toString());
@@ -65,7 +63,7 @@ module.exports = {
               include: [
                 {model: ArchivedPost, as: "Children" },
               ]
-            }).success(function(parent) {
+            }).success(parent => {
               if (!parent) {
                 render_posting(result);
               } else {
@@ -82,9 +80,9 @@ module.exports = {
     });
 
     var template_str = api.template.render("controllers/posts/show.html.erb", 
-      { render_post: render_post, render_boards: render_boards, tripcode: gen_md5(Math.random()) });
+      { render_post, render_boards, tripcode: gen_md5(Math.random()) });
     api.page.render({ content: template_str, socket: true });
   },
 
-  socket: function() {}
+  socket() {}
 };

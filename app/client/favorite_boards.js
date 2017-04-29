@@ -24,21 +24,19 @@ var board_id_set = false;
 
 
 module.exports = {
-  set_container: function(el) {
+  set_container(el) {
     CONTAINER = el;
   },
-  edit_favorites: function(el) {
+  edit_favorites(el) {
     var div = $("#favorite_boards .col-md-12");
     if (!EDITING) {
       EDITING = true;
       div.find(".favorite_board").prepend('<span class="drag-handle">☰</span>');
 
-      bootloader.require("app/static/vendor/Sortable", function() {
+      bootloader.require("app/static/vendor/Sortable", () => {
         SORTABLE = Sortable.create(div[0], {
-          onUpdate: function() {
-            var favs = _.map(div.find("li"), function(f) {
-              return $(f).data("board_id");
-            });
+          onUpdate() {
+            var favs = _.map(div.find("li"), f => $(f).data("board_id"));
 
             favs = _.intersection(favs, FAVORITES);
 
@@ -63,7 +61,7 @@ module.exports = {
 
 
   },
-  add_favorite: function(board, starEl) {
+  add_favorite(board, starEl) {
     if (starEl) {
       starEl.removeClass("icon-star-empty").addClass("icon-star");
     }
@@ -81,7 +79,7 @@ module.exports = {
 
     storage.set("favorite_boards", JSON.stringify(FAVORITES));
   },
-  del_favorite: function(board, starEl) {
+  del_favorite(board, starEl) {
     if (starEl) {
       starEl.removeClass("icon-star").addClass("icon-star-empty");
     }
@@ -94,7 +92,7 @@ module.exports = {
     storage.set("favorite_boards", JSON.stringify(FAVORITES));
 
   },
-  really_render_favorites: function(div) {
+  really_render_favorites(div) {
     div.addClass("clearfix");
 
     var board_id = SF.controller().board;
@@ -137,7 +135,7 @@ module.exports = {
         top: 5,
         right: 5
       });
-      delFavEl.on("click", function(e) {
+      delFavEl.on("click", e => {
         if (temp) {
           module.exports.add_favorite(f, delFavEl);
 
@@ -151,11 +149,11 @@ module.exports = {
 
       favEl.data("board_id", f);
       favEl.append(delFavEl);
-      favEl.on("click", function() {
+      favEl.on("click", () => {
         favEl.velocity({
           opacity: 0.2
         }, {
-          complete: function() {
+          complete() {
             window.location = "/b/" + f;
           }
         });
@@ -166,11 +164,11 @@ module.exports = {
       return div;
     }
 
-    _.each(FAVORITES, function(f) {
+    _.each(FAVORITES, f => {
       build_board_tile(f);
     });
 
-    _.each(TEMP_FAVORITES, function(f) {
+    _.each(TEMP_FAVORITES, f => {
       build_board_tile(f, true);
     });
 
@@ -199,7 +197,7 @@ module.exports = {
     div.parent().append(arrangeWrapper);
     
 
-    rearrangeEl.on("click", function() {
+    rearrangeEl.on("click", () => {
       module.exports.edit_favorites(rearrangeEl);
 
     });
@@ -207,7 +205,7 @@ module.exports = {
 
 
   },
-  render_favorites: function() {
+  render_favorites() {
     $("#favorite_boards").remove();
 
     var wrapper = $("<div id='favorite_boards' class='ptl'> </div>");
@@ -216,7 +214,7 @@ module.exports = {
     wrapper.append(div);
 
     if (!board_id_set) {
-      SF.on("set_board", function() {
+      SF.on("set_board", () => {
         module.exports.really_render_favorites(div);
       });
       board_id_set = true;
@@ -235,7 +233,7 @@ module.exports = {
 
 
   },
-  get: function() {
+  get() {
     load_favorites();
     return FAVORITES;
   }

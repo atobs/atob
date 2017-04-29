@@ -4,15 +4,15 @@ var HIDDEN_BOARDS = require_app("server/hidden_boards");
 
 var POCKET_RE = /:hand-right:\s*(:[\w-]*:\s*)+(?:\(.?\(\s*)?&gt;&gt;\s*(\d*)/;
 module.exports = {
-  find_and_create_items: function(post) {
+  find_and_create_items(post) {
     if (post.dataValues) {
       post = post.dataValues;
     }
 
     var post_id = post.post_id || post.id;
     if (post_id) {
-      Trophy.findAll({where: { anon_id: post_id }}).success(function (results) {
-        _.each(results, function(r) { r.destroy(); }); 
+      Trophy.findAll({where: { anon_id: post_id }}).success(results => {
+        _.each(results, r => { r.destroy(); }); 
       });
     }
 
@@ -44,7 +44,7 @@ module.exports = {
       var trophy = trophies[trophies.length - 1 - index];
       console.log("Adding trophy", trophy, "in post", parent_id);
 
-      Post.find({ where: { id: trophy[1] }, order: "id ASC"}).success(function(pocket_post) {
+      Post.find({ where: { id: trophy[1] }, order: "id ASC"}).success(pocket_post => {
         if (pocket_post) {
           // we found a post, therefore we can make this action!
           Trophy.create({

@@ -35,9 +35,9 @@ var actions = {
 };
 
 module.exports = {
-  check: function(targetEl, anon_id, tripcode) {
+  check(targetEl, anon_id, tripcode) {
     var ret = false;
-    _.each(actions, function(action, index) {
+    _.each(actions, (action, index) => {
       if (targetEl.hasClass("icon-" + index)) {
         SF.socket().emit("stalking", {
           what: action,
@@ -54,5 +54,5 @@ module.exports = {
 
     return ret;
   },
-  get_anonicator_for: get_anonicator_for
+  get_anonicator_for
 };

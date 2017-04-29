@@ -9,11 +9,11 @@ migrations["apostles"] =  "_apostles";
 
 
 module.exports = {
-  run: function() {
+  run() {
     var Post = require_app("models/post");
-    _.each(migrations, function(new_board, old_board) {
-      Post.findAll({where: {board_id: old_board }}).success(function(results) {
-        _.each(results, function(r) {
+    _.each(migrations, (new_board, old_board) => {
+      Post.findAll({where: {board_id: old_board }}).success(results => {
+        _.each(results, r => {
           r.board_id = new_board;
           r.save();
         });
@@ -28,7 +28,7 @@ module.exports = {
         WORSHIP_BOARDS.push(new_board);
       }
 
-      _.each(BOARDS, function(name, key){
+      _.each(BOARDS, (name, key) => {
         if (migrations[name]) {
           if (BOARDS[key]) {
             BOARDS[key] = migrations[name];

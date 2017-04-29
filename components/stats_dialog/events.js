@@ -9,7 +9,7 @@ module.exports = {
     "click" :  "handle_template_click"
   },
 
-  handle_template_click: function() {
+  handle_template_click() {
     console.log(this.id, "clicked");
   }
 };

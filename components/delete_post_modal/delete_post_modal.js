@@ -6,16 +6,16 @@ module.exports = {
   defaults: {
     content: "default content"
   },
-  show: function() {
+  show() {
     this.$el.find(".modal").modal('show');
   },
-  hide: function() {
+  hide() {
     this.$el.find(".modal").modal('hide');
   },
-  initialize: function(options) {
+  initialize(options) {
     this.reply_id = options.reply_id;
   },
-  client: function(options) {
+  client(options) {
     this.$el.find(".modal").modal();
 
     if (!window._REPLIES) {
@@ -40,7 +40,7 @@ module.exports = {
 
     var board = SF.controller().board;
 
-    SF.controller().emit("adminme", board, author, tripcode, function(isclaimed, isowner) {
+    SF.controller().emit("adminme", board, author, tripcode, (isclaimed, isowner) => {
       if (isowner) {
         self.$el.find(".reportable, .editable").hide();
         self.$el.find(".deletable").css("display", "inline-block").show();

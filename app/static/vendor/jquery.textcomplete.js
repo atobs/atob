@@ -10,10 +10,10 @@ if (typeof jQuery === 'undefined') {
   throw new Error('jQuery.textcomplete requires jQuery');
 }
 
-+function ($) {
++($ => {
   'use strict';
 
-  var warn = function (message) {
+  var warn = message => {
     if (console.warn) { console.warn(message); }
   };
 
@@ -29,12 +29,12 @@ if (typeof jQuery === 'undefined') {
       if (typeof strategies === 'string') {
         if (!completer) return;
         args.shift()
-        completer[strategies].apply(completer, args);
+        completer[strategies](...args);
       } else {
         // For backward compatibility.
         // TODO: Remove at v0.4
-        $.each(strategies, function (obj) {
-          $.each(['header', 'footer', 'placement', 'maxCount'], function (name) {
+        $.each(strategies, obj => {
+          $.each(['header', 'footer', 'placement', 'maxCount'], name => {
             if (obj[name]) {
               completer.option[name] = obj[name];
               warn(name + 'as a strategy param is deplicated. Use option.');
@@ -47,9 +47,9 @@ if (typeof jQuery === 'undefined') {
     });
   };
 
-}(jQuery);
+})(jQuery);
 
-+function ($) {
++($ => {
   'use strict';
 
   // Exclusive execution control utility.
@@ -74,8 +74,9 @@ if (typeof jQuery === 'undefined') {
   //   lockedFunc();  // none
   //
   // Returns a wrapped function.
-  var lock = function (func) {
-    var locked, queuedArgsToReplay;
+  var lock = func => {
+    var locked;
+    var queuedArgsToReplay;
 
     return function () {
       // Convert arguments into a real array.
@@ -108,9 +109,7 @@ if (typeof jQuery === 'undefined') {
     };
   };
 
-  var isString = function (obj) {
-    return Object.prototype.toString.call(obj) === '[object String]';
-  };
+  var isString = obj => Object.prototype.toString.call(obj) === '[object String]';
 
   var uniqueId = 0;
 
@@ -131,7 +130,7 @@ if (typeof jQuery === 'undefined') {
     } else {
       // Initialize view objects lazily.
       var self = this;
-      this.$el.one('focus.' + this.id, function () { self.initialize(); });
+      this.$el.one('focus.' + this.id, () => { self.initialize(); });
     }
   }
 
@@ -154,11 +153,12 @@ if (typeof jQuery === 'undefined') {
     // Public methods
     // --------------
 
-    initialize: function () {
+    initialize() {
       var element = this.$el.get(0);
       // Initialize view objects.
       this.dropdown = new $.fn.textcomplete.Dropdown(element, this, this.option);
-      var Adapter, viewName;
+      var Adapter;
+      var viewName;
       if (this.option.adapter) {
         Adapter = this.option.adapter;
       } else {
@@ -172,7 +172,7 @@ if (typeof jQuery === 'undefined') {
       this.adapter = new Adapter(element, this, this.option);
     },
 
-    destroy: function () {
+    destroy() {
       this.$el.off('.' + this.id);
       this.adapter.destroy();
       this.dropdown.destroy();
@@ -180,7 +180,7 @@ if (typeof jQuery === 'undefined') {
     },
 
     // Invoke textcomplete.
-    trigger: function (text, skipUnchangedTerm) {
+    trigger(text, skipUnchangedTerm) {
       if (!this.dropdown) { this.initialize(); }
       text != null || (text = this.adapter.getTextFromHeadToCaret());
       var searchQuery = this._extractSearchQuery(text);
@@ -189,19 +189,19 @@ if (typeof jQuery === 'undefined') {
         // Ignore shift-key, ctrl-key and so on.
         if (skipUnchangedTerm && this._term === term) { return; }
         this._term = term;
-        this._search.apply(this, searchQuery);
+        this._search(...searchQuery);
       } else {
         this._term = null;
         this.dropdown.deactivate();
       }
     },
 
-    fire: function (eventName) {
+    fire(eventName) {
       this.$el.trigger(eventName);
       return this;
     },
 
-    register: function (strategies) {
+    register(strategies) {
       Array.prototype.push.apply(this.strategies, strategies);
     },
 
@@ -210,7 +210,7 @@ if (typeof jQuery === 'undefined') {
     //
     // value    - The selected element of the array callbacked from search func.
     // strategy - The Strategy object.
-    select: function (value, strategy) {
+    select(value, strategy) {
       this.adapter.select(value, strategy);
       this.fire('change').fire('textComplete:select', value, strategy);
       this.adapter.focus();
@@ -229,7 +229,7 @@ if (typeof jQuery === 'undefined') {
     //
     // Returns an array including the strategy, the query term and the match
     // object if the text matches an strategy; otherwise returns an empty array.
-    _extractSearchQuery: function (text) {
+    _extractSearchQuery(text) {
       for (var i = 0; i < this.strategies.length; i++) {
         var strategy = this.strategies[i];
         var context = strategy.context(text);
@@ -245,7 +245,7 @@ if (typeof jQuery === 'undefined') {
     // Call the search method of selected strategy..
     _search: lock(function (free, strategy, term, match) {
       var self = this;
-      strategy.search(term, function (data, stillSearching) {
+      strategy.search(term, (data, stillSearching) => {
         if (!self.dropdown.shown) {
           self.dropdown.activate();
           self.dropdown.setPosition(self.adapter.getCaretPosition());
@@ -270,21 +270,23 @@ if (typeof jQuery === 'undefined') {
     //
     //  this._zip(['a', 'b'], 's');
     //  //=> [{ value: 'a', strategy: 's' }, { value: 'b', strategy: 's' }]
-    _zip: function (data, strategy) {
-      return $.map(data, function (value) {
-        return { value: value, strategy: strategy };
-      });
+    _zip(data, strategy) {
+      return $.map(data, value => ({
+        value,
+        strategy
+      }));
     }
   });
 
   $.fn.textcomplete.Completer = Completer;
-}(jQuery);
+})(jQuery);
 
-+function ($) {
++($ => {
   'use strict';
 
-  var include = function (zippedData, datum) {
-    var i, elem;
+  var include = (zippedData, datum) => {
+    var i;
+    var elem;
     var idProperty = datum.strategy.idProperty
     for (i = 0; i < zippedData.length; i++) {
       elem = zippedData[i];
@@ -299,9 +301,9 @@ if (typeof jQuery === 'undefined') {
   };
 
   var dropdownViews = {};
-  $(document).on('click', function (e) {
+  $(document).on('click', e => {
     var id = e.originalEvent && e.originalEvent.keepTextCompleteDropdown;
-    $.each(dropdownViews, function (key, view) {
+    $.each(dropdownViews, (key, view) => {
       if (key !== id) { view.deactivate(); }
     });
   });
@@ -323,7 +325,7 @@ if (typeof jQuery === 'undefined') {
     if (option.listPosition) { this.setPosition = option.listPosition; }
     if (option.height) { this.$el.height(option.height); }
     var self = this;
-    $.each(['maxCount', 'placement', 'footer', 'header', 'className'], function (_i, name) {
+    $.each(['maxCount', 'placement', 'footer', 'header', 'className'], (_i, name) => {
       if (option[name] != null) { self[name] = option[name]; }
     });
     this._bindEvents(element);
@@ -334,7 +336,7 @@ if (typeof jQuery === 'undefined') {
     // Class methods
     // -------------
 
-    findOrCreateElement: function (option) {
+    findOrCreateElement(option) {
       var $parent = option.appendTo;
       if (!($parent instanceof $)) { $parent = $($parent); }
       var $el = $parent.children('.dropdown-menu')
@@ -369,7 +371,7 @@ if (typeof jQuery === 'undefined') {
     // Public methods
     // --------------
 
-    destroy: function () {
+    destroy() {
       // Don't remove $el because it may be shared by several textcompletes.
       this.deactivate();
 
@@ -380,9 +382,9 @@ if (typeof jQuery === 'undefined') {
       delete dropdownViews[this.id]
     },
 
-    render: function (zippedData) {
+    render(zippedData) {
       var contentsHtml = this._buildContents(zippedData);
-      var unzippedData = $.map(this.data, function (d) { return d.value; });
+      var unzippedData = $.map(this.data, d => d.value);
       if (this.data.length) {
         this._renderHeader(unzippedData);
         this._renderFooter(unzippedData);
@@ -396,19 +398,19 @@ if (typeof jQuery === 'undefined') {
       }
     },
 
-    setPosition: function (position) {
+    setPosition(position) {
       this.$el.css(this._applyPlacement(position));
       return this;
     },
 
-    clear: function () {
+    clear() {
       this.$el.html('');
       this.data = [];
       this._index = 0;
       this._$header = this._$footer = null;
     },
 
-    activate: function () {
+    activate() {
       if (!this.shown) {
         this.clear();
         this.$el.show();
@@ -419,7 +421,7 @@ if (typeof jQuery === 'undefined') {
       return this;
     },
 
-    deactivate: function () {
+    deactivate() {
       if (this.shown) {
         this.$el.hide();
         if (this.className) { this.$el.removeClass(this.className); }
@@ -429,24 +431,24 @@ if (typeof jQuery === 'undefined') {
       return this;
     },
 
-    isUp: function (e) {
+    isUp(e) {
       return e.keyCode === 38 || (e.ctrlKey && e.keyCode === 80);  // UP, Ctrl-P
     },
 
-    isDown: function (e) {
+    isDown(e) {
       return e.keyCode === 40 || (e.ctrlKey && e.keyCode === 78);  // DOWN, Ctrl-N
     },
 
-    isEnter: function (e) {
+    isEnter(e) {
       var modifiers = e.ctrlKey || e.altKey || e.metaKey || e.shiftKey;
       return !modifiers && (e.keyCode === 13 || e.keyCode === 9)  // ENTER, TAB
     },
 
-    isPageup: function (e) {
+    isPageup(e) {
       return e.keyCode === 33;  // PAGEUP
     },
 
-    isPagedown: function (e) {
+    isPagedown(e) {
       return e.keyCode === 34;  // PAGEDOWN
     },
 
@@ -461,13 +463,13 @@ if (typeof jQuery === 'undefined') {
     // Private methods
     // ---------------
 
-    _bindEvents: function () {
+    _bindEvents() {
       this.$el.on('mousedown.' + this.id, '.textcomplete-item', $.proxy(this._onClick, this))
       this.$el.on('mouseover.' + this.id, '.textcomplete-item', $.proxy(this._onMouseover, this));
       this.$inputEl.on('keydown.' + this.id, $.proxy(this._onKeydown, this));
     },
 
-    _onClick: function (e) {
+    _onClick(e) {
       var $el = $(e.target);
       e.preventDefault();
       e.originalEvent.keepTextCompleteDropdown = this.id;
@@ -479,11 +481,11 @@ if (typeof jQuery === 'undefined') {
       var self = this;
       // Deactive at next tick to allow other event handlers to know whether
       // the dropdown has been shown or not.
-      setTimeout(function () { self.deactivate(); }, 0);
+      setTimeout(() => { self.deactivate(); }, 0);
     },
 
     // Activate hovered item.
-    _onMouseover: function (e) {
+    _onMouseover(e) {
       var $el = $(e.target);
       e.preventDefault();
       if (!$el.hasClass('textcomplete-item')) {
@@ -493,7 +495,7 @@ if (typeof jQuery === 'undefined') {
       this._activateIndexedItem();
     },
 
-    _onKeydown: function (e) {
+    _onKeydown(e) {
       if (!this.shown) { return; }
       if (this.isUp(e)) {
         e.preventDefault();
@@ -513,7 +515,7 @@ if (typeof jQuery === 'undefined') {
       }
     },
 
-    _up: function () {
+    _up() {
       if (this._index === 0) {
         this._index = this.data.length - 1;
       } else {
@@ -523,7 +525,7 @@ if (typeof jQuery === 'undefined') {
       this._setScroll();
     },
 
-    _down: function () {
+    _down() {
       if (this._index === this.data.length - 1) {
         this._index = 0;
       } else {
@@ -533,13 +535,13 @@ if (typeof jQuery === 'undefined') {
       this._setScroll();
     },
 
-    _enter: function () {
+    _enter() {
       var datum = this.data[parseInt(this._getActiveElement().data('index'), 10)];
       this.completer.select(datum.value, datum.strategy);
       this._setScroll();
     },
 
-    _pageup: function () {
+    _pageup() {
       var target = 0;
       var threshold = this._getActiveElement().position().top - this.$el.innerHeight();
       this.$el.children().each(function (i) {
@@ -553,7 +555,7 @@ if (typeof jQuery === 'undefined') {
       this._setScroll();
     },
 
-    _pagedown: function () {
+    _pagedown() {
       var target = this.data.length - 1;
       var threshold = this._getActiveElement().position().top + this.$el.innerHeight();
       this.$el.children().each(function (i) {
@@ -567,16 +569,16 @@ if (typeof jQuery === 'undefined') {
       this._setScroll();
     },
 
-    _activateIndexedItem: function () {
+    _activateIndexedItem() {
       this.$el.find('.textcomplete-item.active').removeClass('active');
       this._getActiveElement().addClass('active');
     },
 
-    _getActiveElement: function () {
+    _getActiveElement() {
       return this.$el.children('.textcomplete-item:nth(' + this._index + ')');
     },
 
-    _setScroll: function () {
+    _setScroll() {
       var $activeEl = this._getActiveElement();
       var itemTop = $activeEl.position().top;
       var itemHeight = $activeEl.outerHeight();
@@ -589,8 +591,10 @@ if (typeof jQuery === 'undefined') {
       }
     },
 
-    _buildContents: function (zippedData) {
-      var datum, i, index;
+    _buildContents(zippedData) {
+      var datum;
+      var i;
+      var index;
       var html = '';
       for (i = 0; i < zippedData.length; i++) {
         if (this.data.length === this.maxCount) break;
@@ -605,7 +609,7 @@ if (typeof jQuery === 'undefined') {
       return html;
     },
 
-    _renderHeader: function (unzippedData) {
+    _renderHeader(unzippedData) {
       if (this.header) {
         if (!this._$header) {
           this._$header = $('<li class="textcomplete-header"></li>').prependTo(this.$el);
@@ -615,7 +619,7 @@ if (typeof jQuery === 'undefined') {
       }
     },
 
-    _renderFooter: function (unzippedData) {
+    _renderFooter(unzippedData) {
       if (this.footer) {
         if (!this._$footer) {
           this._$footer = $('<li class="textcomplete-footer"></li>').appendTo(this.$el);
@@ -625,7 +629,7 @@ if (typeof jQuery === 'undefined') {
       }
     },
 
-    _renderContents: function (html) {
+    _renderContents(html) {
       if (this._$footer) {
         this._$footer.before(html);
       } else {
@@ -633,7 +637,7 @@ if (typeof jQuery === 'undefined') {
       }
     },
 
-    _applyPlacement: function (position) { 
+    _applyPlacement(position) { 
       // If the 'placement' option set to 'top', move the position above the element.
       if (this.placement.indexOf('top') !== -1) {
         // Overwrite the position object to set the 'bottom' property instead of the top.
@@ -657,13 +661,13 @@ if (typeof jQuery === 'undefined') {
   });
 
   $.fn.textcomplete.Dropdown = Dropdown;
-}(jQuery);
+})(jQuery);
 
-+function ($) {
++($ => {
   'use strict';
 
   // Memoize a search function.
-  var memoize = function (func) {
+  var memoize = func => {
     var memo = {};
     return function (term, callback) {
       if (memo[term]) {
@@ -671,7 +675,7 @@ if (typeof jQuery === 'undefined') {
       } else {
         func.call(this, term, function (data) {
           memo[term] = (memo[term] || []).concat(data);
-          callback.apply(null, arguments);
+          callback(...arguments);
         });
       }
     };
@@ -682,11 +686,7 @@ if (typeof jQuery === 'undefined') {
     if (this.cache) { this.search = memoize(this.search); }
   }
 
-  Strategy.parse = function (optionsArray) {
-    return $.map(optionsArray, function (options) {
-      return new Strategy(options);
-    });
-  };
+  Strategy.parse = optionsArray => $.map(optionsArray, options => new Strategy(options));
 
   $.extend(Strategy.prototype, {
     // Public properties
@@ -699,29 +699,33 @@ if (typeof jQuery === 'undefined') {
 
     // Optional
     cache:      false,
-    context:    function () { return true; },
+    context() { return true; },
     index:      2,
-    template:   function (obj) { return obj; },
+    template(obj) { return obj; },
     idProperty: null
   });
 
   $.fn.textcomplete.Strategy = Strategy;
 
-}(jQuery);
+})(jQuery);
 
-+function ($) {
++($ => {
   'use strict';
 
-  var now = Date.now || function () { return new Date().getTime(); };
+  var now = Date.now || (() => new Date().getTime());
 
   // Returns a function, that, as long as it continues to be invoked, will not
   // be triggered. The function will be called after it stops being called for
   // `wait` msec.
   //
   // This utility function was originally implemented at Underscore.js.
-  var debounce = function (func, wait) {
-    var timeout, args, context, timestamp, result;
-    var later = function () {
+  var debounce = (func, wait) => {
+    var timeout;
+    var args;
+    var context;
+    var timestamp;
+    var result;
+    var later = () => {
       var last = now() - timestamp;
       if (last < wait) {
         timeout = setTimeout(later, wait - last);
@@ -758,7 +762,7 @@ if (typeof jQuery === 'undefined') {
     // Public methods
     // --------------
 
-    initialize: function (element, completer, option) {
+    initialize(element, completer, option) {
       this.el        = element;
       this.$el       = $(element);
       this.id        = completer.id + this.constructor.name;
@@ -772,7 +776,7 @@ if (typeof jQuery === 'undefined') {
       this._bindEvents();
     },
 
-    destroy: function () {
+    destroy() {
       this.$el.off('.' + this.id); // Remove all event handlers.
       this.$el = this.el = this.completer = null;
     },
@@ -782,14 +786,14 @@ if (typeof jQuery === 'undefined') {
     // value    - The selected object. It is one of the item of the array
     //            which was callbacked from the search function.
     // strategy - The Strategy associated with the selected value.
-    select: function (/* value, strategy */) {
+    select() /* value, strategy */{
       throw new Error('Not implemented');
     },
 
     // Returns the caret's relative coordinates from body's left top corner.
     //
     // FIXME: Calculate the left top corner of `this.option.appendTo` element.
-    getCaretPosition: function () {
+    getCaretPosition() {
       var position = this._getCaretRelativePosition();
       var offset = this.$el.offset();
       position.top += offset.top;
@@ -798,24 +802,24 @@ if (typeof jQuery === 'undefined') {
     },
 
     // Focus on the element.
-    focus: function () {
+    focus() {
       this.$el.focus();
     },
 
     // Private methods
     // ---------------
 
-    _bindEvents: function () {
+    _bindEvents() {
       this.$el.on('keyup.' + this.id, $.proxy(this._onKeyup, this));
     },
 
-    _onKeyup: function (e) {
+    _onKeyup(e) {
       if (this._skipSearch(e)) { return; }
       this.completer.trigger(this.getTextFromHeadToCaret(), true);
     },
 
     // Suppress searching if it returns true.
-    _skipSearch: function (clickEvent) {
+    _skipSearch(clickEvent) {
       switch (clickEvent.keyCode) {
         case 40: // DOWN
         case 38: // UP
@@ -830,9 +834,9 @@ if (typeof jQuery === 'undefined') {
   });
 
   $.fn.textcomplete.Adapter = Adapter;
-}(jQuery);
+})(jQuery);
 
-+function ($) {
++($ => {
   'use strict';
 
   // Textarea adapter
@@ -863,7 +867,7 @@ if (typeof jQuery === 'undefined') {
     // --------------
 
     // Update the textarea with the given value and strategy.
-    select: function (value, strategy) {
+    select(value, strategy) {
       var pre = this.getTextFromHeadToCaret();
       var post = this.el.value.substring(this.el.selectionEnd);
       var newSubstr = strategy.replace(value);
@@ -887,7 +891,7 @@ if (typeof jQuery === 'undefined') {
     // the textarea's style to the element, then it inserts the text and a
     // span element into the textarea.
     // Consequently, the span element's position is the thing what we want.
-    _getCaretRelativePosition: function () {
+    _getCaretRelativePosition() {
       var dummyDiv = $('<div></div>').css(this._copyCss())
         .text(this.getTextFromHeadToCaret());
       var span = $('<span></span>').text('.').appendTo(dummyDiv);
@@ -899,14 +903,14 @@ if (typeof jQuery === 'undefined') {
       return position;
     },
 
-    _copyCss: function () {
+    _copyCss() {
       return $.extend({
         // Set 'scroll' if a scrollbar is being shown; otherwise 'auto'.
         overflow: this.el.scrollHeight > this.el.offsetHeight ? 'scroll' : 'auto'
       }, Textarea.DIV_PROPERTIES, this._getStyles());
     },
 
-    _getStyles: (function ($) {
+    _getStyles: (($ => {
       var color = $('<div></div>').css(['color']).color;
       if (typeof color !== 'undefined') {
         return function () {
@@ -916,23 +920,23 @@ if (typeof jQuery === 'undefined') {
         return function () {
           var $el = this.$el;
           var styles = {};
-          $.each(Textarea.COPY_PROPERTIES, function (i, property) {
+          $.each(Textarea.COPY_PROPERTIES, (i, property) => {
             styles[property] = $el.css(property);
           });
           return styles;
         };
       }
-    })($),
+    }))($),
 
-    getTextFromHeadToCaret: function () {
+    getTextFromHeadToCaret() {
       return this.el.value.substring(0, this.el.selectionEnd);
     }
   });
 
   $.fn.textcomplete.Textarea = Textarea;
-}(jQuery);
+})(jQuery);
 
-+function ($) {
++($ => {
   'use strict';
 
   var sentinelChar = '吶';
@@ -950,7 +954,7 @@ if (typeof jQuery === 'undefined') {
     // Public methods
     // --------------
 
-    select: function (value, strategy) {
+    select(value, strategy) {
       var pre = this._getTextFromHeadToCaret();
       var post = this.el.value.substring(pre.length);
       var newSubstr = strategy.replace(value);
@@ -968,7 +972,7 @@ if (typeof jQuery === 'undefined') {
       range.select();
     },
 
-    _getTextFromHeadToCaret: function () {
+    _getTextFromHeadToCaret() {
       this.el.focus();
       var range = document.selection.createRange();
       range.moveStart('character', -this.el.value.length);
@@ -978,13 +982,13 @@ if (typeof jQuery === 'undefined') {
   });
 
   $.fn.textcomplete.IETextarea = IETextarea;
-}(jQuery);
+})(jQuery);
 
 // NOTE: TextComplete plugin has contenteditable support but it does not work
 //       fine especially on old IEs.
 //       Any pull requests are REALLY welcome.
 
-+function ($) {
++($ => {
   'use strict';
 
   // ContentEditable adapter
@@ -1001,7 +1005,7 @@ if (typeof jQuery === 'undefined') {
 
     // Update the content with the given value and strategy.
     // When an dropdown item is selected, it is executed.
-    select: function (value, strategy) {
+    select(value, strategy) {
       var pre = this.getTextFromHeadToCaret();
       var sel = window.getSelection()
       var range = sel.getRangeAt(0);
@@ -1037,7 +1041,7 @@ if (typeof jQuery === 'undefined') {
     //   //=> { top: 18, left: 200, lineHeight: 16 }
     //
     // Dropdown's position will be decided using the result.
-    _getCaretRelativePosition: function () {
+    _getCaretRelativePosition() {
       var range = window.getSelection().getRangeAt(0).cloneRange();
       var node = document.createElement('span');
       range.insertNode(node);
@@ -1061,7 +1065,7 @@ if (typeof jQuery === 'undefined') {
     //   // Suppose the html is '<b>hello</b> wor|ld' and | is the caret.
     //   this.getTextFromHeadToCaret()
     //   // => ' wor'  // not '<b>hello</b> wor'
-    getTextFromHeadToCaret: function () {
+    getTextFromHeadToCaret() {
       var range = window.getSelection().getRangeAt(0);
       var selection = range.cloneRange();
       selection.selectNodeContents(range.startContainer);
@@ -1070,4 +1074,4 @@ if (typeof jQuery === 'undefined') {
   });
 
   $.fn.textcomplete.ContentEditable = ContentEditable;
-}(jQuery);
+})(jQuery);

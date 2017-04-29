@@ -1,9 +1,11 @@
 "use strict";
 
 var controller = require_core("server/controller");
+
 // Helpers for serialized form elements
-var value_of = controller.value_of,
-    array_of = controller.array_of;
+var value_of = controller.value_of;
+
+var array_of = controller.array_of;
 
 var Post = require_app("models/post");
 var Action = require_app("models/action");
@@ -17,7 +19,7 @@ function prepare_chart(name, options, cb) {
   // Posts
   // Trophies
   // Actions (5 in 1)
-  var after = _.after(3, function() {
+  var after = _.after(3, () => {
     bridge.controller("data", "render_" + name + "_charts");
     cb();
   });
@@ -37,12 +39,12 @@ function prepare_chart(name, options, cb) {
 
   options = _.defaults(options, defaults);
 
-  Post.findAll(options).success(function(results) {
+  Post.findAll(options).success(results => {
     bridge.controller("data", func_name, "posts", results);
     after();
   });
 
-  Trophy.findAll(options).success(function(results) {
+  Trophy.findAll(options).success(results => {
     bridge.controller("data", func_name, "trophies", results);
     after();
   });
@@ -57,13 +59,13 @@ function prepare_chart(name, options, cb) {
     "sunkship" : "battleships"
   };
 
-  var miniafter = _.after(actions.length, function() {
+  var miniafter = _.after(actions.length, () => {
     after();
   });
 
-  _.each(actions, function(action) {
+  _.each(actions, action => {
     options.where.action = action;
-    Action.findAll(options).success(function(results) {
+    Action.findAll(options).success(results => {
       bridge.controller("data", func_name, action, results);
       miniafter();
     });
@@ -83,13 +85,13 @@ module.exports = {
     "s" : "add_sample"
   },
 
-  add_sample: function(ctx, api) {
+  add_sample(ctx, api) {
     var snorkel_api = require_app("server/snorkel_api");
 
     var samples = ctx.req.body.samples;
     if (samples && samples.length) {
       console.log("RECEIVED", samples.length, "SAMPLES");
-      _.each(samples, function(sample) {
+      _.each(samples, sample => {
         snorkel_api.handle_json_sample(sample, ctx.req);
       });
     } else if (ctx.req.body.sample) {
@@ -99,7 +101,7 @@ module.exports = {
     ctx.res.end("OK");
   },
 
-  render_timeseries: function(ctx, api, recent) {
+  render_timeseries(ctx, api, recent) {
     var options = {
       group: "strftime('%Y/%m/%d', created_at)",
       attributes: [
@@ -118,14 +120,14 @@ module.exports = {
       };
     };
 
-    var async_timeseries = api.page.async(function(flush) {
+    var async_timeseries = api.page.async(flush => {
       prepare_chart("timeseries", options, flush);
     });
 
     async_timeseries();
   },
 
-  render_dayofweek: function(ctx, api, recent) {
+  render_dayofweek(ctx, api, recent) {
     var options = { 
       group: "strftime('%w', created_at)",
       order: "created_at ASC",
@@ -146,7 +148,7 @@ module.exports = {
     }
 
 
-    var async_dayofweek = api.page.async(function(flush) {
+    var async_dayofweek = api.page.async(flush => {
       prepare_chart("dayofweek", options, flush);
     });
 
@@ -154,7 +156,7 @@ module.exports = {
 
 
   },
-  render_timeofday: function(ctx, api, recent) {
+  render_timeofday(ctx, api, recent) {
     var options = { 
       group: "strftime('%H', created_at)",
       order: "created_at ASC",
@@ -173,26 +175,26 @@ module.exports = {
       };
     }
 
-    var async_timeofday = api.page.async(function(flush) {
+    var async_timeofday = api.page.async(flush => {
       prepare_chart("timeofday", options, flush);
     });
 
     async_timeofday();
   },
-  all: function(ctx, api, recent) {
-    var template_str = api.template.render("controllers/data/data.html.erb", { recent: recent });
+  all(ctx, api, recent) {
+    var template_str = api.template.render("controllers/data/data.html.erb", { recent });
 
     module.exports.render_timeseries(ctx, api, recent);
     module.exports.render_timeofday(ctx, api, recent);
     module.exports.render_dayofweek(ctx, api, recent);
     api.page.render({ content: template_str });
   },
-  index: function(ctx, api) {
+  index(ctx, api) {
     module.exports.recent(ctx, api);
   },
-  recent: function(ctx, api) {
+  recent(ctx, api) {
     module.exports.all(ctx, api, true /* recent only */);
   },
 
-  socket: function() {}
+  socket() {}
 };

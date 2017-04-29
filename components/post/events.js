@@ -31,7 +31,7 @@ function hide_popovers(el) {
 }
 
 function display_post(post_data, clone_id, retEl, replaceId) {
-  $C("post", post_data, function(cmp) {
+  $C("post", post_data, cmp => {
     post_data.post_id = clone_id;
     var replyEl = cmp.make_reply_el(post_data);
     var replacedEl = $("#" + replaceId);
@@ -85,14 +85,14 @@ module.exports = {
     "change .replyform input.photoupload" : "handle_upload_image",
   },
 
-  click_history_back: function(e) {
+  click_history_back(e) {
     this.thread_back();
   },
-  click_history_forward: function(e) {
+  click_history_forward(e) {
     this.thread_forward();
 
   },
-  handle_upload_image: function(e) {
+  handle_upload_image(e) {
     var self = this;
     if (!SF.controller().is_file_upload(e)) {
       return;
@@ -103,15 +103,15 @@ module.exports = {
     // now do we add the image to the post?
     var textareaEl = this.$el.find(".replyform textarea");
 
-    bootloader.require("app/client/imgur", function(handle_imgur_upload) {
+    bootloader.require("app/client/imgur", handle_imgur_upload => {
       handle_imgur_upload(textareaEl, e.target.files[0]);
     });
   },
-  click_upload_image: function() {
+  click_upload_image() {
     this.$el.find(".replyform .photoupload").click();
   },
 
-  handle_mouseenter_reply: function(e) {
+  handle_mouseenter_reply(e) {
     var thisReply = ($(e.target).closest(".reply").attr('id') || "").replace(/reply/, '');
     var replies = $(".replylink[data-parent-id=" + thisReply + "]");
 
@@ -127,10 +127,10 @@ module.exports = {
     });
 
   },
-  handle_mouseleave_reply: function(e) {
+  handle_mouseleave_reply(e) {
     $(e.target).closest(".post").find(".reply").removeClass("highlight");
   },
-  handle_click_tripcode: function(e) {
+  handle_click_tripcode(e) {
     var target = $(e.target).closest(".tripcode");
     var tripcode = target.data("tripcode");
 
@@ -139,21 +139,21 @@ module.exports = {
     e.stopPropagation();
   },
 
-  handle_click_boardlink: function(e) {
+  handle_click_boardlink(e) {
     e.preventDefault();
     var dest = $(e.target).closest(".boardlink").attr("href");
     window.open(dest, '_blank');
   },
 
-  handle_click_truncable: function(e) {
+  handle_click_truncable(e) {
     $(e.target).closest(".truncable").toggleClass("hideContent");
   },
 
-  handle_see_more: function(e) {
+  handle_see_more(e) {
     $(e.target).closest("a").siblings(".truncable").toggleClass("hideContent");
   },
 
-  handle_deletereply: function(e) {
+  handle_deletereply(e) {
     e.preventDefault();
     // Need to present the modal dialog and all that jazz for deleting this reply.
     var reply = $(e.target).closest("a").data("parent-id");
@@ -171,9 +171,9 @@ module.exports = {
 
     text = $("<div />").html(text).text();
 
-    $C("delete_post_modal", { tripcode: tripcode, reply_id: reply, author: author, text: text});
+    $C("delete_post_modal", { tripcode, reply_id: reply, author, text});
   },
-  handle_addreply: function(e) {
+  handle_addreply(e) {
     e.preventDefault();
     var textarea = this.$el.find(".replyform textarea");
     textarea.focus();
@@ -186,7 +186,7 @@ module.exports = {
     this.save_last_seen();
   }, 200),
 
-  handle_mouseenter_imglink: function(e) {
+  handle_mouseenter_imglink(e) {
 
     _ET.local("post", "imglink");
     // if we are inside a post title ... we stop its propagation
@@ -210,12 +210,12 @@ module.exports = {
       placement: "auto",
       container: this.$el });
 
-    _.defer(function() {
+    _.defer(() => {
       $(e.target).popover("show");
     });
 
   },
-  handle_mouseleave_imglink: function(e) {
+  handle_mouseleave_imglink(e) {
     hide_popovers(e);
   },
 
@@ -228,14 +228,14 @@ module.exports = {
     var container = this.$el;
     e.stopPropagation();
 
-    SF.controller().emit("get_trophies", tripcode, function(trophies) {
+    SF.controller().emit("get_trophies", tripcode, trophies => {
       var div = $("<div></div>");
       if (!trophies.length) {
         return;
       }
 
       if (e.type === "mouseover") {
-        $(el).finish().animate({opacity: 0.6}, function() {
+        $(el).finish().animate({opacity: 0.6}, () => {
           $(el).finish().animate({opacity: 1});
 
         });
@@ -244,7 +244,7 @@ module.exports = {
 
       }
 
-      _.each(trophies, function(tr) {
+      _.each(trophies, tr => {
         div.append($("<span class='pam' />").addClass("icon-" + tr));
       });
 
@@ -259,17 +259,15 @@ module.exports = {
 
       $(el).after(div);
 
-      _.delay(function() {
-        div.fadeOut(function() { div.remove(); });
+      _.delay(() => {
+        div.fadeOut(() => { div.remove(); });
       }, 3000);
 
     });
   }, 50),
 
-  expand_replies: function(div, depth, expanded) {
-    var replylinks = _.filter(div.find(".replylink"), function(r) {
-      return !$(r).closest(".nest").length;
-    });
+  expand_replies(div, depth, expanded) {
+    var replylinks = _.filter(div.find(".replylink"), r => !$(r).closest(".nest").length);
 
     depth = depth || 0;
     var border;
@@ -280,7 +278,7 @@ module.exports = {
 
     var self = this;
 
-    _.each(replylinks, function(el) {
+    _.each(replylinks, el => {
       var responseEl = self.get_reply_content(el, expanded);
       self.expand_replies(responseEl, depth, expanded);
       var wrapper = $("<div />");
@@ -294,7 +292,7 @@ module.exports = {
 
 
   },
-  get_reply_content: function(el, expanded) {
+  get_reply_content(el, expanded) {
     var clone_id = $(el).data("parent-id");
     if (expanded[clone_id]) {
       return $("<div />");
@@ -322,7 +320,7 @@ module.exports = {
 
       var post_data = POST_CACHE[clone_id];
       if (!post_data) {
-        SF.socket().emit("get_post_only", clone_id, function(post_data) {
+        SF.socket().emit("get_post_only", clone_id, post_data => {
           POST_CACHE[clone_id] = post_data;
           if (!post_data) {
             $("#" + replaceId).html("<b>Oops. Burtle Couldn't find post #" + clone_id + " </b>");
@@ -331,7 +329,7 @@ module.exports = {
           }
         });
       } else {
-        _.defer(function() {
+        _.defer(() => {
           display_post(post_data, clone_id, retEl, replaceId);
         });
       }
@@ -342,7 +340,7 @@ module.exports = {
     return responseEl.clone();
   },
 
-  handle_mouseenter_replylink: function(e) {
+  handle_mouseenter_replylink(e) {
     _ET.local("post", "replylink");
     e.stopPropagation();
 
@@ -378,23 +376,23 @@ module.exports = {
 
     // reach in and modify
     $(el)
-      .popover({ html: true, content: div.html(), placement: "top", container: container })
+      .popover({ html: true, content: div.html(), placement: "top", container })
       .data("bs.popover")
       .tip()
       .addClass("reply");
 
-    _.defer(function() {
+    _.defer(() => {
       $(el).popover("show");
     });
 
 
   },
 
-  handle_mouseleave_replylink: function(e) {
+  handle_mouseleave_replylink(e) {
     hide_popovers(e);
   },
 
-  handle_addglyph: function(e) {
+  handle_addglyph(e) {
     var glyph = $(e.target).data("glyph");
     var textarea = this.$el.find(".replyform textarea");
     textarea.focus();
@@ -404,23 +402,23 @@ module.exports = {
       $(this).popover("destroy");
     });
   },
-  handle_click_help: function() {
+  handle_click_help() {
     $C("markdown_dialog", {});
   },
-  collapse: function() {
+  collapse() {
     this.$el.find(".post").removeClass("maximize");
     this.$el.find(".infobar .restore").html("[expand]");
     this.bumped();
     _ET.local("post", "collapse");
   },
-  expand: function() {
+  expand() {
     this.$el.find(".post").addClass("maximize");
     this.$el.find(".infobar .restore").html("[collapse]");
     this.bumped();
     _ET.local("post", "expand");
 
   },
-  handle_restore: function(e) {
+  handle_restore(e) {
     var current_max = this.$el.find(".post").hasClass("maximize");
     if (current_max) {
       this.collapse();
@@ -431,7 +429,7 @@ module.exports = {
     e.preventDefault();
   },
 
-  handle_maybe_submit: function(e) {
+  handle_maybe_submit(e) {
     if (e.keyCode === 13 && !e.shiftKey) {
       this.handle_reply(e);
       return true;
@@ -439,7 +437,7 @@ module.exports = {
 
   },
 
-  update_reply_preview: function() {
+  update_reply_preview() {
     // Update our preview with markdwon, too
     var replyInput = this.$el.find(".replyform textarea");
     var reply = replyInput.val().trim();
@@ -474,13 +472,13 @@ module.exports = {
     this.update_reply_preview();
 
   }, 500),
-  handle_unfocus: function() {
+  handle_unfocus() {
     _ET.local("post", "unfocus");
     SF.socket().emit("isdoing", { what: "unfocused", post_id: this.get_post_id()});
     var replyPreview = this.$el.find(".replypreview");
     replyPreview.fadeOut();
   },
-  handle_focus: function() {
+  handle_focus() {
     _ET.local("post", "focus");
     var replyPreview = this.$el.find(".replypreview");
     replyPreview.fadeIn();
@@ -488,7 +486,7 @@ module.exports = {
     this.update_reply_preview();
   },
 
-  handle_reply: function(e) {
+  handle_reply(e) {
     e.preventDefault();
     var replyInput = this.$el.find(".replyform textarea");
     var replyPreview = this.$el.find(".replypreview");
@@ -503,7 +501,7 @@ module.exports = {
     var stripped_reply = reply.replace(/\W/g, '');
     var test_words = [ "test", "hi", "testing", "what is this place" ];
     var tested = false;
-    _.each(test_words, function(test_word) {
+    _.each(test_words, test_word => {
       if (test_word.replace(/\(\W|\d\)/g, '').toLowerCase() === stripped_reply.toLowerCase()) {
         $.notify("THOU SHALT NOT TEST JAMES!", { className: "error"} );
         tested = true;
@@ -535,17 +533,18 @@ module.exports = {
     // should input the preview / half sent version here
     var data = {
         post_id: postId,
-        author: author,
+        author,
         tripcode: triphash,
         text: reply
     };
 
 
 
-    var replyEl, received;
+    var replyEl;
+    var received;
     var self = this;
 
-    setTimeout(function() {
+    setTimeout(() => {
       if (!received) {
         data.post_id = _.uniqueId("pending");
         data.tripcode = SF.controller().get_trip_identity();
@@ -556,7 +555,7 @@ module.exports = {
 
     _ET.global("post", "new_reply");
     data.post_id = postId;
-    SF.socket().emit("new_reply", data, function() {
+    SF.socket().emit("new_reply", data, () => {
       // Success or not...
       replyInput.val("");
       replyPreview.text("");
@@ -568,14 +567,13 @@ module.exports = {
       }
 
     });
-
   },
 
-  handle_template_click: function() {
+  handle_template_click() {
     this.handle_focus();
   },
 
-  handle_upboat_link: function(e) {
+  handle_upboat_link(e) {
     // handles clicking inline upboats
     var a = $(e.target);
     var href = a.data('href');
@@ -587,7 +585,7 @@ module.exports = {
 
     // stupid junk for handling icons in links... and re-replacing with :icon:
     var icons = new_text.find("i.icon");
-    _.each(icons, function(icon) {
+    _.each(icons, icon => {
       var iconclass = $(icon).attr("class").replace("icon icon-", "");
       $(icon).text(":" + iconclass + ":");
     });
@@ -607,11 +605,11 @@ module.exports = {
 
 
     SF.socket().emit("upboat", {
-      href: href,
+      href,
       title: text,
-      post_id: post_id
-    }, function() {
-      a.fadeOut(function() {
+      post_id
+    }, () => {
+      a.fadeOut(() => {
         a.removeClass("icon-arrow");
         a.addClass("icon-coffee");
         a.removeClass("upboat");

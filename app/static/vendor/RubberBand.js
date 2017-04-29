@@ -1,4 +1,4 @@
-(function(window,undefined){
+(((window, undefined) => {
   
 	// RubberBand, the object
 	var RubberBand = function(cb) {
@@ -27,7 +27,7 @@
 		
 		// Initialize function
 		// sets all variables
-		this.init = function(cb) {
+		this.init = cb => {
 			
 			// if the element doesn't exist, create it
 			if(!$('#RubberBandjs').length) {
@@ -58,7 +58,7 @@
 		};
 		
 		// The actual RubberBand function
-		this.RB = function() {
+		this.RB = () => {
 			
 			// clear the timeout on any scroll
 			$me.variables.scrolling = window.clearTimeout($me.variables.scrolling);
@@ -143,7 +143,7 @@
 			// if they're not scrolling, the band is showing, and it isn't already closing-- close it
 			if(!$me.variables.closing && $me.variables.inplay && $me.variables.e_height<0) {
 				
-				$me.variables.scrolling = window.setTimeout(function() {
+				$me.variables.scrolling = window.setTimeout(() => {
 					
 					$me.close();
 				
@@ -153,13 +153,13 @@
 		
 		// Close function
 		// animates the band to the original closed state
-		this.close = function() {
+		this.close = () => {
 			
 			// fire both animations
 			$me.variables.$RBe.animate({ top: $me.variables.original_top }, 200);
 			
 			// reset after the animation has completed
-			$('body').animate({ paddingTop: 0 }, 200, function() { 
+			$('body').animate({ paddingTop: 0 }, 200, () => { 
 			
 				//$(window).scrollTop(1); 
 			
@@ -191,4 +191,4 @@
 	
 	// set the variable to be accessed
 	window.RubberBand = RubberBand;
-}(window));
+})(window));

@@ -379,20 +379,18 @@ var EMOJIES =
   "fontcomic", "fontcaligraphy", "fontgothic", "fontstencil",
 ];
 
-EMOJIES.add_textcomplete = function(textarea) {
-  bootloader.require("app/static/vendor/jquery.textcomplete", function() {
+EMOJIES.add_textcomplete = textarea => {
+  bootloader.require("app/static/vendor/jquery.textcomplete", () => {
     textarea.textcomplete([
       { // emoji strategy
         match: /\B:([\-+\w]*)$/,
-        search: function (term, callback) {
-            callback($.map(EMOJIES, function (emoji) {
-                return emoji.indexOf(term) === 0 ? emoji : null;
-            }));
+        search(term, callback) {
+            callback($.map(EMOJIES, emoji => emoji.indexOf(term) === 0 ? emoji : null));
         },
-        template: function (value) {
+        template(value) {
             return '<span class="icon-' + value + '"> </span>' + value;
         },
-        replace: function (value) {
+        replace(value) {
             return ':' + value + ': ';
         },
         index: 1,

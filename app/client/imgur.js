@@ -9,10 +9,10 @@ function handle_imgur_upload(textareaEl, file, cb) {
 
   function end_upload_state() {
     textareaEl.attr("disabled", false);
-    setTimeout(function() {
+    setTimeout(() => {
       textareaEl.focus();
       moveCaretToEnd(textareaEl[0]);
-      setTimeout(function() {
+      setTimeout(() => {
         moveCaretToEnd(textareaEl[0]);
         textareaEl.focus();
       });
@@ -38,7 +38,7 @@ function handle_imgur_upload(textareaEl, file, cb) {
   }
 
   function stub_imgur_request() {
-    setTimeout(function() {
+    setTimeout(() => {
       var link = "/images/atobi.png";
 
       var textareaval = " ![" + file.name + "](" + link + ") ";
@@ -59,7 +59,7 @@ function handle_imgur_upload(textareaEl, file, cb) {
     fd.append("image", file); // Append the file
     var xhr = new XMLHttpRequest(); // Create the XHR (Cross-Domain XHR FTW!!!) Thank you sooooo much imgur.com
     xhr.open("POST", "https://api.imgur.com/3/image.json"); // Boooom!
-    xhr.onload = function() {
+    xhr.onload = () => {
       var response = JSON.parse(xhr.responseText);
       var link = response.data.link;
 

@@ -68,7 +68,7 @@ function is_webm_url(url) {
 }
 
 var renderer = new marked.Renderer();
-renderer.blockquote = function(quote) {
+renderer.blockquote = quote => {
   var quote_text = "";
   if (quote) {
     try {
@@ -81,13 +81,9 @@ renderer.blockquote = function(quote) {
   return "&gt;" + quote_text.trim();
 };
 
-renderer.paragraph = function(quote) {
-  return quote + "<br />";
-};
+renderer.paragraph = quote => quote + "<br />";
 
-renderer.heading = function(head) {
-  return "#" + head;
-};
+renderer.heading = head => "#" + head;
 
 function add_upboat(el, href, text) {
   if (!USE_UPBOATS) {
@@ -101,7 +97,7 @@ function add_upboat(el, href, text) {
   upboat.attr('data-text', text.toString());
 }
 
-renderer.image = function(href, title, text) {
+renderer.image = (href, title, text) => {
   var url_tag = $("<span>");
   var img_tag = $("<a target='_blank'>[link]</a>");
 
@@ -135,7 +131,7 @@ function is_image_link(href) {
 
 }
 
-renderer.link = function(href, title, text) {
+renderer.link = (href, title, text) => {
   var outer = $("<div/>");
   var link = $("<a />");
   var orig_text = text;
@@ -193,27 +189,27 @@ function add_newlines($el) {
 function add_board_links($el) {
   var escaped = " " + $el.html() + " ";
   if (escaped) {
-    var replaced = escaped.replace(/\s\/r\/(\w+)/g, function(x, post_id) {
+    var replaced = escaped.replace(/\s\/r\/(\w+)/g, (x, post_id) => {
       var reddit_str = " <a target='_blank' href='http://www.reddit.com/r/NAME'><i class='icon-reddit'></i>/NAME</a>";
       return reddit_str.replace(/NAME/g, post_id.toLowerCase());
     });
 
-    replaced = replaced.replace(/\s\/4(?:ch)?\/(\w+)/g, function(x, post_id) {
+    replaced = replaced.replace(/\s\/4(?:ch)?\/(\w+)/g, (x, post_id) => {
       var chan_str = " <a target='_blank' href='http://4chan.org/NAME'><i class='icon-circlefour'></i>/NAME</a>";
       return chan_str.replace(/NAME/g, post_id.toLowerCase());
     });
 
-    replaced = replaced.replace(/\s\/8(?:ch)?\/(\w+)/g, function(x, post_id) {
+    replaced = replaced.replace(/\s\/8(?:ch)?\/(\w+)/g, (x, post_id) => {
       var chan_str = " <a target='_blank' href='http://8ch.net/NAME'><i class='icon-circleeight'></i>/NAME</a>";
       return chan_str.replace(/NAME/g, post_id.toLowerCase());
     });
 
-    replaced = replaced.replace(/\s\/e(?:ch)?\/(\w+)/g, function(x, post_id) {
+    replaced = replaced.replace(/\s\/e(?:ch)?\/(\w+)/g, (x, post_id) => {
       var chan_str = " <a target='_blank' href='http://euphoria.io/room/NAME'><i class='icon-emojigrin'></i>/NAME</a>";
       return chan_str.replace(/NAME/g, post_id.toLowerCase());
     });
 
-    replaced = replaced.replace(/\s\/(\w+)/g, function(x, post_id) {
+    replaced = replaced.replace(/\s\/(\w+)/g, (x, post_id) => {
       var reply_str = " <span href='/b/NAME' class='boardlink' target='_blank'><i class='icon-atob'></i>/NAME</span>";
       return reply_str.replace(/NAME/g, post_id.toLowerCase());
     });
@@ -227,25 +223,17 @@ function add_replies($el) {
   var escaped = $el.html();
   if (escaped) {
     var reply_str = "<div class='tripcode oplink desaturate noselect' data-parent-id='NAME' data-tripcode='' ></div>";
-    var replaced = escaped.replace(/&gt;&gt;#?([\d]+)\s*\*/ig, function(x, post_id) {
-      return reply_str.replace(/NAME/g, post_id.toLowerCase());
-    });
+    var replaced = escaped.replace(/&gt;&gt;#?([\d]+)\s*\*/ig, (x, post_id) => reply_str.replace(/NAME/g, post_id.toLowerCase()));
 
     reply_str = "<a href='/p/NAME' class='replylink' data-parent-id='NAME'>&gt;&gt;NAME</a>";
-    replaced = replaced.replace(/&gt;&gt;#?([\d]+)/g, function(x, post_id) {
-      return reply_str.replace(/NAME/g, post_id.toLowerCase());
-    });
+    replaced = replaced.replace(/&gt;&gt;#?([\d]+)/g, (x, post_id) => reply_str.replace(/NAME/g, post_id.toLowerCase()));
 
     reply_str = " <a href='/p/ID' class='postlink'>#ID</a> ";
 
-    replaced = replaced.replace(/[^&;]#([\d]+)/g, function(x, post_id) {
-      return reply_str.replace(/ID/g, post_id.toLowerCase());
-    });
+    replaced = replaced.replace(/[^&;]#([\d]+)/g, (x, post_id) => reply_str.replace(/ID/g, post_id.toLowerCase()));
 
     // replace thread IDs at beginning of line, too
-    replaced = replaced.replace(/^#([\d]+)/g, function(x, post_id) {
-      return reply_str.replace(/ID/g, post_id.toLowerCase());
-    });
+    replaced = replaced.replace(/^#([\d]+)/g, (x, post_id) => reply_str.replace(/ID/g, post_id.toLowerCase()));
 
 
     $el.html(replaced);
@@ -254,14 +242,12 @@ function add_replies($el) {
 
 function translate_markdown($el, escaped) {
   escaped = escaped.replace(/>/g, "&gt;");
-  escaped = marked(escaped, { renderer: renderer, breaks: true, sanitize: true});
+  escaped = marked(escaped, { renderer, breaks: true, sanitize: true});
 
   // need to add icons here before data-text is added to the element
   var icon_str = "<i class='icon icon-NAME' title=':NAME:'> </i>";
   var icon_re = new RegExp(icon_str.replace(/NAME/g, '(.*)'), "g");
-  var replaced = escaped.replace(/:([\w-]+):/g, function(x, icon) {
-    return icon_str.replace(/NAME/g, icon.toLowerCase());
-  });
+  var replaced = escaped.replace(/:([\w-]+):/g, (x, icon) => icon_str.replace(/NAME/g, icon.toLowerCase()));
   $el.html(replaced);
   $el.addClass("marked");
 
@@ -453,13 +439,13 @@ function format_image_link(img_link) {
 }
 
 module.exports = {
-  format_text: format_text,
-  add_newlines: add_newlines,
-  add_replies: add_replies,
-  add_markdown: add_markdown,
-  is_image_link: is_image_link,
-  format_image_link: format_image_link,
-  add_upboats: function(val) {
+  format_text,
+  add_newlines,
+  add_replies,
+  add_markdown,
+  is_image_link,
+  format_image_link,
+  add_upboats(val) {
     USE_UPBOATS = val;
   }
 };

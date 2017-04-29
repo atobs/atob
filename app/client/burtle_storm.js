@@ -1,40 +1,39 @@
 function do_line(delay) {
+  var burtle = $(".logo img");
+  var w = $(window).width();
+  var h = $(window).height();
+  var burtles = [];
+  var num_burtles = 20;
+  var zoom = 1;
+  var cur_x = 0;
+  var step_x = w / num_burtles;
+  for (var i = 0; i < num_burtles; i++) {
+    cur_x += step_x;
 
-    var burtle = $(".logo img");
-    var w = $(window).width(), h = $(window).height();
-    var burtles = [];
-    var num_burtles = 20;
-    var zoom = 1;
-    var cur_x = 0;
-    var step_x = w / num_burtles;
-    for (var i = 0; i < num_burtles; i++) {
-      cur_x += step_x;
+    ((() => {
+      var logo = burtle.clone();
+      logo.hide();
+      var start_x = cur_x;
+      var start_y = 0;
 
-      (function() {
-        var logo = burtle.clone();
-        logo.hide();
-        var start_x = cur_x;
-        var start_y = 0;
+      logo.css({ position: "fixed", left: start_x, top: 0, zoom });
 
-        logo.css({ position: "fixed", left: start_x, top: 0, zoom: zoom });
+      $("body").append(logo);
+      burtles.push(logo);
+      logo.fadeIn();
 
-        $("body").append(logo);
-        burtles.push(logo);
-        logo.fadeIn();
+      logo.velocity({ top: h }, { loop: 3, delay: i * delay, complete() {
+        console.log("FINISHED REMOVE");
+        logo.remove();
+      }});
+    }))();
 
-        logo.velocity({ top: h }, { loop: 3, delay: i * delay, complete: function() {
-          console.log("FINISHED REMOVE");
-          logo.remove();
-        }});
-      })();
-
-    }
-
+  }
 }
 
 module.exports = {
 
-  storm: function() {
+  storm() {
 
     var types = {
       swarm: 50,
@@ -46,12 +45,12 @@ module.exports = {
 
     var total = 0;
 
-    _.each(types, function(val) {
+    _.each(types, val => {
       total += val;
     });
 
     var choice = _.random(0, total-1);
-    _.each(types, function(val, key) {
+    _.each(types, (val, key) => {
       if (choice >= 0) {
         choice -= val;
         if (choice < 0) {
@@ -63,11 +62,12 @@ module.exports = {
 
   },
 
-  bounce: function() {
+  bounce() {
     var burtle = $(".logo img").clone();
     $("body").append(burtle);
 
-    var w = $(window).width(), h = $(window).height();
+    var w = $(window).width();
+    var h = $(window).height();
     burtle.css({ position: "fixed", left: w / 2, top: h / 2});
     for (var i = 0; i < 10; i++) {
       var options = [
@@ -92,26 +92,24 @@ module.exports = {
       top: h / 2
     });
 
-    (function() {
+    ((() => {
       var thisb = burtle;
       burtle.velocity({
         scaleY: 20,
         scaleX: 20,
         opacity: 0,
       }, {
-        complete: function() {
+        complete() {
           thisb.remove();
         }
       });
-    })();
-
-
-
+    }))();
   },
 
-  swarm: function() {
+  swarm() {
     var burtle = $(".logo img");
-    var w = $(window).width(), h = $(window).height();
+    var w = $(window).width();
+    var h = $(window).height();
     var burtles = [];
     var num_burtles = 20;
     var zoom = 1;
@@ -120,7 +118,7 @@ module.exports = {
       logo.hide();
       var start_x = w / zoom / 2;
       var start_y = h / zoom / 2;
-      logo.css({ position: "fixed", left: start_x, top: start_y, zoom: zoom });
+      logo.css({ position: "fixed", left: start_x, top: start_y, zoom });
 
       $("body").append(logo);
       burtles.push(logo);
@@ -131,30 +129,30 @@ module.exports = {
 
     function do_storm() {
       if (storms <= 0) {
-        _.each(burtles, function(burtle) {
+        _.each(burtles, burtle => {
           burtle.velocity({
             left: w / zoom / 2,
             top: h / zoom / 2
           });
-          (function() {
+          ((() => {
             var thisb = burtle;
             burtle.velocity({
               scaleY: 20,
               scaleX: 20,
               opacity: 0,
             }, {
-              complete: function() {
+              complete() {
                 thisb.remove();
               }
             });
-          })();
+          }))();
         });
         return;
       }
 
       storms -= 1;
 
-      _.each(burtles, function(logo) {
+      _.each(burtles, logo => {
         var end_x = _.random(0, w / zoom);
         var end_y = _.random(0, h / zoom);
 
@@ -168,11 +166,11 @@ module.exports = {
     do_storm();
   },
 
-  cascade: function() {
+  cascade() {
     do_line(50);
   },
 
-  line: function() {
+  line() {
     do_line(20);
   }
 

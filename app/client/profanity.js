@@ -233,7 +233,7 @@ var swears = [
 
 var SWEAR_REs = [];
 
-_.each(swears, function(sw) {
+_.each(swears, sw => {
   var re = new RegExp("\\b" + sw + "\(ed|ing|s|er\)?\\b", "gi");
   re.inner_length = sw.length;
   SWEAR_REs.push(re);
@@ -241,7 +241,7 @@ _.each(swears, function(sw) {
 
 function sweep_text(el) {
   var context = el.nodeValue;
-  _.each(SWEAR_REs, function(swr) {
+  _.each(SWEAR_REs, swr => {
     if (swr.test(context)) {
       context = context.replace(swr, "butt$1");
     }

@@ -1,10 +1,12 @@
 "use strict";
 
 var controller = require_core("server/controller");
+
 // Helpers for serialized form elements
-var value_of = controller.value_of,
-    array_of = controller.array_of;
-    
+var value_of = controller.value_of;
+
+var array_of = controller.array_of;
+
 
 var config = require_core("server/config");
 var chat = require_app("server/chat");
@@ -22,7 +24,7 @@ var client_api = require_app("server/client_api");
 var sponsored_content = require_app("server/sponsored_content");
 
 var crypto = require("crypto");
-var gen_md5 = function(h) {
+var gen_md5 = h => {
   var hash = crypto.Hash("md5");
   hash.update(h + "");
   return hash.digest("hex");
@@ -37,27 +39,27 @@ module.exports = {
     "/:id" : "get",
   },
 
-  get: function(ctx, api) {
+  get(ctx, api) {
     this.set_title("atob");
     api.template.add_stylesheet("post");
     $C("delete_post_modal", {}).marshall();
 
     api.bridge.call("app/client/sidebar", "add_sidebars");
     var render_sponsored_content = sponsored_content.render(api);
-    var render_post = api.page.async(function(flush) {
+    var render_post = api.page.async(flush => {
 
       Post.find({
           where: { id: ctx.req.params.id},
           include: [
             {model: Post, as: "Children" },
           ]})
-        .success(function(result) {
+        .success(result => {
           if (!result) { 
             // Do a check to see if the post is archived...
             var app = require_core("server/main").app;
             ArchivedPost.find({
               where: { id: ctx.req.params.id},
-            }).success(function(result) {
+            }).success(result => {
               if (result) {
 
                 var url = app.router.build("archives.get", {
@@ -92,7 +94,7 @@ module.exports = {
               include: [
                 {model: Post, as: "Children" },
               ]
-            }).success(function(parent) {
+            }).success(parent => {
               if (!parent) {
                 render_posting(api, flush, result);
               } else {
@@ -112,13 +114,13 @@ module.exports = {
 
     });
 
-    var render_sinners = api.page.async(function(flush) {
+    var render_sinners = api.page.async(flush => {
       Post.findAll({
         where: {
           board_id: worship_boards.boards,
         }
-      }).success(function(results) {
-        var sinners = _.map(results, function(r) { return r.dataValues; });
+      }).success(results => {
+        var sinners = _.map(results, r => r.dataValues);
         api.bridge.call("app/client/sinners", "punish", sinners);
         flush();
       });
@@ -130,21 +132,21 @@ module.exports = {
     var render_recent_chats = chat.render_recent(api);
     var template_str = api.template.render("controllers/posts/show.html.erb", 
       { 
-        render_post: render_post, 
-        render_recent_chats: render_recent_chats,
+        render_post, 
+        render_recent_chats,
         tripcode: gen_md5(Math.random()),
-        render_sponsored_content: render_sponsored_content
+        render_sponsored_content
       });
     api.page.render({ content: template_str, socket: true });
   },
 
-  socket: function(s) {
+  socket(s) {
     var _board;
 
     client_api.add_to_socket(s);
     makeme_store.subscribe_to_updates(s);
 
-    s.on("join", function(board) {
+    s.on("join", board => {
       makeme_store.lurk(s, board);
       s.spark.join(board);
       s.board = board;

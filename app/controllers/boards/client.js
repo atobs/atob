@@ -21,21 +21,21 @@ module.exports = {
     "click .post .title h4" : "click_post_title",
     "click .toggle_favorite" : "toggle_fav"
   },
-  star_board: function() {
+  star_board() {
     favorites.add_favorite(this.board);
     this.$el.find(".toggle_favorite").removeClass("icon-star-empty").addClass("icon-star");
   },
-  unstar_board: function() {
+  unstar_board() {
     favorites.del_favorite(this.board);
     this.$el.find(".toggle_favorite").addClass("icon-star-empty").removeClass("icon-star");
   },
-  is_favorite: function() {
+  is_favorite() {
     var board = this.board;
     var favs = favorites.get();
     return _.contains(favs, board);
 
   },
-  toggle_fav: function() {
+  toggle_fav() {
     if (this.is_favorite()) {
       this.unstar_board();
     } else {
@@ -44,12 +44,12 @@ module.exports = {
     }
 
   },
-  sent_posts: function() {
+  sent_posts() {
     this.loaded_posts = true;
     SF.trigger("board_loaded_posts");
   },
 
-  show_board_tiles: function() {
+  show_board_tiles() {
     $(".post").addClass("tile");
     $(".post").removeClass("tilerow");
 
@@ -57,29 +57,29 @@ module.exports = {
 
     SF.trigger("set_boardstyle", "tile");
   },
-  show_board_full: function() {
+  show_board_full() {
     $(".post").removeClass("tilerow tile");
     storage.set("boardstyle", "");
     SF.trigger("set_boardstyle", "");
 
   },
-  show_board_list: function() {
+  show_board_list() {
     $(".post").addClass("tilerow");
     $(".post").removeClass("tile");
     storage.set("boardstyle", "tilerow");
     SF.trigger("set_boardstyle", "tilerow");
   },
-  show_board_header: function() {
+  show_board_header() {
     this.$el.find(".boardheader").show();
     var boardstyle = storage.get("boardstyle") || "";
     this.$el.find(".newthread").removeClass("btn");
     SF.trigger("set_boardstyle", boardstyle);
   },
-  hide_board_header: function() {
+  hide_board_header() {
     this.$el.find(".boardheader").hide();
     this.$el.find(".newthread").addClass("btn");
   },
-  click_post_title: function(e) {
+  click_post_title(e) {
     var target = $(e.target).closest(".post");
     var linklink = $(e.target).closest(".linklink, .titlelink");
     if (linklink.length) {
@@ -104,19 +104,19 @@ module.exports = {
 
     }
   },
-  no_posts: function() {
+  no_posts() {
     $(".loading").html("<h2>there are no posts on this board, plz make some</h2>");
   },
-  fix_chat: function() {
+  fix_chat() {
     $(".chat .post").removeClass("tile tilerow");
   },
-  popstate: function() {
+  popstate() {
     var pathname = window.location.pathname;
     var boardstyle = storage.get("boardstyle") || "";
     if (pathname.indexOf("/b/") === 0) { // we are showing a board
       this.show_board_header();
       $(".post").show().removeClass("tile tilerow").addClass(boardstyle);
-      _.each(window._POSTS, function(post) {
+      _.each(window._POSTS, post => {
         post.collapse();
       });
       this.fix_chat();
@@ -131,8 +131,8 @@ module.exports = {
         post.expand();
         post.$el.find(".post")
           .removeClass("tile tilerow")
-          .fadeIn(function() { 
-            _.defer(function() { post.bumped(); });
+          .fadeIn(() => { 
+            _.defer(() => { post.bumped(); });
             SF.controller().emit("isdoing", { what: "focused", post_id: postId });
         
           });
@@ -147,7 +147,7 @@ module.exports = {
     }
 
   },
-  init: function() {
+  init() {
     this.init_tripcodes();
     SF.trigger("board_ready");
 
@@ -158,7 +158,7 @@ module.exports = {
     emojies.add_textcomplete(textarea);
     var self = this;
 
-    SF.on("set_boardstyle", _.throttle(function(boardstyle) {
+    SF.on("set_boardstyle", _.throttle(boardstyle => {
       self.fix_chat();
       $(".boardview a").removeClass("active");
       var boardlink;
@@ -176,7 +176,7 @@ module.exports = {
 
     // http://stackoverflow.com/questions/4079115/can-any-desktop-browsers-detect-when-the-computer-resumes-from-sleep
     // if the page becomes inactive for long enough, reload it on the next focus
-    setInterval(function() {
+    setInterval(() => {
       var currentTime = (new Date()).getTime();
       if (currentTime > (lastTime + 65000)) {  // ignore small delays
         window.bootloader.refresh();
@@ -185,16 +185,16 @@ module.exports = {
     }, 2000);
 
   },
-  socket: function(s) {
+  socket(s) {
     var added = {};
     notif.subscribe();
-    s.on("new_post", function(data) {
+    s.on("new_post", data => {
       if (added[data.post_id]) {
         return;
       }
       added[data.post_id] = true;
 
-      $C("post", data, function(cmp) {
+      $C("post", data, cmp => {
         $(".posts").prepend(cmp.$el);
         cmp.gen_tripcodes();
         cmp.add_markdown();
@@ -203,7 +203,7 @@ module.exports = {
 
     chat.add_socket_subscriptions(s);
     settings.add_socket_subscriptions(s);
-    s.on("doings", function(data) {
+    s.on("doings", data => {
       var post = window._POSTS[data.post_id];
       if (post) {
         post.update_counts(data.counts, data.last_seen);
@@ -211,34 +211,34 @@ module.exports = {
 
     });
 
-    s.on("update_post", function(post_id, text) {
+    s.on("update_post", (post_id, text) => {
       post_utils.update_post(post_id, text);
     });
 
-    s.on("shake_post", function(post_id, duration) {
+    s.on("shake_post", (post_id, duration) => {
       var post = window._POSTS[post_id];
       if (post) {
         post.shake(duration);
       }
     });
 
-    s.on("new_reply", function(data) {
+    s.on("new_reply", data => {
       var post = window._POSTS[data.parent_id];
       if (post) {
         post.add_reply(data);
       }
     });
 
-    s.on("joined", function(c) {
+    s.on("joined", c => {
       console.log("Joined the board", c);
     });
 
-    s.on("notif", function(msg, type, options) {
+    s.on("notif", (msg, type, options) => {
       notif.handle_notif(msg, type, options);
     });
     
     var self = this;
-    self.do_when(self.board, "set_board", function() {
+    self.do_when(self.board, "set_board", () => {
       if (self.board === "to") {
         s.emit("join", "a");
         s.emit("join", "b");

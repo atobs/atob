@@ -9,9 +9,7 @@ var IP = sequelize.instance.define('IP', {
 IP.belongsTo(Post);
 
 var gen_md5 = require_app("server/md5");
-IP.toHash = function(ip) {
-  return gen_md5("atob:" + ip);
-};
+IP.toHash = ip => gen_md5("atob:" + ip);
 
 module.exports = IP;
 

@@ -1,8 +1,8 @@
 var HIDDEN = true;
 var COUNT = 0;
 module.exports = {
-  add_socket_subscriptions: function(s) {
-    s.on("new_chat", function(reply) {
+  add_socket_subscriptions(s) {
+    s.on("new_chat", reply => {
       if (HIDDEN) {
         COUNT++;
         $(".chat .chat_header .counter").text("(" + COUNT + ")");
@@ -17,7 +17,7 @@ module.exports = {
   controller_events: {
     "click .chat_header" : "toggle_chat"
   },
-  show_chat_popup: function() {
+  show_chat_popup() {
     _ET.local("chat", "show_popup");
     this.$el.find(".chat_content").slideDown();
     this.$el.find(".chat").addClass("visible");
@@ -30,13 +30,13 @@ module.exports = {
 
 
   },
-  hide_chat_popup: function() {
+  hide_chat_popup() {
     _ET.local("chat", "hide_popup");
     this.$el.find(".chat_content").slideUp();
     this.$el.find(".chat").removeClass("visible");
 
   },
-  toggle_chat: function() {
+  toggle_chat() {
     HIDDEN = !HIDDEN;
     if (HIDDEN) {
       this.hide_chat_popup();
@@ -44,11 +44,11 @@ module.exports = {
       this.show_chat_popup();
     }
   },
-  show_chat: function(post_id) {
+  show_chat(post_id) {
     var tries = 0;
     function try_again() {
       tries++;
-      _.delay(function() {
+      _.delay(() => {
         try {
           window._POSTS.chat = window._POSTS[post_id];
         } catch (e) {

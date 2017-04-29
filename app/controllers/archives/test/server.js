@@ -1,6 +1,6 @@
-describe("A blank test for archives", function() {
-  it("should work", function(done) {
-    SF.controller("archives", function(ctrl) {
+describe("A blank test for archives", () => {
+  it("should work", done => {
+    SF.controller("archives", ctrl => {
       assert.notEqual(ctrl, null);
 
       done();

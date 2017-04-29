@@ -12,7 +12,7 @@
  * expect checkboxes to be serialized as boolean (true/false) rather than standard (present/missing)
  * $("form").deserialize(string, {checkboxesAsBools: true});
 **/
-(function($) {
+(($ => {
     $.fn.deserialize = function(s, options) {
       function optionallyTrigger(element,event) {
         if (options.noEvents) 
@@ -32,9 +32,7 @@
       var parts = s.split("&");
 
       for (var i = 0; i < parts.length; i++) {
-        var pair = $.map(parts[i].replace(/\+/g, '%20').split("="), function(d) {
-          return decodeURIComponent(d); 
-        });
+        var pair = $.map(parts[i].replace(/\+/g, '%20').split("="), d => decodeURIComponent(d));
 
         //collect data for checkbox handling
         data[pair[0]] = pair[1];
@@ -74,4 +72,4 @@
         }
       });
     };
-})(jQuery);
+}))(jQuery);

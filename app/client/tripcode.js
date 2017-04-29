@@ -43,9 +43,7 @@ function get_colors_for_hash(hashed) {
     var red = (color >> 16) & 255;
     var green = (color >> 8) & 255;
     var blue = color & 255;
-    var hex = $.map([red, green, blue], function(c, i) {
-      return padDigits(((c >> 4) * 0x10).toString(16), 2);
-    }).join('');
+    var hex = $.map([red, green, blue], (c, i) => padDigits(((c >> 4) * 0x10).toString(16), 2)).join('');
 
     hexes.push(hex);
   }
@@ -63,7 +61,7 @@ function gen_tripcode(el) {
     has_children = true;
   }
 
-  _.each(colors, function(color, index) {
+  _.each(colors, (color, index) => {
     if (!has_children) {
       var colorDiv = $("<div class='tripcolor' />").css({
         backgroundColor: "#" + color,
@@ -95,7 +93,7 @@ function find_lower_hash() {
   if (lowest_hash) {
     var luminances = [];
     var low_luminances = [];
-    _.each(colors, function(color, index) {
+    _.each(colors, (color, index) => {
       var luminosity = colors_to_luminance(color);
       var cur_luminosity = colors_to_luminance(lowest_hash[index]);
       luminances.push(luminosity);
@@ -103,8 +101,8 @@ function find_lower_hash() {
 
     });
 
-    var sum_luminance = _.reduce(luminances, function(n, m) { return n + m; }, 0);
-    var sum_low_luminance = _.reduce(low_luminances, function(n, m) { return n + m; }, 0);
+    var sum_luminance = _.reduce(luminances, (n, m) => n + m, 0);
+    var sum_low_luminance = _.reduce(low_luminances, (n, m) => n + m, 0);
 
     if (sum_luminance < sum_low_luminance + 15) {
       console.log("LOWER HASH", hash, triphash, sum_low_luminance);
@@ -119,9 +117,9 @@ function find_lower_hash() {
   return colors;
 }
 
-window.roll_em_black = function(iterations, interval) {
+window.roll_em_black = (iterations, interval) => {
   iterations = iterations || 200;
-  setInterval(function() {
+  setInterval(() => {
     for (var i = 0; i < iterations; i++) {
       find_lower_hash();
     }
@@ -132,6 +130,6 @@ window.roll_em_black = function(iterations, interval) {
 window.find_lower_hash = find_lower_hash;
 window.gen_tripcode = gen_tripcode;
 module.exports = {
-  gen_tripcode: gen_tripcode,
-  get_colors_for_hash: get_colors_for_hash
+  gen_tripcode,
+  get_colors_for_hash
 };

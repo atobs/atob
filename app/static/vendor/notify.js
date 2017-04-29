@@ -1,5 +1,5 @@
 /* Notify.js - http://notifyjs.com/ Copyright (c) 2015 MIT */
-(function (factory) {
+((factory => {
   // UMD start
   // https://github.com/umdjs/umd/blob/master/jqueryPluginCommonjs.js
   if (typeof define === 'function' && define.amd) {
@@ -7,7 +7,7 @@
     define(['jquery'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // Node/CommonJS
-    module.exports = function( root, jQuery ) {
+    module.exports = (root, jQuery) => {
       if ( jQuery === undefined ) {
         // require('jQuery') returns a factory that requires window to
         // build a jQuery instance, we normalize how we use modules
@@ -27,7 +27,7 @@
     // Browser globals
     factory(jQuery);
   }
-}(function ($) {
+})($ => {
   //IE8 indexOf polyfill
   var indexOf = [].indexOf || function(item) {
     for (var i = 0, l = this.length; i < l; i++) {
@@ -62,10 +62,10 @@
     r: "l"
   };
 
-  var parsePosition = function(str) {
+  var parsePosition = str => {
     var pos;
     pos = [];
-    $.each(str.split(/\W+/), function(i, word) {
+    $.each(str.split(/\W+/), (i, word) => {
       var w;
       w = word.toLowerCase().charAt(0);
       if (positions[w]) {
@@ -87,11 +87,9 @@
     "border-radius": ["-webkit-", "-moz-"]
   };
 
-  var getStyle = function(name) {
-    return styles[name];
-  };
+  var getStyle = name => styles[name];
 
-  var addStyle = function(name, def) {
+  var addStyle = (name, def) => {
     if (!name) {
       throw "Missing Style name";
     }
@@ -113,13 +111,11 @@
     styles[name] = def;
     var cssText = "";
     if (def.classes) {
-      $.each(def.classes, function(className, props) {
+      $.each(def.classes, (className, props) => {
         cssText += "." + pluginClassName + "-" + def.name + "-" + className + " {\n";
-        $.each(props, function(name, val) {
+        $.each(props, (name, val) => {
           if (stylePrefixes[name]) {
-            $.each(stylePrefixes[name], function(i, prefix) {
-              return cssText += "  " + prefix + name + ": " + val + ";\n";
-            });
+            $.each(stylePrefixes[name], (i, prefix) => cssText += "  " + prefix + name + ": " + val + ";\n");
           }
           return cssText += "  " + name + ": " + val + ";\n";
         });
@@ -140,8 +136,10 @@
     def.fields = fields;
   };
 
-  var insertCSS = function(cssText) {
-    var e, elem, error;
+  var insertCSS = cssText => {
+    var e;
+    var elem;
+    var error;
     elem = createElem("style");
     elem.attr("type", 'text/css');
     $("head").append(elem);
@@ -153,7 +151,7 @@
     return elem;
   };
 
-  var findFields = function(type, elem, fields) {
+  var findFields = (type, elem, fields) => {
     var attr;
     if (type !== "html") {
       type = "text";
@@ -169,7 +167,7 @@
     });
   };
 
-  var find = function(elem, selector) {
+  var find = (elem, selector) => {
     if (elem.is(selector)) {
       return elem;
     } else {
@@ -195,36 +193,31 @@
     gap: 5
   };
 
-  var inherit = function(a, b) {
+  var inherit = (a, b) => {
     var F;
-    F = function() {};
+    F = () => {};
     F.prototype = a;
     return $.extend(true, new F(), b);
   };
 
-  var defaults = function(opts) {
-    return $.extend(pluginOptions, opts);
-  };
+  var defaults = opts => $.extend(pluginOptions, opts);
 
-  var createElem = function(tag) {
-    return $("<" + tag + "></" + tag + ">");
-  };
+  var createElem = tag => $("<" + tag + "></" + tag + ">");
 
   var globalAnchors = {};
 
-  var getAnchorElement = function(element) {
+  var getAnchorElement = element => {
     var radios;
     if (element.is('[type=radio]')) {
-      radios = element.parents('form:first').find('[type=radio]').filter(function(i, e) {
-        return $(e).attr("name") === element.attr("name");
-      });
+      radios = element.parents('form:first').find('[type=radio]').filter((i, e) => $(e).attr("name") === element.attr("name"));
       element = radios.first();
     }
     return element;
   };
 
-  var incr = function(obj, pos, val) {
-    var opp, temp;
+  var incr = (obj, pos, val) => {
+    var opp;
+    var temp;
     if (typeof val === "string") {
       val = parseInt(val, 10);
     } else if (typeof val !== "number") {
@@ -247,7 +240,7 @@
     return null;
   };
 
-  var realign = function(alignment, inner, outer) {
+  var realign = (alignment, inner, outer) => {
     if (alignment === "l" || alignment === "t") {
       return 0;
     } else if (alignment === "c" || alignment === "m") {
@@ -258,7 +251,7 @@
     throw "Invalid alignment";
   };
 
-  var encode = function(text) {
+  var encode = text => {
     encode.e = encode.e || createElem("div");
     return encode.e.text(text).html();
   };
@@ -298,17 +291,19 @@
   };
 
   Notification.prototype.show = function(show, userCallback) {
-    var args, callback, elems, fn, hidden;
-    callback = (function(_this) {
-      return function() {
-        if (!show && !_this.elem) {
-          _this.destroy();
-        }
-        if (userCallback) {
-          return userCallback();
-        }
-      };
-    })(this);
+    var args;
+    var callback;
+    var elems;
+    var fn;
+    var hidden;
+    callback = ((_this => () => {
+      if (!show && !_this.elem) {
+        _this.destroy();
+      }
+      if (userCallback) {
+        return userCallback();
+      }
+    }))(this);
     hidden = this.container.parent().parents(':hidden').length > 0;
     elems = this.container.add(this.arrow);
     args = [];
@@ -326,7 +321,7 @@
       return callback();
     }
     args.push(callback);
-    return elems[fn].apply(elems, args);
+    return elems[fn](...args);
   };
 
   Notification.prototype.setGlobalPosition = function() {
@@ -355,7 +350,35 @@
   };
 
   Notification.prototype.setElementPosition = function() {
-    var arrowColor, arrowCss, arrowSize, color, contH, contW, css, elemH, elemIH, elemIW, elemPos, elemW, gap, j, k, len, len1, mainFull, margin, opp, oppFull, pAlign, pArrow, pMain, pos, posFull, position, ref, wrapPos;
+    var arrowColor;
+    var arrowCss;
+    var arrowSize;
+    var color;
+    var contH;
+    var contW;
+    var css;
+    var elemH;
+    var elemIH;
+    var elemIW;
+    var elemPos;
+    var elemW;
+    var gap;
+    var j;
+    var k;
+    var len;
+    var len1;
+    var mainFull;
+    var margin;
+    var opp;
+    var oppFull;
+    var pAlign;
+    var pArrow;
+    var pMain;
+    var pos;
+    var posFull;
+    var position;
+    var ref;
+    var wrapPos;
     position = this.getPosition();
     pMain = position[0];
     pAlign = position[1];
@@ -426,7 +449,14 @@
   };
 
   Notification.prototype.getPosition = function() {
-    var pos, ref, ref1, ref2, ref3, ref4, ref5, text;
+    var pos;
+    var ref;
+    var ref1;
+    var ref2;
+    var ref3;
+    var ref4;
+    var ref5;
+    var text;
     text = this.options.position || (this.elem ? this.options.elementPosition : this.options.globalPosition);
     pos = parsePosition(text);
     if (pos.length === 0) {
@@ -460,7 +490,8 @@
   };
 
   Notification.prototype.updateClasses = function() {
-    var classes, style;
+    var classes;
+    var style;
     classes = ["base"];
     if ($.isArray(this.options.className)) {
       classes = classes.concat(this.options.className);
@@ -468,14 +499,16 @@
       classes.push(this.options.className);
     }
     style = this.getStyle();
-    classes = $.map(classes, function(n) {
-      return pluginClassName + "-" + style.name + "-" + n;
-    }).join(" ");
+    classes = $.map(classes, n => pluginClassName + "-" + style.name + "-" + n).join(" ");
     return this.userContainer.attr("class", classes);
   };
 
   Notification.prototype.run = function(data, options) {
-    var d, datas, name, type, value;
+    var d;
+    var datas;
+    var name;
+    var type;
+    var value;
     if ($.isPlainObject(options)) {
       $.extend(this.options, options);
     } else if ($.type(options) === "string") {
@@ -525,7 +558,7 @@
     return this.wrapper.remove();
   };
 
-  $[pluginName] = function(elem, data, options) {
+  $[pluginName] = (elem, data, options) => {
     if ((elem && elem.nodeName) || elem.jquery) {
       $(elem)[pluginName](data, options);
     } else {
@@ -550,11 +583,11 @@
   };
 
   $.extend($[pluginName], {
-    defaults: defaults,
-    addStyle: addStyle,
-    pluginOptions: pluginOptions,
-    getStyle: getStyle,
-    insertCSS: insertCSS
+    defaults,
+    addStyle,
+    pluginOptions,
+    getStyle,
+    insertCSS
   });
 
   //always include the default bootstrap style
@@ -599,7 +632,7 @@
     }
   });
 
-  $(function() {
+  $(() => {
     insertCSS(coreStyle.css).attr("id", "core-notify");
     $(document).on("click", "." + pluginClassName + "-hidable", function(e) {
       return $(this).trigger("notify-hide");

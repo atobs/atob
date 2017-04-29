@@ -29,11 +29,11 @@ var METER_CLAUSE = {
 };
 
 var main = require_app("main");
-main.db_emitter.on("synced", function() {
+main.db_emitter.on("synced", () => {
   // This can only happen after the DB is sync'd...
   Action.find({ 
     where: METER_CLAUSE
-  }).success(function(action) {
+  }).success(action => {
 
     if (action && action.dataValues) {
       METER_TOTAL = action.dataValues.count ;
@@ -61,10 +61,10 @@ function add_doing(sid, doing) {
 }
 
 function digest_sockets() {
-  _.each(SOCKETS, function(sockets, sid) {
+  _.each(SOCKETS, (sockets, sid) => {
     var next_sockets = [];
     var cur_length = sockets.length;
-    _.each(sockets, function(s) {
+    _.each(sockets, s => {
       if (s.primus.connected) {
         next_sockets.push(s);
       }
@@ -94,12 +94,12 @@ function digest_doings() {
   var idle_count = 0;
 
   var doing_queue_keys = _.keys(DOING_QUEUES).reverse();
-  _.each(doing_queue_keys, function(sid) {
+  _.each(doing_queue_keys, sid => {
     var queue = DOING_QUEUES[sid];
     var next_queue = [];
     var max_doing = null;
 
-    _.each(queue, function(doing) {
+    _.each(queue, doing => {
       var ttl = doing.ttl || DEFAULT_TTL;
       var pri = doing.pri || 0;
       var post_id = doing.post_id || 0;
@@ -170,7 +170,7 @@ function maybe_stalk(sid, doing, s) {
 
 var THIRD_EYES = {};
 function blast_enlightenment() {
-  _.each(THIRD_EYES, function(data, sid) {
+  _.each(THIRD_EYES, (data, sid) => {
     if (Date.now() - data.movement > 3000) {
       delete THIRD_EYES[sid];
     }
@@ -201,7 +201,7 @@ function subscribe_to_updates(s) {
 
     var last_seen = {};
     var now = +Date.now();
-    _.each(LAST_SEEN, function(then, sid) {
+    _.each(LAST_SEEN, (then, sid) => {
       var duration = now - then;
       if (duration > 60 * 60 * 3600) {
         delete LAST_SEEN[sid];
@@ -212,16 +212,16 @@ function subscribe_to_updates(s) {
     });
 
     var doings = {
-      post_id: post_id,
-      counts: _.map(DOING_ONS[post_id], function(v) { return v; }),
-      last_seen: _.map(DOING_ONS[post_id], function(v, sid) { return last_seen[sid]; })
+      post_id,
+      counts: _.map(DOING_ONS[post_id], v => v),
+      last_seen: _.map(DOING_ONS[post_id], (v, sid) => last_seen[sid])
     };
 
     var last_update = LAST_UPDATE[post_id];
     if (last_update && Date.now() - last_update < 1000) {
       // need to make sure this does happen eventually...
       clearTimeout(SCHEDULED[post_id]);
-      SCHEDULED[post_id] = setTimeout(function() {
+      SCHEDULED[post_id] = setTimeout(() => {
         delete SCHEDULED[post_id];
         update_post_status(post_id);
       }, 500);
@@ -243,7 +243,7 @@ function subscribe_to_updates(s) {
 
   }
 
-  s.on("restalked", function(data) {
+  s.on("restalked", data => {
     // Find the SID they belong to?
     var stalked_socket = SOCKETS[data.by];
     if (stalked_socket) {
@@ -261,7 +261,7 @@ function subscribe_to_updates(s) {
 
 
       s.emit("notif", "you sunk anon's battleship", "success");
-      _.each(stalked_socket, function(s) {
+      _.each(stalked_socket, s => {
         s.emit("restalked");
       });
 
@@ -271,7 +271,7 @@ function subscribe_to_updates(s) {
 
       Action.find({ 
         where: where_clause
-      }).success(function(action) {
+      }).success(action => {
         if (!action) {
           Action.create(where_clause);
         } else {
@@ -309,14 +309,14 @@ function subscribe_to_updates(s) {
   }
 
   // TODO: make a better schema for how this works
-  s.on("isdoing", function(doing, cb) {
+  s.on("isdoing", (doing, cb) => {
     do_doing(doing, cb);
     if (cb) { cb(); }
 
 
   });
 
-  s.on("stalking", _.throttle(function(doing, cb) {
+  s.on("stalking", _.throttle((doing, cb) => {
     var stalked = maybe_stalk(sid, doing, s);
     if (!stalked) {
       return;
@@ -328,7 +328,7 @@ function subscribe_to_updates(s) {
 
 
   
-  var enlighten_anon = function () {
+  var enlighten_anon = () => {
     var actortrip = SID_TO_TRIP[sid] || "anonanonanon";
 
     Action.create({
@@ -342,7 +342,7 @@ function subscribe_to_updates(s) {
 
 
   // need to track all third eyes, including old ones and then stuff
-  s.on("thirdeye", function(data, cb) {
+  s.on("thirdeye", (data, cb) => {
     if (DOING_NOW[sid]) {
       data.icon = DOING_NOW[sid].what;
     }
@@ -356,7 +356,7 @@ function subscribe_to_updates(s) {
 
   });
 
-  s.on("thirdeyerind", function(data, cb) {
+  s.on("thirdeyerind", (data, cb) => {
 
   });
 
@@ -364,9 +364,9 @@ function subscribe_to_updates(s) {
 
 
 module.exports = {
-  LAST_SEEN: LAST_SEEN,
-  subscribe_to_updates: subscribe_to_updates,
-  update_doings: _.throttle(function() {
+  LAST_SEEN,
+  subscribe_to_updates,
+  update_doings: _.throttle(() => {
     digest_doings();
 
     var load_controller = require_core("server/controller").load;
@@ -376,7 +376,7 @@ module.exports = {
 
     var now = Date.now();
     var last_seen = {};
-    _.each(LAST_SEEN, function(then, sid) {
+    _.each(LAST_SEEN, (then, sid) => {
       var duration = now - then;
       if (duration > 60 * 60 * 3600) {
         delete LAST_SEEN[sid];
@@ -393,7 +393,7 @@ module.exports = {
     module.exports.update_meters();
   }, 2000),
 
-  update_meters: _.throttle(function() {
+  update_meters: _.throttle(() => {
     var load_controller = require_core("server/controller").load;
     var home_controller = load_controller("home");
     var boards_controller = load_controller("boards");
@@ -426,7 +426,7 @@ module.exports = {
 
     Action.find({ 
       where: METER_CLAUSE
-    }).success(function(action) {
+    }).success(action => {
       if (!action) {
         Action.create(METER_CLAUSE);
       } else {
@@ -445,7 +445,7 @@ module.exports = {
 
   }, 2000),
 
-  add_lurker: function(sid, board_id) {
+  add_lurker(sid, board_id) {
     var doing_word = "";
     LAST_SEEN[sid] = Date.now();
     if (board_id && board_id.length === 1) {
@@ -466,15 +466,15 @@ module.exports = {
     });
   },
 
-  lurk: function(s, board_id) {
+  lurk(s, board_id) {
     var sid = s.spark.headers.sid;
     module.exports.add_lurker(sid, board_id);
 
   },
 
-  digest_doings: digest_doings,
-  add_doing: add_doing,
-  bump_meter: function(s) {
+  digest_doings,
+  add_doing,
+  bump_meter(s) {
     METER_TOTAL +=s ;
   }
 

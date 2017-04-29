@@ -2,7 +2,7 @@ var faker = require("Faker");
 var crypto = require("crypto");
 
 module.exports = {
-  generate: function() { 
+  generate() { 
 
     var Board = require_app("models/board");
     var Post = require_app("models/post");
@@ -40,11 +40,11 @@ module.exports = {
 
       var parent = posts[parent_index];
       if (parent && parent_index != null) {
-        parent.success(function(p) {
+        parent.success(p => {
           var post_data = {
             title: faker.Lorem.sentence(),
             text: faker.Lorem.sentences(),
-            board_id: board_id,
+            board_id,
             author: faker.Name.firstName()
           };
 
@@ -62,7 +62,7 @@ module.exports = {
         var post_data = {
           title: faker.Lorem.sentence(),
           text: faker.Lorem.sentences(),
-          board_id: board_id,
+          board_id,
         };
 
         var post = Post.create(post_data);

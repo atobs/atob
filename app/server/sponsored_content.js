@@ -2,13 +2,13 @@ var Post = require_app("models/post");
 var board_names = require_app("server/board_names");
 
 module.exports = {
-  render: function(api) {
+  render(api) {
     api.template.add_stylesheet("sponsored_content");
     var ad;
-    return api.page.async(function(flush) {
+    return api.page.async(flush => {
       Post.findAll({
         where: { board_id: board_names.ADS, parent_id: null },
-      }).success(function(results) {
+      }).success(results => {
 
         function wrap_in_divs(inner) {
           var outer = $("<div />");

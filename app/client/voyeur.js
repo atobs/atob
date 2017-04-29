@@ -1,13 +1,13 @@
 var Instrumentation = require("app/static/vendor/useractions");
 
 module.exports = {
-  init: function() {
-    this.init = function() { };
+  init() {
+    this.init = () => { };
 
 
     var storage = window.bootloader.storage;
     var last_send = Date.now();
-    var throttled_send = function() {
+    var throttled_send = () => {
       if (Date.now() - last_send < 10000) {
         setTimeout(throttled_send, 500);
         return;
@@ -18,11 +18,11 @@ module.exports = {
       var samples = JSON.parse(storage.get("__samples") || "[]");
       if (samples && samples.length > 0) {
         if (SF.socket()) {
-          SF.socket().emit("samples", { samples: samples}, function() {
+          SF.socket().emit("samples", { samples}, () => {
             storage.set("__samples", "");
           });
         } else if (samples.length > 30) {
-          $.post("/d/s", { samples: samples }, function() {
+          $.post("/d/s", { samples }, () => {
             // Empty the local storage if the POST was successful
             storage.set("__samples", "");
           });
@@ -32,7 +32,7 @@ module.exports = {
     throttled_send();
 
 
-    Instrumentation.Sample.__send = function(sample, meta) {
+    Instrumentation.Sample.__send = (sample, meta) => {
       var samples = JSON.parse(storage.get("__samples") || "[]");
       if (!samples) {
         samples = [];

@@ -7,11 +7,11 @@ var BoardConfig = sequelize.instance.define('BoardConfigs', {
   },
   config: {
     type: sequelize.TEXT,
-    get: function() {
+    get() {
       var title = JSON.parse(this.getDataValue('config') || "{}");
       return title;
     },
-    set: function(val) { 
+    set(val) { 
       this.setDataValue('config', JSON.stringify(val));
       
     }
@@ -20,11 +20,11 @@ var BoardConfig = sequelize.instance.define('BoardConfigs', {
   tripcode: sequelize.STRING
 }, {
   instanceMethods: {
-    getSetting: function(key) {
+    getSetting(key) {
       var config = JSON.parse(this.getDataValue('config') || "{}");
       return config[key];
     },
-    setSetting: function(key, val) {
+    setSetting(key, val) {
       var config = JSON.parse(this.getDataValue('config') || "{}");
       config[key] = val;
       this.config = config;

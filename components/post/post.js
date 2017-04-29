@@ -42,7 +42,7 @@ function collapse_threads($el, lastSeenId) {
 
   var replyMap = {};
   var replylinks = $el.find(".replylink, .oplink");
-  _.each(replylinks, function(r) {
+  _.each(replylinks, r => {
     var parentId = $(r).data("parent-id");
     if (!replyMap[parentId]) {
       replyMap[parentId] = [];
@@ -64,7 +64,7 @@ function collapse_threads($el, lastSeenId) {
     var threaded = [];
     var unthreaded = [];
 
-    _.each(repliesTo, function(r) {
+    _.each(repliesTo, r => {
       var cloneId = $(r).closest(".reply").attr("id");
       var nested = !!$(r).closest(".nest").length;
       if (!cloneId || nested) {
@@ -91,7 +91,7 @@ function collapse_threads($el, lastSeenId) {
 
       }
 
-      _.each(threaded, function(el) {
+      _.each(threaded, el => {
         var parEl = $(el).closest(".reply");
         if (parEl.data("visited")) {
           return;
@@ -116,7 +116,7 @@ function collapse_threads($el, lastSeenId) {
   }
 
   var replies = $el.find(".reply");
-  _.each(replies, function(r) {
+  _.each(replies, r => {
 
     var thisEl = $(r);
     var thisId = thisEl.attr("id");
@@ -153,7 +153,7 @@ function replace_oplinks(el) {
       window.gen_tripcode(child);
 
       if (tripcode) {
-        require("app/client/sinners", function(sinners) {
+        require("app/client/sinners", sinners => {
           sinners.check_reply(child, tripcode);
         });
 
@@ -177,7 +177,7 @@ function replace_oplinks(el) {
 
     // if we couldn't find the tripcode, we have to go to the server and look it up
     function replace_tripcode(socket) {
-      socket.emit("get_post_only", opid, function(post_data) {
+      socket.emit("get_post_only", opid, post_data => {
         if (!post_data) {
           return gen_tripcode();
         }
@@ -190,7 +190,7 @@ function replace_oplinks(el) {
 
     var socket = SF.socket();
     if (!socket) {
-      SF.once("bridge/socket", function(socket) { replace_tripcode(socket); });
+      SF.once("bridge/socket", socket => { replace_tripcode(socket); });
     } else {
       replace_tripcode(socket);
     }
@@ -206,31 +206,31 @@ module.exports = {
   defaults: {
     content: "default content"
   },
-  get_real_id: function() {
+  get_real_id() {
     return this.$el.find(".post").data("post-id"); 
 
   },
-  get_post_id: function() { 
+  get_post_id() { 
     if (this.$el.closest(".chat").length) {
       return "chat";
     }
 
     return this.$el.find(".post").data("post-id"); 
   },
-  initialize: function() { },
-  collapse: function() {
+  initialize() { },
+  collapse() {
     this.$el.find(".cpost").collapse("hide");
   },
-  expand: function() {
+  expand() {
     this.$el.find(".collapse").collapse("show");
   },
-  add_markdown: function(text_formatter) {
+  add_markdown(text_formatter) {
     if (!text_formatter) {
       text_formatter = this.helpers["app/client/text"];
     }
     var textEl = this.$el.find(".text");
     var cache = module.exports.add_markdown.cache = module.exports.add_markdown.cache || {};
-    _.each(textEl, function(el) {
+    _.each(textEl, el => {
       var cache_key = md5($(el).html());
 
       if (cache[cache_key]) {
@@ -245,7 +245,7 @@ module.exports = {
         if (titleParent.length) {
           var link = $(el).find("a");
 
-          _.each(link, function(link) {
+          _.each(link, link => {
             var linkEl = $(link);
             var text = linkEl.text();
             linkEl.text("[link]");
@@ -262,21 +262,21 @@ module.exports = {
       }
     });
   },
-  gen_tripcodes: function(tripcode_gen) {
+  gen_tripcodes(tripcode_gen) {
     if (!tripcode_gen) {
       tripcode_gen = this.helpers["app/client/tripcode"].gen_tripcode;
     }
     var tripcodes = this.$el.find("div.tripcode");
 
-    _.each(tripcodes, function(el) {
+    _.each(tripcodes, el => {
       tripcode_gen(el);
     });
   },
 
-  update_spacer_text: function(last_seen, insert_before) {
+  update_spacer_text(last_seen, insert_before) {
     var prevReply;
     var replyContainer = this.$el.find(".replies");
-    _.each(this.$el.find(".reply"), function(r) {
+    _.each(this.$el.find(".reply"), r => {
       var id = $(r).attr("id");
       id = (id || 0) && parseInt(id.replace(/reply/, ""), 10);
       if (id && id <= last_seen) {
@@ -328,7 +328,7 @@ module.exports = {
       interrupt: true
     });
   }, 50),
-  client: function(options) {
+  client(options) {
     var POSTS = window._POSTS || {};
     var self = this;
     window._POSTS = POSTS;
@@ -338,13 +338,13 @@ module.exports = {
 
     REPLY_TEXT[options.post_id] = options;
 
-    _.each(options.replies, function(reply) {
+    _.each(options.replies, reply => {
       REPLY_TEXT[reply.id] = reply;
     });
 
 
     if (window.bootloader.storage.get("filtercontent") === "true") {
-      require("app/client/profanity", function(clean_element) {
+      require("app/client/profanity", clean_element => {
         clean_element(self.$el);
       });
     }
@@ -352,7 +352,7 @@ module.exports = {
     var replyInput = this.$el.find(".replyform textarea");
     var text = window.bootloader.storage.get("reply" + this.get_post_id());
     replyInput.val(text);
-    require("app/client/emojies", function(emojies) {
+    require("app/client/emojies", emojies => {
       emojies.add_textcomplete(replyInput);
     });
 
@@ -360,12 +360,12 @@ module.exports = {
 
     self.setup_polls();
 
-    require("app/client/sinners", function(sinners) {
+    require("app/client/sinners", sinners => {
       sinners.check_reply(self.$el, options.tripcode);
     });
 
     // make sure this post starts with the right value of sizing for the board
-    require("app/client/storage", function(storage) {
+    require("app/client/storage", storage => {
       var boardstyle = storage.get("boardstyle") || "";
 
       if (self.$el.find(".post").hasClass("maximize")) {
@@ -379,18 +379,18 @@ module.exports = {
 
 
     // TODO: better queueing
-    _.defer(function() {
+    _.defer(() => {
       $(".loading").remove();
       self.$el.find(".post").show();
       self.bumped();
       SF.trigger("post" + options.post_id);
     });
 
-    _.defer(function() {
+    _.defer(() => {
       if (!JOINED[options.board_id]) {
         var socket = SF.socket();
         if (!socket) {
-          SF.once("bridge/socket", function(socket) {
+          SF.once("bridge/socket", socket => {
             socket.emit("join", options.board_id);
           });
         } else {
@@ -413,7 +413,7 @@ module.exports = {
     }
   },
 
-  save_last_seen: function() {
+  save_last_seen() {
     var repls = this.options.client_options.replies;
     var last_seen = 0;
     if (!this.last_seen) {
@@ -431,7 +431,7 @@ module.exports = {
     window.bootloader.storage.set("lastseen:" + this.options.client_options.post_id, JSON.stringify(this.last_seen));
   },
 
-  get_last_seen: function() {
+  get_last_seen() {
     // check if we should collapse threads...
     var last_seen = window.bootloader.storage.get("lastseen:" + this.options.client_options.post_id);
     if (last_seen) {
@@ -459,7 +459,7 @@ module.exports = {
 
   },
 
-  set_last_seen: function(id) {
+  set_last_seen(id) {
     this.get_last_seen();
     this.last_seen_id = id;
     var self = this;
@@ -469,10 +469,10 @@ module.exports = {
     }
   },
 
-  thread_back: function() {
+  thread_back() {
     var closestHistoryBefore;
     var self = this;
-    _.each(this.last_seen, function(id) {
+    _.each(this.last_seen, id => {
       if (id >= self.cur_seen_id) {
         return;
       }
@@ -500,10 +500,10 @@ module.exports = {
     this.scroll_to_spacer();
   },
 
-  thread_forward: function() {
+  thread_forward() {
     var closestHistoryAfter;
     var self = this;
-    _.each(this.last_seen, function(id) {
+    _.each(this.last_seen, id => {
       if (closestHistoryAfter || id <= self.cur_seen_id) {
         return;
       }
@@ -529,7 +529,7 @@ module.exports = {
       // the reply has gone missing, find the next closest...
       var closestReplyId;
       var closestReplyIndex;
-      _.each(opts.replies, function(r, index) {
+      _.each(opts.replies, (r, index) => {
         if (r.id > self.cur_seen_id) {
           return;
         }
@@ -545,31 +545,31 @@ module.exports = {
     this.scroll_to_spacer();
   },
 
-  collapse_threads: function(last_seen) {
+  collapse_threads(last_seen) {
     var self = this;
     var swappedArea = $("<div />");
     if (!last_seen || last_seen === -1) {
-      (function() {
+      ((() => {
         var repls = self.options.client_options.replies;
         last_seen = 0;
         if (repls.length) {
           last_seen = repls[repls.length-1].id;
         } 
-      })();
+      }))();
     }
 
     this.cur_seen_id = last_seen;
 
     $(".reply").data("visited", false);
     var replies = this.$el.find(".reply");
-    replies = _.sortBy(replies, function(r) {
+    replies = _.sortBy(replies, r => {
       var id = $(r).attr("id");
       return id && parseInt(id.replace(/reply/, ""), 10);
     });
 
     var replyContainer = this.$el.find(".replies");
     var prevReply;
-    _.each(replies, function(r) {
+    _.each(replies, r => {
       swappedArea.append(r);
 
     });
@@ -581,7 +581,7 @@ module.exports = {
 
   },
 
-  bumped: function(animate) {
+  bumped(animate) {
     var repliesEl = this.$el.find(".replies");
     if (animate) {
       repliesEl.animate({ scrollTop: repliesEl[0].scrollHeight});
@@ -590,7 +590,7 @@ module.exports = {
     }
   },
 
-  add_reply_preview: function(data) {
+  add_reply_preview(data) {
     // alright... let's see..
     var replyId = "reply" + data.post_id;
     if ($("#" + replyId).length) {
@@ -603,7 +603,7 @@ module.exports = {
     return replyEl;
   },
 
-  make_reply_el: function(data) {
+  make_reply_el(data) {
 
     var replyId = "reply" + data.post_id;
     if ($("#" + replyId).length) {
@@ -643,7 +643,7 @@ module.exports = {
 
     this.helpers['app/client/text'].format_text(smallEl);
 
-    require("app/client/sinners", function(sinners) {
+    require("app/client/sinners", sinners => {
       sinners.check_reply(replyEl, data.tripcode);
     });
     replyEl.fadeIn();
@@ -651,7 +651,7 @@ module.exports = {
     return replyEl;
   },
 
-  make_spacer_div: function() {
+  make_spacer_div() {
     if (window.bootloader.storage.get("threadify") !== "true" || !this.options.client_options.threading) {
       return $("<div />");
     }
@@ -681,7 +681,7 @@ module.exports = {
     return spacerDiv;
   },
 
-  add_reply: function(data, dontpulse) {
+  add_reply(data, dontpulse) {
 
     if (!dontpulse) {
       this.$el.find(".post").addClass("pulsepost");
@@ -724,17 +724,17 @@ module.exports = {
 
     replace_oplinks(replyEl);
   },
-  is_starred: function() {
+  is_starred() {
     return this.starred;
 
   },
-  replace_oplinks: replace_oplinks,
-  unstar: function() {
+  replace_oplinks,
+  unstar() {
     this.starred = false;
     this.$el.find(".post")
     .css("border-color", this.old_border_color);
   },
-  star: function() {
+  star() {
     this.starred = true;
 
     if (!this.old_border_color) {
@@ -749,17 +749,17 @@ module.exports = {
     var parent = this.$el.closest(".posts");
     parent.prepend(this.$el);
   },
-  burtle: function(burtles) {
+  burtle(burtles) {
     this.$el.find(".burtles_count").text(burtles);
     this.$el.find(".burtles").removeClass("hidden");
   },
-  update_counts: function(counts, last_seen) {
+  update_counts(counts, last_seen) {
     var merged = _.zip(last_seen, counts);
-    merged.sort(function(a) { return a[0]; });
+    merged.sort(a => a[0]);
 
     var get_anonicator_for = this.helpers['app/client/anonications'].get_anonicator_for;
 
-    var str = _.map(merged, function(data) {
+    var str = _.map(merged, data => {
       var updated = data[0];
       var c = data[1];
       var active = "";
@@ -778,10 +778,10 @@ module.exports = {
     function flash_actives(flashes) {
       var actives = self.$el.find(".active_anon");
       count++;
-      actives.stop(true).fadeOut(function() { 
+      actives.stop(true).fadeOut(() => { 
         actives.stop().fadeIn(); 
         if (count < flashes) {
-          _.defer(function() { flash_actives(flashes); });
+          _.defer(() => { flash_actives(flashes); });
         }
       
       });
@@ -790,7 +790,7 @@ module.exports = {
     flash_actives();
   },
 
-  shake: function(duration) {
+  shake(duration) {
     duration = duration || 400;
     var textarea = this.$el.find("textarea");
 
@@ -798,13 +798,13 @@ module.exports = {
       opacity: 0.4
     });
 
-    setTimeout(function() {
+    setTimeout(() => {
       textarea.animate({
         opacity: 1
       });
     }, duration);
   },
-  be_discreet: function() {
+  be_discreet() {
 
     // blend the post into the page...
 
@@ -815,13 +815,13 @@ module.exports = {
       padding: "0px"
     });
     $(this.$el.find(".many")[0]).removeClass("col-md-12");
-    _.each(this.$el.find(".op"), function(el) {
+    _.each(this.$el.find(".op"), el => {
       $(el).css("display", "none");
     });
 
   },
 
-  setup_polls: function() {
+  setup_polls() {
     var orderedLists = this.$el.find("ol");
     if (orderedLists.length) {
       orderedLists.each(function() {
@@ -876,13 +876,13 @@ function process_vote(replyEl) {
 
   var matches = text.match(/:?vote[- ]?\d+:?/g);
 
-  _.each(matches, function(match) {
+  _.each(matches, match => {
     var vote = match.replace(/vote-?/, "").replace(/:/g, "");
     vote = parseInt(vote, 10);
     this_votes[vote] = true;
   });
 
-  _.each(this_votes, function(v, key) {
+  _.each(this_votes, (v, key) => {
     var lis = orderedList.find("li");
     var votedon = lis.get(key - 1); // because the list starts at 1, duh
 

@@ -10,7 +10,7 @@ module.exports = {
     "click .cancel" :  "handle_click_cancel"
   },
 
-  handle_click_save: function() {
+  handle_click_save() {
 
     var triphash = SF.controller().get_triphash();
     var tripname = SF.controller().get_handle();
@@ -18,14 +18,14 @@ module.exports = {
 
     SF.socket().emit("update_board_config", {
       tripcode: triphash,
-      tripname: tripname,
-      board: board
+      tripname,
+      board
     });
 
     this.$el.find(".modal").modal("hide");
 
   },
-  handle_click_cancel: function() {
+  handle_click_cancel() {
     this.$el.find(".modal").modal("hide");
 
   }

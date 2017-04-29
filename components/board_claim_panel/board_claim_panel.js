@@ -4,9 +4,9 @@ module.exports = {
   defaults: {
     content: "default content"
   },
-  initialize: function(options) {
+  initialize(options) {
   },
-  client: function(options) {
+  client(options) {
     var client_options = options.client_options;
 
     $(document.body).append(this.$el);

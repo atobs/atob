@@ -10,10 +10,10 @@ module.exports = {
     "keydown .searchinput" : "handle_search_keydown"
 
   },
-  init: function() {
+  init() {
 
   },
-  display_results: function(results) {
+  display_results(results) {
     // we need to bump the queue to display results, i guess
     var self = this;
     self.latest_results = results;
@@ -28,7 +28,7 @@ module.exports = {
       div.append("you shout, but there is no answer");
     }
 
-    _.each(self.latest_results, function(r) {
+    _.each(self.latest_results, r => {
       var el = summarize(r);
       var elel = $("<div />").append(el);
 
@@ -46,9 +46,9 @@ module.exports = {
 
 
   }, 1000),
-  socket: function(s) {
+  socket(s) {
     var self = this;
-    s.on("queryresults", function(results, q, ts) {
+    s.on("queryresults", (results, q, ts) => {
       if (!last_update || ts > last_update) {
         // now we display the results
         self.display_results(results);
@@ -61,7 +61,7 @@ module.exports = {
     });
 
   },
-  handle_search_keydown: _.throttle(function() {
+  handle_search_keydown: _.throttle(() => {
     var query = $(".searchinput").val();
     if (query === last_query) {
       return;

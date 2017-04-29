@@ -5,7 +5,7 @@ module.exports = {
   events: {
 
   },
-  init: function() {
+  init() {
     this.init_tripcodes();
   }
 };

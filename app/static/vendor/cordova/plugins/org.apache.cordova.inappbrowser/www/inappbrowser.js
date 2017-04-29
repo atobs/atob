@@ -1,4 +1,4 @@
-cordova.define("org.apache.cordova.inappbrowser.inappbrowser", function(require, exports, module) { /*
+cordova.define("org.apache.cordova.inappbrowser.inappbrowser", (require, exports, module) => { /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -34,29 +34,29 @@ function InAppBrowser() {
 }
 
 InAppBrowser.prototype = {
-    _eventHandler: function (event) {
+    _eventHandler(event) {
         if (event && (event.type in this.channels)) {
             this.channels[event.type].fire(event);
         }
     },
-    close: function (eventname) {
+    close(eventname) {
         exec(null, null, "InAppBrowser", "close", []);
     },
-    show: function (eventname) {
+    show(eventname) {
       exec(null, null, "InAppBrowser", "show", []);
     },
-    addEventListener: function (eventname,f) {
+    addEventListener(eventname, f) {
         if (eventname in this.channels) {
             this.channels[eventname].subscribe(f);
         }
     },
-    removeEventListener: function(eventname, f) {
+    removeEventListener(eventname, f) {
         if (eventname in this.channels) {
             this.channels[eventname].unsubscribe(f);
         }
     },
 
-    executeScript: function(injectDetails, cb) {
+    executeScript(injectDetails, cb) {
         if (injectDetails.code) {
             exec(cb, null, "InAppBrowser", "injectScriptCode", [injectDetails.code, !!cb]);
         } else if (injectDetails.file) {
@@ -66,7 +66,7 @@ InAppBrowser.prototype = {
         }
     },
 
-    insertCSS: function(injectDetails, cb) {
+    insertCSS(injectDetails, cb) {
         if (injectDetails.code) {
             exec(cb, null, "InAppBrowser", "injectStyleCode", [injectDetails.code, !!cb]);
         } else if (injectDetails.file) {
@@ -92,7 +92,7 @@ module.exports = function(strUrl, strWindowName, strWindowFeatures, callbacks) {
         iab.addEventListener(callbackName, callbacks[callbackName]);
     }
 
-    var cb = function(eventname) {
+    var cb = eventname => {
        iab._eventHandler(eventname);
     };
 

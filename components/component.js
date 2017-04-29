@@ -4,49 +4,49 @@ var Component = Backbone.View.extend({
 
   className: 'cmp',
 
-  init: function(options) {
+  init(options) {
     Backbone.View.init(options);
     this.__id = options.id;
   },
 
-  dispose: function() {
+  dispose() {
 
   },
 
-  appendTo: function(parent) {
+  appendTo(parent) {
     return this.$el.appendTo(parent);
   },
 
-  prependTo: function(parent) {
+  prependTo(parent) {
     return this.$el.prependTo(parent);
   },
 
-  append: function(content) {
+  append(content) {
     return this.$el.append(content);
   },
 
-  prepend: function() {
+  prepend() {
     return this.$el.prepend(content);
   },
 
-  parent: function(selector) {
+  parent(selector) {
     return this.$el.parent(selector);
   },
 
-  html: function(content) {
+  html(content) {
     return this.$el.html(content);
   },
 
-  render: function() {
+  render() {
     var modeled = this.$el.find("[data-model]");
 
-    _.each(modeled, function(el) {
+    _.each(modeled, el => {
       var par = Backbone.$(el).parent("[data-cmp]");
     });
     // TODO: Fill these out with modeled values on updates
   },
 
-  toString: function() {
+  toString() {
     // yuck
     var outer = Backbone.$("<div />");
     outer.append(this.$el.clone());
