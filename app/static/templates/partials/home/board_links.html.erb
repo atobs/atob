@@ -4,7 +4,7 @@
   'gifs' : 'picture'
 } %>
 
-<% var width = 60 / boards.length %>
+<% var width = 60 / (boards.length+1) %>
 <% set_default("add_new_thread", false) %>
 
 <div class="boardlinks" >
@@ -14,6 +14,9 @@
     </span>
   <% }) %>
 
+  <span class='lfloat boardlink' style='width: <%= width %>%' >
+    <a href="http://read.kthxb.ai" target="_blank"><span class='icon-globe'> </span></a>
+  </span>
 
 </div>
 
