@@ -145,6 +145,10 @@
   padding-top: 5px;
 }
 
+.reply:hover {
+  background-color: #fafadd;
+}
+
 .many .reply {
   padding: 0px;
   padding-left: 4px;
