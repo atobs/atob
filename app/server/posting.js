@@ -33,7 +33,7 @@ var worship_boards = require_app("server/worship_boards");
 
 var HIDDEN_BOARDS = require_app("server/hidden_boards");
 
-var MAX_ANONS = 200;
+var MAX_ANONS = 1000;
 
 var DOWNCONS = [
   ":thumbs-down:",

@@ -1,6 +1,8 @@
 var client_api = require_app("static/vendor/useractions");
 var context = require_core("server/context");
 
+var config = require_core("server/config");
+
 var ua_parser = require("ua-parser");
 
 var geoip;
@@ -116,8 +118,8 @@ function send_samples(dataset, samples) {
 
   var options = {
     hostname: 'localhost',
-    port: 3000,
-    path: '/data/import',
+    port: 2333,
+    path: '/data/import?auth_token=' + config.snorkel_auth_token,
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',

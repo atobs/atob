@@ -59,3 +59,7 @@ body.modal-open {
 .popover.reply {
   max-width: 550px;
 }
+
+.content .container {
+  padding: 0px;
+}
