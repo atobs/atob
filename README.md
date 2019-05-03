@@ -77,3 +77,32 @@ An example NGINX sites-available config might look like:
       }
     }
 
+
+ADDING ADMIN USER
+-----------------
+
+go to the atob root directory and start a new node process, then run:
+
+```
+> require("superfluous");
+> User = require_app("models/user");
+> User.create({"tripname" : "name", "tripcode": "tripcode" });
+```
+
+To get the tripcode, go to your atob instance and enter your details in
+the settings pane, then click the "report" button on a post. That will show you
+the tripname/tripcode for your current user.
+
+The tripcode will be a hash, not plaintext. Do not insert a plaintext password
+into the DB, the tripcode should look like: "c4b20b4880b3efe567b06760e7edd8bb"
+
+
+To verify the user was created:
+
+```
+sqlite db.sqlite
+> SELECT * FROM USERS;
+```
+
+If your user is in the db, the next time you click the "report" button, you
+should get an admin panel instead of the normal report dialog.
